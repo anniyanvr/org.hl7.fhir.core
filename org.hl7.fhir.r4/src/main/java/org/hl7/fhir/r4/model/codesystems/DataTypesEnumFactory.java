@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -168,11 +164,13 @@ public class DataTypesEnumFactory implements EnumFactory<DataTypes> {
       return DataTypes.UUID;
     if ("xhtml".equals(codeString))
       return DataTypes.XHTML;
-    throw new IllegalArgumentException("Unknown DataTypes code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown DataTypes code '" + codeString + "'");
   }
 
   public String toCode(DataTypes code) {
-    if (code == DataTypes.ADDRESS)
+       if (code == DataTypes.NULL)
+           return null;
+       if (code == DataTypes.ADDRESS)
       return "Address";
     if (code == DataTypes.AGE)
       return "Age";
@@ -299,10 +297,10 @@ public class DataTypesEnumFactory implements EnumFactory<DataTypes> {
     if (code == DataTypes.XHTML)
       return "xhtml";
     return "?";
-  }
+   }
 
-    public String toSystem(DataTypes code) {
-      return code.getSystem();
-      }
+  public String toSystem(DataTypes code) {
+    return code.getSystem();
+  }
 
 }

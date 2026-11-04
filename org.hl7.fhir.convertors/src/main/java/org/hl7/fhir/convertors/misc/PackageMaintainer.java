@@ -1,5 +1,16 @@
 package org.hl7.fhir.convertors.misc;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hl7.fhir.utilities.FileUtilities;
+import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+import org.hl7.fhir.utilities.json.model.JsonObject;
+import org.hl7.fhir.utilities.json.parser.JsonParser;
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -28,20 +39,7 @@ package org.hl7.fhir.convertors.misc;
   POSSIBILITY OF SUCH DAMAGE.
   
  */
-
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import org.hl7.fhir.utilities.TextFile;
-import org.hl7.fhir.utilities.Utilities;
-import org.hl7.fhir.utilities.json.JsonTrackingParser;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+@SuppressWarnings("checkstyle:systemout")
 public class PackageMaintainer {
 
 
@@ -70,15 +68,15 @@ public class PackageMaintainer {
           System.out.println("Examples contains " + s + " but core doesn't");
       }
     }
-    strip(new File(Utilities.path(PATH, "hl7.fhir." + ver + ".core", "package")));
-    strip(new File(Utilities.path(PATH, "hl7.fhir." + ver + ".expansions", "package")));
+    strip(ManagedFileAccess.file(Utilities.path(PATH, "hl7.fhir." + ver + ".core", "package")));
+    strip(ManagedFileAccess.file(Utilities.path(PATH, "hl7.fhir." + ver + ".expansions", "package")));
     if (!ver.equals("r2b"))
-      strip(new File(Utilities.path(PATH, "hl7.fhir." + ver + ".elements", "package")));
+      strip(ManagedFileAccess.file(Utilities.path(PATH, "hl7.fhir." + ver + ".elements", "package")));
   }
 
 
-  private List<String> listResources(String dir) {
-    File folder = new File(dir);
+  private List<String> listResources(String dir) throws IOException {
+    File folder = ManagedFileAccess.file(dir);
     List<String> res = new ArrayList<>();
     for (String fn : folder.list()) {
       if (fn.endsWith(".json") && fn.contains("-")) {
@@ -95,12 +93,11 @@ public class PackageMaintainer {
       if (f.isDirectory())
         strip(f);
       else if (f.getName().endsWith(".json")) {
-        JsonObject json = JsonTrackingParser.parseJson(f);
+        JsonObject json = JsonParser.parseObject(f);
         if (json.has("resourceType") && json.has("text")) {
           json.remove("text");
-          Gson gson = new GsonBuilder().create();
-          String src = gson.toJson(json);
-          TextFile.stringToFile(src, f.getAbsolutePath());
+          String src = JsonParser.compose(json);
+          FileUtilities.stringToFile(src, f.getAbsolutePath());
         }
       }
     }

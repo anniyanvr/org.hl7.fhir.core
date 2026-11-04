@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Tue, Dec 28, 2021 07:16+1100 for FHIR v5.0.0-snapshot1
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -652,6 +652,35 @@ public class ProdCharacteristic extends BackboneType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("height")) {
+          this.height = null;
+        } else if (name.equals("width")) {
+          this.width = null;
+        } else if (name.equals("depth")) {
+          this.depth = null;
+        } else if (name.equals("weight")) {
+          this.weight = null;
+        } else if (name.equals("nominalVolume")) {
+          this.nominalVolume = null;
+        } else if (name.equals("externalDiameter")) {
+          this.externalDiameter = null;
+        } else if (name.equals("shape")) {
+          this.shape = null;
+        } else if (name.equals("color")) {
+          this.getColor().remove(value);
+        } else if (name.equals("imprint")) {
+          this.getImprint().remove(value);
+        } else if (name.equals("image")) {
+          this.getImage().remove(value);
+        } else if (name.equals("scoring")) {
+          this.scoring = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -717,13 +746,13 @@ public class ProdCharacteristic extends BackboneType implements ICompositeType {
           return this.externalDiameter;
         }
         else if (name.equals("shape")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProdCharacteristic.shape");
+          throw new FHIRException("Cannot call addChild on a singleton property ProdCharacteristic.shape");
         }
         else if (name.equals("color")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProdCharacteristic.color");
+          throw new FHIRException("Cannot call addChild on a singleton property ProdCharacteristic.color");
         }
         else if (name.equals("imprint")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProdCharacteristic.imprint");
+          throw new FHIRException("Cannot call addChild on a singleton property ProdCharacteristic.imprint");
         }
         else if (name.equals("image")) {
           return addImage();
@@ -745,6 +774,10 @@ public class ProdCharacteristic extends BackboneType implements ICompositeType {
         ProdCharacteristic dst = new ProdCharacteristic();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ProdCharacteristic) dst);
       }
 
       public void copyValues(ProdCharacteristic dst) {

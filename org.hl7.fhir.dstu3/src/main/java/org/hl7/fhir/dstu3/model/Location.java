@@ -135,12 +135,12 @@ public class Location extends DomainResource {
           return LocationStatus.INACTIVE;
         throw new IllegalArgumentException("Unknown LocationStatus code '"+codeString+"'");
         }
-        public Enumeration<LocationStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<LocationStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<LocationStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -152,14 +152,16 @@ public class Location extends DomainResource {
         throw new FHIRException("Unknown LocationStatus code '"+codeString+"'");
         }
     public String toCode(LocationStatus code) {
-      if (code == LocationStatus.ACTIVE)
+       if (code == LocationStatus.NULL)
+           return null;
+       if (code == LocationStatus.ACTIVE)
         return "active";
       if (code == LocationStatus.SUSPENDED)
         return "suspended";
       if (code == LocationStatus.INACTIVE)
         return "inactive";
       return "?";
-      }
+   }
     public String toSystem(LocationStatus code) {
       return code.getSystem();
       }
@@ -235,12 +237,12 @@ public class Location extends DomainResource {
           return LocationMode.KIND;
         throw new IllegalArgumentException("Unknown LocationMode code '"+codeString+"'");
         }
-        public Enumeration<LocationMode> fromType(Base code) throws FHIRException {
+        public Enumeration<LocationMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<LocationMode>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("instance".equals(codeString))
@@ -250,12 +252,14 @@ public class Location extends DomainResource {
         throw new FHIRException("Unknown LocationMode code '"+codeString+"'");
         }
     public String toCode(LocationMode code) {
-      if (code == LocationMode.INSTANCE)
+       if (code == LocationMode.NULL)
+           return null;
+       if (code == LocationMode.INSTANCE)
         return "instance";
       if (code == LocationMode.KIND)
         return "kind";
       return "?";
-      }
+   }
     public String toSystem(LocationMode code) {
       return code.getSystem();
       }
@@ -579,13 +583,13 @@ public class Location extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("longitude")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.longitude");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.longitude");
         }
         else if (name.equals("latitude")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.latitude");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.latitude");
         }
         else if (name.equals("altitude")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.altitude");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.altitude");
         }
         else
           return super.addChild(name);
@@ -1392,28 +1396,6 @@ public class Location extends DomainResource {
       return getEndpoint().get(0);
     }
 
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Endpoint> getEndpointTarget() { 
-      if (this.endpointTarget == null)
-        this.endpointTarget = new ArrayList<Endpoint>();
-      return this.endpointTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Endpoint addEndpointTarget() { 
-      Endpoint r = new Endpoint();
-      if (this.endpointTarget == null)
-        this.endpointTarget = new ArrayList<Endpoint>();
-      this.endpointTarget.add(r);
-      return r;
-    }
-
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
         children.add(new Property("identifier", "Identifier", "Unique code or number identifying the location to its users.", 0, java.lang.Integer.MAX_VALUE, identifier));
@@ -1625,23 +1607,23 @@ public class Location extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.status");
         }
         else if (name.equals("operationalStatus")) {
           this.operationalStatus = new Coding();
           return this.operationalStatus;
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.name");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.name");
         }
         else if (name.equals("alias")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.alias");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.alias");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.description");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.description");
         }
         else if (name.equals("mode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.mode");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.mode");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();

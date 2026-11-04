@@ -147,12 +147,12 @@ public class DocumentReference extends DomainResource {
           return ReferredDocumentStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown ReferredDocumentStatus code '"+codeString+"'");
         }
-        public Enumeration<ReferredDocumentStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ReferredDocumentStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ReferredDocumentStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("preliminary".equals(codeString))
@@ -166,7 +166,9 @@ public class DocumentReference extends DomainResource {
         throw new FHIRException("Unknown ReferredDocumentStatus code '"+codeString+"'");
         }
     public String toCode(ReferredDocumentStatus code) {
-      if (code == ReferredDocumentStatus.PRELIMINARY)
+       if (code == ReferredDocumentStatus.NULL)
+           return null;
+       if (code == ReferredDocumentStatus.PRELIMINARY)
         return "preliminary";
       if (code == ReferredDocumentStatus.FINAL)
         return "final";
@@ -175,7 +177,7 @@ public class DocumentReference extends DomainResource {
       if (code == ReferredDocumentStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(ReferredDocumentStatus code) {
       return code.getSystem();
       }
@@ -275,12 +277,12 @@ public class DocumentReference extends DomainResource {
           return DocumentRelationshipType.APPENDS;
         throw new IllegalArgumentException("Unknown DocumentRelationshipType code '"+codeString+"'");
         }
-        public Enumeration<DocumentRelationshipType> fromType(Base code) throws FHIRException {
+        public Enumeration<DocumentRelationshipType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DocumentRelationshipType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("replaces".equals(codeString))
@@ -294,7 +296,9 @@ public class DocumentReference extends DomainResource {
         throw new FHIRException("Unknown DocumentRelationshipType code '"+codeString+"'");
         }
     public String toCode(DocumentRelationshipType code) {
-      if (code == DocumentRelationshipType.REPLACES)
+       if (code == DocumentRelationshipType.NULL)
+           return null;
+       if (code == DocumentRelationshipType.REPLACES)
         return "replaces";
       if (code == DocumentRelationshipType.TRANSFORMS)
         return "transforms";
@@ -303,7 +307,7 @@ public class DocumentReference extends DomainResource {
       if (code == DocumentRelationshipType.APPENDS)
         return "appends";
       return "?";
-      }
+   }
     public String toSystem(DocumentRelationshipType code) {
       return code.getSystem();
       }
@@ -514,7 +518,7 @@ public class DocumentReference extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("code")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DocumentReference.code");
+          throw new FHIRException("Cannot call addChild on a singleton property DocumentReference.code");
         }
         else if (name.equals("target")) {
           this.target = new Reference();
@@ -2103,16 +2107,6 @@ public class DocumentReference extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getAuthorTarget() { 
-      if (this.authorTarget == null)
-        this.authorTarget = new ArrayList<Resource>();
-      return this.authorTarget;
-    }
-
-    /**
      * @return {@link #authenticator} (Which person or organization authenticates that this document is valid.)
      */
     public Reference getAuthenticator() { 
@@ -2662,10 +2656,10 @@ public class DocumentReference extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DocumentReference.status");
+          throw new FHIRException("Cannot call addChild on a singleton property DocumentReference.status");
         }
         else if (name.equals("docStatus")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DocumentReference.docStatus");
+          throw new FHIRException("Cannot call addChild on a singleton property DocumentReference.docStatus");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
@@ -2680,10 +2674,10 @@ public class DocumentReference extends DomainResource {
           return this.subject;
         }
         else if (name.equals("created")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DocumentReference.created");
+          throw new FHIRException("Cannot call addChild on a singleton property DocumentReference.created");
         }
         else if (name.equals("indexed")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DocumentReference.indexed");
+          throw new FHIRException("Cannot call addChild on a singleton property DocumentReference.indexed");
         }
         else if (name.equals("author")) {
           return addAuthor();
@@ -2700,7 +2694,7 @@ public class DocumentReference extends DomainResource {
           return addRelatesTo();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DocumentReference.description");
+          throw new FHIRException("Cannot call addChild on a singleton property DocumentReference.description");
         }
         else if (name.equals("securityLabel")) {
           return addSecurityLabel();

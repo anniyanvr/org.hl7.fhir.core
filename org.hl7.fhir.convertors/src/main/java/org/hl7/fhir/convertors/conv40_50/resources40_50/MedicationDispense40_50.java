@@ -10,6 +10,8 @@ import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.DateTime4
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Dosage40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r4.model.Enumeration;
+import org.hl7.fhir.r4.model.MedicationDispense;
 import org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodesEnumFactory;
 
 /*
@@ -53,10 +55,10 @@ public class MedicationDispense40_50 {
     for (org.hl7.fhir.r4.model.Reference t : src.getPartOf()) tgt.addPartOf(Reference40_50.convertReference(t));
     if (src.hasStatus())
       tgt.setStatusElement(convertMedicationStatus(src.getStatusElement()));
-    if (src.hasStatusReasonCodeableConcept())
-      tgt.getStatusReason().setConcept(CodeableConcept40_50.convertCodeableConcept(src.getStatusReasonCodeableConcept()));
-    if (src.hasStatusReasonReference())
-      tgt.getStatusReason().setReference(Reference40_50.convertReference(src.getStatusReasonReference()));
+//    if (src.hasStatusReasonCodeableConcept())
+//      tgt.getStatusReason().setConcept(CodeableConcept40_50.convertCodeableConcept(src.getStatusReasonCodeableConcept()));
+//    if (src.hasStatusReasonReference())
+//      tgt.getStatusReason().setReference(Reference40_50.convertReference(src.getStatusReasonReference()));
     if (src.hasCategory())
       tgt.addCategory(CodeableConcept40_50.convertCodeableConcept(src.getCategory()));
     if (src.hasMedicationCodeableConcept())
@@ -93,8 +95,8 @@ public class MedicationDispense40_50 {
       tgt.addDosageInstruction(Dosage40_50.convertDosage(t));
     if (src.hasSubstitution())
       tgt.setSubstitution(convertMedicationDispenseSubstitutionComponent(src.getSubstitution()));
-    for (org.hl7.fhir.r4.model.Reference t : src.getDetectedIssue())
-      tgt.addDetectedIssue(Reference40_50.convertReference(t));
+//    for (org.hl7.fhir.r4.model.Reference t : src.getDetectedIssue())
+//      tgt.addDetectedIssue(Reference40_50.convertReference(t));
     for (org.hl7.fhir.r4.model.Reference t : src.getEventHistory())
       tgt.addEventHistory(Reference40_50.convertReference(t));
     return tgt;
@@ -110,10 +112,10 @@ public class MedicationDispense40_50 {
     for (org.hl7.fhir.r5.model.Reference t : src.getPartOf()) tgt.addPartOf(Reference40_50.convertReference(t));
     if (src.hasStatus())
       tgt.setStatusElement(convertStatus(src.getStatusElement()));
-    if (src.getStatusReason().hasConcept())
-      tgt.setStatusReason(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getStatusReason().getConcept()));
-    if (src.getStatusReason().hasReference())
-      tgt.setStatusReason(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getStatusReason().getReference()));
+//    if (src.getStatusReason().hasConcept())
+//      tgt.setStatusReason(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getStatusReason().getConcept()));
+//    if (src.getStatusReason().hasReference())
+//      tgt.setStatusReason(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getStatusReason().getReference()));
     if (src.hasCategory())
       tgt.setCategory(CodeableConcept40_50.convertCodeableConcept(src.getCategoryFirstRep()));
     if (src.getMedication().hasConcept())
@@ -150,98 +152,106 @@ public class MedicationDispense40_50 {
       tgt.addDosageInstruction(Dosage40_50.convertDosage(t));
     if (src.hasSubstitution())
       tgt.setSubstitution(convertMedicationDispenseSubstitutionComponent(src.getSubstitution()));
-    for (org.hl7.fhir.r5.model.Reference t : src.getDetectedIssue())
-      tgt.addDetectedIssue(Reference40_50.convertReference(t));
+//    for (org.hl7.fhir.r5.model.Reference t : src.getDetectedIssue())
+//      tgt.addDetectedIssue(Reference40_50.convertReference(t));
     for (org.hl7.fhir.r5.model.Reference t : src.getEventHistory())
       tgt.addEventHistory(Reference40_50.convertReference(t));
     return tgt;
   }
 
   private static org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus> convertStatus(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes> src) {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus.CANCELLED);
-        break;
-      case COMPLETED:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus.COMPLETED);
-        break;
-      case DECLINED:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus.DECLINED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus.ENTEREDINERROR);
-        break;
-      case INPROGRESS:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus.INPROGRESS);
-        break;
-      case NULL:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus.NULL);
-        break;
-      case ONHOLD:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus.ONHOLD);
-        break;
-      case PREPARATION:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus.PREPARATION);
-        break;
-      case STOPPED:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus.STOPPED);
-        break;
-      case UNKNOWN:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus.UNKNOWN);
-        break;
-    }
-    return tgt;
+      if (src == null)
+          return null;
+      Enumeration<MedicationDispense.MedicationDispenseStatus> tgt = new Enumeration<>(new MedicationDispense.MedicationDispenseStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case CANCELLED:
+                  tgt.setValue(MedicationDispense.MedicationDispenseStatus.CANCELLED);
+                  break;
+              case COMPLETED:
+                  tgt.setValue(MedicationDispense.MedicationDispenseStatus.COMPLETED);
+                  break;
+              case DECLINED:
+                  tgt.setValue(MedicationDispense.MedicationDispenseStatus.DECLINED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(MedicationDispense.MedicationDispenseStatus.ENTEREDINERROR);
+                  break;
+              case INPROGRESS:
+                  tgt.setValue(MedicationDispense.MedicationDispenseStatus.INPROGRESS);
+                  break;
+              case NULL:
+                  tgt.setValue(MedicationDispense.MedicationDispenseStatus.NULL);
+                  break;
+              case ONHOLD:
+                  tgt.setValue(MedicationDispense.MedicationDispenseStatus.ONHOLD);
+                  break;
+              case PREPARATION:
+                  tgt.setValue(MedicationDispense.MedicationDispenseStatus.PREPARATION);
+                  break;
+              case STOPPED:
+                  tgt.setValue(MedicationDispense.MedicationDispenseStatus.STOPPED);
+                  break;
+              case UNKNOWN:
+                  tgt.setValue(MedicationDispense.MedicationDispenseStatus.UNKNOWN);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   private static org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes> convertMedicationStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus> src) {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new MedicationDispenseStatusCodesEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.CANCELLED);
-        break;
-      case COMPLETED:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.COMPLETED);
-        break;
-      case DECLINED:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.DECLINED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.ENTEREDINERROR);
-        break;
-      case INPROGRESS:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.INPROGRESS);
-        break;
-      case NULL:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.NULL);
-        break;
-      case ONHOLD:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.ONHOLD);
-        break;
-      case PREPARATION:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.PREPARATION);
-        break;
-      case STOPPED:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.STOPPED);
-        break;
-      case UNKNOWN:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.UNKNOWN);
-        break;
-    }
-    return tgt;
+      if (src == null)
+          return null;
+      org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new MedicationDispenseStatusCodesEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case CANCELLED:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.CANCELLED);
+                  break;
+              case COMPLETED:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.COMPLETED);
+                  break;
+              case DECLINED:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.DECLINED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.ENTEREDINERROR);
+                  break;
+              case INPROGRESS:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.INPROGRESS);
+                  break;
+              case NULL:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.NULL);
+                  break;
+              case ONHOLD:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.ONHOLD);
+                  break;
+              case PREPARATION:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.PREPARATION);
+                  break;
+              case STOPPED:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.STOPPED);
+                  break;
+              case UNKNOWN:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseStatusCodes.UNKNOWN);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r5.model.MedicationDispense.MedicationDispensePerformerComponent convertMedicationDispensePerformerComponent(org.hl7.fhir.r4.model.MedicationDispense.MedicationDispensePerformerComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationDispense.MedicationDispensePerformerComponent tgt = new org.hl7.fhir.r5.model.MedicationDispense.MedicationDispensePerformerComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasFunction())
       tgt.setFunction(CodeableConcept40_50.convertCodeableConcept(src.getFunction()));
     if (src.hasActor())
@@ -253,7 +263,7 @@ public class MedicationDispense40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MedicationDispense.MedicationDispensePerformerComponent tgt = new org.hl7.fhir.r4.model.MedicationDispense.MedicationDispensePerformerComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasFunction())
       tgt.setFunction(CodeableConcept40_50.convertCodeableConcept(src.getFunction()));
     if (src.hasActor())
@@ -265,7 +275,7 @@ public class MedicationDispense40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseSubstitutionComponent tgt = new org.hl7.fhir.r5.model.MedicationDispense.MedicationDispenseSubstitutionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasWasSubstituted())
       tgt.setWasSubstitutedElement(Boolean40_50.convertBoolean(src.getWasSubstitutedElement()));
     if (src.hasType())
@@ -281,7 +291,7 @@ public class MedicationDispense40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseSubstitutionComponent tgt = new org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseSubstitutionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasWasSubstituted())
       tgt.setWasSubstitutedElement(Boolean40_50.convertBoolean(src.getWasSubstitutedElement()));
     if (src.hasType())

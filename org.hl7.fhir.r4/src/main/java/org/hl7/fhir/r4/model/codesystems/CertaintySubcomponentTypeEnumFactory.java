@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class CertaintySubcomponentTypeEnumFactory implements EnumFactory<CertaintySubcomponentType> {
@@ -58,11 +54,13 @@ public class CertaintySubcomponentTypeEnumFactory implements EnumFactory<Certain
       return CertaintySubcomponentType.PLAUSIBLECONFOUNDING;
     if ("LargeEffect".equals(codeString))
       return CertaintySubcomponentType.LARGEEFFECT;
-    throw new IllegalArgumentException("Unknown CertaintySubcomponentType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CertaintySubcomponentType code '" + codeString + "'");
   }
 
   public String toCode(CertaintySubcomponentType code) {
-    if (code == CertaintySubcomponentType.RISKOFBIAS)
+       if (code == CertaintySubcomponentType.NULL)
+           return null;
+       if (code == CertaintySubcomponentType.RISKOFBIAS)
       return "RiskOfBias";
     if (code == CertaintySubcomponentType.INCONSISTENCY)
       return "Inconsistency";
@@ -79,10 +77,10 @@ public class CertaintySubcomponentTypeEnumFactory implements EnumFactory<Certain
     if (code == CertaintySubcomponentType.LARGEEFFECT)
       return "LargeEffect";
     return "?";
-  }
+   }
 
-    public String toSystem(CertaintySubcomponentType code) {
-      return code.getSystem();
-      }
+  public String toSystem(CertaintySubcomponentType code) {
+    return code.getSystem();
+  }
 
 }

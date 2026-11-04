@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3EncounterAdmissionSourceEnumFactory implements EnumFactory<V3EncounterAdmissionSource> {
@@ -48,21 +44,23 @@ public class V3EncounterAdmissionSourceEnumFactory implements EnumFactory<V3Enco
       return V3EncounterAdmissionSource.LD;
     if ("NB".equals(codeString))
       return V3EncounterAdmissionSource.NB;
-    throw new IllegalArgumentException("Unknown V3EncounterAdmissionSource code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3EncounterAdmissionSource code '" + codeString + "'");
   }
 
   public String toCode(V3EncounterAdmissionSource code) {
-    if (code == V3EncounterAdmissionSource.E)
+       if (code == V3EncounterAdmissionSource.NULL)
+           return null;
+       if (code == V3EncounterAdmissionSource.E)
       return "E";
     if (code == V3EncounterAdmissionSource.LD)
       return "LD";
     if (code == V3EncounterAdmissionSource.NB)
       return "NB";
     return "?";
-  }
+   }
 
-    public String toSystem(V3EncounterAdmissionSource code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3EncounterAdmissionSource code) {
+    return code.getSystem();
+  }
 
 }

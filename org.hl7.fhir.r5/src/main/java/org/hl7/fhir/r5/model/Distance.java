@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +45,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for Distance Type: A length - a value with a unit that is a physical distance.
+ * Distance Type: A length - a value with a unit that is a physical distance.
  */
 @DatatypeDef(name="Distance")
 public class Distance extends Quantity implements ICompositeType {
@@ -68,6 +68,10 @@ public class Distance extends Quantity implements ICompositeType {
         Distance dst = new Distance();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Distance) dst);
       }
 
       public void copyValues(Distance dst) {

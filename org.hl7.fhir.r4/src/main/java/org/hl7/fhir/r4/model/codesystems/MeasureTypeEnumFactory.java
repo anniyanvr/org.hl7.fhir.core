@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class MeasureTypeEnumFactory implements EnumFactory<MeasureType> {
@@ -52,11 +48,13 @@ public class MeasureTypeEnumFactory implements EnumFactory<MeasureType> {
       return MeasureType.PATIENTREPORTEDOUTCOME;
     if ("composite".equals(codeString))
       return MeasureType.COMPOSITE;
-    throw new IllegalArgumentException("Unknown MeasureType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MeasureType code '" + codeString + "'");
   }
 
   public String toCode(MeasureType code) {
-    if (code == MeasureType.PROCESS)
+       if (code == MeasureType.NULL)
+           return null;
+       if (code == MeasureType.PROCESS)
       return "process";
     if (code == MeasureType.OUTCOME)
       return "outcome";
@@ -67,10 +65,10 @@ public class MeasureTypeEnumFactory implements EnumFactory<MeasureType> {
     if (code == MeasureType.COMPOSITE)
       return "composite";
     return "?";
-  }
+   }
 
-    public String toSystem(MeasureType code) {
-      return code.getSystem();
-      }
+  public String toSystem(MeasureType code) {
+    return code.getSystem();
+  }
 
 }

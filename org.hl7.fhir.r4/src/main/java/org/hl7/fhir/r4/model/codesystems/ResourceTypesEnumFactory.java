@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -338,11 +334,13 @@ public class ResourceTypesEnumFactory implements EnumFactory<ResourceTypes> {
       return ResourceTypes.VERIFICATIONRESULT;
     if ("VisionPrescription".equals(codeString))
       return ResourceTypes.VISIONPRESCRIPTION;
-    throw new IllegalArgumentException("Unknown ResourceTypes code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ResourceTypes code '" + codeString + "'");
   }
 
   public String toCode(ResourceTypes code) {
-    if (code == ResourceTypes.ACCOUNT)
+       if (code == ResourceTypes.NULL)
+           return null;
+       if (code == ResourceTypes.ACCOUNT)
       return "Account";
     if (code == ResourceTypes.ACTIVITYDEFINITION)
       return "ActivityDefinition";
@@ -639,10 +637,10 @@ public class ResourceTypesEnumFactory implements EnumFactory<ResourceTypes> {
     if (code == ResourceTypes.VISIONPRESCRIPTION)
       return "VisionPrescription";
     return "?";
-  }
+   }
 
-    public String toSystem(ResourceTypes code) {
-      return code.getSystem();
-      }
+  public String toSystem(ResourceTypes code) {
+    return code.getSystem();
+  }
 
 }

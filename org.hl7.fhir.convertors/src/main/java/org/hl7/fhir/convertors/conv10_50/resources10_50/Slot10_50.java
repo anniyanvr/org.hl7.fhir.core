@@ -8,6 +8,8 @@ import org.hl7.fhir.convertors.conv10_50.datatypes10_50.primitivetypes10_50.Bool
 import org.hl7.fhir.convertors.conv10_50.datatypes10_50.primitivetypes10_50.Instant10_50;
 import org.hl7.fhir.convertors.conv10_50.datatypes10_50.primitivetypes10_50.String10_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.model.CodeableReference;
+import org.hl7.fhir.r5.model.Slot;
 
 public class Slot10_50 {
 
@@ -19,7 +21,7 @@ public class Slot10_50 {
     for (org.hl7.fhir.dstu2.model.Identifier t : src.getIdentifier())
       tgt.addIdentifier(Identifier10_50.convertIdentifier(t));
     if (src.hasType())
-      tgt.addServiceType(CodeableConcept10_50.convertCodeableConcept(src.getType()));
+      tgt.addServiceType(new CodeableReference().setConcept(CodeableConcept10_50.convertCodeableConcept(src.getType())));
     if (src.hasSchedule())
       tgt.setSchedule(Reference10_50.convertReference(src.getSchedule()));
     if (src.hasStartElement())
@@ -40,8 +42,9 @@ public class Slot10_50 {
     ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyDomainResource(src, tgt);
     for (org.hl7.fhir.r5.model.Identifier t : src.getIdentifier())
       tgt.addIdentifier(Identifier10_50.convertIdentifier(t));
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getServiceType())
-      tgt.setType(CodeableConcept10_50.convertCodeableConcept(t));
+    for (CodeableReference t : src.getServiceType())
+      if (t.hasConcept())
+        tgt.setType(CodeableConcept10_50.convertCodeableConcept(t.getConcept()));
     if (src.hasSchedule())
       tgt.setSchedule(Reference10_50.convertReference(src.getSchedule()));
     if (src.hasStartElement())
@@ -60,26 +63,26 @@ public class Slot10_50 {
     org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Slot.SlotStatus> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Slot.SlotStatusEnumFactory());
     ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
     if (src.getValue() == null) {
-      tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.NULL);
-    } else {
-      switch (src.getValue()) {
+    tgt.setValue(null);
+} else {
+      switch(src.getValue()) {
         case BUSY:
-          tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.BUSY);
-          break;
-        case FREE:
-          tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.FREE);
-          break;
-        case BUSYUNAVAILABLE:
-          tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.BUSYUNAVAILABLE);
-          break;
-        case BUSYTENTATIVE:
-          tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.BUSYTENTATIVE);
-          break;
-        default:
-          tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.NULL);
-          break;
-      }
-    }
+                    tgt.setValue(Slot.SlotStatus.BUSY);
+                    break;
+                case FREE:
+                    tgt.setValue(Slot.SlotStatus.FREE);
+                    break;
+                case BUSYUNAVAILABLE:
+                    tgt.setValue(Slot.SlotStatus.BUSYUNAVAILABLE);
+                    break;
+                case BUSYTENTATIVE:
+                    tgt.setValue(Slot.SlotStatus.BUSYTENTATIVE);
+                    break;
+                default:
+                    tgt.setValue(Slot.SlotStatus.NULL);
+                    break;
+       }
+}
     return tgt;
   }
 
@@ -88,26 +91,26 @@ public class Slot10_50 {
     org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.Slot.SlotStatus> tgt = new org.hl7.fhir.dstu2.model.Enumeration<>(new org.hl7.fhir.dstu2.model.Slot.SlotStatusEnumFactory());
     ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
     if (src.getValue() == null) {
-      tgt.setValue(org.hl7.fhir.dstu2.model.Slot.SlotStatus.NULL);
-    } else {
-      switch (src.getValue()) {
+    tgt.setValue(null);
+} else {
+      switch(src.getValue()) {
         case BUSY:
-          tgt.setValue(org.hl7.fhir.dstu2.model.Slot.SlotStatus.BUSY);
-          break;
-        case FREE:
-          tgt.setValue(org.hl7.fhir.dstu2.model.Slot.SlotStatus.FREE);
-          break;
-        case BUSYUNAVAILABLE:
-          tgt.setValue(org.hl7.fhir.dstu2.model.Slot.SlotStatus.BUSYUNAVAILABLE);
-          break;
-        case BUSYTENTATIVE:
-          tgt.setValue(org.hl7.fhir.dstu2.model.Slot.SlotStatus.BUSYTENTATIVE);
-          break;
-        default:
-          tgt.setValue(org.hl7.fhir.dstu2.model.Slot.SlotStatus.NULL);
-          break;
-      }
-    }
+                    tgt.setValue(org.hl7.fhir.dstu2.model.Slot.SlotStatus.BUSY);
+                    break;
+                case FREE:
+                    tgt.setValue(org.hl7.fhir.dstu2.model.Slot.SlotStatus.FREE);
+                    break;
+                case BUSYUNAVAILABLE:
+                    tgt.setValue(org.hl7.fhir.dstu2.model.Slot.SlotStatus.BUSYUNAVAILABLE);
+                    break;
+                case BUSYTENTATIVE:
+                    tgt.setValue(org.hl7.fhir.dstu2.model.Slot.SlotStatus.BUSYTENTATIVE);
+                    break;
+                default:
+                    tgt.setValue(org.hl7.fhir.dstu2.model.Slot.SlotStatus.NULL);
+                    break;
+       }
+}
     return tgt;
   }
 }

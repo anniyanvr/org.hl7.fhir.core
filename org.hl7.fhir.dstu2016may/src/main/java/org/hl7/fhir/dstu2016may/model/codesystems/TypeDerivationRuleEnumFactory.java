@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class TypeDerivationRuleEnumFactory implements EnumFactory<TypeDerivationRule> {
@@ -46,19 +42,21 @@ public class TypeDerivationRuleEnumFactory implements EnumFactory<TypeDerivation
       return TypeDerivationRule.SPECIALIZATION;
     if ("constraint".equals(codeString))
       return TypeDerivationRule.CONSTRAINT;
-    throw new IllegalArgumentException("Unknown TypeDerivationRule code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown TypeDerivationRule code '" + codeString + "'");
   }
 
   public String toCode(TypeDerivationRule code) {
-    if (code == TypeDerivationRule.SPECIALIZATION)
+       if (code == TypeDerivationRule.NULL)
+           return null;
+       if (code == TypeDerivationRule.SPECIALIZATION)
       return "specialization";
     if (code == TypeDerivationRule.CONSTRAINT)
       return "constraint";
     return "?";
-  }
+   }
 
-    public String toSystem(TypeDerivationRule code) {
-      return code.getSystem();
-      }
+  public String toSystem(TypeDerivationRule code) {
+    return code.getSystem();
+  }
 
 }

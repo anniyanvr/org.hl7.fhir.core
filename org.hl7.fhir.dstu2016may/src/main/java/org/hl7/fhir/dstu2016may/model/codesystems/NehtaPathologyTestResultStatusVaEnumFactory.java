@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class NehtaPathologyTestResultStatusVaEnumFactory implements EnumFactory<NehtaPathologyTestResultStatusVa> {
@@ -52,11 +48,13 @@ public class NehtaPathologyTestResultStatusVaEnumFactory implements EnumFactory<
       return NehtaPathologyTestResultStatusVa._4;
     if ("5".equals(codeString))
       return NehtaPathologyTestResultStatusVa._5;
-    throw new IllegalArgumentException("Unknown NehtaPathologyTestResultStatusVa code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown NehtaPathologyTestResultStatusVa code '" + codeString + "'");
   }
 
   public String toCode(NehtaPathologyTestResultStatusVa code) {
-    if (code == NehtaPathologyTestResultStatusVa._1)
+       if (code == NehtaPathologyTestResultStatusVa.NULL)
+           return null;
+       if (code == NehtaPathologyTestResultStatusVa._1)
       return "1";
     if (code == NehtaPathologyTestResultStatusVa._2)
       return "2";
@@ -67,10 +65,10 @@ public class NehtaPathologyTestResultStatusVaEnumFactory implements EnumFactory<
     if (code == NehtaPathologyTestResultStatusVa._5)
       return "5";
     return "?";
-  }
+   }
 
-    public String toSystem(NehtaPathologyTestResultStatusVa code) {
-      return code.getSystem();
-      }
+  public String toSystem(NehtaPathologyTestResultStatusVa code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class EncounterTypeEnumFactory implements EnumFactory<EncounterType> {
@@ -50,11 +46,13 @@ public class EncounterTypeEnumFactory implements EnumFactory<EncounterType> {
       return EncounterType.CCS60;
     if ("OKI".equals(codeString))
       return EncounterType.OKI;
-    throw new IllegalArgumentException("Unknown EncounterType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown EncounterType code '" + codeString + "'");
   }
 
   public String toCode(EncounterType code) {
-    if (code == EncounterType.ADMS)
+       if (code == EncounterType.NULL)
+           return null;
+       if (code == EncounterType.ADMS)
       return "ADMS";
     if (code == EncounterType.BD_BMCLIN)
       return "BD/BM-clin";
@@ -63,10 +61,10 @@ public class EncounterTypeEnumFactory implements EnumFactory<EncounterType> {
     if (code == EncounterType.OKI)
       return "OKI";
     return "?";
-  }
+   }
 
-    public String toSystem(EncounterType code) {
-      return code.getSystem();
-      }
+  public String toSystem(EncounterType code) {
+    return code.getSystem();
+  }
 
 }

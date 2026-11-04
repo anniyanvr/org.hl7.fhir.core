@@ -156,12 +156,12 @@ public class CareTeam extends DomainResource {
           return CareTeamStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown CareTeamStatus code '"+codeString+"'");
         }
-        public Enumeration<CareTeamStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<CareTeamStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<CareTeamStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("proposed".equals(codeString))
@@ -177,7 +177,9 @@ public class CareTeam extends DomainResource {
         throw new FHIRException("Unknown CareTeamStatus code '"+codeString+"'");
         }
     public String toCode(CareTeamStatus code) {
-      if (code == CareTeamStatus.PROPOSED)
+       if (code == CareTeamStatus.NULL)
+           return null;
+       if (code == CareTeamStatus.PROPOSED)
         return "proposed";
       if (code == CareTeamStatus.ACTIVE)
         return "active";
@@ -188,7 +190,7 @@ public class CareTeam extends DomainResource {
       if (code == CareTeamStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(CareTeamStatus code) {
       return code.getSystem();
       }
@@ -1113,28 +1115,6 @@ public class CareTeam extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Condition> getReasonReferenceTarget() { 
-      if (this.reasonReferenceTarget == null)
-        this.reasonReferenceTarget = new ArrayList<Condition>();
-      return this.reasonReferenceTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Condition addReasonReferenceTarget() { 
-      Condition r = new Condition();
-      if (this.reasonReferenceTarget == null)
-        this.reasonReferenceTarget = new ArrayList<Condition>();
-      this.reasonReferenceTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #managingOrganization} (The organization responsible for the care team.)
      */
     public List<Reference> getManagingOrganization() { 
@@ -1185,28 +1165,6 @@ public class CareTeam extends DomainResource {
         addManagingOrganization();
       }
       return getManagingOrganization().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Organization> getManagingOrganizationTarget() { 
-      if (this.managingOrganizationTarget == null)
-        this.managingOrganizationTarget = new ArrayList<Organization>();
-      return this.managingOrganizationTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Organization addManagingOrganizationTarget() { 
-      Organization r = new Organization();
-      if (this.managingOrganizationTarget == null)
-        this.managingOrganizationTarget = new ArrayList<Organization>();
-      this.managingOrganizationTarget.add(r);
-      return r;
     }
 
     /**
@@ -1441,13 +1399,13 @@ public class CareTeam extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CareTeam.status");
+          throw new FHIRException("Cannot call addChild on a singleton property CareTeam.status");
         }
         else if (name.equals("category")) {
           return addCategory();
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CareTeam.name");
+          throw new FHIRException("Cannot call addChild on a singleton property CareTeam.name");
         }
         else if (name.equals("subject")) {
           this.subject = new Reference();

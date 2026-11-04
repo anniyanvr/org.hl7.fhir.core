@@ -4,55 +4,43 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.exceptions.DefinitionException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
-import org.hl7.fhir.r5.context.IWorkerContext.ValidationResult;
-import org.hl7.fhir.r5.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.r5.model.CanonicalResource;
-import org.hl7.fhir.r5.model.CodeSystem;
+import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
+import org.hl7.fhir.r5.model.*;
 import org.hl7.fhir.r5.model.CodeSystem.ConceptDefinitionComponent;
 import org.hl7.fhir.r5.model.CodeSystem.PropertyComponent;
-import org.hl7.fhir.r5.model.ConceptMap;
 import org.hl7.fhir.r5.model.ConceptMap.ConceptMapGroupComponent;
 import org.hl7.fhir.r5.model.ConceptMap.SourceElementComponent;
 import org.hl7.fhir.r5.model.ConceptMap.TargetElementComponent;
-import org.hl7.fhir.r5.model.DomainResource;
-import org.hl7.fhir.r5.model.Questionnaire;
-import org.hl7.fhir.r5.model.Resource;
-import org.hl7.fhir.r5.model.StructureDefinition;
-import org.hl7.fhir.r5.model.ValueSet;
 import org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent;
-import org.hl7.fhir.r5.renderers.utils.BaseWrappers.ResourceWrapper;
 import org.hl7.fhir.r5.renderers.utils.RenderingContext;
-import org.hl7.fhir.r5.renderers.utils.Resolver.ResourceContext;
 import org.hl7.fhir.r5.terminologies.CodeSystemUtilities;
-import org.hl7.fhir.r5.utils.ToolingExtensions;
+import org.hl7.fhir.r5.terminologies.utilities.ValidationResult;
+
+import org.hl7.fhir.utilities.UserDataNames;
+import org.hl7.fhir.utilities.CanonicalPair;
+
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.i18n.RenderingI18nContext;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 
+
+@Slf4j
 public abstract class TerminologyRenderer extends ResourceRenderer {
   
+
+
   public TerminologyRenderer(RenderingContext context) {
     super(context);
   }
 
-  public TerminologyRenderer(RenderingContext context, ResourceContext rcontext) {
-    super(context, rcontext);
-  }
-
   public String display(Resource r) throws UnsupportedEncodingException, IOException {
     return ((CanonicalResource) r).present();
-  }
-
-  public String display(ResourceWrapper r) throws UnsupportedEncodingException, IOException {
-    if (r.has("title")) {
-      return r.children("title").get(0).getBase().primitiveValue();
-    }
-    if (r.has("name")) {
-      return r.children("name").get(0).getBase().primitiveValue();
-    }
-    return "??";
   }
 
   protected class TargetElementComponentWrapper {
@@ -110,15 +98,17 @@ public abstract class TerminologyRenderer extends ResourceRenderer {
   }
 
 
-  protected void addMapHeaders(XhtmlNode tr, List<UsedConceptMap> maps) throws FHIRFormatError, DefinitionException, IOException {
+  protected XhtmlNode addMapHeaders(XhtmlNode tr, List<UsedConceptMap> maps) throws FHIRFormatError, DefinitionException, IOException {
     for (UsedConceptMap m : maps) {
       XhtmlNode td = tr.td();
       XhtmlNode b = td.b();
-      XhtmlNode a = b.ah(getContext().getSpecificationLink()+m.getLink());
+      String link = m.getLink();
+      XhtmlNode a = b.ah(context.prefixLocalHref(link));
       a.addText(m.getDetails().getName());
       if (m.getDetails().isDoDescription() && m.getMap().hasDescription())
         addMarkdown(td, m.getMap().getDescription());
     }
+    return tr;
   }
 
   protected String getHeader() {
@@ -157,17 +147,17 @@ public abstract class TerminologyRenderer extends ResourceRenderer {
     }
   }
 
-  protected <T extends Resource> void addCsRef(ConceptSetComponent inc, XhtmlNode li, T cs) {
+  protected void addCsRef(ConceptSetComponent inc, XhtmlNode li, CodeSystem cs) {
     String ref = null;
     boolean addHtml = true;
     if (cs != null) {
-      ref = (String) cs.getUserData("external.url");
+      ref = (String) cs.getUserData(UserDataNames.render_external_link);
       if (Utilities.noString(ref))
-        ref = (String) cs.getUserData("filename");
+        ref = (String) cs.getUserData(UserDataNames.render_filename);
       else
         addHtml = false;
       if (Utilities.noString(ref)) {
-        ref = (String) cs.getUserData("path");
+        ref = (String) cs.getWebPath();
         if (ref != null) {
           addHtml = false;
         }
@@ -175,19 +165,31 @@ public abstract class TerminologyRenderer extends ResourceRenderer {
     }
     String spec = getSpecialReference(inc.getSystem());
     if (spec != null) {
-      XhtmlNode a = li.ah(spec);
+      XhtmlNode a = li.ah(context.prefixLocalHref(spec));
       a.code(inc.getSystem());
     } else if (cs != null && ref != null) {
       if (addHtml && !ref.contains(".html"))
         ref = ref + ".html";
       ref = context.fixReference(ref);
-      XhtmlNode a = li.ah(ref.replace("\\", "/"));
+      XhtmlNode a = li.ah(context.prefixLocalHref(ref.replace("\\", "/")));
       a.code(inc.getSystem());
     } else {
       li.code(inc.getSystem());
     }
-  }
 
+    XhtmlNode span = li.span();
+    span.addText(" "+ context.formatPhrase(RenderingI18nContext.GENERAL_VER_LOW) + " ");
+
+    if (cs != null && cs.getContent() == Enumerations.CodeSystemContentMode.NOTPRESENT) {
+      cs = null;
+    }
+    String statedVersion = inc.getVersion();
+    IWorkerContext.VersionResolutionRules resolutionMethod = ExtensionUtilities.getVersionResolutionRules(inc);
+    String actualVersion = cs == null ? null : cs.getVersion();
+    boolean fromPackages = cs == null ? false : cs.hasSourcePackage();
+    boolean fromThisPackage = cs == null ? false : !Utilities.isAbsoluteUrlLinkable(cs.getWebPath());
+    renderVersionReference(context, cs, statedVersion, resolutionMethod, actualVersion, fromPackages, span, fromThisPackage, context.formatPhrase(RenderingI18nContext.GENERAL_CODESYSTEM), RenderingI18nContext.CS_VERSION_NOTHING_TEXT);
+  }
 
   private String getSpecialReference(String system) {
     if ("http://snomed.info/sct".equals(system))
@@ -201,45 +203,64 @@ public abstract class TerminologyRenderer extends ResourceRenderer {
     return null;
   }
 
-  protected XhtmlNode addTableHeaderRowStandard(XhtmlNode t, boolean hasHierarchy, boolean hasDisplay, boolean definitions, boolean comments, boolean version, boolean deprecated, List<PropertyComponent> properties, List<String> langs, boolean doLangs) {
+  protected XhtmlNode addTableHeaderRowStandard(XhtmlNode t, boolean hasHierarchy, boolean hasDisplay, boolean definitions, boolean comments, boolean version, boolean deprecated, List<PropertyComponent> properties, List<String> langs, Map<String, String> designations, boolean doDesignations) {
+    return addTableHeaderRowStandard(t, hasHierarchy, hasDisplay, definitions, comments, false, version, deprecated, properties, langs, designations, doDesignations);
+  }
+
+  protected XhtmlNode addTableHeaderRowStandard(XhtmlNode t, boolean hasHierarchy, boolean hasDisplay, boolean definitions, boolean comments, boolean status, boolean version, boolean deprecated, List<PropertyComponent> properties, List<String> langs, Map<String, String> designations, boolean doDesignations) {
     XhtmlNode tr = t.tr();
     if (hasHierarchy) {
-      tr.td().b().tx("Lvl");
+      tr.td().b().tx(context.formatPhrase(RenderingI18nContext.TERMINOLOGY_LVL));
     }
-    tr.td().attribute("style", "white-space:nowrap").b().tx(getContext().getWorker().translator().translate("xhtml-gen-cs", "Code", getContext().getLang()));
+    tr.td().attribute("style", "white-space:nowrap").b().tx(formatPhrase(RenderingContext.GENERAL_CODE));
     if (hasDisplay) {
-      tr.td().b().tx(getContext().getWorker().translator().translate("xhtml-gen-cs", "Display", getContext().getLang()));
+      tr.td().b().tx(formatPhrase(RenderingContext.TX_DISPLAY));
     }
     if (definitions) {
-      tr.td().b().tx(getContext().getWorker().translator().translate("xhtml-gen-cs", "Definition", getContext().getLang()));
+      tr.td().b().tx(formatPhrase(RenderingContext.GENERAL_DEFINITION));
     }
     if (deprecated) {
-      tr.td().b().tx(getContext().getWorker().translator().translate("xhtml-gen-cs", "Deprecated", getContext().getLang()));
+      tr.td().b().tx(formatPhrase(RenderingContext.CODESYSTEM_DEPRECATED));
     }
     if (comments) {
-      tr.td().b().tx(getContext().getWorker().translator().translate("xhtml-gen-cs", "Comments", getContext().getLang()));
+      tr.td().b().tx(formatPhrase(RenderingContext.GENERAL_COMMENTS));
+    }
+    if (status) {
+      tr.td().b().tx(formatPhrase(RenderingI18nContext.GENERAL_STATUS));
     }
     if (version) {
-      tr.td().b().tx(getContext().getWorker().translator().translate("xhtml-gen-cs", "Version", getContext().getLang()));
+      tr.td().b().tx(formatPhrase(RenderingContext.GENERAL_VER));
     }
     if (properties != null) {
       for (PropertyComponent pc : properties) {
-        String display = ToolingExtensions.getPresentation(pc, pc.getCodeElement());
-        if (display == null || display.equals(pc.getCode()) && pc.hasUri()) {
-          display = getDisplayForProperty(pc.getUri());
-          if (display == null) {
-            display = pc.getCode();
-          }
-        }
-        tr.td().b().tx(getContext().getWorker().translator().translate("xhtml-gen-cs", display, getContext().getLang()));      
+        String display = getDisplayForProperty(pc);
+        tr.td().b().tx(display);      
       }
     }
-    if (doLangs) {
-      for (String lang : langs) {
-        tr.td().b().addText(describeLang(lang));
+    if (doDesignations) {
+      if (designations != null) {
+        for (String url : designations.keySet()) {
+          tr.td().b().addText(designations.get(url));
+        }
+      }
+      if (langs != null) {
+        for (String lang : langs) {
+          tr.td().b().addText(describeLang(lang));
+        }
       }
     }
     return tr;
+  }
+
+  protected String getDisplayForProperty(PropertyComponent pc) {
+    String display = ExtensionUtilities.getPresentation(pc, pc.getCodeElement());
+    if (display == null || display.equals(pc.getCode()) && pc.hasUri()) {
+      display = getDisplayForProperty(pc.getUri());
+      if (display == null) {
+        display = pc.getCode();
+      }
+    }
+    return display;
   }
 
 
@@ -252,7 +273,7 @@ public abstract class TerminologyRenderer extends ResourceRenderer {
       code = uri.substring(uri.indexOf("#")+1);
       uri = uri.substring(0, uri.indexOf("#"));
     }
-    CodeSystem cs = getContext().getWorker().fetchCodeSystem(uri);
+    CodeSystem cs = getContext().getWorker().fetchCodeSystem(uri, IWorkerContext.VersionResolutionRules.defaultRule());
     if (cs == null) {
       return null;
     }
@@ -261,59 +282,69 @@ public abstract class TerminologyRenderer extends ResourceRenderer {
   }
 
 
-  protected void AddVsRef(String value, XhtmlNode li) {
+  protected void AddVsRef(String value, Base ctxt, XhtmlNode li, Resource source) {
     Resource res = null;
-    if (rcontext != null) {
-      BundleEntryComponent be = rcontext.resolve(value);
-      if (be != null) {
-        res = be.getResource(); 
-      }
-    }
     if (res != null && !(res instanceof CanonicalResource)) {
       li.addText(value);
       return;      
-    }      
+    }
+    IWorkerContext.VersionResolutionRules rules = ExtensionUtilities.getVersionResolutionRulesBase(ctxt);
     CanonicalResource vs = (CanonicalResource) res;
     if (vs == null)
-      vs = getContext().getWorker().fetchResource(ValueSet.class, value);
+      vs = getContext().getWorker().findTxResource(ValueSet.class, value, rules, null, source);
     if (vs == null)
-      vs = getContext().getWorker().fetchResource(StructureDefinition.class, value);
-    //    if (vs == null)
-    //      vs = context.getWorker().fetchResource(DataElement.class, value);
+      vs = getContext().getWorker().fetchResource(StructureDefinition.class, value, rules, null, source);
     if (vs == null)
-      vs = getContext().getWorker().fetchResource(Questionnaire.class, value);
+      vs = getContext().getWorker().fetchResource(Questionnaire.class, value, rules, null, source);
     if (vs != null) {
-      String ref = (String) vs.getUserData("path");
+      String ref = (String) vs.getWebPath();
 
-      ref = context.fixReference(ref);
-      XhtmlNode a = li.ah(ref == null ? "?ngen-11?" : ref.replace("\\", "/"));
-      a.addText(value);
-    } else {
-      CodeSystem cs = getContext().getWorker().fetchCodeSystem(value);
-      if (cs != null) {
-        String ref = (String) cs.getUserData("path");
+      if (ref == null) {
+        li.tx(vs.present());
+      } else {
         ref = context.fixReference(ref);
-        XhtmlNode a = li.ah(ref == null ? "?ngen-12?" : ref.replace("\\", "/"));
+        XhtmlNode a = li.ah(context.prefixLocalHref(ref.replace("\\", "/")));
+        a.addText(vs.present());
+      }
+    } else {
+      CodeSystem cs = getContext().getWorker().fetchCodeSystem(value, rules);
+      if (cs != null) {
+        String ref = (String) cs.getWebPath();
+        ref = context.fixReference(ref);
+        XhtmlNode a = li.ah(context.prefixLocalHref(ref == null ? "?ngen-12?" : ref.replace("\\", "/")));
         a.addText(value);
       } else if (value.equals("http://snomed.info/sct") || value.equals("http://snomed.info/id")) {
-        XhtmlNode a = li.ah(value);
-        a.tx("SNOMED-CT");
+        XhtmlNode a = li.ah(context.prefixLocalHref(value));
+        a.tx(context.formatPhrase(RenderingI18nContext.STRUC_DEF_SNOMED));
       }
       else {
-        if (value.startsWith("http://hl7.org") && !Utilities.existsInList(value, "http://hl7.org/fhir/sid/icd-10-us"))
-          System.out.println("Unable to resolve value set "+value);
+        if (value.startsWith("http://hl7.org") && !Utilities.existsInList(value, "http://hl7.org/fhir/sid/icd-10-us")) {
+          log.debug("Unable to resolve value set "+value);
+        }
         li.addText(value);
       }
     }
   }
 
-
-
+  protected String getDisplayForConcept(String canonical, String value) {
+    var split = CanonicalPair.of(canonical);
+    return getDisplayForConcept(split.getUrl(), split.getVersion(), value);
+  }
+  
   protected String getDisplayForConcept(String system, String version, String value) {
     if (value == null || system == null)
       return null;
-    ValidationResult cl = getContext().getWorker().validateCode(getContext().getTerminologyServiceOptions().setVersionFlexible(true), system, version, value, null);
+    ValidationResult cl = getContext().getWorker().validateCode(getContext().getTerminologyServiceOptions().withVersionFlexible(true), system, version, value, null);
     return cl == null ? null : cl.getDisplay();
   }
 
+
+  protected void clipboard(XhtmlNode x, String img, String title, String source) {
+    XhtmlNode span = x.span("cursor: pointer", formatPhrase(RenderingContext.TERM_REND_COPY, title));
+    span.attribute("onClick", "navigator.clipboard.writeText('"+Utilities.escapeJson(source)+"');");
+    span.img(img, "btn").setAttribute("width", "24px").setAttribute("height", "16px");
+  }
+  
+
+  
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3LocalMarkupIgnoreEnumFactory implements EnumFactory<V3LocalMarkupIgnore> {
@@ -46,19 +42,21 @@ public class V3LocalMarkupIgnoreEnumFactory implements EnumFactory<V3LocalMarkup
       return V3LocalMarkupIgnore.ALL;
     if ("markup".equals(codeString))
       return V3LocalMarkupIgnore.MARKUP;
-    throw new IllegalArgumentException("Unknown V3LocalMarkupIgnore code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3LocalMarkupIgnore code '" + codeString + "'");
   }
 
   public String toCode(V3LocalMarkupIgnore code) {
-    if (code == V3LocalMarkupIgnore.ALL)
+       if (code == V3LocalMarkupIgnore.NULL)
+           return null;
+       if (code == V3LocalMarkupIgnore.ALL)
       return "all";
     if (code == V3LocalMarkupIgnore.MARKUP)
       return "markup";
     return "?";
-  }
+   }
 
-    public String toSystem(V3LocalMarkupIgnore code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3LocalMarkupIgnore code) {
+    return code.getSystem();
+  }
 
 }

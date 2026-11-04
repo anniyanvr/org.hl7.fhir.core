@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class NutritionOrderStatusEnumFactory implements EnumFactory<NutritionOrderStatus> {
@@ -60,11 +56,13 @@ public class NutritionOrderStatusEnumFactory implements EnumFactory<NutritionOrd
       return NutritionOrderStatus.CANCELLED;
     if ("entered-in-error".equals(codeString))
       return NutritionOrderStatus.ENTEREDINERROR;
-    throw new IllegalArgumentException("Unknown NutritionOrderStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown NutritionOrderStatus code '" + codeString + "'");
   }
 
   public String toCode(NutritionOrderStatus code) {
-    if (code == NutritionOrderStatus.PROPOSED)
+       if (code == NutritionOrderStatus.NULL)
+           return null;
+       if (code == NutritionOrderStatus.PROPOSED)
       return "proposed";
     if (code == NutritionOrderStatus.DRAFT)
       return "draft";
@@ -83,10 +81,10 @@ public class NutritionOrderStatusEnumFactory implements EnumFactory<NutritionOrd
     if (code == NutritionOrderStatus.ENTEREDINERROR)
       return "entered-in-error";
     return "?";
-  }
+   }
 
-    public String toSystem(NutritionOrderStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(NutritionOrderStatus code) {
+    return code.getSystem();
+  }
 
 }

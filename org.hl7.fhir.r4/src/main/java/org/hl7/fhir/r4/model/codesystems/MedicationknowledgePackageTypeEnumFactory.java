@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -86,11 +82,13 @@ public class MedicationknowledgePackageTypeEnumFactory implements EnumFactory<Me
       return MedicationknowledgePackageType.TUBE;
     if ("vial".equals(codeString))
       return MedicationknowledgePackageType.VIAL;
-    throw new IllegalArgumentException("Unknown MedicationknowledgePackageType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MedicationknowledgePackageType code '" + codeString + "'");
   }
 
   public String toCode(MedicationknowledgePackageType code) {
-    if (code == MedicationknowledgePackageType.AMP)
+       if (code == MedicationknowledgePackageType.NULL)
+           return null;
+       if (code == MedicationknowledgePackageType.AMP)
       return "amp";
     if (code == MedicationknowledgePackageType.BAG)
       return "bag";
@@ -135,10 +133,10 @@ public class MedicationknowledgePackageTypeEnumFactory implements EnumFactory<Me
     if (code == MedicationknowledgePackageType.VIAL)
       return "vial";
     return "?";
-  }
+   }
 
-    public String toSystem(MedicationknowledgePackageType code) {
-      return code.getSystem();
-      }
+  public String toSystem(MedicationknowledgePackageType code) {
+    return code.getSystem();
+  }
 
 }

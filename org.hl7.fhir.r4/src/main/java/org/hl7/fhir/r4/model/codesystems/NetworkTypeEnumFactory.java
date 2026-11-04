@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class NetworkTypeEnumFactory implements EnumFactory<NetworkType> {
@@ -52,11 +48,13 @@ public class NetworkTypeEnumFactory implements EnumFactory<NetworkType> {
       return NetworkType._4;
     if ("5".equals(codeString))
       return NetworkType._5;
-    throw new IllegalArgumentException("Unknown NetworkType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown NetworkType code '" + codeString + "'");
   }
 
   public String toCode(NetworkType code) {
-    if (code == NetworkType._1)
+       if (code == NetworkType.NULL)
+           return null;
+       if (code == NetworkType._1)
       return "1";
     if (code == NetworkType._2)
       return "2";
@@ -67,10 +65,10 @@ public class NetworkTypeEnumFactory implements EnumFactory<NetworkType> {
     if (code == NetworkType._5)
       return "5";
     return "?";
-  }
+   }
 
-    public String toSystem(NetworkType code) {
-      return code.getSystem();
-      }
+  public String toSystem(NetworkType code) {
+    return code.getSystem();
+  }
 
 }

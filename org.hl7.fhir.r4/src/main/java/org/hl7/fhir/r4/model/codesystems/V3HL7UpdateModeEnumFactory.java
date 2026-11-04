@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -74,11 +70,13 @@ public class V3HL7UpdateModeEnumFactory implements EnumFactory<V3HL7UpdateMode> 
       return V3HL7UpdateMode.I;
     if ("V".equals(codeString))
       return V3HL7UpdateMode.V;
-    throw new IllegalArgumentException("Unknown V3HL7UpdateMode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3HL7UpdateMode code '" + codeString + "'");
   }
 
   public String toCode(V3HL7UpdateMode code) {
-    if (code == V3HL7UpdateMode.A)
+       if (code == V3HL7UpdateMode.NULL)
+           return null;
+       if (code == V3HL7UpdateMode.A)
       return "A";
     if (code == V3HL7UpdateMode.AR)
       return "AR";
@@ -111,10 +109,10 @@ public class V3HL7UpdateModeEnumFactory implements EnumFactory<V3HL7UpdateMode> 
     if (code == V3HL7UpdateMode.V)
       return "V";
     return "?";
-  }
+   }
 
-    public String toSystem(V3HL7UpdateMode code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3HL7UpdateMode code) {
+    return code.getSystem();
+  }
 
 }

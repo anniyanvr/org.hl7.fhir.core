@@ -218,12 +218,12 @@ public class DiagnosticReport extends DomainResource {
           return DiagnosticReportStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown DiagnosticReportStatus code '"+codeString+"'");
         }
-        public Enumeration<DiagnosticReportStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<DiagnosticReportStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DiagnosticReportStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("registered".equals(codeString))
@@ -249,7 +249,9 @@ public class DiagnosticReport extends DomainResource {
         throw new FHIRException("Unknown DiagnosticReportStatus code '"+codeString+"'");
         }
     public String toCode(DiagnosticReportStatus code) {
-      if (code == DiagnosticReportStatus.REGISTERED)
+       if (code == DiagnosticReportStatus.NULL)
+           return null;
+       if (code == DiagnosticReportStatus.REGISTERED)
         return "registered";
       if (code == DiagnosticReportStatus.PARTIAL)
         return "partial";
@@ -270,7 +272,7 @@ public class DiagnosticReport extends DomainResource {
       if (code == DiagnosticReportStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(DiagnosticReportStatus code) {
       return code.getSystem();
       }
@@ -707,7 +709,7 @@ public class DiagnosticReport extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("comment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DiagnosticReport.comment");
+          throw new FHIRException("Cannot call addChild on a singleton property DiagnosticReport.comment");
         }
         else if (name.equals("link")) {
           this.link = new Reference();
@@ -1034,16 +1036,6 @@ public class DiagnosticReport extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<Resource>();
-      return this.basedOnTarget;
-    }
-
-    /**
      * @return {@link #status} (The status of the diagnostic report as a whole.). This is the underlying object with id, value and extensions. The accessor "getStatus" gives direct access to the value
      */
     public Enumeration<DiagnosticReportStatus> getStatusElement() { 
@@ -1232,8 +1224,8 @@ public class DiagnosticReport extends DomainResource {
       return (DateTimeType) this.effective;
     }
 
-    public boolean hasEffectiveDateTimeType() { 
-      return this != null && this.effective instanceof DateTimeType;
+    public boolean hasEffectiveDateTimeType() {
+        return this.effective instanceof DateTimeType;
     }
 
     /**
@@ -1247,8 +1239,8 @@ public class DiagnosticReport extends DomainResource {
       return (Period) this.effective;
     }
 
-    public boolean hasEffectivePeriod() { 
-      return this != null && this.effective instanceof Period;
+    public boolean hasEffectivePeriod() {
+        return this.effective instanceof Period;
     }
 
     public boolean hasEffective() { 
@@ -1421,28 +1413,6 @@ public class DiagnosticReport extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Specimen> getSpecimenTarget() { 
-      if (this.specimenTarget == null)
-        this.specimenTarget = new ArrayList<Specimen>();
-      return this.specimenTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Specimen addSpecimenTarget() { 
-      Specimen r = new Specimen();
-      if (this.specimenTarget == null)
-        this.specimenTarget = new ArrayList<Specimen>();
-      this.specimenTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #result} (Observations that are part of this diagnostic report. Observations can be simple name/value pairs (e.g. "atomic" results), or they can be grouping observations that include references to other members of the group (e.g. "panels").)
      */
     public List<Reference> getResult() { 
@@ -1496,28 +1466,6 @@ public class DiagnosticReport extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Observation> getResultTarget() { 
-      if (this.resultTarget == null)
-        this.resultTarget = new ArrayList<Observation>();
-      return this.resultTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Observation addResultTarget() { 
-      Observation r = new Observation();
-      if (this.resultTarget == null)
-        this.resultTarget = new ArrayList<Observation>();
-      this.resultTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #imagingStudy} (One or more links to full details of any imaging performed during the diagnostic investigation. Typically, this is imaging performed by DICOM enabled modalities, but this is not required. A fully enabled PACS viewer can use this information to provide views of the source images.)
      */
     public List<Reference> getImagingStudy() { 
@@ -1568,16 +1516,6 @@ public class DiagnosticReport extends DomainResource {
         addImagingStudy();
       }
       return getImagingStudy().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getImagingStudyTarget() { 
-      if (this.imagingStudyTarget == null)
-        this.imagingStudyTarget = new ArrayList<Resource>();
-      return this.imagingStudyTarget;
     }
 
     /**
@@ -2024,7 +1962,7 @@ public class DiagnosticReport extends DomainResource {
           return addBasedOn();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DiagnosticReport.status");
+          throw new FHIRException("Cannot call addChild on a singleton property DiagnosticReport.status");
         }
         else if (name.equals("category")) {
           this.category = new CodeableConcept();
@@ -2051,7 +1989,7 @@ public class DiagnosticReport extends DomainResource {
           return this.effective;
         }
         else if (name.equals("issued")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DiagnosticReport.issued");
+          throw new FHIRException("Cannot call addChild on a singleton property DiagnosticReport.issued");
         }
         else if (name.equals("performer")) {
           return addPerformer();
@@ -2069,7 +2007,7 @@ public class DiagnosticReport extends DomainResource {
           return addImage();
         }
         else if (name.equals("conclusion")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DiagnosticReport.conclusion");
+          throw new FHIRException("Cannot call addChild on a singleton property DiagnosticReport.conclusion");
         }
         else if (name.equals("codedDiagnosis")) {
           return addCodedDiagnosis();

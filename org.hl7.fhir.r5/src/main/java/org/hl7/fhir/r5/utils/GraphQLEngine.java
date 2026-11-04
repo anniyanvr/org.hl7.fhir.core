@@ -41,20 +41,25 @@ import java.util.Map;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.fhirpath.ExpressionNode;
+import org.hl7.fhir.r5.fhirpath.FHIRPathEngine;
 import org.hl7.fhir.r5.model.BackboneElement;
 import org.hl7.fhir.r5.model.Base;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r5.model.Bundle.BundleLinkComponent;
+import org.hl7.fhir.r5.model.Bundle.LinkRelationTypes;
 import org.hl7.fhir.r5.model.CanonicalType;
 import org.hl7.fhir.r5.model.DomainResource;
 import org.hl7.fhir.r5.model.Element;
-import org.hl7.fhir.r5.model.ExpressionNode;
+import org.hl7.fhir.r5.model.IdType;
 import org.hl7.fhir.r5.model.IntegerType;
 import org.hl7.fhir.r5.model.Property;
 import org.hl7.fhir.r5.model.Reference;
 import org.hl7.fhir.r5.model.Resource;
 import org.hl7.fhir.r5.model.StringType;
+import org.hl7.fhir.utilities.FhirPublication;
+
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.graphql.Argument;
 import org.hl7.fhir.utilities.graphql.Argument.ArgumentListStatus;
@@ -78,6 +83,7 @@ import org.hl7.fhir.utilities.graphql.StringValue;
 import org.hl7.fhir.utilities.graphql.Value;
 import org.hl7.fhir.utilities.graphql.Variable;
 import org.hl7.fhir.utilities.graphql.VariableValue;
+
 
 public class GraphQLEngine implements IGraphQLEngine {
   
@@ -119,6 +125,15 @@ public class GraphQLEngine implements IGraphQLEngine {
       default: return super.getNamedProperty(_hash, _name, _checkValid);
       }
     }
+    
+    @Override
+    public Base copy() {
+      throw new Error("Not Implemented");
+    }
+
+    public FhirPublication getFHIRPublicationVersion() {
+      return FhirPublication.R5; 
+    }
   }
 
   public static class SearchWrapper extends Base {
@@ -131,7 +146,7 @@ public class GraphQLEngine implements IGraphQLEngine {
       this.type = type;
       this.bnd = bnd;
       for (BundleLinkComponent bl : bnd.getLink()) 
-        if (bl.getRelation().equals("self"))
+        if (bl.getRelation().equals(LinkRelationTypes.SELF))
           map = parseURL(bl.getUrl());
     }
 
@@ -184,6 +199,8 @@ public class GraphQLEngine implements IGraphQLEngine {
     private Map<String, String> parseURL(String url) throws FHIRException {
       try {
         Map<String, String> map = new HashMap<String, String>();
+        @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+        //single literal character split
         String[] pairs = url.split("&");
         for (String pair : pairs) {
           int idx = pair.indexOf("=");
@@ -200,7 +217,7 @@ public class GraphQLEngine implements IGraphQLEngine {
 
     private Base extractLink(String _name) throws FHIRException {
       for (BundleLinkComponent bl : bnd.getLink()) {
-        if (bl.getRelation().equals(_name)) {
+        if (bl.getRelation().toCode().equals(_name)) {
           Map<String, String> map = parseURL(bl.getUrl());
           return new StringType(map.get("search-id")+':'+map.get("search-offset"));
         }
@@ -208,6 +225,14 @@ public class GraphQLEngine implements IGraphQLEngine {
       return null;
     }
 
+    @Override
+    public Base copy() {
+      throw new Error("Not Implemented");
+    }
+
+    public FhirPublication getFHIRPublicationVersion() {
+      return FhirPublication.R5; 
+    }
   }
   
   private IWorkerContext context;
@@ -356,7 +381,7 @@ public class GraphQLEngine implements IGraphQLEngine {
       return obj.primitiveValue() != "";
   }
 
-  private List<Base> filter(Resource context, Property prop, List<Argument> arguments, List<Base> values, boolean extensionMode) throws FHIRException, EGraphQLException {
+  private List<Base> filter(Resource context, Property prop, String fieldName, List<Argument> arguments, List<Base> values, boolean extensionMode) throws FHIRException, EGraphQLException {
     List<Base> result = new ArrayList<Base>();
     if (values.size() > 0) {
       int count = Integer.MAX_VALUE;
@@ -381,10 +406,27 @@ public class GraphQLEngine implements IGraphQLEngine {
           fp.append(" and "+arg.getName()+" = '"+vl.get(0).toString()+"'");
         }
       }
+
+      // Account for situations where the GraphQL expression selected e.g.
+      // effectiveDateTime but the field contains effectivePeriod
+      String propName = prop.getName();
+      List<Base> newValues = new ArrayList<>(values.size());
+      for (Base value : values) {
+        if (propName.endsWith("[x]")) {
+          String propNameShortened = propName.substring(0, propName.length() - 3);
+          if (fieldName.startsWith(propNameShortened) && fieldName.length() > propNameShortened.length()) {
+            if (!value.fhirType().equalsIgnoreCase(fieldName.substring(propNameShortened.length()))) {
+              continue;
+            }
+          }
+        }
+        newValues.add(value);
+      }
+
       int i = 0;
       int t = 0;
       if (fp.length() == 0)
-        for (Base v : values) {
+        for (Base v : newValues) {
           if ((i >= offset) && passesExtensionMode(v, extensionMode)) {
             result.add(v);
             t++;
@@ -393,8 +435,8 @@ public class GraphQLEngine implements IGraphQLEngine {
           }
           i++;
         } else {
-          ExpressionNode node = fpe.parse(fp.toString().substring(5));
-          for (Base v : values) {
+          ExpressionNode node = fpe.parse(fp.substring(5));
+          for (Base v : newValues) {
             if ((i >= offset) && passesExtensionMode(v, extensionMode) && fpe.evaluateToBoolean(null, context, v, node)) {
               result.add(v);
               t++;
@@ -554,7 +596,11 @@ public class GraphQLEngine implements IGraphQLEngine {
             if (!isPrimitive(prop.getTypeCode()) && sel.getField().getName().startsWith("_"))
               throw new EGraphQLException("Unknown property "+sel.getField().getName()+" on "+source.fhirType());
 
-            List<Base> vl = filter(context, prop, sel.getField().getArguments(), prop.getValues(), sel.getField().getName().startsWith("_"));
+          if ("id".equals(prop.getName()) && context != null) {
+            prop.getValues().set(0, new IdType(context.getIdPart()));
+          }
+
+            List<Base> vl = filter(context, prop, sel.getField().getName(), sel.getField().getArguments(), prop.getValues(), sel.getField().getName().startsWith("_"));
             if (!vl.isEmpty())
               processValues(context, sel, prop, target, vl, sel.getField().getName().startsWith("_"), inheritedList, suffix);
           }
@@ -656,7 +702,7 @@ public class GraphQLEngine implements IGraphQLEngine {
     Argument arg = new Argument();
     params.add(arg);
     arg.setName(getSingleValue(parg));
-    arg.addValue(new StringValue(source.fhirType()+"/"+source.getId()));
+    arg.addValue(new StringValue(source.fhirType()+"/"+source.getIdPart()));
     services.listResources(appInfo, field.getName().substring(0, field.getName().length() - 4), params, list);
     arg = null;
     ObjectValue obj = null;
@@ -689,7 +735,7 @@ public class GraphQLEngine implements IGraphQLEngine {
     Argument arg = new Argument();
     params.add(arg);
     arg.setName(getSingleValue(parg));
-    arg.addValue(new StringValue(source.fhirType()+"/"+source.getId()));
+    arg.addValue(new StringValue(source.fhirType()+"/"+source.getIdPart()));
     Bundle bnd = (Bundle) services.search(appInfo, field.getName().substring(0, field.getName().length()-10), params);
     Base bndWrapper = new SearchWrapper(field.getName(), bnd);
     arg = target.addField(field.getAlias()+suffix, listStatus(field, false));
@@ -764,6 +810,8 @@ public class GraphQLEngine implements IGraphQLEngine {
         params.add(arg);
     if ((carg != null)) {
       params.clear();;
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //single literal character split
       String[] parts = getSingleValue(carg).split(":");
       params.add(new Argument("search-id", new StringValue(parts[0])));
       params.add(new Argument("search-offset", new StringValue(parts[1])));

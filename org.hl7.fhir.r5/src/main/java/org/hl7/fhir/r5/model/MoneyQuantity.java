@@ -51,8 +51,17 @@ public class MoneyQuantity extends Quantity {
         return dst;
       }
 
+      public void assignValues(Base dst) {
+        copyValues((MoneyQuantity) dst);
+      }
+
       public void copyValues(MoneyQuantity dst) {
         super.copyValues(dst);
+        dst.value = value == null ? null : value.copy();
+        dst.comparator = comparator == null ? null : comparator.copy();
+        dst.unit = unit == null ? null : unit.copy();
+        dst.system = system == null ? null : system.copy();
+        dst.code = code == null ? null : code.copy();
       }
 
       protected MoneyQuantity typedCopy() {

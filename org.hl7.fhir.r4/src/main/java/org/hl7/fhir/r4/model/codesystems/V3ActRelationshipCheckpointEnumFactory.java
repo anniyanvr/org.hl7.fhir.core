@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3ActRelationshipCheckpointEnumFactory implements EnumFactory<V3ActRelationshipCheckpoint> {
@@ -52,11 +48,13 @@ public class V3ActRelationshipCheckpointEnumFactory implements EnumFactory<V3Act
       return V3ActRelationshipCheckpoint.T;
     if ("X".equals(codeString))
       return V3ActRelationshipCheckpoint.X;
-    throw new IllegalArgumentException("Unknown V3ActRelationshipCheckpoint code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ActRelationshipCheckpoint code '" + codeString + "'");
   }
 
   public String toCode(V3ActRelationshipCheckpoint code) {
-    if (code == V3ActRelationshipCheckpoint.B)
+       if (code == V3ActRelationshipCheckpoint.NULL)
+           return null;
+       if (code == V3ActRelationshipCheckpoint.B)
       return "B";
     if (code == V3ActRelationshipCheckpoint.E)
       return "E";
@@ -67,10 +65,10 @@ public class V3ActRelationshipCheckpointEnumFactory implements EnumFactory<V3Act
     if (code == V3ActRelationshipCheckpoint.X)
       return "X";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ActRelationshipCheckpoint code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ActRelationshipCheckpoint code) {
+    return code.getSystem();
+  }
 
 }

@@ -37,16 +37,17 @@ import org.hl7.fhir.r4.model.StructureDefinition.StructureDefinitionKind;
 import org.hl7.fhir.r4.model.StructureMap;
 import org.hl7.fhir.r4.model.UriType;
 import org.hl7.fhir.r4.test.utils.TestingUtilities;
-import org.hl7.fhir.r4.utils.IResourceValidator;
-import org.hl7.fhir.r4.utils.IResourceValidator.IValidatorResourceFetcher;
-import org.hl7.fhir.r4.utils.IResourceValidator.ReferenceValidationPolicy;
 import org.hl7.fhir.r4.utils.StructureMapUtilities;
 import org.hl7.fhir.r4.utils.StructureMapUtilities.ITransformerServices;
+import org.hl7.fhir.r4.utils.validation.IResourceValidator;
+import org.hl7.fhir.r4.utils.validation.IValidationPolicyAdvisor;
+import org.hl7.fhir.r4.utils.validation.IValidatorResourceFetcher;
+import org.hl7.fhir.r4.utils.validation.constants.ReferenceValidationPolicy;
 import org.hl7.fhir.utilities.IniFile;
-import org.hl7.fhir.utilities.TextFile;
+import org.hl7.fhir.utilities.FileUtilities;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
 import org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager;
-import org.hl7.fhir.utilities.npm.ToolsVersion;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity;
 import org.junit.jupiter.api.Disabled;
@@ -62,20 +63,21 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 @Disabled
-public class R3R4ConversionTests implements ITransformerServices, IValidatorResourceFetcher {
+@Deprecated(forRemoval = true)
+public class R3R4ConversionTests implements ITransformerServices, IValidatorResourceFetcher, IValidationPolicyAdvisor {
 
   private static final boolean SAVING = true;
   private FilesystemPackageCacheManager pcm = null;
 
   public static Stream<Arguments> data() throws ParserConfigurationException, SAXException, IOException {
-    if (!(new File(Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "outcomes.json")).exists()))
+    if (!(ManagedFileAccess.file(Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "outcomes.json")).exists()))
       throw new Error("You must set the default directory to the build directory when you execute these tests");
     r3r4Outcomes = (JsonObject) new com.google.gson.JsonParser().parse(
-      TextFile.fileToString(Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "outcomes.json")));
+      FileUtilities.fileToString(Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "outcomes.json")));
     rules = new IniFile(Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "test-rules.ini"));
 
     String srcFile = Utilities.path(TestingUtilities.home(), "source", "release3", "examples.zip");
-    ZipInputStream stream = new ZipInputStream(new FileInputStream(srcFile));
+    ZipInputStream stream = new ZipInputStream(ManagedFileAccess.inStream(srcFile));
 
     filter = System.getProperty("resource");
     if (filter != null)
@@ -142,14 +144,14 @@ public class R3R4ConversionTests implements ITransformerServices, IValidatorReso
         ByteArrayOutputStream bso = new ByteArrayOutputStream();
         new org.hl7.fhir.r4.elementmodel.JsonParser(contextR3).compose(r3, bso, OutputStyle.PRETTY, null);
         cnt = bso.toByteArray();
-        Utilities.createDirectory(Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "test-output"));
-        TextFile.bytesToFile(cnt, Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "test-output",
+        FileUtilities.createDirectory(Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "test-output"));
+        FileUtilities.bytesToFile(cnt, Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "test-output",
           tn + "-" + workingid + ".input.json"));
       }
 
       String mapFile = Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "R3toR4", r3.fhirType() + ".map");
-      if (new File(mapFile).exists()) {
-        StructureMap sm = smu4.parse(TextFile.fileToString(mapFile), mapFile);
+      if (ManagedFileAccess.file(mapFile).exists()) {
+        StructureMap sm = smu4.parse(FileUtilities.fileToString(mapFile), mapFile);
 
         tn = smu4.getTargetType(sm).getType();
 
@@ -160,12 +162,12 @@ public class R3R4ConversionTests implements ITransformerServices, IValidatorReso
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         new org.hl7.fhir.r4.formats.JsonParser().setOutputStyle(OutputStyle.PRETTY).compose(bs, r4);
         if (SAVING) {
-          TextFile.bytesToFile(bs.toByteArray(), Utilities.path(TestingUtilities.home(), "implementations", "r3maps",
+          FileUtilities.bytesToFile(bs.toByteArray(), Utilities.path(TestingUtilities.home(), "implementations", "r3maps",
             "test-output", tn + "-" + workingid + ".r4.json"));
           for (Resource r : extras) {
             bs = new ByteArrayOutputStream();
             new org.hl7.fhir.r4.formats.JsonParser().setOutputStyle(OutputStyle.PRETTY).compose(bs, r);
-            TextFile.bytesToFile(bs.toByteArray(), Utilities.path(TestingUtilities.home(), "implementations", "r3maps",
+            FileUtilities.bytesToFile(bs.toByteArray(), Utilities.path(TestingUtilities.home(), "implementations", "r3maps",
               "test-output", r.fhirType() + "-" + r.getId() + ".r4.json"));
           }
         }
@@ -178,7 +180,7 @@ public class R3R4ConversionTests implements ITransformerServices, IValidatorReso
 
         // load the R4 to R3 map
         mapFile = Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "R4toR3", getMapFor(r4.fhirType(), r3.fhirType()) + ".map");
-        sm = smu3.parse(TextFile.fileToString(mapFile), mapFile);
+        sm = smu3.parse(FileUtilities.fileToString(mapFile), mapFile);
 
         // convert to R3
         StructureDefinition sd = smu3.getTargetType(sm);
@@ -189,7 +191,7 @@ public class R3R4ConversionTests implements ITransformerServices, IValidatorReso
         bs = new ByteArrayOutputStream();
         new org.hl7.fhir.r4.elementmodel.JsonParser(contextR3).compose(ro3, bs, OutputStyle.PRETTY, null);
         if (SAVING)
-          TextFile.bytesToFile(bs.toByteArray(), Utilities.path(TestingUtilities.home(), "implementations", "r3maps",
+          FileUtilities.bytesToFile(bs.toByteArray(), Utilities.path(TestingUtilities.home(), "implementations", "r3maps",
             "test-output", tn + "-" + workingid + ".output.json"));
 
         // check(errors, tn, workingid);
@@ -257,7 +259,7 @@ public class R3R4ConversionTests implements ITransformerServices, IValidatorReso
     }
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     String json = gson.toJson(r3r4Outcomes);
-    TextFile.stringToFile(json,
+    FileUtilities.stringToFile(json,
       (Utilities.path(TestingUtilities.home(), "implementations", "r3maps", "outcomes.json")));
 
   }
@@ -308,7 +310,7 @@ public class R3R4ConversionTests implements ITransformerServices, IValidatorReso
     if (contextR3 != null)
       return;
 
-    pcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
+    pcm = new FilesystemPackageCacheManager.Builder().build();
     R3ToR4Loader ldr = (R3ToR4Loader) new R3ToR4Loader().setPatchUrls(true).setKillPrimitives(true);
 
     System.out.println("loading R3");
@@ -359,8 +361,8 @@ public class R3R4ConversionTests implements ITransformerServices, IValidatorReso
 
   private void loadLib(String dir) throws FileNotFoundException, IOException {
     StructureMapUtilities smu = new StructureMapUtilities(contextR4);
-    for (String s : new File(dir).list()) {
-      String map = TextFile.fileToString(Utilities.path(dir, s));
+    for (String s : ManagedFileAccess.file(dir).list()) {
+      String map = FileUtilities.fileToString(Utilities.path(dir, s));
       try {
         StructureMap sm = smu.parse(map, s);
         contextR3.cacheResource(sm);
@@ -376,7 +378,6 @@ public class R3R4ConversionTests implements ITransformerServices, IValidatorReso
       } catch (FHIRException e) {
         System.out.println("Unable to load " + Utilities.path(dir, s) + ": " + e.getMessage());
         loadErrors.put(s, e);
-        // e.printStackTrace();
       }
     }
   }
@@ -454,7 +455,15 @@ public class R3R4ConversionTests implements ITransformerServices, IValidatorReso
   }
 
   @Override
-  public ReferenceValidationPolicy validationPolicy(Object appContext, String path, String url) {
+  public ReferenceValidationPolicy policyForReference(IResourceValidator validator, Object appContext, String path, String url) {
+    return ReferenceValidationPolicy.IGNORE;
+  }
+
+  @Override
+  public ReferenceValidationPolicy policyForContained(IResourceValidator validator, Object appContext,
+                                                      String containerType, String containerId,
+                                                      Element.SpecialElement containingResourceType, String path,
+                                                      String url) {
     return ReferenceValidationPolicy.IGNORE;
   }
 

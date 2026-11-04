@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class IdentifierTypeEnumFactory implements EnumFactory<IdentifierType> {
@@ -52,11 +48,13 @@ public class IdentifierTypeEnumFactory implements EnumFactory<IdentifierType> {
       return IdentifierType.PLAC;
     if ("FILL".equals(codeString))
       return IdentifierType.FILL;
-    throw new IllegalArgumentException("Unknown IdentifierType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown IdentifierType code '" + codeString + "'");
   }
 
   public String toCode(IdentifierType code) {
-    if (code == IdentifierType.UDI)
+       if (code == IdentifierType.NULL)
+           return null;
+       if (code == IdentifierType.UDI)
       return "UDI";
     if (code == IdentifierType.SNO)
       return "SNO";
@@ -67,10 +65,10 @@ public class IdentifierTypeEnumFactory implements EnumFactory<IdentifierType> {
     if (code == IdentifierType.FILL)
       return "FILL";
     return "?";
-  }
+   }
 
-    public String toSystem(IdentifierType code) {
-      return code.getSystem();
-      }
+  public String toSystem(IdentifierType code) {
+    return code.getSystem();
+  }
 
 }

@@ -29,12 +29,11 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.math.*;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.r5.model.Enumerations.*;
 import org.hl7.fhir.instance.model.api.IBaseBackboneElement;
@@ -146,6 +145,7 @@ public class ObservationDefinition extends DomainResource {
             case TIME: return "time";
             case DATETIME: return "dateTime";
             case PERIOD: return "Period";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -162,6 +162,7 @@ public class ObservationDefinition extends DomainResource {
             case TIME: return "http://hl7.org/fhir/permitted-data-type";
             case DATETIME: return "http://hl7.org/fhir/permitted-data-type";
             case PERIOD: return "http://hl7.org/fhir/permitted-data-type";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -178,6 +179,7 @@ public class ObservationDefinition extends DomainResource {
             case TIME: return "A time during the day, in the format hh:mm:ss.";
             case DATETIME: return "A date, date-time or partial date (e.g. just year or year + month) as used in human communication.";
             case PERIOD: return "A time range defined by start and end date/time.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -194,6 +196,7 @@ public class ObservationDefinition extends DomainResource {
             case TIME: return "time";
             case DATETIME: return "dateTime";
             case PERIOD: return "Period";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -228,40 +231,42 @@ public class ObservationDefinition extends DomainResource {
           return ObservationDataType.PERIOD;
         throw new IllegalArgumentException("Unknown ObservationDataType code '"+codeString+"'");
         }
-        public Enumeration<ObservationDataType> fromType(Base code) throws FHIRException {
+        public Enumeration<ObservationDataType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<ObservationDataType>(this);
+            return new Enumeration<ObservationDataType>(this, ObservationDataType.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<ObservationDataType>(this, ObservationDataType.NULL, code);
         if ("Quantity".equals(codeString))
-          return new Enumeration<ObservationDataType>(this, ObservationDataType.QUANTITY);
+          return new Enumeration<ObservationDataType>(this, ObservationDataType.QUANTITY, code);
         if ("CodeableConcept".equals(codeString))
-          return new Enumeration<ObservationDataType>(this, ObservationDataType.CODEABLECONCEPT);
+          return new Enumeration<ObservationDataType>(this, ObservationDataType.CODEABLECONCEPT, code);
         if ("string".equals(codeString))
-          return new Enumeration<ObservationDataType>(this, ObservationDataType.STRING);
+          return new Enumeration<ObservationDataType>(this, ObservationDataType.STRING, code);
         if ("boolean".equals(codeString))
-          return new Enumeration<ObservationDataType>(this, ObservationDataType.BOOLEAN);
+          return new Enumeration<ObservationDataType>(this, ObservationDataType.BOOLEAN, code);
         if ("integer".equals(codeString))
-          return new Enumeration<ObservationDataType>(this, ObservationDataType.INTEGER);
+          return new Enumeration<ObservationDataType>(this, ObservationDataType.INTEGER, code);
         if ("Range".equals(codeString))
-          return new Enumeration<ObservationDataType>(this, ObservationDataType.RANGE);
+          return new Enumeration<ObservationDataType>(this, ObservationDataType.RANGE, code);
         if ("Ratio".equals(codeString))
-          return new Enumeration<ObservationDataType>(this, ObservationDataType.RATIO);
+          return new Enumeration<ObservationDataType>(this, ObservationDataType.RATIO, code);
         if ("SampledData".equals(codeString))
-          return new Enumeration<ObservationDataType>(this, ObservationDataType.SAMPLEDDATA);
+          return new Enumeration<ObservationDataType>(this, ObservationDataType.SAMPLEDDATA, code);
         if ("time".equals(codeString))
-          return new Enumeration<ObservationDataType>(this, ObservationDataType.TIME);
+          return new Enumeration<ObservationDataType>(this, ObservationDataType.TIME, code);
         if ("dateTime".equals(codeString))
-          return new Enumeration<ObservationDataType>(this, ObservationDataType.DATETIME);
+          return new Enumeration<ObservationDataType>(this, ObservationDataType.DATETIME, code);
         if ("Period".equals(codeString))
-          return new Enumeration<ObservationDataType>(this, ObservationDataType.PERIOD);
+          return new Enumeration<ObservationDataType>(this, ObservationDataType.PERIOD, code);
         throw new FHIRException("Unknown ObservationDataType code '"+codeString+"'");
         }
     public String toCode(ObservationDataType code) {
-      if (code == ObservationDataType.QUANTITY)
+       if (code == ObservationDataType.NULL)
+           return null;
+       if (code == ObservationDataType.QUANTITY)
         return "Quantity";
       if (code == ObservationDataType.CODEABLECONCEPT)
         return "CodeableConcept";
@@ -284,7 +289,7 @@ public class ObservationDefinition extends DomainResource {
       if (code == ObservationDataType.PERIOD)
         return "Period";
       return "?";
-      }
+   }
     public String toSystem(ObservationDataType code) {
       return code.getSystem();
       }
@@ -326,6 +331,7 @@ public class ObservationDefinition extends DomainResource {
             case REFERENCE: return "reference";
             case CRITICAL: return "critical";
             case ABSOLUTE: return "absolute";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -334,6 +340,7 @@ public class ObservationDefinition extends DomainResource {
             case REFERENCE: return "http://hl7.org/fhir/observation-range-category";
             case CRITICAL: return "http://hl7.org/fhir/observation-range-category";
             case ABSOLUTE: return "http://hl7.org/fhir/observation-range-category";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -342,6 +349,7 @@ public class ObservationDefinition extends DomainResource {
             case REFERENCE: return "Reference (Normal) Range for Ordinal and Continuous Observations.";
             case CRITICAL: return "Critical Range for Ordinal and Continuous Observations. Results outside this range are critical.";
             case ABSOLUTE: return "Absolute Range for Ordinal and Continuous Observations. Results outside this range are not possible.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -350,6 +358,7 @@ public class ObservationDefinition extends DomainResource {
             case REFERENCE: return "reference range";
             case CRITICAL: return "critical range";
             case ABSOLUTE: return "absolute range";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -368,395 +377,37 @@ public class ObservationDefinition extends DomainResource {
           return ObservationRangeCategory.ABSOLUTE;
         throw new IllegalArgumentException("Unknown ObservationRangeCategory code '"+codeString+"'");
         }
-        public Enumeration<ObservationRangeCategory> fromType(Base code) throws FHIRException {
+        public Enumeration<ObservationRangeCategory> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<ObservationRangeCategory>(this);
+            return new Enumeration<ObservationRangeCategory>(this, ObservationRangeCategory.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<ObservationRangeCategory>(this, ObservationRangeCategory.NULL, code);
         if ("reference".equals(codeString))
-          return new Enumeration<ObservationRangeCategory>(this, ObservationRangeCategory.REFERENCE);
+          return new Enumeration<ObservationRangeCategory>(this, ObservationRangeCategory.REFERENCE, code);
         if ("critical".equals(codeString))
-          return new Enumeration<ObservationRangeCategory>(this, ObservationRangeCategory.CRITICAL);
+          return new Enumeration<ObservationRangeCategory>(this, ObservationRangeCategory.CRITICAL, code);
         if ("absolute".equals(codeString))
-          return new Enumeration<ObservationRangeCategory>(this, ObservationRangeCategory.ABSOLUTE);
+          return new Enumeration<ObservationRangeCategory>(this, ObservationRangeCategory.ABSOLUTE, code);
         throw new FHIRException("Unknown ObservationRangeCategory code '"+codeString+"'");
         }
     public String toCode(ObservationRangeCategory code) {
-      if (code == ObservationRangeCategory.REFERENCE)
+       if (code == ObservationRangeCategory.NULL)
+           return null;
+       if (code == ObservationRangeCategory.REFERENCE)
         return "reference";
       if (code == ObservationRangeCategory.CRITICAL)
         return "critical";
       if (code == ObservationRangeCategory.ABSOLUTE)
         return "absolute";
       return "?";
-      }
+   }
     public String toSystem(ObservationRangeCategory code) {
       return code.getSystem();
       }
     }
-
-    @Block()
-    public static class ObservationDefinitionQuantitativeDetailsComponent extends BackboneElement implements IBaseBackboneElement {
-        /**
-         * Primary unit used to report quantitative results of observations conforming to this ObservationDefinition.
-         */
-        @Child(name = "unit", type = {CodeableConcept.class}, order=1, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Primary unit for quantitative results", formalDefinition="Primary unit used to report quantitative results of observations conforming to this ObservationDefinition." )
-        @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/ucum-units")
-        protected CodeableConcept unit;
-
-        /**
-         * Secondary unit used to report quantitative results of observations conforming to this ObservationDefinition.
-         */
-        @Child(name = "customaryUnit", type = {CodeableConcept.class}, order=2, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Customary (secondary) unit for quantitative results", formalDefinition="Secondary unit used to report quantitative results of observations conforming to this ObservationDefinition." )
-        @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/ucum-units")
-        protected CodeableConcept customaryUnit;
-
-        /**
-         * Factor for converting value expressed with primary unit to value expressed with secondary unit.
-         */
-        @Child(name = "conversionFactor", type = {DecimalType.class}, order=3, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Primary to secondary unit conversion factor", formalDefinition="Factor for converting value expressed with primary unit to value expressed with secondary unit." )
-        protected DecimalType conversionFactor;
-
-        /**
-         * Number of digits after decimal separator when the results of such observations are of type Quantity.
-         */
-        @Child(name = "decimalPrecision", type = {IntegerType.class}, order=4, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Decimal precision of observation quantitative results", formalDefinition="Number of digits after decimal separator when the results of such observations are of type Quantity." )
-        protected IntegerType decimalPrecision;
-
-        private static final long serialVersionUID = -1745187850L;
-
-    /**
-     * Constructor
-     */
-      public ObservationDefinitionQuantitativeDetailsComponent() {
-        super();
-      }
-
-        /**
-         * @return {@link #unit} (Primary unit used to report quantitative results of observations conforming to this ObservationDefinition.)
-         */
-        public CodeableConcept getUnit() { 
-          if (this.unit == null)
-            if (Configuration.errorOnAutoCreate())
-              throw new Error("Attempt to auto-create ObservationDefinitionQuantitativeDetailsComponent.unit");
-            else if (Configuration.doAutoCreate())
-              this.unit = new CodeableConcept(); // cc
-          return this.unit;
-        }
-
-        public boolean hasUnit() { 
-          return this.unit != null && !this.unit.isEmpty();
-        }
-
-        /**
-         * @param value {@link #unit} (Primary unit used to report quantitative results of observations conforming to this ObservationDefinition.)
-         */
-        public ObservationDefinitionQuantitativeDetailsComponent setUnit(CodeableConcept value) { 
-          this.unit = value;
-          return this;
-        }
-
-        /**
-         * @return {@link #customaryUnit} (Secondary unit used to report quantitative results of observations conforming to this ObservationDefinition.)
-         */
-        public CodeableConcept getCustomaryUnit() { 
-          if (this.customaryUnit == null)
-            if (Configuration.errorOnAutoCreate())
-              throw new Error("Attempt to auto-create ObservationDefinitionQuantitativeDetailsComponent.customaryUnit");
-            else if (Configuration.doAutoCreate())
-              this.customaryUnit = new CodeableConcept(); // cc
-          return this.customaryUnit;
-        }
-
-        public boolean hasCustomaryUnit() { 
-          return this.customaryUnit != null && !this.customaryUnit.isEmpty();
-        }
-
-        /**
-         * @param value {@link #customaryUnit} (Secondary unit used to report quantitative results of observations conforming to this ObservationDefinition.)
-         */
-        public ObservationDefinitionQuantitativeDetailsComponent setCustomaryUnit(CodeableConcept value) { 
-          this.customaryUnit = value;
-          return this;
-        }
-
-        /**
-         * @return {@link #conversionFactor} (Factor for converting value expressed with primary unit to value expressed with secondary unit.). This is the underlying object with id, value and extensions. The accessor "getConversionFactor" gives direct access to the value
-         */
-        public DecimalType getConversionFactorElement() { 
-          if (this.conversionFactor == null)
-            if (Configuration.errorOnAutoCreate())
-              throw new Error("Attempt to auto-create ObservationDefinitionQuantitativeDetailsComponent.conversionFactor");
-            else if (Configuration.doAutoCreate())
-              this.conversionFactor = new DecimalType(); // bb
-          return this.conversionFactor;
-        }
-
-        public boolean hasConversionFactorElement() { 
-          return this.conversionFactor != null && !this.conversionFactor.isEmpty();
-        }
-
-        public boolean hasConversionFactor() { 
-          return this.conversionFactor != null && !this.conversionFactor.isEmpty();
-        }
-
-        /**
-         * @param value {@link #conversionFactor} (Factor for converting value expressed with primary unit to value expressed with secondary unit.). This is the underlying object with id, value and extensions. The accessor "getConversionFactor" gives direct access to the value
-         */
-        public ObservationDefinitionQuantitativeDetailsComponent setConversionFactorElement(DecimalType value) { 
-          this.conversionFactor = value;
-          return this;
-        }
-
-        /**
-         * @return Factor for converting value expressed with primary unit to value expressed with secondary unit.
-         */
-        public BigDecimal getConversionFactor() { 
-          return this.conversionFactor == null ? null : this.conversionFactor.getValue();
-        }
-
-        /**
-         * @param value Factor for converting value expressed with primary unit to value expressed with secondary unit.
-         */
-        public ObservationDefinitionQuantitativeDetailsComponent setConversionFactor(BigDecimal value) { 
-          if (value == null)
-            this.conversionFactor = null;
-          else {
-            if (this.conversionFactor == null)
-              this.conversionFactor = new DecimalType();
-            this.conversionFactor.setValue(value);
-          }
-          return this;
-        }
-
-        /**
-         * @param value Factor for converting value expressed with primary unit to value expressed with secondary unit.
-         */
-        public ObservationDefinitionQuantitativeDetailsComponent setConversionFactor(long value) { 
-              this.conversionFactor = new DecimalType();
-            this.conversionFactor.setValue(value);
-          return this;
-        }
-
-        /**
-         * @param value Factor for converting value expressed with primary unit to value expressed with secondary unit.
-         */
-        public ObservationDefinitionQuantitativeDetailsComponent setConversionFactor(double value) { 
-              this.conversionFactor = new DecimalType();
-            this.conversionFactor.setValue(value);
-          return this;
-        }
-
-        /**
-         * @return {@link #decimalPrecision} (Number of digits after decimal separator when the results of such observations are of type Quantity.). This is the underlying object with id, value and extensions. The accessor "getDecimalPrecision" gives direct access to the value
-         */
-        public IntegerType getDecimalPrecisionElement() { 
-          if (this.decimalPrecision == null)
-            if (Configuration.errorOnAutoCreate())
-              throw new Error("Attempt to auto-create ObservationDefinitionQuantitativeDetailsComponent.decimalPrecision");
-            else if (Configuration.doAutoCreate())
-              this.decimalPrecision = new IntegerType(); // bb
-          return this.decimalPrecision;
-        }
-
-        public boolean hasDecimalPrecisionElement() { 
-          return this.decimalPrecision != null && !this.decimalPrecision.isEmpty();
-        }
-
-        public boolean hasDecimalPrecision() { 
-          return this.decimalPrecision != null && !this.decimalPrecision.isEmpty();
-        }
-
-        /**
-         * @param value {@link #decimalPrecision} (Number of digits after decimal separator when the results of such observations are of type Quantity.). This is the underlying object with id, value and extensions. The accessor "getDecimalPrecision" gives direct access to the value
-         */
-        public ObservationDefinitionQuantitativeDetailsComponent setDecimalPrecisionElement(IntegerType value) { 
-          this.decimalPrecision = value;
-          return this;
-        }
-
-        /**
-         * @return Number of digits after decimal separator when the results of such observations are of type Quantity.
-         */
-        public int getDecimalPrecision() { 
-          return this.decimalPrecision == null || this.decimalPrecision.isEmpty() ? 0 : this.decimalPrecision.getValue();
-        }
-
-        /**
-         * @param value Number of digits after decimal separator when the results of such observations are of type Quantity.
-         */
-        public ObservationDefinitionQuantitativeDetailsComponent setDecimalPrecision(int value) { 
-            if (this.decimalPrecision == null)
-              this.decimalPrecision = new IntegerType();
-            this.decimalPrecision.setValue(value);
-          return this;
-        }
-
-        protected void listChildren(List<Property> children) {
-          super.listChildren(children);
-          children.add(new Property("unit", "CodeableConcept", "Primary unit used to report quantitative results of observations conforming to this ObservationDefinition.", 0, 1, unit));
-          children.add(new Property("customaryUnit", "CodeableConcept", "Secondary unit used to report quantitative results of observations conforming to this ObservationDefinition.", 0, 1, customaryUnit));
-          children.add(new Property("conversionFactor", "decimal", "Factor for converting value expressed with primary unit to value expressed with secondary unit.", 0, 1, conversionFactor));
-          children.add(new Property("decimalPrecision", "integer", "Number of digits after decimal separator when the results of such observations are of type Quantity.", 0, 1, decimalPrecision));
-        }
-
-        @Override
-        public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
-          switch (_hash) {
-          case 3594628: /*unit*/  return new Property("unit", "CodeableConcept", "Primary unit used to report quantitative results of observations conforming to this ObservationDefinition.", 0, 1, unit);
-          case -1375586437: /*customaryUnit*/  return new Property("customaryUnit", "CodeableConcept", "Secondary unit used to report quantitative results of observations conforming to this ObservationDefinition.", 0, 1, customaryUnit);
-          case 1438876165: /*conversionFactor*/  return new Property("conversionFactor", "decimal", "Factor for converting value expressed with primary unit to value expressed with secondary unit.", 0, 1, conversionFactor);
-          case -1564447699: /*decimalPrecision*/  return new Property("decimalPrecision", "integer", "Number of digits after decimal separator when the results of such observations are of type Quantity.", 0, 1, decimalPrecision);
-          default: return super.getNamedProperty(_hash, _name, _checkValid);
-          }
-
-        }
-
-      @Override
-      public Base[] getProperty(int hash, String name, boolean checkValid) throws FHIRException {
-        switch (hash) {
-        case 3594628: /*unit*/ return this.unit == null ? new Base[0] : new Base[] {this.unit}; // CodeableConcept
-        case -1375586437: /*customaryUnit*/ return this.customaryUnit == null ? new Base[0] : new Base[] {this.customaryUnit}; // CodeableConcept
-        case 1438876165: /*conversionFactor*/ return this.conversionFactor == null ? new Base[0] : new Base[] {this.conversionFactor}; // DecimalType
-        case -1564447699: /*decimalPrecision*/ return this.decimalPrecision == null ? new Base[0] : new Base[] {this.decimalPrecision}; // IntegerType
-        default: return super.getProperty(hash, name, checkValid);
-        }
-
-      }
-
-      @Override
-      public Base setProperty(int hash, String name, Base value) throws FHIRException {
-        switch (hash) {
-        case 3594628: // unit
-          this.unit = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
-          return value;
-        case -1375586437: // customaryUnit
-          this.customaryUnit = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
-          return value;
-        case 1438876165: // conversionFactor
-          this.conversionFactor = TypeConvertor.castToDecimal(value); // DecimalType
-          return value;
-        case -1564447699: // decimalPrecision
-          this.decimalPrecision = TypeConvertor.castToInteger(value); // IntegerType
-          return value;
-        default: return super.setProperty(hash, name, value);
-        }
-
-      }
-
-      @Override
-      public Base setProperty(String name, Base value) throws FHIRException {
-        if (name.equals("unit")) {
-          this.unit = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
-        } else if (name.equals("customaryUnit")) {
-          this.customaryUnit = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
-        } else if (name.equals("conversionFactor")) {
-          this.conversionFactor = TypeConvertor.castToDecimal(value); // DecimalType
-        } else if (name.equals("decimalPrecision")) {
-          this.decimalPrecision = TypeConvertor.castToInteger(value); // IntegerType
-        } else
-          return super.setProperty(name, value);
-        return value;
-      }
-
-      @Override
-      public Base makeProperty(int hash, String name) throws FHIRException {
-        switch (hash) {
-        case 3594628:  return getUnit();
-        case -1375586437:  return getCustomaryUnit();
-        case 1438876165:  return getConversionFactorElement();
-        case -1564447699:  return getDecimalPrecisionElement();
-        default: return super.makeProperty(hash, name);
-        }
-
-      }
-
-      @Override
-      public String[] getTypesForProperty(int hash, String name) throws FHIRException {
-        switch (hash) {
-        case 3594628: /*unit*/ return new String[] {"CodeableConcept"};
-        case -1375586437: /*customaryUnit*/ return new String[] {"CodeableConcept"};
-        case 1438876165: /*conversionFactor*/ return new String[] {"decimal"};
-        case -1564447699: /*decimalPrecision*/ return new String[] {"integer"};
-        default: return super.getTypesForProperty(hash, name);
-        }
-
-      }
-
-      @Override
-      public Base addChild(String name) throws FHIRException {
-        if (name.equals("unit")) {
-          this.unit = new CodeableConcept();
-          return this.unit;
-        }
-        else if (name.equals("customaryUnit")) {
-          this.customaryUnit = new CodeableConcept();
-          return this.customaryUnit;
-        }
-        else if (name.equals("conversionFactor")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.quantitativeDetails.conversionFactor");
-        }
-        else if (name.equals("decimalPrecision")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.quantitativeDetails.decimalPrecision");
-        }
-        else
-          return super.addChild(name);
-      }
-
-      public ObservationDefinitionQuantitativeDetailsComponent copy() {
-        ObservationDefinitionQuantitativeDetailsComponent dst = new ObservationDefinitionQuantitativeDetailsComponent();
-        copyValues(dst);
-        return dst;
-      }
-
-      public void copyValues(ObservationDefinitionQuantitativeDetailsComponent dst) {
-        super.copyValues(dst);
-        dst.unit = unit == null ? null : unit.copy();
-        dst.customaryUnit = customaryUnit == null ? null : customaryUnit.copy();
-        dst.conversionFactor = conversionFactor == null ? null : conversionFactor.copy();
-        dst.decimalPrecision = decimalPrecision == null ? null : decimalPrecision.copy();
-      }
-
-      @Override
-      public boolean equalsDeep(Base other_) {
-        if (!super.equalsDeep(other_))
-          return false;
-        if (!(other_ instanceof ObservationDefinitionQuantitativeDetailsComponent))
-          return false;
-        ObservationDefinitionQuantitativeDetailsComponent o = (ObservationDefinitionQuantitativeDetailsComponent) other_;
-        return compareDeep(unit, o.unit, true) && compareDeep(customaryUnit, o.customaryUnit, true) && compareDeep(conversionFactor, o.conversionFactor, true)
-           && compareDeep(decimalPrecision, o.decimalPrecision, true);
-      }
-
-      @Override
-      public boolean equalsShallow(Base other_) {
-        if (!super.equalsShallow(other_))
-          return false;
-        if (!(other_ instanceof ObservationDefinitionQuantitativeDetailsComponent))
-          return false;
-        ObservationDefinitionQuantitativeDetailsComponent o = (ObservationDefinitionQuantitativeDetailsComponent) other_;
-        return compareValues(conversionFactor, o.conversionFactor, true) && compareValues(decimalPrecision, o.decimalPrecision, true)
-          ;
-      }
-
-      public boolean isEmpty() {
-        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(unit, customaryUnit, conversionFactor
-          , decimalPrecision);
-      }
-
-  public String fhirType() {
-    return "ObservationDefinition.quantitativeDetails";
-
-  }
-
-  }
 
     @Block()
     public static class ObservationDefinitionQualifiedValueComponent extends BackboneElement implements IBaseBackboneElement {
@@ -1484,6 +1135,39 @@ public class ObservationDefinition extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("context")) {
+          this.context = null;
+        } else if (name.equals("appliesTo")) {
+          this.getAppliesTo().remove(value);
+        } else if (name.equals("gender")) {
+          value = new AdministrativeGenderEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.gender = (Enumeration) value; // Enumeration<AdministrativeGender>
+        } else if (name.equals("age")) {
+          this.age = null;
+        } else if (name.equals("gestationalAge")) {
+          this.gestationalAge = null;
+        } else if (name.equals("condition")) {
+          this.condition = null;
+        } else if (name.equals("rangeCategory")) {
+          value = new ObservationRangeCategoryEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.rangeCategory = (Enumeration) value; // Enumeration<ObservationRangeCategory>
+        } else if (name.equals("range")) {
+          this.range = null;
+        } else if (name.equals("validCodedValueSet")) {
+          this.validCodedValueSet = null;
+        } else if (name.equals("normalCodedValueSet")) {
+          this.normalCodedValueSet = null;
+        } else if (name.equals("abnormalCodedValueSet")) {
+          this.abnormalCodedValueSet = null;
+        } else if (name.equals("criticalCodedValueSet")) {
+          this.criticalCodedValueSet = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1534,7 +1218,7 @@ public class ObservationDefinition extends DomainResource {
           return addAppliesTo();
         }
         else if (name.equals("gender")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.qualifiedValue.gender");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.qualifiedValue.gender");
         }
         else if (name.equals("age")) {
           this.age = new Range();
@@ -1545,26 +1229,26 @@ public class ObservationDefinition extends DomainResource {
           return this.gestationalAge;
         }
         else if (name.equals("condition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.qualifiedValue.condition");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.qualifiedValue.condition");
         }
         else if (name.equals("rangeCategory")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.qualifiedValue.rangeCategory");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.qualifiedValue.rangeCategory");
         }
         else if (name.equals("range")) {
           this.range = new Range();
           return this.range;
         }
         else if (name.equals("validCodedValueSet")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.qualifiedValue.validCodedValueSet");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.qualifiedValue.validCodedValueSet");
         }
         else if (name.equals("normalCodedValueSet")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.qualifiedValue.normalCodedValueSet");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.qualifiedValue.normalCodedValueSet");
         }
         else if (name.equals("abnormalCodedValueSet")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.qualifiedValue.abnormalCodedValueSet");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.qualifiedValue.abnormalCodedValueSet");
         }
         else if (name.equals("criticalCodedValueSet")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.qualifiedValue.criticalCodedValueSet");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.qualifiedValue.criticalCodedValueSet");
         }
         else
           return super.addChild(name);
@@ -1574,6 +1258,10 @@ public class ObservationDefinition extends DomainResource {
         ObservationDefinitionQualifiedValueComponent dst = new ObservationDefinitionQualifiedValueComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ObservationDefinitionQualifiedValueComponent) dst);
       }
 
       public void copyValues(ObservationDefinitionQualifiedValueComponent dst) {
@@ -1655,11 +1343,12 @@ public class ObservationDefinition extends DomainResource {
         protected List<Enumeration<ObservationDataType>> permittedDataType;
 
         /**
-         * Characteristics for quantitative results of this observation.
+         * Units allowed for the valueQuantity element in the instance observations conforming to this ObservationDefinition.
          */
-        @Child(name = "quantitativeDetails", type = {ObservationDefinitionQuantitativeDetailsComponent.class}, order=3, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Characteristics of quantitative results", formalDefinition="Characteristics for quantitative results of this observation." )
-        protected ObservationDefinitionQuantitativeDetailsComponent quantitativeDetails;
+        @Child(name = "permittedUnit", type = {Coding.class}, order=3, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+        @Description(shortDefinition="Unit for quantitative results", formalDefinition="Units allowed for the valueQuantity element in the instance observations conforming to this ObservationDefinition." )
+        @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/ucum-units")
+        protected List<Coding> permittedUnit;
 
         /**
          * A set of qualified values associated with a context and a set of conditions -  provides a range for quantitative and ordinal observations and a collection of value sets for qualitative observations.
@@ -1668,7 +1357,7 @@ public class ObservationDefinition extends DomainResource {
         @Description(shortDefinition="Set of qualified values for observation results", formalDefinition="A set of qualified values associated with a context and a set of conditions -  provides a range for quantitative and ordinal observations and a collection of value sets for qualitative observations." )
         protected List<ObservationDefinitionQualifiedValueComponent> qualifiedValue;
 
-        private static final long serialVersionUID = -369470835L;
+        private static final long serialVersionUID = 2106051085L;
 
     /**
      * Constructor
@@ -1771,27 +1460,56 @@ public class ObservationDefinition extends DomainResource {
         }
 
         /**
-         * @return {@link #quantitativeDetails} (Characteristics for quantitative results of this observation.)
+         * @return {@link #permittedUnit} (Units allowed for the valueQuantity element in the instance observations conforming to this ObservationDefinition.)
          */
-        public ObservationDefinitionQuantitativeDetailsComponent getQuantitativeDetails() { 
-          if (this.quantitativeDetails == null)
-            if (Configuration.errorOnAutoCreate())
-              throw new Error("Attempt to auto-create ObservationDefinitionComponentComponent.quantitativeDetails");
-            else if (Configuration.doAutoCreate())
-              this.quantitativeDetails = new ObservationDefinitionQuantitativeDetailsComponent(); // cc
-          return this.quantitativeDetails;
-        }
-
-        public boolean hasQuantitativeDetails() { 
-          return this.quantitativeDetails != null && !this.quantitativeDetails.isEmpty();
+        public List<Coding> getPermittedUnit() { 
+          if (this.permittedUnit == null)
+            this.permittedUnit = new ArrayList<Coding>();
+          return this.permittedUnit;
         }
 
         /**
-         * @param value {@link #quantitativeDetails} (Characteristics for quantitative results of this observation.)
+         * @return Returns a reference to <code>this</code> for easy method chaining
          */
-        public ObservationDefinitionComponentComponent setQuantitativeDetails(ObservationDefinitionQuantitativeDetailsComponent value) { 
-          this.quantitativeDetails = value;
+        public ObservationDefinitionComponentComponent setPermittedUnit(List<Coding> thePermittedUnit) { 
+          this.permittedUnit = thePermittedUnit;
           return this;
+        }
+
+        public boolean hasPermittedUnit() { 
+          if (this.permittedUnit == null)
+            return false;
+          for (Coding item : this.permittedUnit)
+            if (!item.isEmpty())
+              return true;
+          return false;
+        }
+
+        public Coding addPermittedUnit() { //3
+          Coding t = new Coding();
+          if (this.permittedUnit == null)
+            this.permittedUnit = new ArrayList<Coding>();
+          this.permittedUnit.add(t);
+          return t;
+        }
+
+        public ObservationDefinitionComponentComponent addPermittedUnit(Coding t) { //3
+          if (t == null)
+            return this;
+          if (this.permittedUnit == null)
+            this.permittedUnit = new ArrayList<Coding>();
+          this.permittedUnit.add(t);
+          return this;
+        }
+
+        /**
+         * @return The first repetition of repeating field {@link #permittedUnit}, creating it if it does not already exist {3}
+         */
+        public Coding getPermittedUnitFirstRep() { 
+          if (getPermittedUnit().isEmpty()) {
+            addPermittedUnit();
+          }
+          return getPermittedUnit().get(0);
         }
 
         /**
@@ -1851,7 +1569,7 @@ public class ObservationDefinition extends DomainResource {
           super.listChildren(children);
           children.add(new Property("code", "CodeableConcept", "Describes what will be observed.", 0, 1, code));
           children.add(new Property("permittedDataType", "code", "The data types allowed for the value element of the instance of this component observations.", 0, java.lang.Integer.MAX_VALUE, permittedDataType));
-          children.add(new Property("quantitativeDetails", "@ObservationDefinition.quantitativeDetails", "Characteristics for quantitative results of this observation.", 0, 1, quantitativeDetails));
+          children.add(new Property("permittedUnit", "Coding", "Units allowed for the valueQuantity element in the instance observations conforming to this ObservationDefinition.", 0, java.lang.Integer.MAX_VALUE, permittedUnit));
           children.add(new Property("qualifiedValue", "@ObservationDefinition.qualifiedValue", "A set of qualified values associated with a context and a set of conditions -  provides a range for quantitative and ordinal observations and a collection of value sets for qualitative observations.", 0, java.lang.Integer.MAX_VALUE, qualifiedValue));
         }
 
@@ -1860,7 +1578,7 @@ public class ObservationDefinition extends DomainResource {
           switch (_hash) {
           case 3059181: /*code*/  return new Property("code", "CodeableConcept", "Describes what will be observed.", 0, 1, code);
           case -99492804: /*permittedDataType*/  return new Property("permittedDataType", "code", "The data types allowed for the value element of the instance of this component observations.", 0, java.lang.Integer.MAX_VALUE, permittedDataType);
-          case 842150763: /*quantitativeDetails*/  return new Property("quantitativeDetails", "@ObservationDefinition.quantitativeDetails", "Characteristics for quantitative results of this observation.", 0, 1, quantitativeDetails);
+          case 1073054652: /*permittedUnit*/  return new Property("permittedUnit", "Coding", "Units allowed for the valueQuantity element in the instance observations conforming to this ObservationDefinition.", 0, java.lang.Integer.MAX_VALUE, permittedUnit);
           case -558517707: /*qualifiedValue*/  return new Property("qualifiedValue", "@ObservationDefinition.qualifiedValue", "A set of qualified values associated with a context and a set of conditions -  provides a range for quantitative and ordinal observations and a collection of value sets for qualitative observations.", 0, java.lang.Integer.MAX_VALUE, qualifiedValue);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
           }
@@ -1872,7 +1590,7 @@ public class ObservationDefinition extends DomainResource {
         switch (hash) {
         case 3059181: /*code*/ return this.code == null ? new Base[0] : new Base[] {this.code}; // CodeableConcept
         case -99492804: /*permittedDataType*/ return this.permittedDataType == null ? new Base[0] : this.permittedDataType.toArray(new Base[this.permittedDataType.size()]); // Enumeration<ObservationDataType>
-        case 842150763: /*quantitativeDetails*/ return this.quantitativeDetails == null ? new Base[0] : new Base[] {this.quantitativeDetails}; // ObservationDefinitionQuantitativeDetailsComponent
+        case 1073054652: /*permittedUnit*/ return this.permittedUnit == null ? new Base[0] : this.permittedUnit.toArray(new Base[this.permittedUnit.size()]); // Coding
         case -558517707: /*qualifiedValue*/ return this.qualifiedValue == null ? new Base[0] : this.qualifiedValue.toArray(new Base[this.qualifiedValue.size()]); // ObservationDefinitionQualifiedValueComponent
         default: return super.getProperty(hash, name, checkValid);
         }
@@ -1889,8 +1607,8 @@ public class ObservationDefinition extends DomainResource {
           value = new ObservationDataTypeEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.getPermittedDataType().add((Enumeration) value); // Enumeration<ObservationDataType>
           return value;
-        case 842150763: // quantitativeDetails
-          this.quantitativeDetails = (ObservationDefinitionQuantitativeDetailsComponent) value; // ObservationDefinitionQuantitativeDetailsComponent
+        case 1073054652: // permittedUnit
+          this.getPermittedUnit().add(TypeConvertor.castToCoding(value)); // Coding
           return value;
         case -558517707: // qualifiedValue
           this.getQualifiedValue().add((ObservationDefinitionQualifiedValueComponent) value); // ObservationDefinitionQualifiedValueComponent
@@ -1907,8 +1625,8 @@ public class ObservationDefinition extends DomainResource {
         } else if (name.equals("permittedDataType")) {
           value = new ObservationDataTypeEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.getPermittedDataType().add((Enumeration) value);
-        } else if (name.equals("quantitativeDetails")) {
-          this.quantitativeDetails = (ObservationDefinitionQuantitativeDetailsComponent) value; // ObservationDefinitionQuantitativeDetailsComponent
+        } else if (name.equals("permittedUnit")) {
+          this.getPermittedUnit().add(TypeConvertor.castToCoding(value));
         } else if (name.equals("qualifiedValue")) {
           this.getQualifiedValue().add((ObservationDefinitionQualifiedValueComponent) value);
         } else
@@ -1916,12 +1634,28 @@ public class ObservationDefinition extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("code")) {
+          this.code = null;
+        } else if (name.equals("permittedDataType")) {
+          value = new ObservationDataTypeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.getPermittedDataType().remove((Enumeration) value);
+        } else if (name.equals("permittedUnit")) {
+          this.getPermittedUnit().remove(value);
+        } else if (name.equals("qualifiedValue")) {
+          this.getQualifiedValue().remove((ObservationDefinitionQualifiedValueComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
         case 3059181:  return getCode();
         case -99492804:  return addPermittedDataTypeElement();
-        case 842150763:  return getQuantitativeDetails();
+        case 1073054652:  return addPermittedUnit(); 
         case -558517707:  return addQualifiedValue(); 
         default: return super.makeProperty(hash, name);
         }
@@ -1933,7 +1667,7 @@ public class ObservationDefinition extends DomainResource {
         switch (hash) {
         case 3059181: /*code*/ return new String[] {"CodeableConcept"};
         case -99492804: /*permittedDataType*/ return new String[] {"code"};
-        case 842150763: /*quantitativeDetails*/ return new String[] {"@ObservationDefinition.quantitativeDetails"};
+        case 1073054652: /*permittedUnit*/ return new String[] {"Coding"};
         case -558517707: /*qualifiedValue*/ return new String[] {"@ObservationDefinition.qualifiedValue"};
         default: return super.getTypesForProperty(hash, name);
         }
@@ -1947,11 +1681,10 @@ public class ObservationDefinition extends DomainResource {
           return this.code;
         }
         else if (name.equals("permittedDataType")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.component.permittedDataType");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.component.permittedDataType");
         }
-        else if (name.equals("quantitativeDetails")) {
-          this.quantitativeDetails = new ObservationDefinitionQuantitativeDetailsComponent();
-          return this.quantitativeDetails;
+        else if (name.equals("permittedUnit")) {
+          return addPermittedUnit();
         }
         else if (name.equals("qualifiedValue")) {
           return addQualifiedValue();
@@ -1966,6 +1699,10 @@ public class ObservationDefinition extends DomainResource {
         return dst;
       }
 
+      public void assignValues(Base dst) {
+        copyValues((ObservationDefinitionComponentComponent) dst);
+      }
+
       public void copyValues(ObservationDefinitionComponentComponent dst) {
         super.copyValues(dst);
         dst.code = code == null ? null : code.copy();
@@ -1974,7 +1711,11 @@ public class ObservationDefinition extends DomainResource {
           for (Enumeration<ObservationDataType> i : permittedDataType)
             dst.permittedDataType.add(i.copy());
         };
-        dst.quantitativeDetails = quantitativeDetails == null ? null : quantitativeDetails.copy();
+        if (permittedUnit != null) {
+          dst.permittedUnit = new ArrayList<Coding>();
+          for (Coding i : permittedUnit)
+            dst.permittedUnit.add(i.copy());
+        };
         if (qualifiedValue != null) {
           dst.qualifiedValue = new ArrayList<ObservationDefinitionQualifiedValueComponent>();
           for (ObservationDefinitionQualifiedValueComponent i : qualifiedValue)
@@ -1990,7 +1731,7 @@ public class ObservationDefinition extends DomainResource {
           return false;
         ObservationDefinitionComponentComponent o = (ObservationDefinitionComponentComponent) other_;
         return compareDeep(code, o.code, true) && compareDeep(permittedDataType, o.permittedDataType, true)
-           && compareDeep(quantitativeDetails, o.quantitativeDetails, true) && compareDeep(qualifiedValue, o.qualifiedValue, true)
+           && compareDeep(permittedUnit, o.permittedUnit, true) && compareDeep(qualifiedValue, o.qualifiedValue, true)
           ;
       }
 
@@ -2005,7 +1746,7 @@ public class ObservationDefinition extends DomainResource {
       }
 
       public boolean isEmpty() {
-        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(code, permittedDataType, quantitativeDetails
+        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(code, permittedDataType, permittedUnit
           , qualifiedValue);
       }
 
@@ -2038,23 +1779,31 @@ public class ObservationDefinition extends DomainResource {
     protected StringType version;
 
     /**
+     * Indicates the mechanism used to compare versions to determine which is more current.
+     */
+    @Child(name = "versionAlgorithm", type = {StringType.class, Coding.class}, order=3, min=0, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="How to compare versions", formalDefinition="Indicates the mechanism used to compare versions to determine which is more current." )
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/version-algorithm")
+    protected DataType versionAlgorithm;
+
+    /**
      * A natural language name identifying the ObservationDefinition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
      */
-    @Child(name = "name", type = {StringType.class}, order=3, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "name", type = {StringType.class}, order=4, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Name for this ObservationDefinition (computer friendly)", formalDefinition="A natural language name identifying the ObservationDefinition. This name should be usable as an identifier for the module by machine processing applications such as code generation." )
     protected StringType name;
 
     /**
      * A short, descriptive, user-friendly title for the ObservationDefinition.
      */
-    @Child(name = "title", type = {StringType.class}, order=4, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "title", type = {StringType.class}, order=5, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Name for this ObservationDefinition (human friendly)", formalDefinition="A short, descriptive, user-friendly title for the ObservationDefinition." )
     protected StringType title;
 
     /**
      * The current state of the ObservationDefinition.
      */
-    @Child(name = "status", type = {CodeType.class}, order=5, min=1, max=1, modifier=true, summary=true)
+    @Child(name = "status", type = {CodeType.class}, order=6, min=1, max=1, modifier=true, summary=true)
     @Description(shortDefinition="draft | active | retired | unknown", formalDefinition="The current state of the ObservationDefinition." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/publication-status")
     protected Enumeration<PublicationStatus> status;
@@ -2062,49 +1811,49 @@ public class ObservationDefinition extends DomainResource {
     /**
      * A flag to indicate that this ObservationDefinition is authored for testing purposes (or education/evaluation/marketing), and is not intended to be used for genuine usage.
      */
-    @Child(name = "experimental", type = {BooleanType.class}, order=6, min=0, max=1, modifier=true, summary=true)
+    @Child(name = "experimental", type = {BooleanType.class}, order=7, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="If for testing purposes, not real usage", formalDefinition="A flag to indicate that this ObservationDefinition is authored for testing purposes (or education/evaluation/marketing), and is not intended to be used for genuine usage." )
     protected BooleanType experimental;
 
     /**
-     * The date (and optionally time) when the ObservationDefinition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.
+     * The date (and optionally time) when the ObservationDefinition was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.
      */
-    @Child(name = "date", type = {DateTimeType.class}, order=7, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Date last changed", formalDefinition="The date (and optionally time) when the ObservationDefinition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes." )
+    @Child(name = "date", type = {DateTimeType.class}, order=8, min=0, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="Date last changed", formalDefinition="The date (and optionally time) when the ObservationDefinition was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes." )
     protected DateTimeType date;
 
     /**
      * Helps establish the "authority/credibility" of the ObservationDefinition. May also allow for contact.
      */
-    @Child(name = "publisher", type = {Practitioner.class, PractitionerRole.class, Organization.class}, order=8, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "publisher", type = {StringType.class}, order=9, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="The name of the individual or organization that published the ObservationDefinition", formalDefinition="Helps establish the \"authority/credibility\" of the ObservationDefinition. May also allow for contact." )
-    protected Reference publisher;
+    protected StringType publisher;
 
     /**
      * Contact details to assist a user in finding and communicating with the publisher.
      */
-    @Child(name = "contact", type = {ContactDetail.class}, order=9, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "contact", type = {ContactDetail.class}, order=10, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Contact details for the publisher", formalDefinition="Contact details to assist a user in finding and communicating with the publisher." )
     protected List<ContactDetail> contact;
 
     /**
      * A free text natural language description of the ObservationDefinition from the consumer's perspective.
      */
-    @Child(name = "description", type = {MarkdownType.class}, order=10, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "description", type = {MarkdownType.class}, order=11, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Natural language description of the ObservationDefinition", formalDefinition="A free text natural language description of the ObservationDefinition from the consumer's perspective." )
     protected MarkdownType description;
 
     /**
      * The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (insurance plans, studies, ...) and may be used to assist with indexing and searching for appropriate ObservationDefinition instances.
      */
-    @Child(name = "useContext", type = {UsageContext.class}, order=11, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "useContext", type = {UsageContext.class}, order=12, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Content intends to support these contexts", formalDefinition="The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (insurance plans, studies, ...) and may be used to assist with indexing and searching for appropriate ObservationDefinition instances." )
     protected List<UsageContext> useContext;
 
     /**
      * A jurisdiction in which the ObservationDefinition is intended to be used.
      */
-    @Child(name = "jurisdiction", type = {CodeableConcept.class}, order=12, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "jurisdiction", type = {CodeableConcept.class}, order=13, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Intended jurisdiction for this ObservationDefinition (if applicable)", formalDefinition="A jurisdiction in which the ObservationDefinition is intended to be used." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/jurisdiction")
     protected List<CodeableConcept> jurisdiction;
@@ -2112,70 +1861,77 @@ public class ObservationDefinition extends DomainResource {
     /**
      * Explains why this ObservationDefinition is needed and why it has been designed as it has.
      */
-    @Child(name = "purpose", type = {MarkdownType.class}, order=13, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "purpose", type = {MarkdownType.class}, order=14, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Why this ObservationDefinition is defined", formalDefinition="Explains why this ObservationDefinition is needed and why it has been designed as it has." )
     protected MarkdownType purpose;
 
     /**
      * Copyright statement relating to the ObservationDefinition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the ObservationDefinition.
      */
-    @Child(name = "copyright", type = {MarkdownType.class}, order=14, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "copyright", type = {MarkdownType.class}, order=15, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Use and/or publishing restrictions", formalDefinition="Copyright statement relating to the ObservationDefinition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the ObservationDefinition." )
     protected MarkdownType copyright;
 
     /**
+     * A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').
+     */
+    @Child(name = "copyrightLabel", type = {StringType.class}, order=16, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="Copyright holder and year(s)", formalDefinition="A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved')." )
+    protected StringType copyrightLabel;
+
+    /**
      * The date on which the asset content was approved by the publisher. Approval happens once when the content is officially approved for usage.
      */
-    @Child(name = "approvalDate", type = {DateType.class}, order=15, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "approvalDate", type = {DateType.class}, order=17, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="When ObservationDefinition was approved by publisher", formalDefinition="The date on which the asset content was approved by the publisher. Approval happens once when the content is officially approved for usage." )
     protected DateType approvalDate;
 
     /**
      * The date on which the asset content was last reviewed. Review happens periodically after that, but doesn't change the original approval date.
      */
-    @Child(name = "lastReviewDate", type = {DateType.class}, order=16, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="Date on which the asset content was last reviewed", formalDefinition="The date on which the asset content was last reviewed. Review happens periodically after that, but doesn't change the original approval date." )
+    @Child(name = "lastReviewDate", type = {DateType.class}, order=18, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="Date on which the asset content was last reviewed by the publisher", formalDefinition="The date on which the asset content was last reviewed. Review happens periodically after that, but doesn't change the original approval date." )
     protected DateType lastReviewDate;
 
     /**
      * The period during which the ObservationDefinition content was or is planned to be effective.
      */
-    @Child(name = "effectivePeriod", type = {Period.class}, order=17, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "effectivePeriod", type = {Period.class}, order=19, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="The effective date range for the ObservationDefinition", formalDefinition="The period during which the ObservationDefinition content was or is planned to be effective." )
     protected Period effectivePeriod;
 
     /**
      * The canonical URL pointing to another FHIR-defined ObservationDefinition that is adhered to in whole or in part by this definition.
      */
-    @Child(name = "derivedFromCanonical", type = {CanonicalType.class}, order=18, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "derivedFromCanonical", type = {CanonicalType.class}, order=20, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Based on FHIR definition of another observation", formalDefinition="The canonical URL pointing to another FHIR-defined ObservationDefinition that is adhered to in whole or in part by this definition." )
     protected List<CanonicalType> derivedFromCanonical;
 
     /**
      * The URL pointing to an externally-defined observation definition, guideline or other definition that is adhered to in whole or in part by this definition.
      */
-    @Child(name = "derivedFromUri", type = {UriType.class}, order=19, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "derivedFromUri", type = {UriType.class}, order=21, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Based on external definition", formalDefinition="The URL pointing to an externally-defined observation definition, guideline or other definition that is adhered to in whole or in part by this definition." )
     protected List<UriType> derivedFromUri;
 
     /**
      * A code that describes the intended kind of subject of Observation instances conforming to this ObservationDefinition.
      */
-    @Child(name = "subject", type = {CodeableConcept.class}, order=20, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "subject", type = {CodeableConcept.class}, order=22, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Type of subject for the defined observation", formalDefinition="A code that describes the intended kind of subject of Observation instances conforming to this ObservationDefinition." )
-    protected CodeableConcept subject;
+    protected List<CodeableConcept> subject;
 
     /**
      * The type of individual/organization/device that is expected to act upon instances of this definition.
      */
-    @Child(name = "performerType", type = {CodeableConcept.class}, order=21, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "performerType", type = {CodeableConcept.class}, order=23, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Desired kind of performer for such kind of observation", formalDefinition="The type of individual/organization/device that is expected to act upon instances of this definition." )
     protected CodeableConcept performerType;
 
     /**
      * A code that classifies the general type of observation.
      */
-    @Child(name = "category", type = {CodeableConcept.class}, order=22, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "category", type = {CodeableConcept.class}, order=24, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="General type of observation", formalDefinition="A code that classifies the general type of observation." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/observation-category")
     protected List<CodeableConcept> category;
@@ -2183,7 +1939,7 @@ public class ObservationDefinition extends DomainResource {
     /**
      * Describes what will be observed. Sometimes this is called the observation "name".
      */
-    @Child(name = "code", type = {CodeableConcept.class}, order=23, min=1, max=1, modifier=false, summary=true)
+    @Child(name = "code", type = {CodeableConcept.class}, order=25, min=1, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Type of observation", formalDefinition="Describes what will be observed. Sometimes this is called the observation \"name\"." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/observation-codes")
     protected CodeableConcept code;
@@ -2191,7 +1947,7 @@ public class ObservationDefinition extends DomainResource {
     /**
      * The data types allowed for the value element of the instance observations conforming to this ObservationDefinition.
      */
-    @Child(name = "permittedDataType", type = {CodeType.class}, order=24, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "permittedDataType", type = {CodeType.class}, order=26, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Quantity | CodeableConcept | string | boolean | integer | Range | Ratio | SampledData | time | dateTime | Period", formalDefinition="The data types allowed for the value element of the instance observations conforming to this ObservationDefinition." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/permitted-data-type")
     protected List<Enumeration<ObservationDataType>> permittedDataType;
@@ -2199,14 +1955,14 @@ public class ObservationDefinition extends DomainResource {
     /**
      * Multiple results allowed for observations conforming to this ObservationDefinition.
      */
-    @Child(name = "multipleResultsAllowed", type = {BooleanType.class}, order=25, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "multipleResultsAllowed", type = {BooleanType.class}, order=27, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Multiple results allowed for conforming observations", formalDefinition="Multiple results allowed for observations conforming to this ObservationDefinition." )
     protected BooleanType multipleResultsAllowed;
 
     /**
      * The site on the subject's body where the  observation is to be made.
      */
-    @Child(name = "bodySite", type = {CodeableConcept.class}, order=26, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "bodySite", type = {CodeableConcept.class}, order=28, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Body part to be observed", formalDefinition="The site on the subject's body where the  observation is to be made." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/body-site")
     protected CodeableConcept bodySite;
@@ -2214,7 +1970,7 @@ public class ObservationDefinition extends DomainResource {
     /**
      * The method or technique used to perform the observation.
      */
-    @Child(name = "method", type = {CodeableConcept.class}, order=27, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "method", type = {CodeableConcept.class}, order=29, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Method used to produce the observation", formalDefinition="The method or technique used to perform the observation." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/observation-methods")
     protected CodeableConcept method;
@@ -2222,53 +1978,54 @@ public class ObservationDefinition extends DomainResource {
     /**
      * The kind of specimen that this type of observation is produced on.
      */
-    @Child(name = "specimen", type = {SpecimenDefinition.class}, order=28, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "specimen", type = {SpecimenDefinition.class}, order=30, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Kind of specimen used by this type of observation", formalDefinition="The kind of specimen that this type of observation is produced on." )
     protected List<Reference> specimen;
 
     /**
      * The measurement model of device or actual device used to produce observations of this type.
      */
-    @Child(name = "device", type = {DeviceDefinition.class, Device.class}, order=29, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "device", type = {DeviceDefinition.class, Device.class}, order=31, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Measurement device or model of device", formalDefinition="The measurement model of device or actual device used to produce observations of this type." )
     protected List<Reference> device;
 
     /**
      * The preferred name to be used when reporting the results of observations conforming to this ObservationDefinition.
      */
-    @Child(name = "preferredReportName", type = {StringType.class}, order=30, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "preferredReportName", type = {StringType.class}, order=32, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="The preferred name to be used when reporting the observation results", formalDefinition="The preferred name to be used when reporting the results of observations conforming to this ObservationDefinition." )
     protected StringType preferredReportName;
 
     /**
-     * Characteristics for quantitative results of observations conforming to this ObservationDefinition.
+     * Units allowed for the valueQuantity element in the instance observations conforming to this ObservationDefinition.
      */
-    @Child(name = "quantitativeDetails", type = {}, order=31, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="Characteristics of quantitative results", formalDefinition="Characteristics for quantitative results of observations conforming to this ObservationDefinition." )
-    protected ObservationDefinitionQuantitativeDetailsComponent quantitativeDetails;
+    @Child(name = "permittedUnit", type = {Coding.class}, order=33, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Description(shortDefinition="Unit for quantitative results", formalDefinition="Units allowed for the valueQuantity element in the instance observations conforming to this ObservationDefinition." )
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/ucum-units")
+    protected List<Coding> permittedUnit;
 
     /**
      * A set of qualified values associated with a context and a set of conditions -  provides a range for quantitative and ordinal observations and a collection of value sets for qualitative observations.
      */
-    @Child(name = "qualifiedValue", type = {}, order=32, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "qualifiedValue", type = {}, order=34, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Set of qualified values for observation results", formalDefinition="A set of qualified values associated with a context and a set of conditions -  provides a range for quantitative and ordinal observations and a collection of value sets for qualitative observations." )
     protected List<ObservationDefinitionQualifiedValueComponent> qualifiedValue;
 
     /**
      * This ObservationDefinition defines a group  observation (e.g. a battery, a panel of tests, a set of vital sign measurements) that includes the target as a member of the group.
      */
-    @Child(name = "hasMember", type = {ObservationDefinition.class, Questionnaire.class}, order=33, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "hasMember", type = {ObservationDefinition.class, Questionnaire.class}, order=35, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Definitions of related resources belonging to this kind of observation group", formalDefinition="This ObservationDefinition defines a group  observation (e.g. a battery, a panel of tests, a set of vital sign measurements) that includes the target as a member of the group." )
     protected List<Reference> hasMember;
 
     /**
      * Some observations have multiple component observations, expressed as separate code value pairs.
      */
-    @Child(name = "component", type = {}, order=34, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "component", type = {}, order=36, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Component results", formalDefinition="Some observations have multiple component observations, expressed as separate code value pairs." )
     protected List<ObservationDefinitionComponentComponent> component;
 
-    private static final long serialVersionUID = 1353043135L;
+    private static final long serialVersionUID = -415480292L;
 
   /**
    * Constructor
@@ -2405,6 +2162,57 @@ public class ObservationDefinition extends DomainResource {
           this.version = new StringType();
         this.version.setValue(value);
       }
+      return this;
+    }
+
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public DataType getVersionAlgorithm() { 
+      return this.versionAlgorithm;
+    }
+
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public StringType getVersionAlgorithmStringType() throws FHIRException { 
+      if (this.versionAlgorithm == null)
+        this.versionAlgorithm = new StringType();
+      if (!(this.versionAlgorithm instanceof StringType))
+        throw new FHIRException("Type mismatch: the type StringType was expected, but "+this.versionAlgorithm.getClass().getName()+" was encountered");
+      return (StringType) this.versionAlgorithm;
+    }
+
+    public boolean hasVersionAlgorithmStringType() {
+        return this.versionAlgorithm instanceof StringType;
+    }
+
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public Coding getVersionAlgorithmCoding() throws FHIRException { 
+      if (this.versionAlgorithm == null)
+        this.versionAlgorithm = new Coding();
+      if (!(this.versionAlgorithm instanceof Coding))
+        throw new FHIRException("Type mismatch: the type Coding was expected, but "+this.versionAlgorithm.getClass().getName()+" was encountered");
+      return (Coding) this.versionAlgorithm;
+    }
+
+    public boolean hasVersionAlgorithmCoding() {
+        return this.versionAlgorithm instanceof Coding;
+    }
+
+    public boolean hasVersionAlgorithm() { 
+      return this.versionAlgorithm != null && !this.versionAlgorithm.isEmpty();
+    }
+
+    /**
+     * @param value {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public ObservationDefinition setVersionAlgorithm(DataType value) { 
+      if (value != null && !(value instanceof StringType || value instanceof Coding))
+        throw new FHIRException("Not the right type for ObservationDefinition.versionAlgorithm[x]: "+value.fhirType());
+      this.versionAlgorithm = value;
       return this;
     }
 
@@ -2597,7 +2405,7 @@ public class ObservationDefinition extends DomainResource {
     }
 
     /**
-     * @return {@link #date} (The date (and optionally time) when the ObservationDefinition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
+     * @return {@link #date} (The date (and optionally time) when the ObservationDefinition was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
      */
     public DateTimeType getDateElement() { 
       if (this.date == null)
@@ -2617,7 +2425,7 @@ public class ObservationDefinition extends DomainResource {
     }
 
     /**
-     * @param value {@link #date} (The date (and optionally time) when the ObservationDefinition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
+     * @param value {@link #date} (The date (and optionally time) when the ObservationDefinition was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
      */
     public ObservationDefinition setDateElement(DateTimeType value) { 
       this.date = value;
@@ -2625,14 +2433,14 @@ public class ObservationDefinition extends DomainResource {
     }
 
     /**
-     * @return The date (and optionally time) when the ObservationDefinition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.
+     * @return The date (and optionally time) when the ObservationDefinition was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.
      */
     public Date getDate() { 
       return this.date == null ? null : this.date.getValue();
     }
 
     /**
-     * @param value The date (and optionally time) when the ObservationDefinition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.
+     * @param value The date (and optionally time) when the ObservationDefinition was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.
      */
     public ObservationDefinition setDate(Date value) { 
       if (value == null)
@@ -2646,15 +2454,19 @@ public class ObservationDefinition extends DomainResource {
     }
 
     /**
-     * @return {@link #publisher} (Helps establish the "authority/credibility" of the ObservationDefinition. May also allow for contact.)
+     * @return {@link #publisher} (Helps establish the "authority/credibility" of the ObservationDefinition. May also allow for contact.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
      */
-    public Reference getPublisher() { 
+    public StringType getPublisherElement() { 
       if (this.publisher == null)
         if (Configuration.errorOnAutoCreate())
           throw new Error("Attempt to auto-create ObservationDefinition.publisher");
         else if (Configuration.doAutoCreate())
-          this.publisher = new Reference(); // cc
+          this.publisher = new StringType(); // bb
       return this.publisher;
+    }
+
+    public boolean hasPublisherElement() { 
+      return this.publisher != null && !this.publisher.isEmpty();
     }
 
     public boolean hasPublisher() { 
@@ -2662,10 +2474,31 @@ public class ObservationDefinition extends DomainResource {
     }
 
     /**
-     * @param value {@link #publisher} (Helps establish the "authority/credibility" of the ObservationDefinition. May also allow for contact.)
+     * @param value {@link #publisher} (Helps establish the "authority/credibility" of the ObservationDefinition. May also allow for contact.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
      */
-    public ObservationDefinition setPublisher(Reference value) { 
+    public ObservationDefinition setPublisherElement(StringType value) { 
       this.publisher = value;
+      return this;
+    }
+
+    /**
+     * @return Helps establish the "authority/credibility" of the ObservationDefinition. May also allow for contact.
+     */
+    public String getPublisher() { 
+      return this.publisher == null ? null : this.publisher.getValue();
+    }
+
+    /**
+     * @param value Helps establish the "authority/credibility" of the ObservationDefinition. May also allow for contact.
+     */
+    public ObservationDefinition setPublisher(String value) { 
+      if (Utilities.noString(value))
+        this.publisher = null;
+      else {
+        if (this.publisher == null)
+          this.publisher = new StringType();
+        this.publisher.setValue(value);
+      }
       return this;
     }
 
@@ -2761,7 +2594,7 @@ public class ObservationDefinition extends DomainResource {
      * @param value A free text natural language description of the ObservationDefinition from the consumer's perspective.
      */
     public ObservationDefinition setDescription(String value) { 
-      if (value == null)
+      if (Utilities.noString(value))
         this.description = null;
       else {
         if (this.description == null)
@@ -2916,7 +2749,7 @@ public class ObservationDefinition extends DomainResource {
      * @param value Explains why this ObservationDefinition is needed and why it has been designed as it has.
      */
     public ObservationDefinition setPurpose(String value) { 
-      if (value == null)
+      if (Utilities.noString(value))
         this.purpose = null;
       else {
         if (this.purpose == null)
@@ -2965,12 +2798,61 @@ public class ObservationDefinition extends DomainResource {
      * @param value Copyright statement relating to the ObservationDefinition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the ObservationDefinition.
      */
     public ObservationDefinition setCopyright(String value) { 
-      if (value == null)
+      if (Utilities.noString(value))
         this.copyright = null;
       else {
         if (this.copyright == null)
           this.copyright = new MarkdownType();
         this.copyright.setValue(value);
+      }
+      return this;
+    }
+
+    /**
+     * @return {@link #copyrightLabel} (A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').). This is the underlying object with id, value and extensions. The accessor "getCopyrightLabel" gives direct access to the value
+     */
+    public StringType getCopyrightLabelElement() { 
+      if (this.copyrightLabel == null)
+        if (Configuration.errorOnAutoCreate())
+          throw new Error("Attempt to auto-create ObservationDefinition.copyrightLabel");
+        else if (Configuration.doAutoCreate())
+          this.copyrightLabel = new StringType(); // bb
+      return this.copyrightLabel;
+    }
+
+    public boolean hasCopyrightLabelElement() { 
+      return this.copyrightLabel != null && !this.copyrightLabel.isEmpty();
+    }
+
+    public boolean hasCopyrightLabel() { 
+      return this.copyrightLabel != null && !this.copyrightLabel.isEmpty();
+    }
+
+    /**
+     * @param value {@link #copyrightLabel} (A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').). This is the underlying object with id, value and extensions. The accessor "getCopyrightLabel" gives direct access to the value
+     */
+    public ObservationDefinition setCopyrightLabelElement(StringType value) { 
+      this.copyrightLabel = value;
+      return this;
+    }
+
+    /**
+     * @return A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').
+     */
+    public String getCopyrightLabel() { 
+      return this.copyrightLabel == null ? null : this.copyrightLabel.getValue();
+    }
+
+    /**
+     * @param value A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').
+     */
+    public ObservationDefinition setCopyrightLabel(String value) { 
+      if (Utilities.noString(value))
+        this.copyrightLabel = null;
+      else {
+        if (this.copyrightLabel == null)
+          this.copyrightLabel = new StringType();
+        this.copyrightLabel.setValue(value);
       }
       return this;
     }
@@ -3222,25 +3104,54 @@ public class ObservationDefinition extends DomainResource {
     /**
      * @return {@link #subject} (A code that describes the intended kind of subject of Observation instances conforming to this ObservationDefinition.)
      */
-    public CodeableConcept getSubject() { 
+    public List<CodeableConcept> getSubject() { 
       if (this.subject == null)
-        if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create ObservationDefinition.subject");
-        else if (Configuration.doAutoCreate())
-          this.subject = new CodeableConcept(); // cc
+        this.subject = new ArrayList<CodeableConcept>();
       return this.subject;
     }
 
+    /**
+     * @return Returns a reference to <code>this</code> for easy method chaining
+     */
+    public ObservationDefinition setSubject(List<CodeableConcept> theSubject) { 
+      this.subject = theSubject;
+      return this;
+    }
+
     public boolean hasSubject() { 
-      return this.subject != null && !this.subject.isEmpty();
+      if (this.subject == null)
+        return false;
+      for (CodeableConcept item : this.subject)
+        if (!item.isEmpty())
+          return true;
+      return false;
+    }
+
+    public CodeableConcept addSubject() { //3
+      CodeableConcept t = new CodeableConcept();
+      if (this.subject == null)
+        this.subject = new ArrayList<CodeableConcept>();
+      this.subject.add(t);
+      return t;
+    }
+
+    public ObservationDefinition addSubject(CodeableConcept t) { //3
+      if (t == null)
+        return this;
+      if (this.subject == null)
+        this.subject = new ArrayList<CodeableConcept>();
+      this.subject.add(t);
+      return this;
     }
 
     /**
-     * @param value {@link #subject} (A code that describes the intended kind of subject of Observation instances conforming to this ObservationDefinition.)
+     * @return The first repetition of repeating field {@link #subject}, creating it if it does not already exist {3}
      */
-    public ObservationDefinition setSubject(CodeableConcept value) { 
-      this.subject = value;
-      return this;
+    public CodeableConcept getSubjectFirstRep() { 
+      if (getSubject().isEmpty()) {
+        addSubject();
+      }
+      return getSubject().get(0);
     }
 
     /**
@@ -3654,27 +3565,56 @@ public class ObservationDefinition extends DomainResource {
     }
 
     /**
-     * @return {@link #quantitativeDetails} (Characteristics for quantitative results of observations conforming to this ObservationDefinition.)
+     * @return {@link #permittedUnit} (Units allowed for the valueQuantity element in the instance observations conforming to this ObservationDefinition.)
      */
-    public ObservationDefinitionQuantitativeDetailsComponent getQuantitativeDetails() { 
-      if (this.quantitativeDetails == null)
-        if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create ObservationDefinition.quantitativeDetails");
-        else if (Configuration.doAutoCreate())
-          this.quantitativeDetails = new ObservationDefinitionQuantitativeDetailsComponent(); // cc
-      return this.quantitativeDetails;
-    }
-
-    public boolean hasQuantitativeDetails() { 
-      return this.quantitativeDetails != null && !this.quantitativeDetails.isEmpty();
+    public List<Coding> getPermittedUnit() { 
+      if (this.permittedUnit == null)
+        this.permittedUnit = new ArrayList<Coding>();
+      return this.permittedUnit;
     }
 
     /**
-     * @param value {@link #quantitativeDetails} (Characteristics for quantitative results of observations conforming to this ObservationDefinition.)
+     * @return Returns a reference to <code>this</code> for easy method chaining
      */
-    public ObservationDefinition setQuantitativeDetails(ObservationDefinitionQuantitativeDetailsComponent value) { 
-      this.quantitativeDetails = value;
+    public ObservationDefinition setPermittedUnit(List<Coding> thePermittedUnit) { 
+      this.permittedUnit = thePermittedUnit;
       return this;
+    }
+
+    public boolean hasPermittedUnit() { 
+      if (this.permittedUnit == null)
+        return false;
+      for (Coding item : this.permittedUnit)
+        if (!item.isEmpty())
+          return true;
+      return false;
+    }
+
+    public Coding addPermittedUnit() { //3
+      Coding t = new Coding();
+      if (this.permittedUnit == null)
+        this.permittedUnit = new ArrayList<Coding>();
+      this.permittedUnit.add(t);
+      return t;
+    }
+
+    public ObservationDefinition addPermittedUnit(Coding t) { //3
+      if (t == null)
+        return this;
+      if (this.permittedUnit == null)
+        this.permittedUnit = new ArrayList<Coding>();
+      this.permittedUnit.add(t);
+      return this;
+    }
+
+    /**
+     * @return The first repetition of repeating field {@link #permittedUnit}, creating it if it does not already exist {3}
+     */
+    public Coding getPermittedUnitFirstRep() { 
+      if (getPermittedUnit().isEmpty()) {
+        addPermittedUnit();
+      }
+      return getPermittedUnit().get(0);
     }
 
     /**
@@ -3841,24 +3781,26 @@ public class ObservationDefinition extends DomainResource {
         children.add(new Property("url", "uri", "An absolute URL that is used to identify this ObservationDefinition when it is referenced in a specification, model, design or an instance. This SHALL be a URL, SHOULD be globally unique, and SHOULD be an address at which this ObservationDefinition is (or will be) published. The URL SHOULD include the major version of the ObservationDefinition. For more information see Technical and Business Versions.", 0, 1, url));
         children.add(new Property("identifier", "Identifier", "Business identifiers assigned to this ObservationDefinition. by the performer and/or other systems. These identifiers remain constant as the resource is updated and propagates from server to server.", 0, 1, identifier));
         children.add(new Property("version", "string", "The identifier that is used to identify this version of the ObservationDefinition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the ObservationDefinition author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions are orderable.", 0, 1, version));
+        children.add(new Property("versionAlgorithm[x]", "string|Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm));
         children.add(new Property("name", "string", "A natural language name identifying the ObservationDefinition. This name should be usable as an identifier for the module by machine processing applications such as code generation.", 0, 1, name));
         children.add(new Property("title", "string", "A short, descriptive, user-friendly title for the ObservationDefinition.", 0, 1, title));
         children.add(new Property("status", "code", "The current state of the ObservationDefinition.", 0, 1, status));
         children.add(new Property("experimental", "boolean", "A flag to indicate that this ObservationDefinition is authored for testing purposes (or education/evaluation/marketing), and is not intended to be used for genuine usage.", 0, 1, experimental));
-        children.add(new Property("date", "dateTime", "The date (and optionally time) when the ObservationDefinition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.", 0, 1, date));
-        children.add(new Property("publisher", "Reference(Practitioner|PractitionerRole|Organization)", "Helps establish the \"authority/credibility\" of the ObservationDefinition. May also allow for contact.", 0, 1, publisher));
+        children.add(new Property("date", "dateTime", "The date (and optionally time) when the ObservationDefinition was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.", 0, 1, date));
+        children.add(new Property("publisher", "string", "Helps establish the \"authority/credibility\" of the ObservationDefinition. May also allow for contact.", 0, 1, publisher));
         children.add(new Property("contact", "ContactDetail", "Contact details to assist a user in finding and communicating with the publisher.", 0, java.lang.Integer.MAX_VALUE, contact));
         children.add(new Property("description", "markdown", "A free text natural language description of the ObservationDefinition from the consumer's perspective.", 0, 1, description));
         children.add(new Property("useContext", "UsageContext", "The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (insurance plans, studies, ...) and may be used to assist with indexing and searching for appropriate ObservationDefinition instances.", 0, java.lang.Integer.MAX_VALUE, useContext));
         children.add(new Property("jurisdiction", "CodeableConcept", "A jurisdiction in which the ObservationDefinition is intended to be used.", 0, java.lang.Integer.MAX_VALUE, jurisdiction));
         children.add(new Property("purpose", "markdown", "Explains why this ObservationDefinition is needed and why it has been designed as it has.", 0, 1, purpose));
         children.add(new Property("copyright", "markdown", "Copyright statement relating to the ObservationDefinition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the ObservationDefinition.", 0, 1, copyright));
+        children.add(new Property("copyrightLabel", "string", "A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').", 0, 1, copyrightLabel));
         children.add(new Property("approvalDate", "date", "The date on which the asset content was approved by the publisher. Approval happens once when the content is officially approved for usage.", 0, 1, approvalDate));
         children.add(new Property("lastReviewDate", "date", "The date on which the asset content was last reviewed. Review happens periodically after that, but doesn't change the original approval date.", 0, 1, lastReviewDate));
         children.add(new Property("effectivePeriod", "Period", "The period during which the ObservationDefinition content was or is planned to be effective.", 0, 1, effectivePeriod));
         children.add(new Property("derivedFromCanonical", "canonical(ObservationDefinition)", "The canonical URL pointing to another FHIR-defined ObservationDefinition that is adhered to in whole or in part by this definition.", 0, java.lang.Integer.MAX_VALUE, derivedFromCanonical));
         children.add(new Property("derivedFromUri", "uri", "The URL pointing to an externally-defined observation definition, guideline or other definition that is adhered to in whole or in part by this definition.", 0, java.lang.Integer.MAX_VALUE, derivedFromUri));
-        children.add(new Property("subject", "CodeableConcept", "A code that describes the intended kind of subject of Observation instances conforming to this ObservationDefinition.", 0, 1, subject));
+        children.add(new Property("subject", "CodeableConcept", "A code that describes the intended kind of subject of Observation instances conforming to this ObservationDefinition.", 0, java.lang.Integer.MAX_VALUE, subject));
         children.add(new Property("performerType", "CodeableConcept", "The type of individual/organization/device that is expected to act upon instances of this definition.", 0, 1, performerType));
         children.add(new Property("category", "CodeableConcept", "A code that classifies the general type of observation.", 0, java.lang.Integer.MAX_VALUE, category));
         children.add(new Property("code", "CodeableConcept", "Describes what will be observed. Sometimes this is called the observation \"name\".", 0, 1, code));
@@ -3869,7 +3811,7 @@ public class ObservationDefinition extends DomainResource {
         children.add(new Property("specimen", "Reference(SpecimenDefinition)", "The kind of specimen that this type of observation is produced on.", 0, java.lang.Integer.MAX_VALUE, specimen));
         children.add(new Property("device", "Reference(DeviceDefinition|Device)", "The measurement model of device or actual device used to produce observations of this type.", 0, java.lang.Integer.MAX_VALUE, device));
         children.add(new Property("preferredReportName", "string", "The preferred name to be used when reporting the results of observations conforming to this ObservationDefinition.", 0, 1, preferredReportName));
-        children.add(new Property("quantitativeDetails", "", "Characteristics for quantitative results of observations conforming to this ObservationDefinition.", 0, 1, quantitativeDetails));
+        children.add(new Property("permittedUnit", "Coding", "Units allowed for the valueQuantity element in the instance observations conforming to this ObservationDefinition.", 0, java.lang.Integer.MAX_VALUE, permittedUnit));
         children.add(new Property("qualifiedValue", "", "A set of qualified values associated with a context and a set of conditions -  provides a range for quantitative and ordinal observations and a collection of value sets for qualitative observations.", 0, java.lang.Integer.MAX_VALUE, qualifiedValue));
         children.add(new Property("hasMember", "Reference(ObservationDefinition|Questionnaire)", "This ObservationDefinition defines a group  observation (e.g. a battery, a panel of tests, a set of vital sign measurements) that includes the target as a member of the group.", 0, java.lang.Integer.MAX_VALUE, hasMember));
         children.add(new Property("component", "", "Some observations have multiple component observations, expressed as separate code value pairs.", 0, java.lang.Integer.MAX_VALUE, component));
@@ -3881,24 +3823,29 @@ public class ObservationDefinition extends DomainResource {
         case 116079: /*url*/  return new Property("url", "uri", "An absolute URL that is used to identify this ObservationDefinition when it is referenced in a specification, model, design or an instance. This SHALL be a URL, SHOULD be globally unique, and SHOULD be an address at which this ObservationDefinition is (or will be) published. The URL SHOULD include the major version of the ObservationDefinition. For more information see Technical and Business Versions.", 0, 1, url);
         case -1618432855: /*identifier*/  return new Property("identifier", "Identifier", "Business identifiers assigned to this ObservationDefinition. by the performer and/or other systems. These identifiers remain constant as the resource is updated and propagates from server to server.", 0, 1, identifier);
         case 351608024: /*version*/  return new Property("version", "string", "The identifier that is used to identify this version of the ObservationDefinition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the ObservationDefinition author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions are orderable.", 0, 1, version);
+        case -115699031: /*versionAlgorithm[x]*/  return new Property("versionAlgorithm[x]", "string|Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
+        case 1508158071: /*versionAlgorithm*/  return new Property("versionAlgorithm[x]", "string|Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
+        case 1836908904: /*versionAlgorithmString*/  return new Property("versionAlgorithm[x]", "string", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
+        case 1373807809: /*versionAlgorithmCoding*/  return new Property("versionAlgorithm[x]", "Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
         case 3373707: /*name*/  return new Property("name", "string", "A natural language name identifying the ObservationDefinition. This name should be usable as an identifier for the module by machine processing applications such as code generation.", 0, 1, name);
         case 110371416: /*title*/  return new Property("title", "string", "A short, descriptive, user-friendly title for the ObservationDefinition.", 0, 1, title);
         case -892481550: /*status*/  return new Property("status", "code", "The current state of the ObservationDefinition.", 0, 1, status);
         case -404562712: /*experimental*/  return new Property("experimental", "boolean", "A flag to indicate that this ObservationDefinition is authored for testing purposes (or education/evaluation/marketing), and is not intended to be used for genuine usage.", 0, 1, experimental);
-        case 3076014: /*date*/  return new Property("date", "dateTime", "The date (and optionally time) when the ObservationDefinition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.", 0, 1, date);
-        case 1447404028: /*publisher*/  return new Property("publisher", "Reference(Practitioner|PractitionerRole|Organization)", "Helps establish the \"authority/credibility\" of the ObservationDefinition. May also allow for contact.", 0, 1, publisher);
+        case 3076014: /*date*/  return new Property("date", "dateTime", "The date (and optionally time) when the ObservationDefinition was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the ObservationDefinition changes.", 0, 1, date);
+        case 1447404028: /*publisher*/  return new Property("publisher", "string", "Helps establish the \"authority/credibility\" of the ObservationDefinition. May also allow for contact.", 0, 1, publisher);
         case 951526432: /*contact*/  return new Property("contact", "ContactDetail", "Contact details to assist a user in finding and communicating with the publisher.", 0, java.lang.Integer.MAX_VALUE, contact);
         case -1724546052: /*description*/  return new Property("description", "markdown", "A free text natural language description of the ObservationDefinition from the consumer's perspective.", 0, 1, description);
         case -669707736: /*useContext*/  return new Property("useContext", "UsageContext", "The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (insurance plans, studies, ...) and may be used to assist with indexing and searching for appropriate ObservationDefinition instances.", 0, java.lang.Integer.MAX_VALUE, useContext);
         case -507075711: /*jurisdiction*/  return new Property("jurisdiction", "CodeableConcept", "A jurisdiction in which the ObservationDefinition is intended to be used.", 0, java.lang.Integer.MAX_VALUE, jurisdiction);
         case -220463842: /*purpose*/  return new Property("purpose", "markdown", "Explains why this ObservationDefinition is needed and why it has been designed as it has.", 0, 1, purpose);
         case 1522889671: /*copyright*/  return new Property("copyright", "markdown", "Copyright statement relating to the ObservationDefinition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the ObservationDefinition.", 0, 1, copyright);
+        case 765157229: /*copyrightLabel*/  return new Property("copyrightLabel", "string", "A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').", 0, 1, copyrightLabel);
         case 223539345: /*approvalDate*/  return new Property("approvalDate", "date", "The date on which the asset content was approved by the publisher. Approval happens once when the content is officially approved for usage.", 0, 1, approvalDate);
         case -1687512484: /*lastReviewDate*/  return new Property("lastReviewDate", "date", "The date on which the asset content was last reviewed. Review happens periodically after that, but doesn't change the original approval date.", 0, 1, lastReviewDate);
         case -403934648: /*effectivePeriod*/  return new Property("effectivePeriod", "Period", "The period during which the ObservationDefinition content was or is planned to be effective.", 0, 1, effectivePeriod);
         case -978133683: /*derivedFromCanonical*/  return new Property("derivedFromCanonical", "canonical(ObservationDefinition)", "The canonical URL pointing to another FHIR-defined ObservationDefinition that is adhered to in whole or in part by this definition.", 0, java.lang.Integer.MAX_VALUE, derivedFromCanonical);
         case -1076333435: /*derivedFromUri*/  return new Property("derivedFromUri", "uri", "The URL pointing to an externally-defined observation definition, guideline or other definition that is adhered to in whole or in part by this definition.", 0, java.lang.Integer.MAX_VALUE, derivedFromUri);
-        case -1867885268: /*subject*/  return new Property("subject", "CodeableConcept", "A code that describes the intended kind of subject of Observation instances conforming to this ObservationDefinition.", 0, 1, subject);
+        case -1867885268: /*subject*/  return new Property("subject", "CodeableConcept", "A code that describes the intended kind of subject of Observation instances conforming to this ObservationDefinition.", 0, java.lang.Integer.MAX_VALUE, subject);
         case -901444568: /*performerType*/  return new Property("performerType", "CodeableConcept", "The type of individual/organization/device that is expected to act upon instances of this definition.", 0, 1, performerType);
         case 50511102: /*category*/  return new Property("category", "CodeableConcept", "A code that classifies the general type of observation.", 0, java.lang.Integer.MAX_VALUE, category);
         case 3059181: /*code*/  return new Property("code", "CodeableConcept", "Describes what will be observed. Sometimes this is called the observation \"name\".", 0, 1, code);
@@ -3909,7 +3856,7 @@ public class ObservationDefinition extends DomainResource {
         case -2132868344: /*specimen*/  return new Property("specimen", "Reference(SpecimenDefinition)", "The kind of specimen that this type of observation is produced on.", 0, java.lang.Integer.MAX_VALUE, specimen);
         case -1335157162: /*device*/  return new Property("device", "Reference(DeviceDefinition|Device)", "The measurement model of device or actual device used to produce observations of this type.", 0, java.lang.Integer.MAX_VALUE, device);
         case -1851030208: /*preferredReportName*/  return new Property("preferredReportName", "string", "The preferred name to be used when reporting the results of observations conforming to this ObservationDefinition.", 0, 1, preferredReportName);
-        case 842150763: /*quantitativeDetails*/  return new Property("quantitativeDetails", "", "Characteristics for quantitative results of observations conforming to this ObservationDefinition.", 0, 1, quantitativeDetails);
+        case 1073054652: /*permittedUnit*/  return new Property("permittedUnit", "Coding", "Units allowed for the valueQuantity element in the instance observations conforming to this ObservationDefinition.", 0, java.lang.Integer.MAX_VALUE, permittedUnit);
         case -558517707: /*qualifiedValue*/  return new Property("qualifiedValue", "", "A set of qualified values associated with a context and a set of conditions -  provides a range for quantitative and ordinal observations and a collection of value sets for qualitative observations.", 0, java.lang.Integer.MAX_VALUE, qualifiedValue);
         case -458019372: /*hasMember*/  return new Property("hasMember", "Reference(ObservationDefinition|Questionnaire)", "This ObservationDefinition defines a group  observation (e.g. a battery, a panel of tests, a set of vital sign measurements) that includes the target as a member of the group.", 0, java.lang.Integer.MAX_VALUE, hasMember);
         case -1399907075: /*component*/  return new Property("component", "", "Some observations have multiple component observations, expressed as separate code value pairs.", 0, java.lang.Integer.MAX_VALUE, component);
@@ -3924,24 +3871,26 @@ public class ObservationDefinition extends DomainResource {
         case 116079: /*url*/ return this.url == null ? new Base[0] : new Base[] {this.url}; // UriType
         case -1618432855: /*identifier*/ return this.identifier == null ? new Base[0] : new Base[] {this.identifier}; // Identifier
         case 351608024: /*version*/ return this.version == null ? new Base[0] : new Base[] {this.version}; // StringType
+        case 1508158071: /*versionAlgorithm*/ return this.versionAlgorithm == null ? new Base[0] : new Base[] {this.versionAlgorithm}; // DataType
         case 3373707: /*name*/ return this.name == null ? new Base[0] : new Base[] {this.name}; // StringType
         case 110371416: /*title*/ return this.title == null ? new Base[0] : new Base[] {this.title}; // StringType
         case -892481550: /*status*/ return this.status == null ? new Base[0] : new Base[] {this.status}; // Enumeration<PublicationStatus>
         case -404562712: /*experimental*/ return this.experimental == null ? new Base[0] : new Base[] {this.experimental}; // BooleanType
         case 3076014: /*date*/ return this.date == null ? new Base[0] : new Base[] {this.date}; // DateTimeType
-        case 1447404028: /*publisher*/ return this.publisher == null ? new Base[0] : new Base[] {this.publisher}; // Reference
+        case 1447404028: /*publisher*/ return this.publisher == null ? new Base[0] : new Base[] {this.publisher}; // StringType
         case 951526432: /*contact*/ return this.contact == null ? new Base[0] : this.contact.toArray(new Base[this.contact.size()]); // ContactDetail
         case -1724546052: /*description*/ return this.description == null ? new Base[0] : new Base[] {this.description}; // MarkdownType
         case -669707736: /*useContext*/ return this.useContext == null ? new Base[0] : this.useContext.toArray(new Base[this.useContext.size()]); // UsageContext
         case -507075711: /*jurisdiction*/ return this.jurisdiction == null ? new Base[0] : this.jurisdiction.toArray(new Base[this.jurisdiction.size()]); // CodeableConcept
         case -220463842: /*purpose*/ return this.purpose == null ? new Base[0] : new Base[] {this.purpose}; // MarkdownType
         case 1522889671: /*copyright*/ return this.copyright == null ? new Base[0] : new Base[] {this.copyright}; // MarkdownType
+        case 765157229: /*copyrightLabel*/ return this.copyrightLabel == null ? new Base[0] : new Base[] {this.copyrightLabel}; // StringType
         case 223539345: /*approvalDate*/ return this.approvalDate == null ? new Base[0] : new Base[] {this.approvalDate}; // DateType
         case -1687512484: /*lastReviewDate*/ return this.lastReviewDate == null ? new Base[0] : new Base[] {this.lastReviewDate}; // DateType
         case -403934648: /*effectivePeriod*/ return this.effectivePeriod == null ? new Base[0] : new Base[] {this.effectivePeriod}; // Period
         case -978133683: /*derivedFromCanonical*/ return this.derivedFromCanonical == null ? new Base[0] : this.derivedFromCanonical.toArray(new Base[this.derivedFromCanonical.size()]); // CanonicalType
         case -1076333435: /*derivedFromUri*/ return this.derivedFromUri == null ? new Base[0] : this.derivedFromUri.toArray(new Base[this.derivedFromUri.size()]); // UriType
-        case -1867885268: /*subject*/ return this.subject == null ? new Base[0] : new Base[] {this.subject}; // CodeableConcept
+        case -1867885268: /*subject*/ return this.subject == null ? new Base[0] : this.subject.toArray(new Base[this.subject.size()]); // CodeableConcept
         case -901444568: /*performerType*/ return this.performerType == null ? new Base[0] : new Base[] {this.performerType}; // CodeableConcept
         case 50511102: /*category*/ return this.category == null ? new Base[0] : this.category.toArray(new Base[this.category.size()]); // CodeableConcept
         case 3059181: /*code*/ return this.code == null ? new Base[0] : new Base[] {this.code}; // CodeableConcept
@@ -3952,7 +3901,7 @@ public class ObservationDefinition extends DomainResource {
         case -2132868344: /*specimen*/ return this.specimen == null ? new Base[0] : this.specimen.toArray(new Base[this.specimen.size()]); // Reference
         case -1335157162: /*device*/ return this.device == null ? new Base[0] : this.device.toArray(new Base[this.device.size()]); // Reference
         case -1851030208: /*preferredReportName*/ return this.preferredReportName == null ? new Base[0] : new Base[] {this.preferredReportName}; // StringType
-        case 842150763: /*quantitativeDetails*/ return this.quantitativeDetails == null ? new Base[0] : new Base[] {this.quantitativeDetails}; // ObservationDefinitionQuantitativeDetailsComponent
+        case 1073054652: /*permittedUnit*/ return this.permittedUnit == null ? new Base[0] : this.permittedUnit.toArray(new Base[this.permittedUnit.size()]); // Coding
         case -558517707: /*qualifiedValue*/ return this.qualifiedValue == null ? new Base[0] : this.qualifiedValue.toArray(new Base[this.qualifiedValue.size()]); // ObservationDefinitionQualifiedValueComponent
         case -458019372: /*hasMember*/ return this.hasMember == null ? new Base[0] : this.hasMember.toArray(new Base[this.hasMember.size()]); // Reference
         case -1399907075: /*component*/ return this.component == null ? new Base[0] : this.component.toArray(new Base[this.component.size()]); // ObservationDefinitionComponentComponent
@@ -3973,6 +3922,9 @@ public class ObservationDefinition extends DomainResource {
         case 351608024: // version
           this.version = TypeConvertor.castToString(value); // StringType
           return value;
+        case 1508158071: // versionAlgorithm
+          this.versionAlgorithm = TypeConvertor.castToType(value); // DataType
+          return value;
         case 3373707: // name
           this.name = TypeConvertor.castToString(value); // StringType
           return value;
@@ -3990,7 +3942,7 @@ public class ObservationDefinition extends DomainResource {
           this.date = TypeConvertor.castToDateTime(value); // DateTimeType
           return value;
         case 1447404028: // publisher
-          this.publisher = TypeConvertor.castToReference(value); // Reference
+          this.publisher = TypeConvertor.castToString(value); // StringType
           return value;
         case 951526432: // contact
           this.getContact().add(TypeConvertor.castToContactDetail(value)); // ContactDetail
@@ -4010,6 +3962,9 @@ public class ObservationDefinition extends DomainResource {
         case 1522889671: // copyright
           this.copyright = TypeConvertor.castToMarkdown(value); // MarkdownType
           return value;
+        case 765157229: // copyrightLabel
+          this.copyrightLabel = TypeConvertor.castToString(value); // StringType
+          return value;
         case 223539345: // approvalDate
           this.approvalDate = TypeConvertor.castToDate(value); // DateType
           return value;
@@ -4026,7 +3981,7 @@ public class ObservationDefinition extends DomainResource {
           this.getDerivedFromUri().add(TypeConvertor.castToUri(value)); // UriType
           return value;
         case -1867885268: // subject
-          this.subject = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
+          this.getSubject().add(TypeConvertor.castToCodeableConcept(value)); // CodeableConcept
           return value;
         case -901444568: // performerType
           this.performerType = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
@@ -4059,8 +4014,8 @@ public class ObservationDefinition extends DomainResource {
         case -1851030208: // preferredReportName
           this.preferredReportName = TypeConvertor.castToString(value); // StringType
           return value;
-        case 842150763: // quantitativeDetails
-          this.quantitativeDetails = (ObservationDefinitionQuantitativeDetailsComponent) value; // ObservationDefinitionQuantitativeDetailsComponent
+        case 1073054652: // permittedUnit
+          this.getPermittedUnit().add(TypeConvertor.castToCoding(value)); // Coding
           return value;
         case -558517707: // qualifiedValue
           this.getQualifiedValue().add((ObservationDefinitionQualifiedValueComponent) value); // ObservationDefinitionQualifiedValueComponent
@@ -4084,6 +4039,8 @@ public class ObservationDefinition extends DomainResource {
           this.identifier = TypeConvertor.castToIdentifier(value); // Identifier
         } else if (name.equals("version")) {
           this.version = TypeConvertor.castToString(value); // StringType
+        } else if (name.equals("versionAlgorithm[x]")) {
+          this.versionAlgorithm = TypeConvertor.castToType(value); // DataType
         } else if (name.equals("name")) {
           this.name = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("title")) {
@@ -4096,7 +4053,7 @@ public class ObservationDefinition extends DomainResource {
         } else if (name.equals("date")) {
           this.date = TypeConvertor.castToDateTime(value); // DateTimeType
         } else if (name.equals("publisher")) {
-          this.publisher = TypeConvertor.castToReference(value); // Reference
+          this.publisher = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("contact")) {
           this.getContact().add(TypeConvertor.castToContactDetail(value));
         } else if (name.equals("description")) {
@@ -4109,6 +4066,8 @@ public class ObservationDefinition extends DomainResource {
           this.purpose = TypeConvertor.castToMarkdown(value); // MarkdownType
         } else if (name.equals("copyright")) {
           this.copyright = TypeConvertor.castToMarkdown(value); // MarkdownType
+        } else if (name.equals("copyrightLabel")) {
+          this.copyrightLabel = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("approvalDate")) {
           this.approvalDate = TypeConvertor.castToDate(value); // DateType
         } else if (name.equals("lastReviewDate")) {
@@ -4120,7 +4079,7 @@ public class ObservationDefinition extends DomainResource {
         } else if (name.equals("derivedFromUri")) {
           this.getDerivedFromUri().add(TypeConvertor.castToUri(value));
         } else if (name.equals("subject")) {
-          this.subject = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
+          this.getSubject().add(TypeConvertor.castToCodeableConcept(value));
         } else if (name.equals("performerType")) {
           this.performerType = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
         } else if (name.equals("category")) {
@@ -4142,8 +4101,8 @@ public class ObservationDefinition extends DomainResource {
           this.getDevice().add(TypeConvertor.castToReference(value));
         } else if (name.equals("preferredReportName")) {
           this.preferredReportName = TypeConvertor.castToString(value); // StringType
-        } else if (name.equals("quantitativeDetails")) {
-          this.quantitativeDetails = (ObservationDefinitionQuantitativeDetailsComponent) value; // ObservationDefinitionQuantitativeDetailsComponent
+        } else if (name.equals("permittedUnit")) {
+          this.getPermittedUnit().add(TypeConvertor.castToCoding(value));
         } else if (name.equals("qualifiedValue")) {
           this.getQualifiedValue().add((ObservationDefinitionQualifiedValueComponent) value);
         } else if (name.equals("hasMember")) {
@@ -4155,30 +4114,116 @@ public class ObservationDefinition extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("url")) {
+          this.url = null;
+        } else if (name.equals("identifier")) {
+          this.identifier = null;
+        } else if (name.equals("version")) {
+          this.version = null;
+        } else if (name.equals("versionAlgorithm[x]")) {
+          this.versionAlgorithm = null;
+        } else if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("title")) {
+          this.title = null;
+        } else if (name.equals("status")) {
+          value = new PublicationStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<PublicationStatus>
+        } else if (name.equals("experimental")) {
+          this.experimental = null;
+        } else if (name.equals("date")) {
+          this.date = null;
+        } else if (name.equals("publisher")) {
+          this.publisher = null;
+        } else if (name.equals("contact")) {
+          this.getContact().remove(value);
+        } else if (name.equals("description")) {
+          this.description = null;
+        } else if (name.equals("useContext")) {
+          this.getUseContext().remove(value);
+        } else if (name.equals("jurisdiction")) {
+          this.getJurisdiction().remove(value);
+        } else if (name.equals("purpose")) {
+          this.purpose = null;
+        } else if (name.equals("copyright")) {
+          this.copyright = null;
+        } else if (name.equals("copyrightLabel")) {
+          this.copyrightLabel = null;
+        } else if (name.equals("approvalDate")) {
+          this.approvalDate = null;
+        } else if (name.equals("lastReviewDate")) {
+          this.lastReviewDate = null;
+        } else if (name.equals("effectivePeriod")) {
+          this.effectivePeriod = null;
+        } else if (name.equals("derivedFromCanonical")) {
+          this.getDerivedFromCanonical().remove(value);
+        } else if (name.equals("derivedFromUri")) {
+          this.getDerivedFromUri().remove(value);
+        } else if (name.equals("subject")) {
+          this.getSubject().remove(value);
+        } else if (name.equals("performerType")) {
+          this.performerType = null;
+        } else if (name.equals("category")) {
+          this.getCategory().remove(value);
+        } else if (name.equals("code")) {
+          this.code = null;
+        } else if (name.equals("permittedDataType")) {
+          value = new ObservationDataTypeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.getPermittedDataType().remove((Enumeration) value);
+        } else if (name.equals("multipleResultsAllowed")) {
+          this.multipleResultsAllowed = null;
+        } else if (name.equals("bodySite")) {
+          this.bodySite = null;
+        } else if (name.equals("method")) {
+          this.method = null;
+        } else if (name.equals("specimen")) {
+          this.getSpecimen().remove(value);
+        } else if (name.equals("device")) {
+          this.getDevice().remove(value);
+        } else if (name.equals("preferredReportName")) {
+          this.preferredReportName = null;
+        } else if (name.equals("permittedUnit")) {
+          this.getPermittedUnit().remove(value);
+        } else if (name.equals("qualifiedValue")) {
+          this.getQualifiedValue().remove((ObservationDefinitionQualifiedValueComponent) value);
+        } else if (name.equals("hasMember")) {
+          this.getHasMember().remove(value);
+        } else if (name.equals("component")) {
+          this.getComponent().remove((ObservationDefinitionComponentComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
         case 116079:  return getUrlElement();
         case -1618432855:  return getIdentifier();
         case 351608024:  return getVersionElement();
+        case -115699031:  return getVersionAlgorithm();
+        case 1508158071:  return getVersionAlgorithm();
         case 3373707:  return getNameElement();
         case 110371416:  return getTitleElement();
         case -892481550:  return getStatusElement();
         case -404562712:  return getExperimentalElement();
         case 3076014:  return getDateElement();
-        case 1447404028:  return getPublisher();
+        case 1447404028:  return getPublisherElement();
         case 951526432:  return addContact(); 
         case -1724546052:  return getDescriptionElement();
         case -669707736:  return addUseContext(); 
         case -507075711:  return addJurisdiction(); 
         case -220463842:  return getPurposeElement();
         case 1522889671:  return getCopyrightElement();
+        case 765157229:  return getCopyrightLabelElement();
         case 223539345:  return getApprovalDateElement();
         case -1687512484:  return getLastReviewDateElement();
         case -403934648:  return getEffectivePeriod();
         case -978133683:  return addDerivedFromCanonicalElement();
         case -1076333435:  return addDerivedFromUriElement();
-        case -1867885268:  return getSubject();
+        case -1867885268:  return addSubject(); 
         case -901444568:  return getPerformerType();
         case 50511102:  return addCategory(); 
         case 3059181:  return getCode();
@@ -4189,7 +4234,7 @@ public class ObservationDefinition extends DomainResource {
         case -2132868344:  return addSpecimen(); 
         case -1335157162:  return addDevice(); 
         case -1851030208:  return getPreferredReportNameElement();
-        case 842150763:  return getQuantitativeDetails();
+        case 1073054652:  return addPermittedUnit(); 
         case -558517707:  return addQualifiedValue(); 
         case -458019372:  return addHasMember(); 
         case -1399907075:  return addComponent(); 
@@ -4204,18 +4249,20 @@ public class ObservationDefinition extends DomainResource {
         case 116079: /*url*/ return new String[] {"uri"};
         case -1618432855: /*identifier*/ return new String[] {"Identifier"};
         case 351608024: /*version*/ return new String[] {"string"};
+        case 1508158071: /*versionAlgorithm*/ return new String[] {"string", "Coding"};
         case 3373707: /*name*/ return new String[] {"string"};
         case 110371416: /*title*/ return new String[] {"string"};
         case -892481550: /*status*/ return new String[] {"code"};
         case -404562712: /*experimental*/ return new String[] {"boolean"};
         case 3076014: /*date*/ return new String[] {"dateTime"};
-        case 1447404028: /*publisher*/ return new String[] {"Reference"};
+        case 1447404028: /*publisher*/ return new String[] {"string"};
         case 951526432: /*contact*/ return new String[] {"ContactDetail"};
         case -1724546052: /*description*/ return new String[] {"markdown"};
         case -669707736: /*useContext*/ return new String[] {"UsageContext"};
         case -507075711: /*jurisdiction*/ return new String[] {"CodeableConcept"};
         case -220463842: /*purpose*/ return new String[] {"markdown"};
         case 1522889671: /*copyright*/ return new String[] {"markdown"};
+        case 765157229: /*copyrightLabel*/ return new String[] {"string"};
         case 223539345: /*approvalDate*/ return new String[] {"date"};
         case -1687512484: /*lastReviewDate*/ return new String[] {"date"};
         case -403934648: /*effectivePeriod*/ return new String[] {"Period"};
@@ -4232,7 +4279,7 @@ public class ObservationDefinition extends DomainResource {
         case -2132868344: /*specimen*/ return new String[] {"Reference"};
         case -1335157162: /*device*/ return new String[] {"Reference"};
         case -1851030208: /*preferredReportName*/ return new String[] {"string"};
-        case 842150763: /*quantitativeDetails*/ return new String[] {};
+        case 1073054652: /*permittedUnit*/ return new String[] {"Coding"};
         case -558517707: /*qualifiedValue*/ return new String[] {};
         case -458019372: /*hasMember*/ return new String[] {"Reference"};
         case -1399907075: /*component*/ return new String[] {};
@@ -4244,39 +4291,46 @@ public class ObservationDefinition extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.url");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.url");
         }
         else if (name.equals("identifier")) {
           this.identifier = new Identifier();
           return this.identifier;
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.version");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.version");
+        }
+        else if (name.equals("versionAlgorithmString")) {
+          this.versionAlgorithm = new StringType();
+          return this.versionAlgorithm;
+        }
+        else if (name.equals("versionAlgorithmCoding")) {
+          this.versionAlgorithm = new Coding();
+          return this.versionAlgorithm;
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.name");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.name");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.title");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.title");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.status");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.status");
         }
         else if (name.equals("experimental")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.experimental");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.experimental");
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.date");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.date");
         }
         else if (name.equals("publisher")) {
-          this.publisher = new Reference();
-          return this.publisher;
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.publisher");
         }
         else if (name.equals("contact")) {
           return addContact();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.description");
         }
         else if (name.equals("useContext")) {
           return addUseContext();
@@ -4285,30 +4339,32 @@ public class ObservationDefinition extends DomainResource {
           return addJurisdiction();
         }
         else if (name.equals("purpose")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.purpose");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.purpose");
         }
         else if (name.equals("copyright")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.copyright");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.copyright");
+        }
+        else if (name.equals("copyrightLabel")) {
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.copyrightLabel");
         }
         else if (name.equals("approvalDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.approvalDate");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.approvalDate");
         }
         else if (name.equals("lastReviewDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.lastReviewDate");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.lastReviewDate");
         }
         else if (name.equals("effectivePeriod")) {
           this.effectivePeriod = new Period();
           return this.effectivePeriod;
         }
         else if (name.equals("derivedFromCanonical")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.derivedFromCanonical");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.derivedFromCanonical");
         }
         else if (name.equals("derivedFromUri")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.derivedFromUri");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.derivedFromUri");
         }
         else if (name.equals("subject")) {
-          this.subject = new CodeableConcept();
-          return this.subject;
+          return addSubject();
         }
         else if (name.equals("performerType")) {
           this.performerType = new CodeableConcept();
@@ -4322,10 +4378,10 @@ public class ObservationDefinition extends DomainResource {
           return this.code;
         }
         else if (name.equals("permittedDataType")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.permittedDataType");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.permittedDataType");
         }
         else if (name.equals("multipleResultsAllowed")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.multipleResultsAllowed");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.multipleResultsAllowed");
         }
         else if (name.equals("bodySite")) {
           this.bodySite = new CodeableConcept();
@@ -4342,11 +4398,10 @@ public class ObservationDefinition extends DomainResource {
           return addDevice();
         }
         else if (name.equals("preferredReportName")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ObservationDefinition.preferredReportName");
+          throw new FHIRException("Cannot call addChild on a singleton property ObservationDefinition.preferredReportName");
         }
-        else if (name.equals("quantitativeDetails")) {
-          this.quantitativeDetails = new ObservationDefinitionQuantitativeDetailsComponent();
-          return this.quantitativeDetails;
+        else if (name.equals("permittedUnit")) {
+          return addPermittedUnit();
         }
         else if (name.equals("qualifiedValue")) {
           return addQualifiedValue();
@@ -4372,11 +4427,16 @@ public class ObservationDefinition extends DomainResource {
         return dst;
       }
 
+      public void assignValues(Base dst) {
+        copyValues((ObservationDefinition) dst);
+      }
+
       public void copyValues(ObservationDefinition dst) {
         super.copyValues(dst);
         dst.url = url == null ? null : url.copy();
         dst.identifier = identifier == null ? null : identifier.copy();
         dst.version = version == null ? null : version.copy();
+        dst.versionAlgorithm = versionAlgorithm == null ? null : versionAlgorithm.copy();
         dst.name = name == null ? null : name.copy();
         dst.title = title == null ? null : title.copy();
         dst.status = status == null ? null : status.copy();
@@ -4401,6 +4461,7 @@ public class ObservationDefinition extends DomainResource {
         };
         dst.purpose = purpose == null ? null : purpose.copy();
         dst.copyright = copyright == null ? null : copyright.copy();
+        dst.copyrightLabel = copyrightLabel == null ? null : copyrightLabel.copy();
         dst.approvalDate = approvalDate == null ? null : approvalDate.copy();
         dst.lastReviewDate = lastReviewDate == null ? null : lastReviewDate.copy();
         dst.effectivePeriod = effectivePeriod == null ? null : effectivePeriod.copy();
@@ -4414,7 +4475,11 @@ public class ObservationDefinition extends DomainResource {
           for (UriType i : derivedFromUri)
             dst.derivedFromUri.add(i.copy());
         };
-        dst.subject = subject == null ? null : subject.copy();
+        if (subject != null) {
+          dst.subject = new ArrayList<CodeableConcept>();
+          for (CodeableConcept i : subject)
+            dst.subject.add(i.copy());
+        };
         dst.performerType = performerType == null ? null : performerType.copy();
         if (category != null) {
           dst.category = new ArrayList<CodeableConcept>();
@@ -4441,7 +4506,11 @@ public class ObservationDefinition extends DomainResource {
             dst.device.add(i.copy());
         };
         dst.preferredReportName = preferredReportName == null ? null : preferredReportName.copy();
-        dst.quantitativeDetails = quantitativeDetails == null ? null : quantitativeDetails.copy();
+        if (permittedUnit != null) {
+          dst.permittedUnit = new ArrayList<Coding>();
+          for (Coding i : permittedUnit)
+            dst.permittedUnit.add(i.copy());
+        };
         if (qualifiedValue != null) {
           dst.qualifiedValue = new ArrayList<ObservationDefinitionQualifiedValueComponent>();
           for (ObservationDefinitionQualifiedValueComponent i : qualifiedValue)
@@ -4471,10 +4540,11 @@ public class ObservationDefinition extends DomainResource {
           return false;
         ObservationDefinition o = (ObservationDefinition) other_;
         return compareDeep(url, o.url, true) && compareDeep(identifier, o.identifier, true) && compareDeep(version, o.version, true)
-           && compareDeep(name, o.name, true) && compareDeep(title, o.title, true) && compareDeep(status, o.status, true)
-           && compareDeep(experimental, o.experimental, true) && compareDeep(date, o.date, true) && compareDeep(publisher, o.publisher, true)
-           && compareDeep(contact, o.contact, true) && compareDeep(description, o.description, true) && compareDeep(useContext, o.useContext, true)
-           && compareDeep(jurisdiction, o.jurisdiction, true) && compareDeep(purpose, o.purpose, true) && compareDeep(copyright, o.copyright, true)
+           && compareDeep(versionAlgorithm, o.versionAlgorithm, true) && compareDeep(name, o.name, true) && compareDeep(title, o.title, true)
+           && compareDeep(status, o.status, true) && compareDeep(experimental, o.experimental, true) && compareDeep(date, o.date, true)
+           && compareDeep(publisher, o.publisher, true) && compareDeep(contact, o.contact, true) && compareDeep(description, o.description, true)
+           && compareDeep(useContext, o.useContext, true) && compareDeep(jurisdiction, o.jurisdiction, true)
+           && compareDeep(purpose, o.purpose, true) && compareDeep(copyright, o.copyright, true) && compareDeep(copyrightLabel, o.copyrightLabel, true)
            && compareDeep(approvalDate, o.approvalDate, true) && compareDeep(lastReviewDate, o.lastReviewDate, true)
            && compareDeep(effectivePeriod, o.effectivePeriod, true) && compareDeep(derivedFromCanonical, o.derivedFromCanonical, true)
            && compareDeep(derivedFromUri, o.derivedFromUri, true) && compareDeep(subject, o.subject, true)
@@ -4482,7 +4552,7 @@ public class ObservationDefinition extends DomainResource {
            && compareDeep(code, o.code, true) && compareDeep(permittedDataType, o.permittedDataType, true)
            && compareDeep(multipleResultsAllowed, o.multipleResultsAllowed, true) && compareDeep(bodySite, o.bodySite, true)
            && compareDeep(method, o.method, true) && compareDeep(specimen, o.specimen, true) && compareDeep(device, o.device, true)
-           && compareDeep(preferredReportName, o.preferredReportName, true) && compareDeep(quantitativeDetails, o.quantitativeDetails, true)
+           && compareDeep(preferredReportName, o.preferredReportName, true) && compareDeep(permittedUnit, o.permittedUnit, true)
            && compareDeep(qualifiedValue, o.qualifiedValue, true) && compareDeep(hasMember, o.hasMember, true)
            && compareDeep(component, o.component, true);
       }
@@ -4496,27 +4566,384 @@ public class ObservationDefinition extends DomainResource {
         ObservationDefinition o = (ObservationDefinition) other_;
         return compareValues(url, o.url, true) && compareValues(version, o.version, true) && compareValues(name, o.name, true)
            && compareValues(title, o.title, true) && compareValues(status, o.status, true) && compareValues(experimental, o.experimental, true)
-           && compareValues(date, o.date, true) && compareValues(description, o.description, true) && compareValues(purpose, o.purpose, true)
-           && compareValues(copyright, o.copyright, true) && compareValues(approvalDate, o.approvalDate, true)
-           && compareValues(lastReviewDate, o.lastReviewDate, true) && compareValues(derivedFromCanonical, o.derivedFromCanonical, true)
-           && compareValues(derivedFromUri, o.derivedFromUri, true) && compareValues(permittedDataType, o.permittedDataType, true)
-           && compareValues(multipleResultsAllowed, o.multipleResultsAllowed, true) && compareValues(preferredReportName, o.preferredReportName, true)
-          ;
+           && compareValues(date, o.date, true) && compareValues(publisher, o.publisher, true) && compareValues(description, o.description, true)
+           && compareValues(purpose, o.purpose, true) && compareValues(copyright, o.copyright, true) && compareValues(copyrightLabel, o.copyrightLabel, true)
+           && compareValues(approvalDate, o.approvalDate, true) && compareValues(lastReviewDate, o.lastReviewDate, true)
+           && compareValues(derivedFromCanonical, o.derivedFromCanonical, true) && compareValues(derivedFromUri, o.derivedFromUri, true)
+           && compareValues(permittedDataType, o.permittedDataType, true) && compareValues(multipleResultsAllowed, o.multipleResultsAllowed, true)
+           && compareValues(preferredReportName, o.preferredReportName, true);
       }
 
       public boolean isEmpty() {
         return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(url, identifier, version
-          , name, title, status, experimental, date, publisher, contact, description, useContext
-          , jurisdiction, purpose, copyright, approvalDate, lastReviewDate, effectivePeriod
-          , derivedFromCanonical, derivedFromUri, subject, performerType, category, code, permittedDataType
-          , multipleResultsAllowed, bodySite, method, specimen, device, preferredReportName
-          , quantitativeDetails, qualifiedValue, hasMember, component);
+          , versionAlgorithm, name, title, status, experimental, date, publisher, contact
+          , description, useContext, jurisdiction, purpose, copyright, copyrightLabel, approvalDate
+          , lastReviewDate, effectivePeriod, derivedFromCanonical, derivedFromUri, subject, performerType
+          , category, code, permittedDataType, multipleResultsAllowed, bodySite, method, specimen
+          , device, preferredReportName, permittedUnit, qualifiedValue, hasMember, component
+          );
       }
 
   @Override
   public ResourceType getResourceType() {
     return ResourceType.ObservationDefinition;
    }
+
+ /**
+   * Search parameter: <b>identifier</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): External identifier for the activity definition
+* [ActorDefinition](actordefinition.html): External identifier for the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): External identifier for the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): External identifier for the charge item definition
+* [Citation](citation.html): External identifier for the citation
+* [CodeSystem](codesystem.html): External identifier for the code system
+* [ConceptMap](conceptmap.html): External identifier for the concept map
+* [ConditionDefinition](conditiondefinition.html): External identifier for the condition definition
+* [EventDefinition](eventdefinition.html): External identifier for the event definition
+* [Evidence](evidence.html): External identifier for the evidence
+* [EvidenceReport](evidencereport.html): External identifier for the evidence report
+* [EvidenceVariable](evidencevariable.html): External identifier for the evidence variable
+* [ExampleScenario](examplescenario.html): External identifier for the example scenario
+* [GraphDefinition](graphdefinition.html): External identifier for the graph definition
+* [ImplementationGuide](implementationguide.html): External identifier for the implementation guide
+* [Library](library.html): External identifier for the library
+* [Measure](measure.html): External identifier for the measure
+* [MedicationKnowledge](medicationknowledge.html): Business identifier for this medication
+* [MessageDefinition](messagedefinition.html): External identifier for the message definition
+* [NamingSystem](namingsystem.html): External identifier for the naming system
+* [ObservationDefinition](observationdefinition.html): The unique identifier associated with the specimen definition
+* [OperationDefinition](operationdefinition.html): External identifier for the search parameter
+* [PlanDefinition](plandefinition.html): External identifier for the plan definition
+* [Questionnaire](questionnaire.html): External identifier for the questionnaire
+* [Requirements](requirements.html): External identifier for the requirements
+* [SearchParameter](searchparameter.html): External identifier for the search parameter
+* [SpecimenDefinition](specimendefinition.html): The unique identifier associated with the SpecimenDefinition
+* [StructureDefinition](structuredefinition.html): External identifier for the structure definition
+* [StructureMap](structuremap.html): External identifier for the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Business Identifier for SubscriptionTopic
+* [TerminologyCapabilities](terminologycapabilities.html): External identifier for the terminology capabilities
+* [TestPlan](testplan.html): An identifier for the test plan
+* [TestScript](testscript.html): External identifier for the test script
+* [ValueSet](valueset.html): External identifier for the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.identifier | ActorDefinition.identifier | CapabilityStatement.identifier | ChargeItemDefinition.identifier | Citation.identifier | CodeSystem.identifier | ConceptMap.identifier | ConditionDefinition.identifier | EventDefinition.identifier | Evidence.identifier | EvidenceReport.identifier | EvidenceVariable.identifier | ExampleScenario.identifier | GraphDefinition.identifier | ImplementationGuide.identifier | Library.identifier | Measure.identifier | MedicationKnowledge.identifier | MessageDefinition.identifier | NamingSystem.identifier | ObservationDefinition.identifier | OperationDefinition.identifier | PlanDefinition.identifier | Questionnaire.identifier | Requirements.identifier | SearchParameter.identifier | SpecimenDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | SubscriptionTopic.identifier | TerminologyCapabilities.identifier | TestPlan.identifier | TestScript.identifier | ValueSet.identifier</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="identifier", path="ActivityDefinition.identifier | ActorDefinition.identifier | CapabilityStatement.identifier | ChargeItemDefinition.identifier | Citation.identifier | CodeSystem.identifier | ConceptMap.identifier | ConditionDefinition.identifier | EventDefinition.identifier | Evidence.identifier | EvidenceReport.identifier | EvidenceVariable.identifier | ExampleScenario.identifier | GraphDefinition.identifier | ImplementationGuide.identifier | Library.identifier | Measure.identifier | MedicationKnowledge.identifier | MessageDefinition.identifier | NamingSystem.identifier | ObservationDefinition.identifier | OperationDefinition.identifier | PlanDefinition.identifier | Questionnaire.identifier | Requirements.identifier | SearchParameter.identifier | SpecimenDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | SubscriptionTopic.identifier | TerminologyCapabilities.identifier | TestPlan.identifier | TestScript.identifier | ValueSet.identifier", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): External identifier for the activity definition\r\n* [ActorDefinition](actordefinition.html): External identifier for the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): External identifier for the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): External identifier for the charge item definition\r\n* [Citation](citation.html): External identifier for the citation\r\n* [CodeSystem](codesystem.html): External identifier for the code system\r\n* [ConceptMap](conceptmap.html): External identifier for the concept map\r\n* [ConditionDefinition](conditiondefinition.html): External identifier for the condition definition\r\n* [EventDefinition](eventdefinition.html): External identifier for the event definition\r\n* [Evidence](evidence.html): External identifier for the evidence\r\n* [EvidenceReport](evidencereport.html): External identifier for the evidence report\r\n* [EvidenceVariable](evidencevariable.html): External identifier for the evidence variable\r\n* [ExampleScenario](examplescenario.html): External identifier for the example scenario\r\n* [GraphDefinition](graphdefinition.html): External identifier for the graph definition\r\n* [ImplementationGuide](implementationguide.html): External identifier for the implementation guide\r\n* [Library](library.html): External identifier for the library\r\n* [Measure](measure.html): External identifier for the measure\r\n* [MedicationKnowledge](medicationknowledge.html): Business identifier for this medication\r\n* [MessageDefinition](messagedefinition.html): External identifier for the message definition\r\n* [NamingSystem](namingsystem.html): External identifier for the naming system\r\n* [ObservationDefinition](observationdefinition.html): The unique identifier associated with the specimen definition\r\n* [OperationDefinition](operationdefinition.html): External identifier for the search parameter\r\n* [PlanDefinition](plandefinition.html): External identifier for the plan definition\r\n* [Questionnaire](questionnaire.html): External identifier for the questionnaire\r\n* [Requirements](requirements.html): External identifier for the requirements\r\n* [SearchParameter](searchparameter.html): External identifier for the search parameter\r\n* [SpecimenDefinition](specimendefinition.html): The unique identifier associated with the SpecimenDefinition\r\n* [StructureDefinition](structuredefinition.html): External identifier for the structure definition\r\n* [StructureMap](structuremap.html): External identifier for the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): Business Identifier for SubscriptionTopic\r\n* [TerminologyCapabilities](terminologycapabilities.html): External identifier for the terminology capabilities\r\n* [TestPlan](testplan.html): An identifier for the test plan\r\n* [TestScript](testscript.html): External identifier for the test script\r\n* [ValueSet](valueset.html): External identifier for the value set\r\n", type="token" )
+  public static final String SP_IDENTIFIER = "identifier";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>identifier</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): External identifier for the activity definition
+* [ActorDefinition](actordefinition.html): External identifier for the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): External identifier for the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): External identifier for the charge item definition
+* [Citation](citation.html): External identifier for the citation
+* [CodeSystem](codesystem.html): External identifier for the code system
+* [ConceptMap](conceptmap.html): External identifier for the concept map
+* [ConditionDefinition](conditiondefinition.html): External identifier for the condition definition
+* [EventDefinition](eventdefinition.html): External identifier for the event definition
+* [Evidence](evidence.html): External identifier for the evidence
+* [EvidenceReport](evidencereport.html): External identifier for the evidence report
+* [EvidenceVariable](evidencevariable.html): External identifier for the evidence variable
+* [ExampleScenario](examplescenario.html): External identifier for the example scenario
+* [GraphDefinition](graphdefinition.html): External identifier for the graph definition
+* [ImplementationGuide](implementationguide.html): External identifier for the implementation guide
+* [Library](library.html): External identifier for the library
+* [Measure](measure.html): External identifier for the measure
+* [MedicationKnowledge](medicationknowledge.html): Business identifier for this medication
+* [MessageDefinition](messagedefinition.html): External identifier for the message definition
+* [NamingSystem](namingsystem.html): External identifier for the naming system
+* [ObservationDefinition](observationdefinition.html): The unique identifier associated with the specimen definition
+* [OperationDefinition](operationdefinition.html): External identifier for the search parameter
+* [PlanDefinition](plandefinition.html): External identifier for the plan definition
+* [Questionnaire](questionnaire.html): External identifier for the questionnaire
+* [Requirements](requirements.html): External identifier for the requirements
+* [SearchParameter](searchparameter.html): External identifier for the search parameter
+* [SpecimenDefinition](specimendefinition.html): The unique identifier associated with the SpecimenDefinition
+* [StructureDefinition](structuredefinition.html): External identifier for the structure definition
+* [StructureMap](structuremap.html): External identifier for the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Business Identifier for SubscriptionTopic
+* [TerminologyCapabilities](terminologycapabilities.html): External identifier for the terminology capabilities
+* [TestPlan](testplan.html): An identifier for the test plan
+* [TestScript](testscript.html): External identifier for the test script
+* [ValueSet](valueset.html): External identifier for the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.identifier | ActorDefinition.identifier | CapabilityStatement.identifier | ChargeItemDefinition.identifier | Citation.identifier | CodeSystem.identifier | ConceptMap.identifier | ConditionDefinition.identifier | EventDefinition.identifier | Evidence.identifier | EvidenceReport.identifier | EvidenceVariable.identifier | ExampleScenario.identifier | GraphDefinition.identifier | ImplementationGuide.identifier | Library.identifier | Measure.identifier | MedicationKnowledge.identifier | MessageDefinition.identifier | NamingSystem.identifier | ObservationDefinition.identifier | OperationDefinition.identifier | PlanDefinition.identifier | Questionnaire.identifier | Requirements.identifier | SearchParameter.identifier | SpecimenDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | SubscriptionTopic.identifier | TerminologyCapabilities.identifier | TestPlan.identifier | TestScript.identifier | ValueSet.identifier</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
+
+ /**
+   * Search parameter: <b>status</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The current status of the activity definition
+* [ActorDefinition](actordefinition.html): The current status of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The current status of the charge item definition
+* [Citation](citation.html): The current status of the citation
+* [CodeSystem](codesystem.html): The current status of the code system
+* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition
+* [ConceptMap](conceptmap.html): The current status of the concept map
+* [ConditionDefinition](conditiondefinition.html): The current status of the condition definition
+* [EventDefinition](eventdefinition.html): The current status of the event definition
+* [Evidence](evidence.html): The current status of the evidence
+* [EvidenceReport](evidencereport.html): The current status of the evidence report
+* [EvidenceVariable](evidencevariable.html): The current status of the evidence variable
+* [ExampleScenario](examplescenario.html): The current status of the example scenario
+* [GraphDefinition](graphdefinition.html): The current status of the graph definition
+* [ImplementationGuide](implementationguide.html): The current status of the implementation guide
+* [Library](library.html): The current status of the library
+* [Measure](measure.html): The current status of the measure
+* [MedicationKnowledge](medicationknowledge.html): active | inactive | entered-in-error
+* [MessageDefinition](messagedefinition.html): The current status of the message definition
+* [NamingSystem](namingsystem.html): The current status of the naming system
+* [ObservationDefinition](observationdefinition.html): Publication status of the ObservationDefinition: draft, active, retired, unknown
+* [OperationDefinition](operationdefinition.html): The current status of the operation definition
+* [PlanDefinition](plandefinition.html): The current status of the plan definition
+* [Questionnaire](questionnaire.html): The current status of the questionnaire
+* [Requirements](requirements.html): The current status of the requirements
+* [SearchParameter](searchparameter.html): The current status of the search parameter
+* [SpecimenDefinition](specimendefinition.html): Publication status of the SpecimenDefinition: draft, active, retired, unknown
+* [StructureDefinition](structuredefinition.html): The current status of the structure definition
+* [StructureMap](structuremap.html): The current status of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): draft | active | retired | unknown
+* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities
+* [TestPlan](testplan.html): The current status of the test plan
+* [TestScript](testscript.html): The current status of the test script
+* [ValueSet](valueset.html): The current status of the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.status | ActorDefinition.status | CapabilityStatement.status | ChargeItemDefinition.status | Citation.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | ConditionDefinition.status | EventDefinition.status | Evidence.status | EvidenceReport.status | EvidenceVariable.status | ExampleScenario.status | GraphDefinition.status | ImplementationGuide.status | Library.status | Measure.status | MedicationKnowledge.status | MessageDefinition.status | NamingSystem.status | ObservationDefinition.status | OperationDefinition.status | PlanDefinition.status | Questionnaire.status | Requirements.status | SearchParameter.status | SpecimenDefinition.status | StructureDefinition.status | StructureMap.status | SubscriptionTopic.status | TerminologyCapabilities.status | TestPlan.status | TestScript.status | ValueSet.status</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="status", path="ActivityDefinition.status | ActorDefinition.status | CapabilityStatement.status | ChargeItemDefinition.status | Citation.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | ConditionDefinition.status | EventDefinition.status | Evidence.status | EvidenceReport.status | EvidenceVariable.status | ExampleScenario.status | GraphDefinition.status | ImplementationGuide.status | Library.status | Measure.status | MedicationKnowledge.status | MessageDefinition.status | NamingSystem.status | ObservationDefinition.status | OperationDefinition.status | PlanDefinition.status | Questionnaire.status | Requirements.status | SearchParameter.status | SpecimenDefinition.status | StructureDefinition.status | StructureMap.status | SubscriptionTopic.status | TerminologyCapabilities.status | TestPlan.status | TestScript.status | ValueSet.status", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The current status of the activity definition\r\n* [ActorDefinition](actordefinition.html): The current status of the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The current status of the charge item definition\r\n* [Citation](citation.html): The current status of the citation\r\n* [CodeSystem](codesystem.html): The current status of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition\r\n* [ConceptMap](conceptmap.html): The current status of the concept map\r\n* [ConditionDefinition](conditiondefinition.html): The current status of the condition definition\r\n* [EventDefinition](eventdefinition.html): The current status of the event definition\r\n* [Evidence](evidence.html): The current status of the evidence\r\n* [EvidenceReport](evidencereport.html): The current status of the evidence report\r\n* [EvidenceVariable](evidencevariable.html): The current status of the evidence variable\r\n* [ExampleScenario](examplescenario.html): The current status of the example scenario\r\n* [GraphDefinition](graphdefinition.html): The current status of the graph definition\r\n* [ImplementationGuide](implementationguide.html): The current status of the implementation guide\r\n* [Library](library.html): The current status of the library\r\n* [Measure](measure.html): The current status of the measure\r\n* [MedicationKnowledge](medicationknowledge.html): active | inactive | entered-in-error\r\n* [MessageDefinition](messagedefinition.html): The current status of the message definition\r\n* [NamingSystem](namingsystem.html): The current status of the naming system\r\n* [ObservationDefinition](observationdefinition.html): Publication status of the ObservationDefinition: draft, active, retired, unknown\r\n* [OperationDefinition](operationdefinition.html): The current status of the operation definition\r\n* [PlanDefinition](plandefinition.html): The current status of the plan definition\r\n* [Questionnaire](questionnaire.html): The current status of the questionnaire\r\n* [Requirements](requirements.html): The current status of the requirements\r\n* [SearchParameter](searchparameter.html): The current status of the search parameter\r\n* [SpecimenDefinition](specimendefinition.html): Publication status of the SpecimenDefinition: draft, active, retired, unknown\r\n* [StructureDefinition](structuredefinition.html): The current status of the structure definition\r\n* [StructureMap](structuremap.html): The current status of the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): draft | active | retired | unknown\r\n* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities\r\n* [TestPlan](testplan.html): The current status of the test plan\r\n* [TestScript](testscript.html): The current status of the test script\r\n* [ValueSet](valueset.html): The current status of the value set\r\n", type="token" )
+  public static final String SP_STATUS = "status";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>status</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The current status of the activity definition
+* [ActorDefinition](actordefinition.html): The current status of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The current status of the charge item definition
+* [Citation](citation.html): The current status of the citation
+* [CodeSystem](codesystem.html): The current status of the code system
+* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition
+* [ConceptMap](conceptmap.html): The current status of the concept map
+* [ConditionDefinition](conditiondefinition.html): The current status of the condition definition
+* [EventDefinition](eventdefinition.html): The current status of the event definition
+* [Evidence](evidence.html): The current status of the evidence
+* [EvidenceReport](evidencereport.html): The current status of the evidence report
+* [EvidenceVariable](evidencevariable.html): The current status of the evidence variable
+* [ExampleScenario](examplescenario.html): The current status of the example scenario
+* [GraphDefinition](graphdefinition.html): The current status of the graph definition
+* [ImplementationGuide](implementationguide.html): The current status of the implementation guide
+* [Library](library.html): The current status of the library
+* [Measure](measure.html): The current status of the measure
+* [MedicationKnowledge](medicationknowledge.html): active | inactive | entered-in-error
+* [MessageDefinition](messagedefinition.html): The current status of the message definition
+* [NamingSystem](namingsystem.html): The current status of the naming system
+* [ObservationDefinition](observationdefinition.html): Publication status of the ObservationDefinition: draft, active, retired, unknown
+* [OperationDefinition](operationdefinition.html): The current status of the operation definition
+* [PlanDefinition](plandefinition.html): The current status of the plan definition
+* [Questionnaire](questionnaire.html): The current status of the questionnaire
+* [Requirements](requirements.html): The current status of the requirements
+* [SearchParameter](searchparameter.html): The current status of the search parameter
+* [SpecimenDefinition](specimendefinition.html): Publication status of the SpecimenDefinition: draft, active, retired, unknown
+* [StructureDefinition](structuredefinition.html): The current status of the structure definition
+* [StructureMap](structuremap.html): The current status of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): draft | active | retired | unknown
+* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities
+* [TestPlan](testplan.html): The current status of the test plan
+* [TestScript](testscript.html): The current status of the test script
+* [ValueSet](valueset.html): The current status of the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.status | ActorDefinition.status | CapabilityStatement.status | ChargeItemDefinition.status | Citation.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | ConditionDefinition.status | EventDefinition.status | Evidence.status | EvidenceReport.status | EvidenceVariable.status | ExampleScenario.status | GraphDefinition.status | ImplementationGuide.status | Library.status | Measure.status | MedicationKnowledge.status | MessageDefinition.status | NamingSystem.status | ObservationDefinition.status | OperationDefinition.status | PlanDefinition.status | Questionnaire.status | Requirements.status | SearchParameter.status | SpecimenDefinition.status | StructureDefinition.status | StructureMap.status | SubscriptionTopic.status | TerminologyCapabilities.status | TestPlan.status | TestScript.status | ValueSet.status</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
+
+ /**
+   * Search parameter: <b>title</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The human-friendly name of the activity definition
+* [ActorDefinition](actordefinition.html): The human-friendly name of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The human-friendly name of the charge item definition
+* [Citation](citation.html): The human-friendly name of the citation
+* [CodeSystem](codesystem.html): The human-friendly name of the code system
+* [ConceptMap](conceptmap.html): The human-friendly name of the concept map
+* [ConditionDefinition](conditiondefinition.html): The human-friendly name of the condition definition
+* [EventDefinition](eventdefinition.html): The human-friendly name of the event definition
+* [Evidence](evidence.html): The human-friendly name of the evidence
+* [EvidenceVariable](evidencevariable.html): The human-friendly name of the evidence variable
+* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide
+* [Library](library.html): The human-friendly name of the library
+* [Measure](measure.html): The human-friendly name of the measure
+* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition
+* [ObservationDefinition](observationdefinition.html): Human-friendly name of the ObservationDefinition
+* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition
+* [PlanDefinition](plandefinition.html): The human-friendly name of the plan definition
+* [Questionnaire](questionnaire.html): The human-friendly name of the questionnaire
+* [Requirements](requirements.html): The human-friendly name of the requirements
+* [SpecimenDefinition](specimendefinition.html): Human-friendly name of the SpecimenDefinition
+* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition
+* [StructureMap](structuremap.html): The human-friendly name of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Name for this SubscriptionTopic (Human friendly)
+* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities
+* [TestScript](testscript.html): The human-friendly name of the test script
+* [ValueSet](valueset.html): The human-friendly name of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.title | ActorDefinition.title | CapabilityStatement.title | ChargeItemDefinition.title | Citation.title | CodeSystem.title | ConceptMap.title | ConditionDefinition.title | EventDefinition.title | Evidence.title | EvidenceVariable.title | ImplementationGuide.title | Library.title | Measure.title | MessageDefinition.title | ObservationDefinition.title | OperationDefinition.title | PlanDefinition.title | Questionnaire.title | Requirements.title | SpecimenDefinition.title | StructureDefinition.title | StructureMap.title | SubscriptionTopic.title | TerminologyCapabilities.title | TestScript.title | ValueSet.title</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="title", path="ActivityDefinition.title | ActorDefinition.title | CapabilityStatement.title | ChargeItemDefinition.title | Citation.title | CodeSystem.title | ConceptMap.title | ConditionDefinition.title | EventDefinition.title | Evidence.title | EvidenceVariable.title | ImplementationGuide.title | Library.title | Measure.title | MessageDefinition.title | ObservationDefinition.title | OperationDefinition.title | PlanDefinition.title | Questionnaire.title | Requirements.title | SpecimenDefinition.title | StructureDefinition.title | StructureMap.title | SubscriptionTopic.title | TerminologyCapabilities.title | TestScript.title | ValueSet.title", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The human-friendly name of the activity definition\r\n* [ActorDefinition](actordefinition.html): The human-friendly name of the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The human-friendly name of the charge item definition\r\n* [Citation](citation.html): The human-friendly name of the citation\r\n* [CodeSystem](codesystem.html): The human-friendly name of the code system\r\n* [ConceptMap](conceptmap.html): The human-friendly name of the concept map\r\n* [ConditionDefinition](conditiondefinition.html): The human-friendly name of the condition definition\r\n* [EventDefinition](eventdefinition.html): The human-friendly name of the event definition\r\n* [Evidence](evidence.html): The human-friendly name of the evidence\r\n* [EvidenceVariable](evidencevariable.html): The human-friendly name of the evidence variable\r\n* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide\r\n* [Library](library.html): The human-friendly name of the library\r\n* [Measure](measure.html): The human-friendly name of the measure\r\n* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition\r\n* [ObservationDefinition](observationdefinition.html): Human-friendly name of the ObservationDefinition\r\n* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition\r\n* [PlanDefinition](plandefinition.html): The human-friendly name of the plan definition\r\n* [Questionnaire](questionnaire.html): The human-friendly name of the questionnaire\r\n* [Requirements](requirements.html): The human-friendly name of the requirements\r\n* [SpecimenDefinition](specimendefinition.html): Human-friendly name of the SpecimenDefinition\r\n* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition\r\n* [StructureMap](structuremap.html): The human-friendly name of the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): Name for this SubscriptionTopic (Human friendly)\r\n* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities\r\n* [TestScript](testscript.html): The human-friendly name of the test script\r\n* [ValueSet](valueset.html): The human-friendly name of the value set\r\n", type="string" )
+  public static final String SP_TITLE = "title";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>title</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The human-friendly name of the activity definition
+* [ActorDefinition](actordefinition.html): The human-friendly name of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The human-friendly name of the charge item definition
+* [Citation](citation.html): The human-friendly name of the citation
+* [CodeSystem](codesystem.html): The human-friendly name of the code system
+* [ConceptMap](conceptmap.html): The human-friendly name of the concept map
+* [ConditionDefinition](conditiondefinition.html): The human-friendly name of the condition definition
+* [EventDefinition](eventdefinition.html): The human-friendly name of the event definition
+* [Evidence](evidence.html): The human-friendly name of the evidence
+* [EvidenceVariable](evidencevariable.html): The human-friendly name of the evidence variable
+* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide
+* [Library](library.html): The human-friendly name of the library
+* [Measure](measure.html): The human-friendly name of the measure
+* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition
+* [ObservationDefinition](observationdefinition.html): Human-friendly name of the ObservationDefinition
+* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition
+* [PlanDefinition](plandefinition.html): The human-friendly name of the plan definition
+* [Questionnaire](questionnaire.html): The human-friendly name of the questionnaire
+* [Requirements](requirements.html): The human-friendly name of the requirements
+* [SpecimenDefinition](specimendefinition.html): Human-friendly name of the SpecimenDefinition
+* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition
+* [StructureMap](structuremap.html): The human-friendly name of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Name for this SubscriptionTopic (Human friendly)
+* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities
+* [TestScript](testscript.html): The human-friendly name of the test script
+* [ValueSet](valueset.html): The human-friendly name of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.title | ActorDefinition.title | CapabilityStatement.title | ChargeItemDefinition.title | Citation.title | CodeSystem.title | ConceptMap.title | ConditionDefinition.title | EventDefinition.title | Evidence.title | EvidenceVariable.title | ImplementationGuide.title | Library.title | Measure.title | MessageDefinition.title | ObservationDefinition.title | OperationDefinition.title | PlanDefinition.title | Questionnaire.title | Requirements.title | SpecimenDefinition.title | StructureDefinition.title | StructureMap.title | SubscriptionTopic.title | TerminologyCapabilities.title | TestScript.title | ValueSet.title</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.StringClientParam TITLE = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_TITLE);
+
+ /**
+   * Search parameter: <b>url</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The uri that identifies the activity definition
+* [ActorDefinition](actordefinition.html): The uri that identifies the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The uri that identifies the charge item definition
+* [Citation](citation.html): The uri that identifies the citation
+* [CodeSystem](codesystem.html): The uri that identifies the code system
+* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition
+* [ConceptMap](conceptmap.html): The URI that identifies the concept map
+* [ConditionDefinition](conditiondefinition.html): The uri that identifies the condition definition
+* [EventDefinition](eventdefinition.html): The uri that identifies the event definition
+* [Evidence](evidence.html): The uri that identifies the evidence
+* [EvidenceReport](evidencereport.html): The uri that identifies the evidence report
+* [EvidenceVariable](evidencevariable.html): The uri that identifies the evidence variable
+* [ExampleScenario](examplescenario.html): The uri that identifies the example scenario
+* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition
+* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide
+* [Library](library.html): The uri that identifies the library
+* [Measure](measure.html): The uri that identifies the measure
+* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition
+* [NamingSystem](namingsystem.html): The uri that identifies the naming system
+* [ObservationDefinition](observationdefinition.html): The uri that identifies the observation definition
+* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition
+* [PlanDefinition](plandefinition.html): The uri that identifies the plan definition
+* [Questionnaire](questionnaire.html): The uri that identifies the questionnaire
+* [Requirements](requirements.html): The uri that identifies the requirements
+* [SearchParameter](searchparameter.html): The uri that identifies the search parameter
+* [SpecimenDefinition](specimendefinition.html): The uri that identifies the specimen definition
+* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition
+* [StructureMap](structuremap.html): The uri that identifies the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Logical canonical URL to reference this SubscriptionTopic (globally unique)
+* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities
+* [TestPlan](testplan.html): The uri that identifies the test plan
+* [TestScript](testscript.html): The uri that identifies the test script
+* [ValueSet](valueset.html): The uri that identifies the value set
+</b><br>
+   * Type: <b>uri</b><br>
+   * Path: <b>ActivityDefinition.url | ActorDefinition.url | CapabilityStatement.url | ChargeItemDefinition.url | Citation.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | ConditionDefinition.url | EventDefinition.url | Evidence.url | EvidenceReport.url | EvidenceVariable.url | ExampleScenario.url | GraphDefinition.url | ImplementationGuide.url | Library.url | Measure.url | MessageDefinition.url | NamingSystem.url | ObservationDefinition.url | OperationDefinition.url | PlanDefinition.url | Questionnaire.url | Requirements.url | SearchParameter.url | SpecimenDefinition.url | StructureDefinition.url | StructureMap.url | SubscriptionTopic.url | TerminologyCapabilities.url | TestPlan.url | TestScript.url | ValueSet.url</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="url", path="ActivityDefinition.url | ActorDefinition.url | CapabilityStatement.url | ChargeItemDefinition.url | Citation.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | ConditionDefinition.url | EventDefinition.url | Evidence.url | EvidenceReport.url | EvidenceVariable.url | ExampleScenario.url | GraphDefinition.url | ImplementationGuide.url | Library.url | Measure.url | MessageDefinition.url | NamingSystem.url | ObservationDefinition.url | OperationDefinition.url | PlanDefinition.url | Questionnaire.url | Requirements.url | SearchParameter.url | SpecimenDefinition.url | StructureDefinition.url | StructureMap.url | SubscriptionTopic.url | TerminologyCapabilities.url | TestPlan.url | TestScript.url | ValueSet.url", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The uri that identifies the activity definition\r\n* [ActorDefinition](actordefinition.html): The uri that identifies the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The uri that identifies the charge item definition\r\n* [Citation](citation.html): The uri that identifies the citation\r\n* [CodeSystem](codesystem.html): The uri that identifies the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition\r\n* [ConceptMap](conceptmap.html): The URI that identifies the concept map\r\n* [ConditionDefinition](conditiondefinition.html): The uri that identifies the condition definition\r\n* [EventDefinition](eventdefinition.html): The uri that identifies the event definition\r\n* [Evidence](evidence.html): The uri that identifies the evidence\r\n* [EvidenceReport](evidencereport.html): The uri that identifies the evidence report\r\n* [EvidenceVariable](evidencevariable.html): The uri that identifies the evidence variable\r\n* [ExampleScenario](examplescenario.html): The uri that identifies the example scenario\r\n* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition\r\n* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide\r\n* [Library](library.html): The uri that identifies the library\r\n* [Measure](measure.html): The uri that identifies the measure\r\n* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition\r\n* [NamingSystem](namingsystem.html): The uri that identifies the naming system\r\n* [ObservationDefinition](observationdefinition.html): The uri that identifies the observation definition\r\n* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition\r\n* [PlanDefinition](plandefinition.html): The uri that identifies the plan definition\r\n* [Questionnaire](questionnaire.html): The uri that identifies the questionnaire\r\n* [Requirements](requirements.html): The uri that identifies the requirements\r\n* [SearchParameter](searchparameter.html): The uri that identifies the search parameter\r\n* [SpecimenDefinition](specimendefinition.html): The uri that identifies the specimen definition\r\n* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition\r\n* [StructureMap](structuremap.html): The uri that identifies the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): Logical canonical URL to reference this SubscriptionTopic (globally unique)\r\n* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities\r\n* [TestPlan](testplan.html): The uri that identifies the test plan\r\n* [TestScript](testscript.html): The uri that identifies the test script\r\n* [ValueSet](valueset.html): The uri that identifies the value set\r\n", type="uri" )
+  public static final String SP_URL = "url";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>url</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The uri that identifies the activity definition
+* [ActorDefinition](actordefinition.html): The uri that identifies the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The uri that identifies the charge item definition
+* [Citation](citation.html): The uri that identifies the citation
+* [CodeSystem](codesystem.html): The uri that identifies the code system
+* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition
+* [ConceptMap](conceptmap.html): The URI that identifies the concept map
+* [ConditionDefinition](conditiondefinition.html): The uri that identifies the condition definition
+* [EventDefinition](eventdefinition.html): The uri that identifies the event definition
+* [Evidence](evidence.html): The uri that identifies the evidence
+* [EvidenceReport](evidencereport.html): The uri that identifies the evidence report
+* [EvidenceVariable](evidencevariable.html): The uri that identifies the evidence variable
+* [ExampleScenario](examplescenario.html): The uri that identifies the example scenario
+* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition
+* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide
+* [Library](library.html): The uri that identifies the library
+* [Measure](measure.html): The uri that identifies the measure
+* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition
+* [NamingSystem](namingsystem.html): The uri that identifies the naming system
+* [ObservationDefinition](observationdefinition.html): The uri that identifies the observation definition
+* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition
+* [PlanDefinition](plandefinition.html): The uri that identifies the plan definition
+* [Questionnaire](questionnaire.html): The uri that identifies the questionnaire
+* [Requirements](requirements.html): The uri that identifies the requirements
+* [SearchParameter](searchparameter.html): The uri that identifies the search parameter
+* [SpecimenDefinition](specimendefinition.html): The uri that identifies the specimen definition
+* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition
+* [StructureMap](structuremap.html): The uri that identifies the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Logical canonical URL to reference this SubscriptionTopic (globally unique)
+* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities
+* [TestPlan](testplan.html): The uri that identifies the test plan
+* [TestScript](testscript.html): The uri that identifies the test script
+* [ValueSet](valueset.html): The uri that identifies the value set
+</b><br>
+   * Type: <b>uri</b><br>
+   * Path: <b>ActivityDefinition.url | ActorDefinition.url | CapabilityStatement.url | ChargeItemDefinition.url | Citation.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | ConditionDefinition.url | EventDefinition.url | Evidence.url | EvidenceReport.url | EvidenceVariable.url | ExampleScenario.url | GraphDefinition.url | ImplementationGuide.url | Library.url | Measure.url | MessageDefinition.url | NamingSystem.url | ObservationDefinition.url | OperationDefinition.url | PlanDefinition.url | Questionnaire.url | Requirements.url | SearchParameter.url | SpecimenDefinition.url | StructureDefinition.url | StructureMap.url | SubscriptionTopic.url | TerminologyCapabilities.url | TestPlan.url | TestScript.url | ValueSet.url</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.UriClientParam URL = new ca.uhn.fhir.rest.gclient.UriClientParam(SP_URL);
 
  /**
    * Search parameter: <b>category</b>
@@ -4579,26 +5006,6 @@ public class ObservationDefinition extends DomainResource {
   public static final ca.uhn.fhir.rest.gclient.TokenClientParam EXPERIMENTAL = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_EXPERIMENTAL);
 
  /**
-   * Search parameter: <b>identifier</b>
-   * <p>
-   * Description: <b>The unique identifier associated with the specimen definition</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>ObservationDefinition.identifier</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="identifier", path="ObservationDefinition.identifier", description="The unique identifier associated with the specimen definition", type="token" )
-  public static final String SP_IDENTIFIER = "identifier";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>identifier</b>
-   * <p>
-   * Description: <b>The unique identifier associated with the specimen definition</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>ObservationDefinition.identifier</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
-
- /**
    * Search parameter: <b>method</b>
    * <p>
    * Description: <b>Method of observation</b><br>
@@ -4617,66 +5024,6 @@ public class ObservationDefinition extends DomainResource {
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.TokenClientParam METHOD = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_METHOD);
-
- /**
-   * Search parameter: <b>status</b>
-   * <p>
-   * Description: <b>Publication status of the ObservationDefinition: draft, active, retired, unknown</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>ObservationDefinition.status</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="status", path="ObservationDefinition.status", description="Publication status of the ObservationDefinition: draft, active, retired, unknown", type="token" )
-  public static final String SP_STATUS = "status";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>status</b>
-   * <p>
-   * Description: <b>Publication status of the ObservationDefinition: draft, active, retired, unknown</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>ObservationDefinition.status</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
-
- /**
-   * Search parameter: <b>title</b>
-   * <p>
-   * Description: <b>Human-friendly name of the ObservationDefinition</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>ObservationDefinition.title</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="title", path="ObservationDefinition.title", description="Human-friendly name of the ObservationDefinition", type="string" )
-  public static final String SP_TITLE = "title";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>title</b>
-   * <p>
-   * Description: <b>Human-friendly name of the ObservationDefinition</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>ObservationDefinition.title</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.StringClientParam TITLE = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_TITLE);
-
- /**
-   * Search parameter: <b>url</b>
-   * <p>
-   * Description: <b>The uri that identifies the observation definition</b><br>
-   * Type: <b>uri</b><br>
-   * Path: <b>ObservationDefinition.url</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="url", path="ObservationDefinition.url", description="The uri that identifies the observation definition", type="uri" )
-  public static final String SP_URL = "url";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>url</b>
-   * <p>
-   * Description: <b>The uri that identifies the observation definition</b><br>
-   * Type: <b>uri</b><br>
-   * Path: <b>ObservationDefinition.url</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.UriClientParam URL = new ca.uhn.fhir.rest.gclient.UriClientParam(SP_URL);
 
 
 }

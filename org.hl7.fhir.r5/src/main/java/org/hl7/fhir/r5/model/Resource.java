@@ -29,11 +29,13 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.hl7.fhir.utilities.FhirPublication;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.r5.model.Enumerations.*;
 import org.hl7.fhir.instance.model.api.IBaseBackboneElement;
@@ -79,7 +81,7 @@ public abstract class Resource extends BaseResource implements IAnyResource {
      */
     @Child(name = "language", type = {CodeType.class}, order=3, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Language of the resource content", formalDefinition="The base language in which the resource is written." )
-    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/languages")
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/all-languages")
     protected CodeType language;
 
     private static final long serialVersionUID = -559462759L;
@@ -329,6 +331,21 @@ public abstract class Resource extends BaseResource implements IAnyResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("id")) {
+          this.id = null;
+        } else if (name.equals("meta")) {
+          this.meta = null;
+        } else if (name.equals("implicitRules")) {
+          this.implicitRules = null;
+        } else if (name.equals("language")) {
+          this.language = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -356,17 +373,17 @@ public abstract class Resource extends BaseResource implements IAnyResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("id")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Resource.id");
+          throw new FHIRException("Cannot call addChild on a singleton property Resource.id");
         }
         else if (name.equals("meta")) {
           this.meta = new Meta();
           return this.meta;
         }
         else if (name.equals("implicitRules")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Resource.implicitRules");
+          throw new FHIRException("Cannot call addChild on a singleton property Resource.implicitRules");
         }
         else if (name.equals("language")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Resource.language");
+          throw new FHIRException("Cannot call addChild on a singleton property Resource.language");
         }
         else
           return super.addChild(name);
@@ -378,6 +395,10 @@ public abstract class Resource extends BaseResource implements IAnyResource {
   }
 
       public abstract Resource copy();
+
+      public void assignValues(Base dst) {
+        copyValues((Resource) dst);
+      }
 
       public void copyValues(Resource dst) {
         super.copyValues(dst);
@@ -429,6 +450,49 @@ public abstract class Resource extends BaseResource implements IAnyResource {
   public String getLanguage(String defValue) {
     return hasLanguage() ? getLanguage() : defValue;
   }
+
+  private String webPath;
+  public boolean hasWebPath() {
+    return webPath != null;
+  }
+  public String getWebPath() {
+    return webPath;
+  }
+  public void setWebPath(String webPath) {
+    this.webPath = webPath;
+  }
+  
+  // when possible, the source package is considered when performing reference resolution. 
+  
+
+
+  private PackageInformation sourcePackage;
+
+  public boolean hasSourcePackage() {
+    return sourcePackage != null;
+  }
+
+  public PackageInformation getSourcePackage() {
+    return sourcePackage;
+  }
+
+  public void setSourcePackage(PackageInformation sourcePackage) {
+    this.sourcePackage = sourcePackage;
+  }
+  
+  /** 
+   * @return  the logical ID part of this resource's id 
+   * @see IdType#getIdPart() 
+   */ 
+  public String getIdPart() { 
+    return getIdElement().getIdPart(); 
+  } 
+ 
+
+  public FhirPublication getFHIRPublicationVersion() {
+    return FhirPublication.R5;
+  }
+  
 // end addition
 
 }

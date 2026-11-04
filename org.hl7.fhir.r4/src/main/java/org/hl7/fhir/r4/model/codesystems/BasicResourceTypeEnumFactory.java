@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -74,11 +70,13 @@ public class BasicResourceTypeEnumFactory implements EnumFactory<BasicResourceTy
       return BasicResourceType.STUDY;
     if ("protocol".equals(codeString))
       return BasicResourceType.PROTOCOL;
-    throw new IllegalArgumentException("Unknown BasicResourceType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown BasicResourceType code '" + codeString + "'");
   }
 
   public String toCode(BasicResourceType code) {
-    if (code == BasicResourceType.CONSENT)
+       if (code == BasicResourceType.NULL)
+           return null;
+       if (code == BasicResourceType.CONSENT)
       return "consent";
     if (code == BasicResourceType.REFERRAL)
       return "referral";
@@ -111,10 +109,10 @@ public class BasicResourceTypeEnumFactory implements EnumFactory<BasicResourceTy
     if (code == BasicResourceType.PROTOCOL)
       return "protocol";
     return "?";
-  }
+   }
 
-    public String toSystem(BasicResourceType code) {
-      return code.getSystem();
-      }
+  public String toSystem(BasicResourceType code) {
+    return code.getSystem();
+  }
 
 }

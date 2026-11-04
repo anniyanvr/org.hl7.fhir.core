@@ -129,7 +129,7 @@ public class Identifier extends Type implements ICompositeType {
   public static class IdentifierUseEnumFactory implements EnumFactory<IdentifierUse> {
     public IdentifierUse fromCode(String codeString) throws IllegalArgumentException {
       if (codeString == null || "".equals(codeString))
-            if (codeString == null || "".equals(codeString))
+            if (codeString == null || "".equals(codeString) || "?".equals(codeString))
                 return null;
         if ("usual".equals(codeString))
           return IdentifierUse.USUAL;
@@ -141,12 +141,12 @@ public class Identifier extends Type implements ICompositeType {
           return IdentifierUse.SECONDARY;
         throw new IllegalArgumentException("Unknown IdentifierUse code '"+codeString+"'");
         }
-        public Enumeration<IdentifierUse> fromType(Base code) throws FHIRException {
+        public Enumeration<IdentifierUse> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<IdentifierUse>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("usual".equals(codeString))
@@ -160,7 +160,9 @@ public class Identifier extends Type implements ICompositeType {
         throw new FHIRException("Unknown IdentifierUse code '"+codeString+"'");
         }
     public String toCode(IdentifierUse code) {
-      if (code == IdentifierUse.USUAL)
+       if (code == IdentifierUse.NULL)
+           return null;
+       if (code == IdentifierUse.USUAL)
         return "usual";
       if (code == IdentifierUse.OFFICIAL)
         return "official";
@@ -169,7 +171,7 @@ public class Identifier extends Type implements ICompositeType {
       if (code == IdentifierUse.SECONDARY)
         return "secondary";
       return "?";
-      }
+   }
     public String toSystem(IdentifierUse code) {
       return code.getSystem();
       }
@@ -588,17 +590,17 @@ public class Identifier extends Type implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("use")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Identifier.use");
+          throw new FHIRException("Cannot call addChild on a singleton property Identifier.use");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
           return this.type;
         }
         else if (name.equals("system")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Identifier.system");
+          throw new FHIRException("Cannot call addChild on a singleton property Identifier.system");
         }
         else if (name.equals("value")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Identifier.value");
+          throw new FHIRException("Cannot call addChild on a singleton property Identifier.value");
         }
         else if (name.equals("period")) {
           this.period = new Period();

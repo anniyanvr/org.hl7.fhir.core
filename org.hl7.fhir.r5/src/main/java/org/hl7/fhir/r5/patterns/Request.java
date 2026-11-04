@@ -189,32 +189,34 @@ public interface Request extends PatternBase {
           return RequestStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown RequestStatus code '"+codeString+"'");
         }
-        public Enumeration<RequestStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<RequestStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<RequestStatus>(this);
+            return new Enumeration<RequestStatus>(this, RequestStatus.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<RequestStatus>(this, RequestStatus.NULL, code);
         if ("draft".equals(codeString))
-          return new Enumeration<RequestStatus>(this, RequestStatus.DRAFT);
+          return new Enumeration<RequestStatus>(this, RequestStatus.DRAFT, code);
         if ("active".equals(codeString))
-          return new Enumeration<RequestStatus>(this, RequestStatus.ACTIVE);
+          return new Enumeration<RequestStatus>(this, RequestStatus.ACTIVE, code);
         if ("on-hold".equals(codeString))
-          return new Enumeration<RequestStatus>(this, RequestStatus.ONHOLD);
+          return new Enumeration<RequestStatus>(this, RequestStatus.ONHOLD, code);
         if ("revoked".equals(codeString))
-          return new Enumeration<RequestStatus>(this, RequestStatus.REVOKED);
+          return new Enumeration<RequestStatus>(this, RequestStatus.REVOKED, code);
         if ("completed".equals(codeString))
-          return new Enumeration<RequestStatus>(this, RequestStatus.COMPLETED);
+          return new Enumeration<RequestStatus>(this, RequestStatus.COMPLETED, code);
         if ("entered-in-error".equals(codeString))
-          return new Enumeration<RequestStatus>(this, RequestStatus.ENTEREDINERROR);
+          return new Enumeration<RequestStatus>(this, RequestStatus.ENTEREDINERROR, code);
         if ("unknown".equals(codeString))
-          return new Enumeration<RequestStatus>(this, RequestStatus.UNKNOWN);
+          return new Enumeration<RequestStatus>(this, RequestStatus.UNKNOWN, code);
         throw new FHIRException("Unknown RequestStatus code '"+codeString+"'");
         }
     public String toCode(RequestStatus code) {
-      if (code == RequestStatus.DRAFT)
+       if (code == RequestStatus.NULL)
+           return null;
+       if (code == RequestStatus.DRAFT)
         return "draft";
       if (code == RequestStatus.ACTIVE)
         return "active";
@@ -229,7 +231,7 @@ public interface Request extends PatternBase {
       if (code == RequestStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(RequestStatus code) {
       return code.getSystem();
       }
@@ -389,36 +391,38 @@ public interface Request extends PatternBase {
           return RequestIntent.OPTION;
         throw new IllegalArgumentException("Unknown RequestIntent code '"+codeString+"'");
         }
-        public Enumeration<RequestIntent> fromType(Base code) throws FHIRException {
+        public Enumeration<RequestIntent> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<RequestIntent>(this);
+            return new Enumeration<RequestIntent>(this, RequestIntent.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<RequestIntent>(this, RequestIntent.NULL, code);
         if ("proposal".equals(codeString))
-          return new Enumeration<RequestIntent>(this, RequestIntent.PROPOSAL);
+          return new Enumeration<RequestIntent>(this, RequestIntent.PROPOSAL, code);
         if ("plan".equals(codeString))
-          return new Enumeration<RequestIntent>(this, RequestIntent.PLAN);
+          return new Enumeration<RequestIntent>(this, RequestIntent.PLAN, code);
         if ("directive".equals(codeString))
-          return new Enumeration<RequestIntent>(this, RequestIntent.DIRECTIVE);
+          return new Enumeration<RequestIntent>(this, RequestIntent.DIRECTIVE, code);
         if ("order".equals(codeString))
-          return new Enumeration<RequestIntent>(this, RequestIntent.ORDER);
+          return new Enumeration<RequestIntent>(this, RequestIntent.ORDER, code);
         if ("original-order".equals(codeString))
-          return new Enumeration<RequestIntent>(this, RequestIntent.ORIGINALORDER);
+          return new Enumeration<RequestIntent>(this, RequestIntent.ORIGINALORDER, code);
         if ("reflex-order".equals(codeString))
-          return new Enumeration<RequestIntent>(this, RequestIntent.REFLEXORDER);
+          return new Enumeration<RequestIntent>(this, RequestIntent.REFLEXORDER, code);
         if ("filler-order".equals(codeString))
-          return new Enumeration<RequestIntent>(this, RequestIntent.FILLERORDER);
+          return new Enumeration<RequestIntent>(this, RequestIntent.FILLERORDER, code);
         if ("instance-order".equals(codeString))
-          return new Enumeration<RequestIntent>(this, RequestIntent.INSTANCEORDER);
+          return new Enumeration<RequestIntent>(this, RequestIntent.INSTANCEORDER, code);
         if ("option".equals(codeString))
-          return new Enumeration<RequestIntent>(this, RequestIntent.OPTION);
+          return new Enumeration<RequestIntent>(this, RequestIntent.OPTION, code);
         throw new FHIRException("Unknown RequestIntent code '"+codeString+"'");
         }
     public String toCode(RequestIntent code) {
-      if (code == RequestIntent.PROPOSAL)
+       if (code == RequestIntent.NULL)
+           return null;
+       if (code == RequestIntent.PROPOSAL)
         return "proposal";
       if (code == RequestIntent.PLAN)
         return "plan";
@@ -437,7 +441,7 @@ public interface Request extends PatternBase {
       if (code == RequestIntent.OPTION)
         return "option";
       return "?";
-      }
+   }
     public String toSystem(RequestIntent code) {
       return code.getSystem();
       }
@@ -537,26 +541,28 @@ public interface Request extends PatternBase {
           return RequestPriority.STAT;
         throw new IllegalArgumentException("Unknown RequestPriority code '"+codeString+"'");
         }
-        public Enumeration<RequestPriority> fromType(Base code) throws FHIRException {
+        public Enumeration<RequestPriority> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<RequestPriority>(this);
+            return new Enumeration<RequestPriority>(this, RequestPriority.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<RequestPriority>(this, RequestPriority.NULL, code);
         if ("routine".equals(codeString))
-          return new Enumeration<RequestPriority>(this, RequestPriority.ROUTINE);
+          return new Enumeration<RequestPriority>(this, RequestPriority.ROUTINE, code);
         if ("urgent".equals(codeString))
-          return new Enumeration<RequestPriority>(this, RequestPriority.URGENT);
+          return new Enumeration<RequestPriority>(this, RequestPriority.URGENT, code);
         if ("asap".equals(codeString))
-          return new Enumeration<RequestPriority>(this, RequestPriority.ASAP);
+          return new Enumeration<RequestPriority>(this, RequestPriority.ASAP, code);
         if ("stat".equals(codeString))
-          return new Enumeration<RequestPriority>(this, RequestPriority.STAT);
+          return new Enumeration<RequestPriority>(this, RequestPriority.STAT, code);
         throw new FHIRException("Unknown RequestPriority code '"+codeString+"'");
         }
     public String toCode(RequestPriority code) {
-      if (code == RequestPriority.ROUTINE)
+       if (code == RequestPriority.NULL)
+           return null;
+       if (code == RequestPriority.ROUTINE)
         return "routine";
       if (code == RequestPriority.URGENT)
         return "urgent";
@@ -565,7 +571,7 @@ public interface Request extends PatternBase {
       if (code == RequestPriority.STAT)
         return "stat";
       return "?";
-      }
+   }
     public String toSystem(RequestPriority code) {
       return code.getSystem();
       }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class QicoreDiagnosticorderPreconditionEnumFactory implements EnumFactory<QicoreDiagnosticorderPrecondition> {
@@ -48,21 +44,23 @@ public class QicoreDiagnosticorderPreconditionEnumFactory implements EnumFactory
       return QicoreDiagnosticorderPrecondition._2;
     if ("3".equals(codeString))
       return QicoreDiagnosticorderPrecondition._3;
-    throw new IllegalArgumentException("Unknown QicoreDiagnosticorderPrecondition code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown QicoreDiagnosticorderPrecondition code '" + codeString + "'");
   }
 
   public String toCode(QicoreDiagnosticorderPrecondition code) {
-    if (code == QicoreDiagnosticorderPrecondition._1)
+       if (code == QicoreDiagnosticorderPrecondition.NULL)
+           return null;
+       if (code == QicoreDiagnosticorderPrecondition._1)
       return "1";
     if (code == QicoreDiagnosticorderPrecondition._2)
       return "2";
     if (code == QicoreDiagnosticorderPrecondition._3)
       return "3";
     return "?";
-  }
+   }
 
-    public String toSystem(QicoreDiagnosticorderPrecondition code) {
-      return code.getSystem();
-      }
+  public String toSystem(QicoreDiagnosticorderPrecondition code) {
+    return code.getSystem();
+  }
 
 }

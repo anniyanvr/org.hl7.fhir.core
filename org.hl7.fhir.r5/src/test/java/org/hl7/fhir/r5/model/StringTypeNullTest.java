@@ -1,17 +1,20 @@
 package org.hl7.fhir.r5.model;
 
-import org.hl7.fhir.r5.model.StringType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class StringTypeNullTest {
 
   @Test
   @DisplayName("Test null value toString()")
   void testToString() {
-    StringType nullString = new StringType();
-    System.out.println("Value -> " + nullString);
+    assertDoesNotThrow(() -> {
+      StringType nullString = new StringType();
+      System.out.println("Value -> " + nullString);
+    });
   }
 
   @Test

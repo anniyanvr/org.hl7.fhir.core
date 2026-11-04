@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ConceptmapUnmappedModeEnumFactory implements EnumFactory<ConceptmapUnmappedMode> {
@@ -48,21 +44,23 @@ public class ConceptmapUnmappedModeEnumFactory implements EnumFactory<Conceptmap
       return ConceptmapUnmappedMode.FIXED;
     if ("other-map".equals(codeString))
       return ConceptmapUnmappedMode.OTHERMAP;
-    throw new IllegalArgumentException("Unknown ConceptmapUnmappedMode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ConceptmapUnmappedMode code '" + codeString + "'");
   }
 
   public String toCode(ConceptmapUnmappedMode code) {
-    if (code == ConceptmapUnmappedMode.PROVIDED)
+       if (code == ConceptmapUnmappedMode.NULL)
+           return null;
+       if (code == ConceptmapUnmappedMode.PROVIDED)
       return "provided";
     if (code == ConceptmapUnmappedMode.FIXED)
       return "fixed";
     if (code == ConceptmapUnmappedMode.OTHERMAP)
       return "other-map";
     return "?";
-  }
+   }
 
-    public String toSystem(ConceptmapUnmappedMode code) {
-      return code.getSystem();
-      }
+  public String toSystem(ConceptmapUnmappedMode code) {
+    return code.getSystem();
+  }
 
 }

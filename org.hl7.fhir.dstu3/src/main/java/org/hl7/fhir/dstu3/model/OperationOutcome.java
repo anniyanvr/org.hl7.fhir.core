@@ -145,12 +145,12 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
           return IssueSeverity.INFORMATION;
         throw new IllegalArgumentException("Unknown IssueSeverity code '"+codeString+"'");
         }
-        public Enumeration<IssueSeverity> fromType(Base code) throws FHIRException {
+        public Enumeration<IssueSeverity> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<IssueSeverity>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("fatal".equals(codeString))
@@ -164,7 +164,9 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
         throw new FHIRException("Unknown IssueSeverity code '"+codeString+"'");
         }
     public String toCode(IssueSeverity code) {
-      if (code == IssueSeverity.FATAL)
+       if (code == IssueSeverity.NULL)
+           return null;
+       if (code == IssueSeverity.FATAL)
         return "fatal";
       if (code == IssueSeverity.ERROR)
         return "error";
@@ -173,7 +175,7 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
       if (code == IssueSeverity.INFORMATION)
         return "information";
       return "?";
-      }
+   }
     public String toSystem(IssueSeverity code) {
       return code.getSystem();
       }
@@ -573,12 +575,12 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
           return IssueType.INFORMATIONAL;
         throw new IllegalArgumentException("Unknown IssueType code '"+codeString+"'");
         }
-        public Enumeration<IssueType> fromType(Base code) throws FHIRException {
+        public Enumeration<IssueType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<IssueType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("invalid".equals(codeString))
@@ -642,7 +644,9 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
         throw new FHIRException("Unknown IssueType code '"+codeString+"'");
         }
     public String toCode(IssueType code) {
-      if (code == IssueType.INVALID)
+       if (code == IssueType.NULL)
+           return null;
+       if (code == IssueType.INVALID)
         return "invalid";
       if (code == IssueType.STRUCTURE)
         return "structure";
@@ -701,7 +705,7 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
       if (code == IssueType.INFORMATIONAL)
         return "informational";
       return "?";
-      }
+   }
     public String toSystem(IssueType code) {
       return code.getSystem();
       }
@@ -1175,23 +1179,23 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("severity")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OperationOutcome.severity");
+          throw new FHIRException("Cannot call addChild on a singleton property OperationOutcome.severity");
         }
         else if (name.equals("code")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OperationOutcome.code");
+          throw new FHIRException("Cannot call addChild on a singleton property OperationOutcome.code");
         }
         else if (name.equals("details")) {
           this.details = new CodeableConcept();
           return this.details;
         }
         else if (name.equals("diagnostics")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OperationOutcome.diagnostics");
+          throw new FHIRException("Cannot call addChild on a singleton property OperationOutcome.diagnostics");
         }
         else if (name.equals("location")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OperationOutcome.location");
+          throw new FHIRException("Cannot call addChild on a singleton property OperationOutcome.location");
         }
         else if (name.equals("expression")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OperationOutcome.expression");
+          throw new FHIRException("Cannot call addChild on a singleton property OperationOutcome.expression");
         }
         else
           return super.addChild(name);

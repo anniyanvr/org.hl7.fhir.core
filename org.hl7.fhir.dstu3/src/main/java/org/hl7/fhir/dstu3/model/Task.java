@@ -242,12 +242,12 @@ public class Task extends DomainResource {
           return TaskStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown TaskStatus code '"+codeString+"'");
         }
-        public Enumeration<TaskStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<TaskStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<TaskStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -277,7 +277,9 @@ public class Task extends DomainResource {
         throw new FHIRException("Unknown TaskStatus code '"+codeString+"'");
         }
     public String toCode(TaskStatus code) {
-      if (code == TaskStatus.DRAFT)
+       if (code == TaskStatus.NULL)
+           return null;
+       if (code == TaskStatus.DRAFT)
         return "draft";
       if (code == TaskStatus.REQUESTED)
         return "requested";
@@ -302,7 +304,7 @@ public class Task extends DomainResource {
       if (code == TaskStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(TaskStatus code) {
       return code.getSystem();
       }
@@ -452,12 +454,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return TaskIntent.OPTION;
         throw new IllegalArgumentException("Unknown TaskIntent code '"+codeString+"'");
         }
-        public Enumeration<TaskIntent> fromType(Base code) throws FHIRException {
+        public Enumeration<TaskIntent> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<TaskIntent>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("proposal".equals(codeString))
@@ -479,7 +481,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown TaskIntent code '"+codeString+"'");
         }
     public String toCode(TaskIntent code) {
-      if (code == TaskIntent.PROPOSAL)
+       if (code == TaskIntent.NULL)
+           return null;
+       if (code == TaskIntent.PROPOSAL)
         return "proposal";
       if (code == TaskIntent.PLAN)
         return "plan";
@@ -496,7 +500,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == TaskIntent.OPTION)
         return "option";
       return "?";
-      }
+   }
     public String toSystem(TaskIntent code) {
       return code.getSystem();
       }
@@ -596,12 +600,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return TaskPriority.STAT;
         throw new IllegalArgumentException("Unknown TaskPriority code '"+codeString+"'");
         }
-        public Enumeration<TaskPriority> fromType(Base code) throws FHIRException {
+        public Enumeration<TaskPriority> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<TaskPriority>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("routine".equals(codeString))
@@ -615,7 +619,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown TaskPriority code '"+codeString+"'");
         }
     public String toCode(TaskPriority code) {
-      if (code == TaskPriority.ROUTINE)
+       if (code == TaskPriority.NULL)
+           return null;
+       if (code == TaskPriority.ROUTINE)
         return "routine";
       if (code == TaskPriority.URGENT)
         return "urgent";
@@ -624,7 +630,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == TaskPriority.STAT)
         return "stat";
       return "?";
-      }
+   }
     public String toSystem(TaskPriority code) {
       return code.getSystem();
       }
@@ -1039,16 +1045,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return getRecipient().get(0);
         }
 
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Resource> getRecipientTarget() { 
-          if (this.recipientTarget == null)
-            this.recipientTarget = new ArrayList<Resource>();
-          return this.recipientTarget;
-        }
-
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
           children.add(new Property("repetitions", "positiveInt", "Indicates the number of times the requested action should occur.", 0, 1, repetitions));
@@ -1133,7 +1129,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("repetitions")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Task.repetitions");
+          throw new FHIRException("Cannot call addChild on a singleton property Task.repetitions");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -2243,8 +2239,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return (UriType) this.definition;
     }
 
-    public boolean hasDefinitionUriType() { 
-      return this != null && this.definition instanceof UriType;
+    public boolean hasDefinitionUriType() {
+        return this.definition instanceof UriType;
     }
 
     /**
@@ -2258,8 +2254,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return (Reference) this.definition;
     }
 
-    public boolean hasDefinitionReference() { 
-      return this != null && this.definition instanceof Reference;
+    public boolean hasDefinitionReference() {
+        return this.definition instanceof Reference;
     }
 
     public boolean hasDefinition() { 
@@ -2327,16 +2323,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addBasedOn();
       }
       return getBasedOn().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<Resource>();
-      return this.basedOnTarget;
     }
 
     /**
@@ -2414,28 +2400,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addPartOf();
       }
       return getPartOf().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Task> getPartOfTarget() { 
-      if (this.partOfTarget == null)
-        this.partOfTarget = new ArrayList<Task>();
-      return this.partOfTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Task addPartOfTarget() { 
-      Task r = new Task();
-      if (this.partOfTarget == null)
-        this.partOfTarget = new ArrayList<Task>();
-      this.partOfTarget.add(r);
-      return r;
     }
 
     /**
@@ -3184,28 +3148,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Provenance> getRelevantHistoryTarget() { 
-      if (this.relevantHistoryTarget == null)
-        this.relevantHistoryTarget = new ArrayList<Provenance>();
-      return this.relevantHistoryTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Provenance addRelevantHistoryTarget() { 
-      Provenance r = new Provenance();
-      if (this.relevantHistoryTarget == null)
-        this.relevantHistoryTarget = new ArrayList<Provenance>();
-      this.relevantHistoryTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #restriction} (If the Task.focus is a request resource and the task is seeking fulfillment (i.e is asking for the request to be actioned), this element identifies any limitations on what parts of the referenced request should be actioned.)
      */
     public TaskRestrictionComponent getRestriction() { 
@@ -3690,7 +3632,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return addPartOf();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Task.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Task.status");
         }
         else if (name.equals("statusReason")) {
           this.statusReason = new CodeableConcept();
@@ -3701,17 +3643,17 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return this.businessStatus;
         }
         else if (name.equals("intent")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Task.intent");
+          throw new FHIRException("Cannot call addChild on a singleton property Task.intent");
         }
         else if (name.equals("priority")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Task.priority");
+          throw new FHIRException("Cannot call addChild on a singleton property Task.priority");
         }
         else if (name.equals("code")) {
           this.code = new CodeableConcept();
           return this.code;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Task.description");
+          throw new FHIRException("Cannot call addChild on a singleton property Task.description");
         }
         else if (name.equals("focus")) {
           this.focus = new Reference();
@@ -3730,10 +3672,10 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return this.executionPeriod;
         }
         else if (name.equals("authoredOn")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Task.authoredOn");
+          throw new FHIRException("Cannot call addChild on a singleton property Task.authoredOn");
         }
         else if (name.equals("lastModified")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Task.lastModified");
+          throw new FHIRException("Cannot call addChild on a singleton property Task.lastModified");
         }
         else if (name.equals("requester")) {
           this.requester = new TaskRequesterComponent();

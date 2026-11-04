@@ -1,5 +1,7 @@
 package org.hl7.fhir.r5.test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,12 +11,12 @@ import org.hl7.fhir.r5.context.SimpleWorkerContext;
 import org.hl7.fhir.r5.elementmodel.Element;
 import org.hl7.fhir.r5.elementmodel.Manager;
 import org.hl7.fhir.r5.elementmodel.Manager.FhirFormat;
+import org.hl7.fhir.r5.fhirpath.FHIRPathEngine;
 import org.hl7.fhir.r5.formats.IParser.OutputStyle;
-import org.hl7.fhir.r5.model.StructureDefinition;
 import org.hl7.fhir.r5.test.utils.TestingUtilities;
-import org.hl7.fhir.r5.utils.FHIRPathEngine;
 import org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager;
-import org.hl7.fhir.utilities.npm.ToolsVersion;
+import org.hl7.fhir.utilities.npm.NpmPackage;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -24,25 +26,20 @@ public class CDARoundTripTests {
 	private static SimpleWorkerContext context;
 	private static FHIRPathEngine fp;
 
+	@AfterAll
+	public static void tearDown() {
+	  context = null;
+	  fp = null;
+	}
+
 	@BeforeAll
 	public static void setUp() throws Exception {
-	    FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
-		context = SimpleWorkerContext.fromPackage(pcm.loadPackage("hl7.fhir.r4.core", "4.0.1"));
-		fp = new FHIRPathEngine(context);
+	  FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager.Builder().build();
+	  context = new SimpleWorkerContext(TestingUtilities.getWorkerContext(pcm.loadPackage("hl7.fhir.r5.core", "5.0.0")));
+	  fp = new FHIRPathEngine(context);
 
-		context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "any.xml"), "any.xml", null);
-		context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "ii.xml"), "ii.xml", null);
-		context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "cd.xml"), "cd.xml", null);
-		context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "ce.xml"), "ce.xml", null);
-		context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "ed.xml"), "ed.xml", null);
-		context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "st.xml"), "st.xml", null);
-		context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "cda.xml"), "cda.xml", null);
-		for (StructureDefinition sd : context.getStructures()) {
-			if (!sd.hasSnapshot()) {
-//				System.out.println("generate snapshot for " + sd.getUrl());
-				context.generateSnapshot(sd, true);
-			}
-		}
+	  NpmPackage npm = new FilesystemPackageCacheManager.Builder().build().loadPackage("hl7.cda.uv.core", "2.0.0-sd");
+	  context.loadFromPackage(npm, null);
 	}
 
 // old-test    
@@ -56,8 +53,8 @@ public class CDARoundTripTests {
 //
 //      Element e = Manager.parse(context, fileSource, FhirFormat.XML);
 //
-//      Manager.compose(context, e, new FileOutputStream(roundTrip), FhirFormat.XML, OutputStyle.PRETTY, null);
-//      Manager.compose(context, e, new FileOutputStream(jsonRoundTrip), FhirFormat.JSON, OutputStyle.PRETTY, null);
+//      Manager.compose(context, e, ManagedFileAccess.outStream(roundTrip), FhirFormat.XML, OutputStyle.PRETTY, null);
+//      Manager.compose(context, e, ManagedFileAccess.outStream(jsonRoundTrip), FhirFormat.JSON, OutputStyle.PRETTY, null);
 //
 ////    <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040"/>
 ////      assertEquals("POCD_HD000040", fp.evaluateToString(e, "typeId.extension"));
@@ -119,9 +116,9 @@ public class CDARoundTripTests {
 //
 //      assertEquals("Skin Exam", fp.evaluateToString(e, "component.structuredBody.component.section.component.section.where(code.code='8709-8' and code.codeSystem='2.16.840.1.113883.6.1').title.dataString"));
 //      // <div>Erythematous rash, palmar surface, left index finger.
-//      // <img src="MM1"/></div>
+//      // <img src="MM1" alt=\"img\"/></div>
 //      String text = fp.evaluateToString(e, "component.structuredBody.component.section.component.section.where(code.code='8709-8' and code.codeSystem='2.16.840.1.113883.6.1').text");
-//      assertTrue(text.contains("<img src=\"MM1\"/>"));
+//      assertTrue(text.contains("<img src=\"MM1\" alt=\"img\"/>"));
 //    } catch (Exception e) {
 //      System.out.println(e.getMessage());
 //      e.printStackTrace();
@@ -133,12 +130,12 @@ public class CDARoundTripTests {
 //  public void testDCI() throws FHIRFormatError, DefinitionException, FileNotFoundException, IOException, FHIRException {
 //    try {
 //      Element e = Manager.parse(context,
-//          new FileInputStream("C:\\work\\org.hl7.fhir.us\\ccda-to-fhir-maps\\cda\\IAT2-Discharge_Summary-DCI.xml"),
+//          ManagedFileAccess.inStream("C:\\work\\org.hl7.fhir.us\\ccda-to-fhir-maps\\cda\\IAT2-Discharge_Summary-DCI.xml"),
 //          FhirFormat.XML);
 //
-//      Manager.compose(context, e, new FileOutputStream("C:\\temp\\ccda.xml"), FhirFormat.XML, OutputStyle.PRETTY, null);
-////    Manager.compose(context, e, new FileOutputStream("C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-Discharge_Summary-DCI.out.json"), FhirFormat.JSON, OutputStyle.PRETTY, null);
-////    Manager.compose(context, e, new FileOutputStream("C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-Discharge_Summary-DCI.out.ttl"), FhirFormat.TURTLE, OutputStyle.PRETTY, null);
+//      Manager.compose(context, e, ManagedFileAccess.outStream(Utilities.path("[tmp]", "ccda.xml"), FhirFormat.XML, OutputStyle.PRETTY, null);
+////    Manager.compose(context, e, ManagedFileAccess.outStream("C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-Discharge_Summary-DCI.out.json"), FhirFormat.JSON, OutputStyle.PRETTY, null);
+////    Manager.compose(context, e, ManagedFileAccess.outStream("C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-Discharge_Summary-DCI.out.ttl"), FhirFormat.TURTLE, OutputStyle.PRETTY, null);
 //    } catch (Exception e) {
 //      System.out.println(e.getMessage());
 //      e.printStackTrace();
@@ -150,19 +147,19 @@ public class CDARoundTripTests {
 //  public void testEpic()
 //      throws FHIRFormatError, DefinitionException, FileNotFoundException, IOException, FHIRException {
 //    Element e = Manager.parse(context,
-//        new FileInputStream(
+//        ManagedFileAccess.inStream(
 //            "C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-Discharge-Homework-Epic.xml"),
 //        FhirFormat.XML);
 //    Manager.compose(context, e,
-//        new FileOutputStream(
+//        ManagedFileAccess.outStream(
 //            "C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-Discharge-Homework-Epic.out.xml"),
 //        FhirFormat.XML, OutputStyle.PRETTY, null);
 //    Manager.compose(context, e,
-//        new FileOutputStream(
+//        ManagedFileAccess.outStream(
 //            "C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-Discharge-Homework-Epic.out.json"),
 //        FhirFormat.JSON, OutputStyle.PRETTY, null);
 //    Manager.compose(context, e,
-//        new FileOutputStream(
+//        ManagedFileAccess.outStream(
 //            "C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-Discharge-Homework-Epic.out.ttl"),
 //        FhirFormat.TURTLE, OutputStyle.PRETTY, null);
 //  }
@@ -171,33 +168,35 @@ public class CDARoundTripTests {
 //  public void testDHIT()
 //      throws FHIRFormatError, DefinitionException, FileNotFoundException, IOException, FHIRException {
 //    Element e = Manager.parse(context,
-//        new FileInputStream("C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-DS-Homework-DHIT.xml"),
+//        ManagedFileAccess.inStream("C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-DS-Homework-DHIT.xml"),
 //        FhirFormat.XML);
 //    Manager.compose(context, e,
-//        new FileOutputStream(
+//        ManagedFileAccess.outStream(
 //            "C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-DS-Homework-DHIT.out.xml"),
 //        FhirFormat.XML, OutputStyle.PRETTY, null);
 //    Manager.compose(context, e,
-//        new FileOutputStream(
+//        ManagedFileAccess.outStream(
 //            "C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-DS-Homework-DHIT.out.json"),
 //        FhirFormat.JSON, OutputStyle.PRETTY, null);
 //    Manager.compose(context, e,
-//        new FileOutputStream(
+//        ManagedFileAccess.outStream(
 //            "C:\\work\\org.hl7.fhir.test\\ccda-to-fhir-maps\\testdocuments\\IAT2-DS-Homework-DHIT.out.ttl"),
 //        FhirFormat.TURTLE, OutputStyle.PRETTY, null);
 //  }
 
 	public void assertsExample(Element cdaExample) {
-	    Assertions.assertEquals("2.16.840.1.113883.3.27.1776", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.templateId.root")));
-        Assertions.assertEquals("SoEN", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.code.displayName")));
-        Assertions.assertEquals("SoEN2", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.code.sdtcDisplayName")));
-        Assertions.assertEquals("c266", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.id.extension")));
-	    Assertions.assertEquals("2.16.840.1.113883.19.4", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.id.root")));
-	    Assertions.assertEquals("X-34133-9", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.code.code")));
-	    Assertions.assertEquals("2.16.840.1.113883.6.1", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.code.codeSystem")));
-	    Assertions.assertEquals("LOINC", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.code.codeSystemName")));
-	    Assertions.assertEquals("Episode Note", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.title.dataString")));	  
-  }
+	  Assertions.assertEquals("2.16.840.1.113883.3.27.1776", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.templateId.root")));
+	  Assertions.assertEquals("SoEN", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.code.displayName")));
+	  Assertions.assertEquals("2.16.840.1.113883.1.2.3.4.5.6", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.code.sdtcValueSet")));
+	  Assertions.assertEquals("c266", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.id.extension")));
+	  Assertions.assertEquals("2.16.840.1.113883.19.4", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.id.root")));
+	  Assertions.assertEquals("X-34133-9", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.code.code")));
+	  Assertions.assertEquals("2.16.840.1.113883.6.1", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.code.codeSystem")));
+	  Assertions.assertEquals("LOINC", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.code.codeSystemName")));
+    Assertions.assertEquals("Episode Note", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.title.xmlText")));   
+    Assertions.assertEquals("Episode Note", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.title.ofType(CDA.ST).xmlText")));   
+    Assertions.assertEquals("Levin", fp.evaluateToString(null, cdaExample, cdaExample, cdaExample, fp.parse("ClinicalDocument.recordTarget.patientRole.patient.name.item.family.xmlText")));
+	}
 
 	@Test
 	/**
@@ -214,6 +213,9 @@ public class CDARoundTripTests {
 
 		ByteArrayOutputStream baosXml = new ByteArrayOutputStream();
 		Manager.compose(context, cda, baosXml, FhirFormat.XML, OutputStyle.PRETTY, null);
+		String result = baosXml.toString();
+		// https://github.com/hapifhir/org.hl7.fhir.core/issues/1583
+		assertEquals(-1,result.indexOf("<item>"));
 		Element cdaXmlRoundtrip = Manager.parseSingle(context, new ByteArrayInputStream(baosXml.toString().getBytes()), FhirFormat.XML);
 		assertsExample(cdaXmlRoundtrip);
 	}
@@ -257,7 +259,7 @@ public class CDARoundTripTests {
 	  value.setValue("öé");
 	  
 	  ByteArrayOutputStream baosXml = new ByteArrayOutputStream();
-	  Manager.compose(TestingUtilities.context(), xml, baosXml, FhirFormat.XML, OutputStyle.PRETTY, null);
+	  Manager.compose(TestingUtilities.getSharedWorkerContext(), xml, baosXml, FhirFormat.XML, OutputStyle.PRETTY, null);
 	  String cdaSerialised = baosXml.toString("UTF-8");
     Assertions.assertTrue(cdaSerialised.indexOf("öé") > 0);
 	}

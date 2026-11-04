@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +50,7 @@ import  org.hl7.fhir.instance.model.api.IBaseReference;
 import  org.hl7.fhir.instance.model.api.ICompositeType;
 import  org.hl7.fhir.instance.model.api.IIdType;
 /**
- * Base StructureDefinition for Reference Type: A reference from one resource to another.
+ * Reference Type: A reference from one resource to another.
  */
 @DatatypeDef(name="Reference")
 public class Reference extends BaseReference implements IBaseReference, ICompositeType {
@@ -68,7 +68,7 @@ public class Reference extends BaseReference implements IBaseReference, IComposi
 The type is the Canonical URL of Resource Definition that is the type this reference refers to. References are URLs that are relative to http://hl7.org/fhir/StructureDefinition/ e.g. "Patient" is a reference to http://hl7.org/fhir/StructureDefinition/Patient. Absolute URLs are only allowed for logical models (and can only be used in references in logical models, not resources).
      */
     @Child(name = "type", type = {UriType.class}, order=1, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Type the reference refers to (e.g. \"Patient\")", formalDefinition="The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.\n\nThe type is the Canonical URL of Resource Definition that is the type this reference refers to. References are URLs that are relative to http://hl7.org/fhir/StructureDefinition/ e.g. \"Patient\" is a reference to http://hl7.org/fhir/StructureDefinition/Patient. Absolute URLs are only allowed for logical models (and can only be used in references in logical models, not resources)." )
+    @Description(shortDefinition="Type the reference refers to (e.g. \"Patient\") - must be a resource in resources", formalDefinition="The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.\n\nThe type is the Canonical URL of Resource Definition that is the type this reference refers to. References are URLs that are relative to http://hl7.org/fhir/StructureDefinition/ e.g. \"Patient\" is a reference to http://hl7.org/fhir/StructureDefinition/Patient. Absolute URLs are only allowed for logical models (and can only be used in references in logical models, not resources)." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/resource-types")
     protected UriType type;
 
@@ -368,6 +368,21 @@ The type is the Canonical URL of Resource Definition that is the type this refer
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("reference")) {
+          this.reference = null;
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("identifier")) {
+          this.identifier = null;
+        } else if (name.equals("display")) {
+          this.display = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -395,17 +410,17 @@ The type is the Canonical URL of Resource Definition that is the type this refer
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("reference")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Reference.reference");
+          throw new FHIRException("Cannot call addChild on a singleton property Reference.reference");
         }
         else if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Reference.type");
+          throw new FHIRException("Cannot call addChild on a singleton property Reference.type");
         }
         else if (name.equals("identifier")) {
           this.identifier = new Identifier();
           return this.identifier;
         }
         else if (name.equals("display")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Reference.display");
+          throw new FHIRException("Cannot call addChild on a singleton property Reference.display");
         }
         else
           return super.addChild(name);
@@ -420,6 +435,10 @@ The type is the Canonical URL of Resource Definition that is the type this refer
         Reference dst = new Reference();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Reference) dst);
       }
 
       public void copyValues(Reference dst) {
@@ -489,6 +508,35 @@ The type is the Canonical URL of Resource Definition that is the type this refer
     } 
     return this; 
   }
+  
+
+  public boolean matches(Reference value) {
+    if (value.hasReference() || hasReference()) {
+      if (!(value.hasReference() && hasReference())) {
+        return false;
+      }
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //False positive: not using String.matches
+      boolean refMatches = reference.matches(value.getReference());
+      if (!refMatches) {
+        return true;
+      }
+    }
+    if (value.hasIdentifier() || hasIdentifier()) {
+      if (!(value.hasIdentifier() && hasIdentifier())) {
+        return false;
+      }
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //False positive: not using String.matches
+      boolean idMatches = identifier.matches(value.getIdentifier());
+      if (!idMatches) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
 // end addition
 
 }

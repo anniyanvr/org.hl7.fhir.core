@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class QuestionnaireUsageModeEnumFactory implements EnumFactory<QuestionnaireUsageMode> {
@@ -52,11 +48,13 @@ public class QuestionnaireUsageModeEnumFactory implements EnumFactory<Questionna
       return QuestionnaireUsageMode.DISPLAYNONEMPTY;
     if ("capture-display-non-empty".equals(codeString))
       return QuestionnaireUsageMode.CAPTUREDISPLAYNONEMPTY;
-    throw new IllegalArgumentException("Unknown QuestionnaireUsageMode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown QuestionnaireUsageMode code '" + codeString + "'");
   }
 
   public String toCode(QuestionnaireUsageMode code) {
-    if (code == QuestionnaireUsageMode.CAPTUREDISPLAY)
+       if (code == QuestionnaireUsageMode.NULL)
+           return null;
+       if (code == QuestionnaireUsageMode.CAPTUREDISPLAY)
       return "capture-display";
     if (code == QuestionnaireUsageMode.CAPTURE)
       return "capture";
@@ -67,10 +65,10 @@ public class QuestionnaireUsageModeEnumFactory implements EnumFactory<Questionna
     if (code == QuestionnaireUsageMode.CAPTUREDISPLAYNONEMPTY)
       return "capture-display-non-empty";
     return "?";
-  }
+   }
 
-    public String toSystem(QuestionnaireUsageMode code) {
-      return code.getSystem();
-      }
+  public String toSystem(QuestionnaireUsageMode code) {
+    return code.getSystem();
+  }
 
 }

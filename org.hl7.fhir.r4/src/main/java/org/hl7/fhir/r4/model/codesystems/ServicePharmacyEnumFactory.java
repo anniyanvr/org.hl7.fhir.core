@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ServicePharmacyEnumFactory implements EnumFactory<ServicePharmacy> {
@@ -54,11 +50,13 @@ public class ServicePharmacyEnumFactory implements EnumFactory<ServicePharmacy> 
       return ServicePharmacy.DISPENSEFEE;
     if ("compoundfee".equals(codeString))
       return ServicePharmacy.COMPOUNDFEE;
-    throw new IllegalArgumentException("Unknown ServicePharmacy code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ServicePharmacy code '" + codeString + "'");
   }
 
   public String toCode(ServicePharmacy code) {
-    if (code == ServicePharmacy.SMOKECESS)
+       if (code == ServicePharmacy.NULL)
+           return null;
+       if (code == ServicePharmacy.SMOKECESS)
       return "smokecess";
     if (code == ServicePharmacy.FLUSHOT)
       return "flushot";
@@ -71,10 +69,10 @@ public class ServicePharmacyEnumFactory implements EnumFactory<ServicePharmacy> 
     if (code == ServicePharmacy.COMPOUNDFEE)
       return "compoundfee";
     return "?";
-  }
+   }
 
-    public String toSystem(ServicePharmacy code) {
-      return code.getSystem();
-      }
+  public String toSystem(ServicePharmacy code) {
+    return code.getSystem();
+  }
 
 }

@@ -146,12 +146,12 @@ public class Specimen extends DomainResource {
           return SpecimenStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown SpecimenStatus code '"+codeString+"'");
         }
-        public Enumeration<SpecimenStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<SpecimenStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<SpecimenStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("available".equals(codeString))
@@ -165,7 +165,9 @@ public class Specimen extends DomainResource {
         throw new FHIRException("Unknown SpecimenStatus code '"+codeString+"'");
         }
     public String toCode(SpecimenStatus code) {
-      if (code == SpecimenStatus.AVAILABLE)
+       if (code == SpecimenStatus.NULL)
+           return null;
+       if (code == SpecimenStatus.AVAILABLE)
         return "available";
       if (code == SpecimenStatus.UNAVAILABLE)
         return "unavailable";
@@ -174,7 +176,7 @@ public class Specimen extends DomainResource {
       if (code == SpecimenStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(SpecimenStatus code) {
       return code.getSystem();
       }
@@ -295,8 +297,8 @@ public class Specimen extends DomainResource {
           return (DateTimeType) this.collected;
         }
 
-        public boolean hasCollectedDateTimeType() { 
-          return this != null && this.collected instanceof DateTimeType;
+        public boolean hasCollectedDateTimeType() {
+            return this.collected instanceof DateTimeType;
         }
 
         /**
@@ -310,8 +312,8 @@ public class Specimen extends DomainResource {
           return (Period) this.collected;
         }
 
-        public boolean hasCollectedPeriod() { 
-          return this != null && this.collected instanceof Period;
+        public boolean hasCollectedPeriod() {
+            return this.collected instanceof Period;
         }
 
         public boolean hasCollected() { 
@@ -751,28 +753,6 @@ public class Specimen extends DomainResource {
         }
 
         /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Substance> getAdditiveTarget() { 
-          if (this.additiveTarget == null)
-            this.additiveTarget = new ArrayList<Substance>();
-          return this.additiveTarget;
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public Substance addAdditiveTarget() { 
-          Substance r = new Substance();
-          if (this.additiveTarget == null)
-            this.additiveTarget = new ArrayList<Substance>();
-          this.additiveTarget.add(r);
-          return r;
-        }
-
-        /**
          * @return {@link #time} (A record of the time or period when the specimen processing occurred.  For example the time of sample fixation or the period of time the sample was in formalin.)
          */
         public Type getTime() { 
@@ -790,8 +770,8 @@ public class Specimen extends DomainResource {
           return (DateTimeType) this.time;
         }
 
-        public boolean hasTimeDateTimeType() { 
-          return this != null && this.time instanceof DateTimeType;
+        public boolean hasTimeDateTimeType() {
+            return this.time instanceof DateTimeType;
         }
 
         /**
@@ -805,8 +785,8 @@ public class Specimen extends DomainResource {
           return (Period) this.time;
         }
 
-        public boolean hasTimePeriod() { 
-          return this != null && this.time instanceof Period;
+        public boolean hasTimePeriod() {
+            return this.time instanceof Period;
         }
 
         public boolean hasTime() { 
@@ -921,7 +901,7 @@ public class Specimen extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Specimen.description");
+          throw new FHIRException("Cannot call addChild on a singleton property Specimen.description");
         }
         else if (name.equals("procedure")) {
           this.procedure = new CodeableConcept();
@@ -1236,8 +1216,8 @@ public class Specimen extends DomainResource {
           return (CodeableConcept) this.additive;
         }
 
-        public boolean hasAdditiveCodeableConcept() { 
-          return this != null && this.additive instanceof CodeableConcept;
+        public boolean hasAdditiveCodeableConcept() {
+            return this.additive instanceof CodeableConcept;
         }
 
         /**
@@ -1251,8 +1231,8 @@ public class Specimen extends DomainResource {
           return (Reference) this.additive;
         }
 
-        public boolean hasAdditiveReference() { 
-          return this != null && this.additive instanceof Reference;
+        public boolean hasAdditiveReference() {
+            return this.additive instanceof Reference;
         }
 
         public boolean hasAdditive() { 
@@ -1390,7 +1370,7 @@ public class Specimen extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Specimen.description");
+          throw new FHIRException("Cannot call addChild on a singleton property Specimen.description");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
@@ -1876,28 +1856,6 @@ public class Specimen extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Specimen> getParentTarget() { 
-      if (this.parentTarget == null)
-        this.parentTarget = new ArrayList<Specimen>();
-      return this.parentTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Specimen addParentTarget() { 
-      Specimen r = new Specimen();
-      if (this.parentTarget == null)
-        this.parentTarget = new ArrayList<Specimen>();
-      this.parentTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #request} (Details concerning a test or procedure request that required a specimen to be collected.)
      */
     public List<Reference> getRequest() { 
@@ -1948,28 +1906,6 @@ public class Specimen extends DomainResource {
         addRequest();
       }
       return getRequest().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<ProcedureRequest> getRequestTarget() { 
-      if (this.requestTarget == null)
-        this.requestTarget = new ArrayList<ProcedureRequest>();
-      return this.requestTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public ProcedureRequest addRequestTarget() { 
-      ProcedureRequest r = new ProcedureRequest();
-      if (this.requestTarget == null)
-        this.requestTarget = new ArrayList<ProcedureRequest>();
-      this.requestTarget.add(r);
-      return r;
     }
 
     /**
@@ -2338,7 +2274,7 @@ public class Specimen extends DomainResource {
           return this.accessionIdentifier;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Specimen.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Specimen.status");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
@@ -2349,7 +2285,7 @@ public class Specimen extends DomainResource {
           return this.subject;
         }
         else if (name.equals("receivedTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Specimen.receivedTime");
+          throw new FHIRException("Cannot call addChild on a singleton property Specimen.receivedTime");
         }
         else if (name.equals("parent")) {
           return addParent();

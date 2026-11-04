@@ -196,12 +196,12 @@ public class RiskAssessment extends DomainResource {
           return RiskAssessmentStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown RiskAssessmentStatus code '"+codeString+"'");
         }
-        public Enumeration<RiskAssessmentStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<RiskAssessmentStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<RiskAssessmentStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("registered".equals(codeString))
@@ -223,7 +223,9 @@ public class RiskAssessment extends DomainResource {
         throw new FHIRException("Unknown RiskAssessmentStatus code '"+codeString+"'");
         }
     public String toCode(RiskAssessmentStatus code) {
-      if (code == RiskAssessmentStatus.REGISTERED)
+       if (code == RiskAssessmentStatus.NULL)
+           return null;
+       if (code == RiskAssessmentStatus.REGISTERED)
         return "registered";
       if (code == RiskAssessmentStatus.PRELIMINARY)
         return "preliminary";
@@ -240,7 +242,7 @@ public class RiskAssessment extends DomainResource {
       if (code == RiskAssessmentStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(RiskAssessmentStatus code) {
       return code.getSystem();
       }
@@ -350,8 +352,8 @@ public class RiskAssessment extends DomainResource {
           return (DecimalType) this.probability;
         }
 
-        public boolean hasProbabilityDecimalType() { 
-          return this != null && this.probability instanceof DecimalType;
+        public boolean hasProbabilityDecimalType() {
+          return this.probability instanceof DecimalType;
         }
 
         /**
@@ -365,8 +367,8 @@ public class RiskAssessment extends DomainResource {
           return (Range) this.probability;
         }
 
-        public boolean hasProbabilityRange() { 
-          return this != null && this.probability instanceof Range;
+        public boolean hasProbabilityRange() {
+          return this.probability instanceof Range;
         }
 
         public boolean hasProbability() { 
@@ -492,8 +494,8 @@ public class RiskAssessment extends DomainResource {
           return (Period) this.when;
         }
 
-        public boolean hasWhenPeriod() { 
-          return this != null && this.when instanceof Period;
+        public boolean hasWhenPeriod() {
+          return this.when instanceof Period;
         }
 
         /**
@@ -507,8 +509,8 @@ public class RiskAssessment extends DomainResource {
           return (Range) this.when;
         }
 
-        public boolean hasWhenRange() { 
-          return this != null && this.when instanceof Range;
+        public boolean hasWhenRange() {
+          return this.when instanceof Range;
         }
 
         public boolean hasWhen() { 
@@ -712,7 +714,7 @@ public class RiskAssessment extends DomainResource {
           return this.qualitativeRisk;
         }
         else if (name.equals("relativeRisk")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RiskAssessment.relativeRisk");
+          throw new FHIRException("Cannot call addChild on a singleton property RiskAssessment.relativeRisk");
         }
         else if (name.equals("whenPeriod")) {
           this.when = new Period();
@@ -723,7 +725,7 @@ public class RiskAssessment extends DomainResource {
           return this.when;
         }
         else if (name.equals("rationale")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RiskAssessment.rationale");
+          throw new FHIRException("Cannot call addChild on a singleton property RiskAssessment.rationale");
         }
         else
           return super.addChild(name);
@@ -1232,8 +1234,8 @@ public class RiskAssessment extends DomainResource {
       return (DateTimeType) this.occurrence;
     }
 
-    public boolean hasOccurrenceDateTimeType() { 
-      return this != null && this.occurrence instanceof DateTimeType;
+    public boolean hasOccurrenceDateTimeType() {
+      return this.occurrence instanceof DateTimeType;
     }
 
     /**
@@ -1247,8 +1249,8 @@ public class RiskAssessment extends DomainResource {
       return (Period) this.occurrence;
     }
 
-    public boolean hasOccurrencePeriod() { 
-      return this != null && this.occurrence instanceof Period;
+    public boolean hasOccurrencePeriod() {
+      return this.occurrence instanceof Period;
     }
 
     public boolean hasOccurrence() { 
@@ -1366,8 +1368,8 @@ public class RiskAssessment extends DomainResource {
       return (CodeableConcept) this.reason;
     }
 
-    public boolean hasReasonCodeableConcept() { 
-      return this != null && this.reason instanceof CodeableConcept;
+    public boolean hasReasonCodeableConcept() {
+      return this.reason instanceof CodeableConcept;
     }
 
     /**
@@ -1381,8 +1383,8 @@ public class RiskAssessment extends DomainResource {
       return (Reference) this.reason;
     }
 
-    public boolean hasReasonReference() { 
-      return this != null && this.reason instanceof Reference;
+    public boolean hasReasonReference() {
+      return this.reason instanceof Reference;
     }
 
     public boolean hasReason() { 
@@ -1450,16 +1452,6 @@ public class RiskAssessment extends DomainResource {
         addBasis();
       }
       return getBasis().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getBasisTarget() { 
-      if (this.basisTarget == null)
-        this.basisTarget = new ArrayList<Resource>();
-      return this.basisTarget;
     }
 
     /**
@@ -1849,7 +1841,7 @@ public class RiskAssessment extends DomainResource {
           return this.parent;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RiskAssessment.status");
+          throw new FHIRException("Cannot call addChild on a singleton property RiskAssessment.status");
         }
         else if (name.equals("method")) {
           this.method = new CodeableConcept();
@@ -1898,10 +1890,10 @@ public class RiskAssessment extends DomainResource {
           return addPrediction();
         }
         else if (name.equals("mitigation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RiskAssessment.mitigation");
+          throw new FHIRException("Cannot call addChild on a singleton property RiskAssessment.mitigation");
         }
         else if (name.equals("comment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RiskAssessment.comment");
+          throw new FHIRException("Cannot call addChild on a singleton property RiskAssessment.comment");
         }
         else
           return super.addChild(name);

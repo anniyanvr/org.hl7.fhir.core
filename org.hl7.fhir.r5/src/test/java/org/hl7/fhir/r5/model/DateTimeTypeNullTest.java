@@ -1,17 +1,20 @@
 package org.hl7.fhir.r5.model;
 
-import org.hl7.fhir.r5.model.DateTimeType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class DateTimeTypeNullTest {
 
   @Test
   @DisplayName("Test null value toString()")
   void testToString() {
-    DateTimeType nullDateTime = new DateTimeType();
-    System.out.println("Value -> " + nullDateTime);
+    assertDoesNotThrow(() -> {
+      DateTimeType nullDateTime = new DateTimeType();
+      System.out.println("Value -> " + nullDateTime);
+    });
   }
 
   @Test

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class InterventionEnumFactory implements EnumFactory<Intervention> {
@@ -46,19 +42,21 @@ public class InterventionEnumFactory implements EnumFactory<Intervention> {
       return Intervention.UNKNOWN;
     if ("other".equals(codeString))
       return Intervention.OTHER;
-    throw new IllegalArgumentException("Unknown Intervention code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown Intervention code '" + codeString + "'");
   }
 
   public String toCode(Intervention code) {
-    if (code == Intervention.UNKNOWN)
+       if (code == Intervention.NULL)
+           return null;
+       if (code == Intervention.UNKNOWN)
       return "unknown";
     if (code == Intervention.OTHER)
       return "other";
     return "?";
-  }
+   }
 
-    public String toSystem(Intervention code) {
-      return code.getSystem();
-      }
+  public String toSystem(Intervention code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ConceptSubsumptionOutcomeEnumFactory implements EnumFactory<ConceptSubsumptionOutcome> {
@@ -50,11 +46,13 @@ public class ConceptSubsumptionOutcomeEnumFactory implements EnumFactory<Concept
       return ConceptSubsumptionOutcome.SUBSUMEDBY;
     if ("not-subsumed".equals(codeString))
       return ConceptSubsumptionOutcome.NOTSUBSUMED;
-    throw new IllegalArgumentException("Unknown ConceptSubsumptionOutcome code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ConceptSubsumptionOutcome code '" + codeString + "'");
   }
 
   public String toCode(ConceptSubsumptionOutcome code) {
-    if (code == ConceptSubsumptionOutcome.EQUIVALENT)
+       if (code == ConceptSubsumptionOutcome.NULL)
+           return null;
+       if (code == ConceptSubsumptionOutcome.EQUIVALENT)
       return "equivalent";
     if (code == ConceptSubsumptionOutcome.SUBSUMES)
       return "subsumes";
@@ -63,10 +61,10 @@ public class ConceptSubsumptionOutcomeEnumFactory implements EnumFactory<Concept
     if (code == ConceptSubsumptionOutcome.NOTSUBSUMED)
       return "not-subsumed";
     return "?";
-  }
+   }
 
-    public String toSystem(ConceptSubsumptionOutcome code) {
-      return code.getSystem();
-      }
+  public String toSystem(ConceptSubsumptionOutcome code) {
+    return code.getSystem();
+  }
 
 }

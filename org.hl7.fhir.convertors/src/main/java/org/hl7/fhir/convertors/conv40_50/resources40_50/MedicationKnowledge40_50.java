@@ -1,14 +1,17 @@
 package org.hl7.fhir.convertors.conv40_50.resources40_50;
 
 import org.hl7.fhir.convertors.context.ConversionContext40_50;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.*;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.CodeableConcept40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Duration40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Money40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.SimpleQuantity40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Boolean40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.MarkDown40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.model.CodeableConcept;
-import org.hl7.fhir.r5.model.Coding;
+import org.hl7.fhir.r4.model.Enumeration;
+import org.hl7.fhir.r4.model.MedicationKnowledge;
 import org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgePackagingComponent;
 import org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodesEnumFactory;
 
@@ -52,13 +55,13 @@ public class MedicationKnowledge40_50 {
       tgt.setCode(CodeableConcept40_50.convertCodeableConcept(src.getCode()));
     if (src.hasStatus())
       tgt.setStatusElement(convertMedicationKnowledgeStatus(src.getStatusElement()));
-    if (src.hasManufacturer())
-      tgt.setSponsor(Reference40_50.convertReference(src.getManufacturer()));
-    if (src.hasDoseForm())
-      tgt.setDoseForm(CodeableConcept40_50.convertCodeableConcept(src.getDoseForm()));
-    if (src.hasAmount())
-      tgt.setAmount(SimpleQuantity40_50.convertSimpleQuantity(src.getAmount()));
-    for (org.hl7.fhir.r4.model.StringType t : src.getSynonym()) tgt.getSynonym().add(String40_50.convertString(t));
+//    if (src.hasManufacturer())
+//      tgt.setSponsor(Reference40_50.convertReference(src.getManufacturer()));
+//    if (src.hasDoseForm())
+//      tgt.setDoseForm(CodeableConcept40_50.convertCodeableConcept(src.getDoseForm()));
+//    if (src.hasAmount())
+//      tgt.setAmount(SimpleQuantity40_50.convertSimpleQuantity(src.getAmount()));
+    for (org.hl7.fhir.r4.model.StringType t : src.getSynonym()) tgt.getName().add(String40_50.convertString(t));
     for (org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRelatedMedicationKnowledgeComponent t : src.getRelatedMedicationKnowledge())
       tgt.addRelatedMedicationKnowledge(convertMedicationKnowledgeRelatedMedicationKnowledgeComponent(t));
     for (org.hl7.fhir.r4.model.Reference t : src.getAssociatedMedication())
@@ -67,12 +70,12 @@ public class MedicationKnowledge40_50 {
       tgt.addProductType(CodeableConcept40_50.convertCodeableConcept(t));
     for (org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeMonographComponent t : src.getMonograph())
       tgt.addMonograph(convertMedicationKnowledgeMonographComponent(t));
-    for (org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent t : src.getIngredient())
-      tgt.addIngredient(convertMedicationKnowledgeIngredientComponent(t));
+//    for (org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent t : src.getIngredient())
+//      tgt.addIngredient(convertMedicationKnowledgeIngredientComponent(t));
     if (src.hasPreparationInstruction())
       tgt.setPreparationInstructionElement(MarkDown40_50.convertMarkdown(src.getPreparationInstructionElement()));
-    for (org.hl7.fhir.r4.model.CodeableConcept t : src.getIntendedRoute())
-      tgt.addIntendedRoute(CodeableConcept40_50.convertCodeableConcept(t));
+//    for (org.hl7.fhir.r4.model.CodeableConcept t : src.getIntendedRoute())
+//      tgt.addIntendedRoute(CodeableConcept40_50.convertCodeableConcept(t));
     for (org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeCostComponent t : src.getCost())
       tgt.addCost(convertMedicationKnowledgeCostComponent(t));
     for (org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeMonitoringProgramComponent t : src.getMonitoringProgram())
@@ -83,8 +86,8 @@ public class MedicationKnowledge40_50 {
       tgt.addMedicineClassification(convertMedicationKnowledgeMedicineClassificationComponent(t));
     if (src.hasPackaging())
       tgt.addPackaging(convertMedicationKnowledgePackagingComponent(src.getPackaging()));
-    for (org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent t : src.getDrugCharacteristic())
-      tgt.addDrugCharacteristic(convertMedicationKnowledgeDrugCharacteristicComponent(t));
+//    for (org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent t : src.getDrugCharacteristic())
+//      tgt.addDrugCharacteristic(convertMedicationKnowledgeDrugCharacteristicComponent(t));
     // for (org.hl7.fhir.r4.model.Reference t : src.getContraindication())
     // tgt.addContraindication(convertReference(t));
     for (org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRegulatoryComponent t : src.getRegulatory())
@@ -103,13 +106,13 @@ public class MedicationKnowledge40_50 {
       tgt.setCode(CodeableConcept40_50.convertCodeableConcept(src.getCode()));
     if (src.hasStatus())
       tgt.setStatusElement(convertMedicationKnowledgeStatus(src.getStatusElement()));
-    if (src.hasSponsor())
-      tgt.setManufacturer(Reference40_50.convertReference(src.getSponsor()));
-    if (src.hasDoseForm())
-      tgt.setDoseForm(CodeableConcept40_50.convertCodeableConcept(src.getDoseForm()));
-    if (src.hasAmount())
-      tgt.setAmount(SimpleQuantity40_50.convertSimpleQuantity(src.getAmount()));
-    for (org.hl7.fhir.r5.model.StringType t : src.getSynonym()) tgt.getSynonym().add(String40_50.convertString(t));
+//    if (src.hasSponsor())
+//      tgt.setManufacturer(Reference40_50.convertReference(src.getSponsor()));
+//    if (src.hasDoseForm())
+//      tgt.setDoseForm(CodeableConcept40_50.convertCodeableConcept(src.getDoseForm()));
+//    if (src.hasAmount())
+//      tgt.setAmount(SimpleQuantity40_50.convertSimpleQuantity(src.getAmount()));
+    for (org.hl7.fhir.r5.model.StringType t : src.getName()) tgt.getSynonym().add(String40_50.convertString(t));
     for (org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRelatedMedicationKnowledgeComponent t : src.getRelatedMedicationKnowledge())
       tgt.addRelatedMedicationKnowledge(convertMedicationKnowledgeRelatedMedicationKnowledgeComponent(t));
     for (org.hl7.fhir.r5.model.Reference t : src.getAssociatedMedication())
@@ -118,12 +121,12 @@ public class MedicationKnowledge40_50 {
       tgt.addProductType(CodeableConcept40_50.convertCodeableConcept(t));
     for (org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeMonographComponent t : src.getMonograph())
       tgt.addMonograph(convertMedicationKnowledgeMonographComponent(t));
-    for (org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent t : src.getIngredient())
-      tgt.addIngredient(convertMedicationKnowledgeIngredientComponent(t));
+//    for (org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent t : src.getIngredient())
+//      tgt.addIngredient(convertMedicationKnowledgeIngredientComponent(t));
     if (src.hasPreparationInstruction())
       tgt.setPreparationInstructionElement(MarkDown40_50.convertMarkdown(src.getPreparationInstructionElement()));
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getIntendedRoute())
-      tgt.addIntendedRoute(CodeableConcept40_50.convertCodeableConcept(t));
+//    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getIntendedRoute())
+//      tgt.addIntendedRoute(CodeableConcept40_50.convertCodeableConcept(t));
     for (org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeCostComponent t : src.getCost())
       tgt.addCost(convertMedicationKnowledgeCostComponent(t));
     for (org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeMonitoringProgramComponent t : src.getMonitoringProgram())
@@ -134,8 +137,8 @@ public class MedicationKnowledge40_50 {
       tgt.addMedicineClassification(convertMedicationKnowledgeMedicineClassificationComponent(t));
     for (MedicationKnowledgePackagingComponent t : src.getPackaging())
       tgt.setPackaging(convertMedicationKnowledgePackagingComponent(t));
-    for (org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent t : src.getDrugCharacteristic())
-      tgt.addDrugCharacteristic(convertMedicationKnowledgeDrugCharacteristicComponent(t));
+//    for (org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent t : src.getDrugCharacteristic())
+//      tgt.addDrugCharacteristic(convertMedicationKnowledgeDrugCharacteristicComponent(t));
     // for (org.hl7.fhir.r5.model.Reference t : src.getContraindication())
     // tgt.addContraindication(convertReference(t));
     for (org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRegulatoryComponent t : src.getRegulatory())
@@ -146,47 +149,55 @@ public class MedicationKnowledge40_50 {
   }
 
   private static org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeStatus> convertMedicationKnowledgeStatus(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes> src) {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case ACTIVE:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeStatus.ACTIVE);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeStatus.ENTEREDINERROR);
-        break;
-      case INACTIVE:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeStatus.INACTIVE);
-        break;
-      case NULL:
-        tgt.setValue(org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null)
+          return null;
+      Enumeration<MedicationKnowledge.MedicationKnowledgeStatus> tgt = new Enumeration<>(new MedicationKnowledge.MedicationKnowledgeStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case ACTIVE:
+                  tgt.setValue(MedicationKnowledge.MedicationKnowledgeStatus.ACTIVE);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(MedicationKnowledge.MedicationKnowledgeStatus.ENTEREDINERROR);
+                  break;
+              case INACTIVE:
+                  tgt.setValue(MedicationKnowledge.MedicationKnowledgeStatus.INACTIVE);
+                  break;
+              case NULL:
+                  tgt.setValue(MedicationKnowledge.MedicationKnowledgeStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   private static org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes> convertMedicationKnowledgeStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeStatus> src) {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new MedicationKnowledgeStatusCodesEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case ACTIVE:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes.ACTIVE);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes.ENTEREDINERROR);
-        break;
-      case INACTIVE:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes.INACTIVE);
-        break;
-      case NULL:
-        tgt.setValue(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null)
+          return null;
+      org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new MedicationKnowledgeStatusCodesEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case ACTIVE:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes.ACTIVE);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes.ENTEREDINERROR);
+                  break;
+              case INACTIVE:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes.INACTIVE);
+                  break;
+              case NULL:
+                  tgt.setValue(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeStatusCodes.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
 
@@ -194,7 +205,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRelatedMedicationKnowledgeComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRelatedMedicationKnowledgeComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     for (org.hl7.fhir.r4.model.Reference t : src.getReference()) tgt.addReference(Reference40_50.convertReference(t));
@@ -205,7 +216,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRelatedMedicationKnowledgeComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRelatedMedicationKnowledgeComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     for (org.hl7.fhir.r5.model.Reference t : src.getReference()) tgt.addReference(Reference40_50.convertReference(t));
@@ -216,7 +227,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeMonographComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeMonographComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasSource())
@@ -228,7 +239,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeMonographComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeMonographComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasSource())
@@ -236,43 +247,43 @@ public class MedicationKnowledge40_50 {
     return tgt;
   }
 
-  public static org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent convertMedicationKnowledgeIngredientComponent(org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasItemCodeableConcept())
-      tgt.getItem().setConcept(CodeableConcept40_50.convertCodeableConcept(src.getItemCodeableConcept()));
-    if (src.hasItemReference())
-      tgt.getItem().setReference(Reference40_50.convertReference(src.getItemReference()));
-    if (src.getIsActive())
-      tgt.setIsActive(new CodeableConcept(new Coding("ttp://terminology.hl7.org/CodeSystem/v3-RoleClass", "ACTI", "active ingredient ")));
-    if (src.hasStrength())
-      tgt.setStrength(Ratio40_50.convertRatio(src.getStrength()));
-    return tgt;
-  }
-
-  public static org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent convertMedicationKnowledgeIngredientComponent(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.getItem().hasConcept())
-      tgt.setItem(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getItem().getConcept()));
-    if (src.getItem().hasReference())
-      tgt.setItem(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getItem().getReference()));
-    if (src.hasIsActive())
-      tgt.setIsActive(src.getIsActive().hasCoding("http://terminology.hl7.org/CodeSystem/v3-RoleClass", "ACTI"));
-    if (src.hasStrengthRatio())
-      tgt.setStrength(Ratio40_50.convertRatio(src.getStrengthRatio()));
-    return tgt;
-  }
+//  public static org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent convertMedicationKnowledgeIngredientComponent(org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+//    if (src.hasItemCodeableConcept())
+//      tgt.getItem().setConcept(CodeableConcept40_50.convertCodeableConcept(src.getItemCodeableConcept()));
+//    if (src.hasItemReference())
+//      tgt.getItem().setReference(Reference40_50.convertReference(src.getItemReference()));
+//    if (src.getIsActive())
+//      tgt.setIsActive(new CodeableConcept(new Coding("ttp://terminology.hl7.org/CodeSystem/v3-RoleClass", "ACTI", "active ingredient ")));
+//    if (src.hasStrength())
+//      tgt.setStrength(Ratio40_50.convertRatio(src.getStrength()));
+//    return tgt;
+//  }
+//
+//  public static org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent convertMedicationKnowledgeIngredientComponent(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeIngredientComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+//    if (src.getItem().hasConcept())
+//      tgt.setItem(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getItem().getConcept()));
+//    if (src.getItem().hasReference())
+//      tgt.setItem(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getItem().getReference()));
+//    if (src.hasIsActive())
+//      tgt.setIsActive(src.getIsActive().hasCoding("http://terminology.hl7.org/CodeSystem/v3-RoleClass", "ACTI"));
+//    if (src.hasStrengthRatio())
+//      tgt.setStrength(Ratio40_50.convertRatio(src.getStrengthRatio()));
+//    return tgt;
+//  }
 
   public static org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeCostComponent convertMedicationKnowledgeCostComponent(org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeCostComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeCostComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeCostComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasSource())
@@ -286,7 +297,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeCostComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeCostComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasSource())
@@ -300,7 +311,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeMonitoringProgramComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeMonitoringProgramComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasName())
@@ -312,7 +323,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeMonitoringProgramComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeMonitoringProgramComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasName())
@@ -399,7 +410,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeMedicineClassificationComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeMedicineClassificationComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getClassification())
@@ -411,7 +422,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeMedicineClassificationComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeMedicineClassificationComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getClassification())
@@ -423,11 +434,11 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgePackagingComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgePackagingComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasType())
-      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
-    if (src.hasQuantity())
-      tgt.setQuantity(SimpleQuantity40_50.convertSimpleQuantity(src.getQuantity()));
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
+//    if (src.hasType())
+//      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
+//    if (src.hasQuantity())
+//      tgt.setQuantity(SimpleQuantity40_50.convertSimpleQuantity(src.getQuantity()));
     return tgt;
   }
 
@@ -435,43 +446,43 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgePackagingComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgePackagingComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasType())
-      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
-    if (src.hasQuantity())
-      tgt.setQuantity(SimpleQuantity40_50.convertSimpleQuantity(src.getQuantity()));
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
+//    if (src.hasType())
+//      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
+//    if (src.hasQuantity())
+//      tgt.setQuantity(SimpleQuantity40_50.convertSimpleQuantity(src.getQuantity()));
     return tgt;
   }
 
-  public static org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent convertMedicationKnowledgeDrugCharacteristicComponent(org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasType())
-      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
-    if (src.hasValue())
-      tgt.setValue(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getValue()));
-    return tgt;
-  }
-
-  public static org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent convertMedicationKnowledgeDrugCharacteristicComponent(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasType())
-      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
-    if (src.hasValue())
-      tgt.setValue(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getValue()));
-    return tgt;
-  }
+//  public static org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent convertMedicationKnowledgeDrugCharacteristicComponent(org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+//    if (src.hasType())
+//      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
+//    if (src.hasValue())
+//      tgt.setValue(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getValue()));
+//    return tgt;
+//  }
+//
+//  public static org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent convertMedicationKnowledgeDrugCharacteristicComponent(org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeDrugCharacteristicComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+//    if (src.hasType())
+//      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
+//    if (src.hasValue())
+//      tgt.setValue(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getValue()));
+//    return tgt;
+//  }
 
   public static org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRegulatoryComponent convertMedicationKnowledgeRegulatoryComponent(org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRegulatoryComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRegulatoryComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRegulatoryComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasRegulatoryAuthority())
       tgt.setRegulatoryAuthority(Reference40_50.convertReference(src.getRegulatoryAuthority()));
     for (org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRegulatorySubstitutionComponent t : src.getSubstitution())
@@ -487,7 +498,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRegulatoryComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRegulatoryComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasRegulatoryAuthority())
       tgt.setRegulatoryAuthority(Reference40_50.convertReference(src.getRegulatoryAuthority()));
     for (org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRegulatorySubstitutionComponent t : src.getSubstitution())
@@ -503,7 +514,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRegulatorySubstitutionComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRegulatorySubstitutionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasAllowed())
@@ -515,7 +526,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRegulatorySubstitutionComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRegulatorySubstitutionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasAllowed())
@@ -547,7 +558,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRegulatoryMaxDispenseComponent tgt = new org.hl7.fhir.r5.model.MedicationKnowledge.MedicationKnowledgeRegulatoryMaxDispenseComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasQuantity())
       tgt.setQuantity(SimpleQuantity40_50.convertSimpleQuantity(src.getQuantity()));
     if (src.hasPeriod())
@@ -559,7 +570,7 @@ public class MedicationKnowledge40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRegulatoryMaxDispenseComponent tgt = new org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeRegulatoryMaxDispenseComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasQuantity())
       tgt.setQuantity(SimpleQuantity40_50.convertSimpleQuantity(src.getQuantity()));
     if (src.hasPeriod())

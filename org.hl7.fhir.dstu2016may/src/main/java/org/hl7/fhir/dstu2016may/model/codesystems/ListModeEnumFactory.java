@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ListModeEnumFactory implements EnumFactory<ListMode> {
@@ -48,21 +44,23 @@ public class ListModeEnumFactory implements EnumFactory<ListMode> {
       return ListMode.SNAPSHOT;
     if ("changes".equals(codeString))
       return ListMode.CHANGES;
-    throw new IllegalArgumentException("Unknown ListMode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ListMode code '" + codeString + "'");
   }
 
   public String toCode(ListMode code) {
-    if (code == ListMode.WORKING)
+       if (code == ListMode.NULL)
+           return null;
+       if (code == ListMode.WORKING)
       return "working";
     if (code == ListMode.SNAPSHOT)
       return "snapshot";
     if (code == ListMode.CHANGES)
       return "changes";
     return "?";
-  }
+   }
 
-    public String toSystem(ListMode code) {
-      return code.getSystem();
-      }
+  public String toSystem(ListMode code) {
+    return code.getSystem();
+  }
 
 }

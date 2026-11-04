@@ -1,8 +1,42 @@
 package org.hl7.fhir.convertors.conv14_30.datatypes14_30;
 
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_14_30;
-import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.*;
-import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.*;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Address14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Age14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Annotation14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Attachment14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.CodeableConcept14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.ContactPoint14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Count14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Distance14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Duration14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.HumanName14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Identifier14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Money14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Period14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Quantity14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Range14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Ratio14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.SampledData14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Signature14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.complextypes14_30.Timing14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Base64Binary14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Boolean14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Code14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Date14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.DateTime14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Decimal14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Id14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Instant14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Integer14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.MarkDown14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Oid14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.PositiveInt14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.String14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Time14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.UnsignedInt14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Uri14_30;
+import org.hl7.fhir.convertors.conv14_30.datatypes14_30.primitivetypes14_30.Uuid14_30;
 import org.hl7.fhir.exceptions.FHIRException;
 
 public class Type14_30 {
@@ -45,10 +79,10 @@ public class Type14_30 {
       return UnsignedInt14_30.convertUnsignedInt((org.hl7.fhir.dstu2016may.model.UnsignedIntType) src);
     if (src instanceof org.hl7.fhir.dstu2016may.model.IntegerType)
       return Integer14_30.convertInteger((org.hl7.fhir.dstu2016may.model.IntegerType) src);
-    if (src instanceof org.hl7.fhir.dstu2016may.model.UriType)
-      return Uri14_30.convertUri((org.hl7.fhir.dstu2016may.model.UriType) src);
     if (src instanceof org.hl7.fhir.dstu2016may.model.UuidType)
       return Uuid14_30.convertUuid((org.hl7.fhir.dstu2016may.model.UuidType) src);
+    if (src instanceof org.hl7.fhir.dstu2016may.model.UriType)
+      return Uri14_30.convertUri((org.hl7.fhir.dstu2016may.model.UriType) src);
     if (src instanceof org.hl7.fhir.dstu2016may.model.Extension)
       return Extension14_30.convertExtension((org.hl7.fhir.dstu2016may.model.Extension) src);
     if (src instanceof org.hl7.fhir.dstu2016may.model.Narrative)
@@ -100,7 +134,7 @@ public class Type14_30 {
     if (src instanceof org.hl7.fhir.dstu2016may.model.Timing)
       return Timing14_30.convertTiming((org.hl7.fhir.dstu2016may.model.Timing) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown type " + src.fhirType());
+      throw new FHIRException("The type " + src.fhirType()+" cannot be converted from R2B to R3");
     } else {
       return null;
     }
@@ -137,10 +171,10 @@ public class Type14_30 {
       return UnsignedInt14_30.convertUnsignedInt((org.hl7.fhir.dstu3.model.UnsignedIntType) src);
     if (src instanceof org.hl7.fhir.dstu3.model.IntegerType)
       return Integer14_30.convertInteger((org.hl7.fhir.dstu3.model.IntegerType) src);
-    if (src instanceof org.hl7.fhir.dstu3.model.UriType)
-      return Uri14_30.convertUri((org.hl7.fhir.dstu3.model.UriType) src);
     if (src instanceof org.hl7.fhir.dstu3.model.UuidType)
       return Uuid14_30.convertUuid((org.hl7.fhir.dstu3.model.UuidType) src);
+    if (src instanceof org.hl7.fhir.dstu3.model.UriType)
+      return Uri14_30.convertUri((org.hl7.fhir.dstu3.model.UriType) src);
     if (src instanceof org.hl7.fhir.dstu3.model.Extension)
       return Extension14_30.convertExtension((org.hl7.fhir.dstu3.model.Extension) src);
     if (src instanceof org.hl7.fhir.dstu3.model.Narrative)
@@ -190,7 +224,7 @@ public class Type14_30 {
     if (src instanceof org.hl7.fhir.dstu3.model.Timing)
       return Timing14_30.convertTiming((org.hl7.fhir.dstu3.model.Timing) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown type " + src.fhirType());
+      throw new FHIRException("The type " + src.fhirType()+" cannot be converted from R3 to R2B");
     } else {
       return null;
     }

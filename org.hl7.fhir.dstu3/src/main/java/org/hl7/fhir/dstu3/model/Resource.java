@@ -111,16 +111,25 @@ public abstract class Resource extends BaseResource implements IAnyResource {
       return this;
     }
 
-    /**
-     * @return The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
-     */
+  /**
+   * @return The id value of the resource. Once assigned, this value never
+   * changes.
+   *
+   * @see IdType
+   * @see IdType#getValue()
+   */
     public String getId() { 
       return this.id == null ? null : this.id.getValue();
     }
 
-    /**
-     * @param value The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
-     */
+  /**
+   * @return The most complete id value of the resource, containing all
+   * available context and history. Once assigned this value never changes.
+   * NOTE: this value is NOT limited to just the logical id property of a
+   * resource id.
+   * @see IdType
+   * @see IdType#getValue()
+   */
     public Resource setId(String value) { 
       if (Utilities.noString(value))
         this.id = null;
@@ -131,6 +140,14 @@ public abstract class Resource extends BaseResource implements IAnyResource {
       }
       return this;
     }
+
+  /**
+   * @return  the logical ID part of this resource's id
+   * @see IdType#getIdPart()
+   */
+  public String getIdPart() {
+    return getIdElement().getIdPart();
+  }
 
     /**
      * @return {@link #meta} (The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content may not always be associated with version changes to the resource.)
@@ -347,17 +364,17 @@ public abstract class Resource extends BaseResource implements IAnyResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("id")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Resource.id");
+          throw new FHIRException("Cannot call addChild on a singleton property Resource.id");
         }
         else if (name.equals("meta")) {
           this.meta = new Meta();
           return this.meta;
         }
         else if (name.equals("implicitRules")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Resource.implicitRules");
+          throw new FHIRException("Cannot call addChild on a singleton property Resource.implicitRules");
         }
         else if (name.equals("language")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Resource.language");
+          throw new FHIRException("Cannot call addChild on a singleton property Resource.language");
         }
         else
           return super.addChild(name);

@@ -5,16 +5,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.hl7.fhir.utilities.TextFile;
-import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.FileUtilities;
+import org.hl7.fhir.utilities.VersionUtilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+import org.hl7.fhir.utilities.json.model.JsonArray;
+import org.hl7.fhir.utilities.json.model.JsonObject;
+import org.hl7.fhir.utilities.json.parser.JsonParser;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+
 
 /**
  * intenral use only - set the file name to edit in main(), and fill out the edit routine
@@ -22,60 +25,162 @@ import com.google.gson.JsonObject;
  * @author grahame
  *
  */
+@SuppressWarnings("checkstyle:systemout")
 public class PackageHacker {
 
   private static boolean useSecureReferences = false;
-  
+
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    new PackageHacker().edit("M:\\web\\hl7.org\\fhir\\2021Mar\\hl7.fhir.r4b.expansions.tgz");
+//    new PackageHacker().edit("/Users/grahame/web/hl7-fhir/6.0.0-ballot5/hl7.fhir.r6.core.tgz");
+    new PackageHacker().edit("/Users/grahame/web/hl7-fhir/6.0.0-ballot5/hl7.fhir.r6.expansions.tgz");
+    new PackageHacker().edit("/Users/grahame/web/hl7-fhir/6.0.0-ballot5/hl7.fhir.r6.examples.tgz");
+    new PackageHacker().edit("/Users/grahame/web/hl7-fhir/6.0.0-ballot5/hl7.fhir.r6.search.tgz");
   }
+//
+//  private void packFolder(String src) throws FileNotFoundException, IOException {
+//    NpmPackage npm = NpmPackage.fromFolder(src);
+//    npm.save(new FileOutputStream(src+".tgz"));
+//
+//  }
+//
+//  private void cloneToR4B(String src, String dst) throws IOException {
+//    FileInputStream fs = ManagedFileAccess.inStream(src);
+//    NpmPackage pck = NpmPackage.fromPackage(fs);
+//    System.out.println(nice(pck.getNpm()));
+//    JsonObject json = pck.getNpm();
+//    String name = json.asString("name");
+//    json.remove("name");
+//    json.add("name", name.replace(".r4", ".r4b"));
+//    json.remove("fhirVersions");
+//    json.remove("dependencies");
+//    JsonArray fv = new JsonArray();
+//    json.add("fhirVersions", fv);
+//    fv.add("4.3.0");
+//    JsonObject dep = new JsonObject();
+//    json.add("dependencies", dep);
+//    dep.add(VersionUtilities.packageForVersion("4.3.0"), "4.3.0");
+//    pck.save(new FileOutputStream(dst));
+//  }
+
+//  private void massEdit(File dir) throws IOException {
+//    System.out.println("process "+dir.getAbsolutePath());
+//    for (File f : dir.listFiles()) {
+//      if (f.isDirectory()) {
+//        massEdit(f);
+//      } else if (f.getName().equals("package.tgz")) {
+//        try {
+//          FileInputStream fs = ManagedFileAccess.inStream(f);
+//          NpmPackage pck = NpmPackage.fromPackage(fs);
+//          if ("fhir.core".equals(pck.getNpm().str("type"))) {
+//            System.out.println("!!change "+f.getAbsolutePath());
+//            pck.getNpm().remove("type");
+//            pck.getNpm().set("type", "Core");
+//            FileOutputStream fso = ManagedFileAccess.outStream(f);
+//            try {
+//              pck.save(fso);
+//            } finally {
+//              fso.close();
+//            }
+//          }
+//        } catch (Exception e) {
+//          System.out.println("!!Error: "+e.getMessage());
+//        }
+//      } else if (f.getName().startsWith("hl7.fhir.r") && f.getName().endsWith(".examples.tgz")) {
+//        try {
+//          FileInputStream fs = ManagedFileAccess.inStream(f);
+//          NpmPackage pck = NpmPackage.fromPackage(fs);
+//          if ("fhir.examples".equals(pck.getNpm().str("type"))) {
+//            System.out.println("!!change "+f.getAbsolutePath());
+//            pck.getNpm().remove("type");
+//            pck.getNpm().set("type", "Examples");
+//            FileOutputStream fso = ManagedFileAccess.outStream(f);
+//            try {
+//              pck.save(fso);
+//            } finally {
+//              fso.close();
+//            }
+//          }
+//        } catch (Exception e) {
+//          System.out.println("!!Error: "+e.getMessage());
+//        }
+//
+//      }
+//    }
+//  }
 
   private void edit(String name) throws FileNotFoundException, IOException {
-    File f = new File(name);
+    File f = ManagedFileAccess.file(name);
     if (!f.exists())
       throw new Error("Unable to find "+f.getAbsolutePath());
-    
-    NpmPackage pck = NpmPackage.fromPackage(new FileInputStream(f));
+
+    System.out.println("Loading Package "+f.getAbsolutePath());
+    NpmPackage pck = null;
+    FileInputStream fs = ManagedFileAccess.inStream(f);
+    try {
+      pck = NpmPackage.fromPackage(fs);
+    } finally {
+      fs.close();
+    }
     System.out.println("Altering Package "+f.getAbsolutePath());
     System.out.println(nice(pck.getNpm()));
-    
-    change(pck.getNpm(), pck.getFolders().get("package").getContent());
-    
-    System.out.println("Revised Package");
-    System.out.println("=======================");
-    System.out.println(nice(pck.getNpm()));
-    System.out.println("=======================");
-    System.out.print("save? y/n: ");
-    int r = System.in.read();
-    if (r == 'y') {
-      f.renameTo(new File(Utilities.changeFileExt(name, ".tgz.bak")));
-      pck.save(new FileOutputStream(f));
-    }   
+
+    if (change(pck.getNpm())) {
+
+      System.out.println("Revised Package");
+      System.out.println("=======================");
+      System.out.println(nice(pck.getNpm()));
+      System.out.println("=======================");
+      System.out.print("save? y/n: ");
+      int r = System.in.read();
+      if (r == 'y') {
+        f.renameTo(ManagedFileAccess.file(FileUtilities.changeFileExt(name, ".tgz.bak")));
+        FileOutputStream fso = ManagedFileAccess.outStream(f);
+        try {
+          pck.save(fso);
+        } finally {
+          fso.close();
+        }
+      } 
+    }
+  }
+
+  private void fixExampleContent(Map<String, byte[]> content) {
+    //    byte[] cnt = content.get("ServiceRequest-SDOHCC-ServiceRequestCompletedFoodPantryApplicationAssistExample.json");
+    //    content.put("ServiceRequest-SDOHCC-ServiceRequestCompletedFoodPantryApplicationAssist.json", cnt);
+    //    content.remove("ServiceRequest-SDOHCC-ServiceRequestCompletedFoodPantryApplicationAssistExample.json");
+  }
+
+  private void fixContent(Map<String, byte[]> content) {
+    //    fixVersionInContent(content);
+
   }
 
   private String nice(JsonObject json) {
-    return new GsonBuilder().setPrettyPrinting().create().toJson(json);
+    return JsonParser.compose(json, true);
   }
 
-  private void change(JsonObject npm, Map<String, byte[]> content) throws FileNotFoundException, IOException {
-    fixVersions(npm);
-    npm.remove("notForPublication");
-//    npm.addProperty("url", "http://hl7.org/fhir/us/carin-rtpbc/STU1");
-//    npm.remove("name");
-//    npm.addProperty("name", "hl7.fhir.uv.smart-app-launch");
-//    npm.remove("canonical");
-//    npm.addProperty("canonical", "http://hl7.org/fhir/us/davinci-drug-formulary");
-////    npm.remove("description");
-////    npm.addProperty("description", "Group Wrapper that includes all the R4 packages");
-//    npm.remove("url");
-//    npm.addProperty("url", "https://terminology.hl7.org/1.0.0/");
-//    npm.remove("dependencies");
-//    JsonObject dep = new JsonObject();
-//    npm.add("dependencies", dep);
-//    dep.addProperty("hl7.fhir.r3.core", "3.0.1");
-//    dep.addProperty("hl7.fhir.r4.examples", "4.0.1");
-//    dep.addProperty("hl7.fhir.r4.expansions", "4.0.1");
-//    dep.addProperty("hl7.fhir.r4.elements", "4.0.1");
+  private boolean change(JsonObject npm) throws FileNotFoundException, IOException {
+//    npm.remove("version");
+//    npm.add("version", "0.2.0-withdrawal");
+//    return true;
+    if (npm.has("notForPublication")) {
+      npm.remove("notForPublication");
+      return true;
+    }
+    return false;
+  }
+
+  private void fixVersionInContent(Map<String, byte[]> content) {
+    for (String n : content.keySet()) {
+      if (n.endsWith(".json") || n.endsWith(".xml") || n.endsWith(".xsd")) {
+        String json = new String(content.get(n));
+        if (json.contains("4.3.0-cibuild") && !json.contains("4.3.0-snapshot1")) {
+          json = json.replace("4.3.0-cibuild", "4.3.0");
+          content.put(n, json.getBytes(StandardCharsets.UTF_8));
+        }
+      }
+    }
+
   }
 
   private void fixVersions(JsonObject npm) {
@@ -87,7 +192,7 @@ public class PackageHacker {
 
   private void setProperty(JsonObject npm, String name, String value) {
     npm.remove("homepage");
-    npm.addProperty("homepage", "http://hl7.org/fhir");    
+    npm.add("homepage", "http://hl7.org/fhir");    
   }
 
   private void fixNames(Map<String, byte[]> content) {
@@ -103,14 +208,26 @@ public class PackageHacker {
   }
 
   private void addContentFrom(String folder, Map<String, byte[]> content) throws FileNotFoundException, IOException {
-    for (File f : new File(folder).listFiles()) {
+    for (File f : ManagedFileAccess.file(folder).listFiles()) {
       if (f.getName().endsWith(".json") && !f.getName().endsWith(".canonical.json")) {
-         String cnt = TextFile.fileToString(f);
-         if (cnt.contains("\"resourceType\"")) {
-           content.put("package/"+f.getName(), TextFile.fileToBytes(f));
-         }
+        String cnt = FileUtilities.fileToString(f);
+        if (cnt.contains("\"resourceType\"")) {
+          content.put("package/"+f.getName(), FileUtilities.fileToBytes(f));
+        }
       }
     }
+  }
+
+
+  public static JsonObject fixPackageOnLoad(JsonObject npm)  {
+    String ref = npm.asString("url");
+    if (ref != null) {
+      String nref = fixPackageUrl(ref);
+      if (!nref.equals(ref)) {
+        npm.set("url", nref);
+      }
+    }
+    return npm;
   }
 
   public static String fixPackageUrl(String webref) {
@@ -137,15 +254,22 @@ public class PackageHacker {
     case "file://C:\\GitHub\\hl7.fhir.uv.ips#1.0.0\\output":                 return "http://hl7.org/fhir/uv/ips/STU1"; 
     case "file://C:\\GitHub\\hl7.fhir.uv.mhealth-framework#0.1.0\\output":   return "http://hl7.org/fhir/uv/mhealth-framework/2020May"; 
     case "file://C:\\GitHub\\hl7.fhir.uv.security-label-ds4p#0.1.0\\output": return "http://hl7.org/fhir/uv/security-label-ds4p/2020May"; 
-    case "file://C:\\GitHub\\hl7.fhir.uv.shorthand#0.12.0\\output":          return "http://hl7.org/fhir/uv/shorthand/2020May"; 
-    case "http://build.fhir.org/branches/R4B//":                             return "http://hl7.org/fhir/2021Mar"; 
-    }
+    case "file://C:\\GitHub\\hl7.fhir.uv.shorthand#0.12.0\\output":          return "http://hl7.org/fhir/uv/shorthand/2020May";
+      case "http://build.fhir.org/branches/R4B//":                             return "http://hl7.org/fhir/2021Mar";
+      case "file:/Users/grahame/work/r6/publish/":                             return "http://hl7.org/fhir/6.0.0-ballot5";
+
+  }
 
     // https://github.com/HL7/fhir-ig-publisher/issues/295
     if (webref.contains("hl7.org/fhir/us/core/STU4.0.0")) {
       return webref.replace("hl7.org/fhir/us/core/STU4.0.0", "hl7.org/fhir/us/core/STU4");
     }
-
+    if (webref.equals("http://hl7.org/fhir/us/core/v311")) {
+      return "https://hl7.org/fhir/us/core/STU3.1.1";
+    }
+    if (webref.contains("hl7.org/fhir/uv/hl7.fhir.uv.xver")) {
+      webref = webref.replace("hl7.org/fhir/uv/hl7.fhir.uv.xver", "hl7.org/fhir/uv/xver");
+    }
     if (isUseSecureReferences()) {
       return webref.replace("http://hl7.org/fhir", "https://hl7.org/fhir").replace("http://build.fhir.org", "https://build.fhir.org");
     } else {

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class HspcPatientAdoptionInfoEnumFactory implements EnumFactory<HspcPatientAdoptionInfo> {
@@ -46,19 +42,21 @@ public class HspcPatientAdoptionInfoEnumFactory implements EnumFactory<HspcPatie
       return HspcPatientAdoptionInfo._526742432;
     if ("526742433".equals(codeString))
       return HspcPatientAdoptionInfo._526742433;
-    throw new IllegalArgumentException("Unknown HspcPatientAdoptionInfo code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown HspcPatientAdoptionInfo code '" + codeString + "'");
   }
 
   public String toCode(HspcPatientAdoptionInfo code) {
-    if (code == HspcPatientAdoptionInfo._526742432)
+       if (code == HspcPatientAdoptionInfo.NULL)
+           return null;
+       if (code == HspcPatientAdoptionInfo._526742432)
       return "526742432";
     if (code == HspcPatientAdoptionInfo._526742433)
       return "526742433";
     return "?";
-  }
+   }
 
-    public String toSystem(HspcPatientAdoptionInfo code) {
-      return code.getSystem();
-      }
+  public String toSystem(HspcPatientAdoptionInfo code) {
+    return code.getSystem();
+  }
 
 }

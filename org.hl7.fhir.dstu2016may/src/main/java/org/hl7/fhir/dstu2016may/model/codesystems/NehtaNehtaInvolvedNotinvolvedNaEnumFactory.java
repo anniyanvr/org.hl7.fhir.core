@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class NehtaNehtaInvolvedNotinvolvedNaEnumFactory implements EnumFactory<NehtaNehtaInvolvedNotinvolvedNa> {
@@ -44,17 +40,19 @@ public class NehtaNehtaInvolvedNotinvolvedNaEnumFactory implements EnumFactory<N
       return null;
     if ("not_involved".equals(codeString))
       return NehtaNehtaInvolvedNotinvolvedNa.NOTINVOLVED;
-    throw new IllegalArgumentException("Unknown NehtaNehtaInvolvedNotinvolvedNa code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown NehtaNehtaInvolvedNotinvolvedNa code '" + codeString + "'");
   }
 
   public String toCode(NehtaNehtaInvolvedNotinvolvedNa code) {
-    if (code == NehtaNehtaInvolvedNotinvolvedNa.NOTINVOLVED)
+       if (code == NehtaNehtaInvolvedNotinvolvedNa.NULL)
+           return null;
+       if (code == NehtaNehtaInvolvedNotinvolvedNa.NOTINVOLVED)
       return "not_involved";
     return "?";
-  }
+   }
 
-    public String toSystem(NehtaNehtaInvolvedNotinvolvedNa code) {
-      return code.getSystem();
-      }
+  public String toSystem(NehtaNehtaInvolvedNotinvolvedNa code) {
+    return code.getSystem();
+  }
 
 }

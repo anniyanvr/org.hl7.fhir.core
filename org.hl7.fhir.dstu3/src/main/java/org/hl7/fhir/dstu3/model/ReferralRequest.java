@@ -183,12 +183,12 @@ public class ReferralRequest extends DomainResource {
           return ReferralRequestStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown ReferralRequestStatus code '"+codeString+"'");
         }
-        public Enumeration<ReferralRequestStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ReferralRequestStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ReferralRequestStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -208,7 +208,9 @@ public class ReferralRequest extends DomainResource {
         throw new FHIRException("Unknown ReferralRequestStatus code '"+codeString+"'");
         }
     public String toCode(ReferralRequestStatus code) {
-      if (code == ReferralRequestStatus.DRAFT)
+       if (code == ReferralRequestStatus.NULL)
+           return null;
+       if (code == ReferralRequestStatus.DRAFT)
         return "draft";
       if (code == ReferralRequestStatus.ACTIVE)
         return "active";
@@ -223,7 +225,7 @@ public class ReferralRequest extends DomainResource {
       if (code == ReferralRequestStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(ReferralRequestStatus code) {
       return code.getSystem();
       }
@@ -373,12 +375,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return ReferralCategory.OPTION;
         throw new IllegalArgumentException("Unknown ReferralCategory code '"+codeString+"'");
         }
-        public Enumeration<ReferralCategory> fromType(Base code) throws FHIRException {
+        public Enumeration<ReferralCategory> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ReferralCategory>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("proposal".equals(codeString))
@@ -400,7 +402,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown ReferralCategory code '"+codeString+"'");
         }
     public String toCode(ReferralCategory code) {
-      if (code == ReferralCategory.PROPOSAL)
+       if (code == ReferralCategory.NULL)
+           return null;
+       if (code == ReferralCategory.PROPOSAL)
         return "proposal";
       if (code == ReferralCategory.PLAN)
         return "plan";
@@ -417,7 +421,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == ReferralCategory.OPTION)
         return "option";
       return "?";
-      }
+   }
     public String toSystem(ReferralCategory code) {
       return code.getSystem();
       }
@@ -517,12 +521,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return ReferralPriority.STAT;
         throw new IllegalArgumentException("Unknown ReferralPriority code '"+codeString+"'");
         }
-        public Enumeration<ReferralPriority> fromType(Base code) throws FHIRException {
+        public Enumeration<ReferralPriority> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ReferralPriority>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("routine".equals(codeString))
@@ -536,7 +540,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown ReferralPriority code '"+codeString+"'");
         }
     public String toCode(ReferralPriority code) {
-      if (code == ReferralPriority.ROUTINE)
+       if (code == ReferralPriority.NULL)
+           return null;
+       if (code == ReferralPriority.ROUTINE)
         return "routine";
       if (code == ReferralPriority.URGENT)
         return "urgent";
@@ -545,7 +551,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == ReferralPriority.STAT)
         return "stat";
       return "?";
-      }
+   }
     public String toSystem(ReferralPriority code) {
       return code.getSystem();
       }
@@ -1140,16 +1146,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getDefinitionTarget() { 
-      if (this.definitionTarget == null)
-        this.definitionTarget = new ArrayList<Resource>();
-      return this.definitionTarget;
-    }
-
-    /**
      * @return {@link #basedOn} (Indicates any plans, proposals or orders that this request is intended to satisfy - in whole or in part.)
      */
     public List<Reference> getBasedOn() { 
@@ -1203,16 +1199,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<Resource>();
-      return this.basedOnTarget;
-    }
-
-    /**
      * @return {@link #replaces} (Completed or terminated request(s) whose function is taken by this new request.)
      */
     public List<Reference> getReplaces() { 
@@ -1263,28 +1249,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addReplaces();
       }
       return getReplaces().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<ReferralRequest> getReplacesTarget() { 
-      if (this.replacesTarget == null)
-        this.replacesTarget = new ArrayList<ReferralRequest>();
-      return this.replacesTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public ReferralRequest addReplacesTarget() { 
-      ReferralRequest r = new ReferralRequest();
-      if (this.replacesTarget == null)
-        this.replacesTarget = new ArrayList<ReferralRequest>();
-      this.replacesTarget.add(r);
-      return r;
     }
 
     /**
@@ -1623,8 +1587,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return (DateTimeType) this.occurrence;
     }
 
-    public boolean hasOccurrenceDateTimeType() { 
-      return this != null && this.occurrence instanceof DateTimeType;
+    public boolean hasOccurrenceDateTimeType() {
+        return this.occurrence instanceof DateTimeType;
     }
 
     /**
@@ -1638,8 +1602,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return (Period) this.occurrence;
     }
 
-    public boolean hasOccurrencePeriod() { 
-      return this != null && this.occurrence instanceof Period;
+    public boolean hasOccurrencePeriod() {
+        return this.occurrence instanceof Period;
     }
 
     public boolean hasOccurrence() { 
@@ -1807,16 +1771,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getRecipientTarget() { 
-      if (this.recipientTarget == null)
-        this.recipientTarget = new ArrayList<Resource>();
-      return this.recipientTarget;
-    }
-
-    /**
      * @return {@link #reasonCode} (Description of clinical condition indicating why referral/transfer of care is requested.  For example:  Pathological Anomalies, Disabled (physical or mental),  Behavioral Management.)
      */
     public List<CodeableConcept> getReasonCode() { 
@@ -1923,16 +1877,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getReasonReferenceTarget() { 
-      if (this.reasonReferenceTarget == null)
-        this.reasonReferenceTarget = new ArrayList<Resource>();
-      return this.reasonReferenceTarget;
-    }
-
-    /**
      * @return {@link #description} (The reason element gives a short description of why the referral is being made, the description expands on this to support a more complete clinical summary.). This is the underlying object with id, value and extensions. The accessor "getDescription" gives direct access to the value
      */
     public StringType getDescriptionElement() { 
@@ -2032,16 +1976,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addSupportingInfo();
       }
       return getSupportingInfo().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getSupportingInfoTarget() { 
-      if (this.supportingInfoTarget == null)
-        this.supportingInfoTarget = new ArrayList<Resource>();
-      return this.supportingInfoTarget;
     }
 
     /**
@@ -2148,28 +2082,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addRelevantHistory();
       }
       return getRelevantHistory().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Provenance> getRelevantHistoryTarget() { 
-      if (this.relevantHistoryTarget == null)
-        this.relevantHistoryTarget = new ArrayList<Provenance>();
-      return this.relevantHistoryTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Provenance addRelevantHistoryTarget() { 
-      Provenance r = new Provenance();
-      if (this.relevantHistoryTarget == null)
-        this.relevantHistoryTarget = new ArrayList<Provenance>();
-      this.relevantHistoryTarget.add(r);
-      return r;
     }
 
       protected void listChildren(List<Property> children) {
@@ -2482,17 +2394,17 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return this.groupIdentifier;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ReferralRequest.status");
+          throw new FHIRException("Cannot call addChild on a singleton property ReferralRequest.status");
         }
         else if (name.equals("intent")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ReferralRequest.intent");
+          throw new FHIRException("Cannot call addChild on a singleton property ReferralRequest.intent");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
           return this.type;
         }
         else if (name.equals("priority")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ReferralRequest.priority");
+          throw new FHIRException("Cannot call addChild on a singleton property ReferralRequest.priority");
         }
         else if (name.equals("serviceRequested")) {
           return addServiceRequested();
@@ -2514,7 +2426,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return this.occurrence;
         }
         else if (name.equals("authoredOn")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ReferralRequest.authoredOn");
+          throw new FHIRException("Cannot call addChild on a singleton property ReferralRequest.authoredOn");
         }
         else if (name.equals("requester")) {
           this.requester = new ReferralRequestRequesterComponent();
@@ -2534,7 +2446,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return addReasonReference();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ReferralRequest.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ReferralRequest.description");
         }
         else if (name.equals("supportingInfo")) {
           return addSupportingInfo();

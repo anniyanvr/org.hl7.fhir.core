@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -72,11 +68,13 @@ public class HspcOrganizationOrganizationtypeEnumFactory implements EnumFactory<
       return HspcOrganizationOrganizationtype._526758023;
     if ("526758024".equals(codeString))
       return HspcOrganizationOrganizationtype._526758024;
-    throw new IllegalArgumentException("Unknown HspcOrganizationOrganizationtype code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown HspcOrganizationOrganizationtype code '" + codeString + "'");
   }
 
   public String toCode(HspcOrganizationOrganizationtype code) {
-    if (code == HspcOrganizationOrganizationtype._526758010)
+       if (code == HspcOrganizationOrganizationtype.NULL)
+           return null;
+       if (code == HspcOrganizationOrganizationtype._526758010)
       return "526758010";
     if (code == HspcOrganizationOrganizationtype._526758011)
       return "526758011";
@@ -107,10 +105,10 @@ public class HspcOrganizationOrganizationtypeEnumFactory implements EnumFactory<
     if (code == HspcOrganizationOrganizationtype._526758024)
       return "526758024";
     return "?";
-  }
+   }
 
-    public String toSystem(HspcOrganizationOrganizationtype code) {
-      return code.getSystem();
-      }
+  public String toSystem(HspcOrganizationOrganizationtype code) {
+    return code.getSystem();
+  }
 
 }

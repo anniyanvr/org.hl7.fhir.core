@@ -1,10 +1,24 @@
 package org.hl7.fhir.convertors.conv40_50.resources40_50;
 
 import org.hl7.fhir.convertors.context.ConversionContext40_50;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.*;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.*;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Attachment40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.CodeableConcept40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Coding40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Identifier40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Money40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Period40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.SimpleQuantity40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Boolean40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Date40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.DateTime40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Decimal40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.PositiveInt40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.model.Enumeration;
+import org.hl7.fhir.r5.model.Enumerations;
+import org.hl7.fhir.r5.model.ExplanationOfBenefit;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -226,154 +240,178 @@ public class ExplanationOfBenefit40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.ExplanationOfBenefit.ExplanationOfBenefitStatus> convertExplanationOfBenefitStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.ExplanationOfBenefit.ExplanationOfBenefitStatus> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.ExplanationOfBenefit.ExplanationOfBenefitStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case ACTIVE:
-        tgt.setValue(org.hl7.fhir.r5.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
-        break;
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r5.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.CANCELLED);
-        break;
-      case DRAFT:
-        tgt.setValue(org.hl7.fhir.r5.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.DRAFT);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<ExplanationOfBenefit.ExplanationOfBenefitStatus> tgt = new Enumeration<>(new ExplanationOfBenefit.ExplanationOfBenefitStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case ACTIVE:
+                  tgt.setValue(ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
+                  break;
+              case CANCELLED:
+                  tgt.setValue(ExplanationOfBenefit.ExplanationOfBenefitStatus.CANCELLED);
+                  break;
+              case DRAFT:
+                  tgt.setValue(ExplanationOfBenefit.ExplanationOfBenefitStatus.DRAFT);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(ExplanationOfBenefit.ExplanationOfBenefitStatus.ENTEREDINERROR);
+                  break;
+              default:
+                  tgt.setValue(ExplanationOfBenefit.ExplanationOfBenefitStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus> convertExplanationOfBenefitStatus(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.ExplanationOfBenefit.ExplanationOfBenefitStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case ACTIVE:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
-        break;
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.CANCELLED);
-        break;
-      case DRAFT:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.DRAFT);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case ACTIVE:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ACTIVE);
+                  break;
+              case CANCELLED:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.CANCELLED);
+                  break;
+              case DRAFT:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.DRAFT);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.ENTEREDINERROR);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.ExplanationOfBenefitStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.Use> convertUse(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.Use> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.Use> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Enumerations.UseEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case CLAIM:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.Use.CLAIM);
-        break;
-      case PREAUTHORIZATION:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.Use.PREAUTHORIZATION);
-        break;
-      case PREDETERMINATION:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.Use.PREDETERMINATION);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.Use.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Enumerations.Use> tgt = new Enumeration<>(new Enumerations.UseEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case CLAIM:
+                  tgt.setValue(Enumerations.Use.CLAIM);
+                  break;
+              case PREAUTHORIZATION:
+                  tgt.setValue(Enumerations.Use.PREAUTHORIZATION);
+                  break;
+              case PREDETERMINATION:
+                  tgt.setValue(Enumerations.Use.PREDETERMINATION);
+                  break;
+              default:
+                  tgt.setValue(Enumerations.Use.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.Use> convertUse(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.Use> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.Use> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.ExplanationOfBenefit.UseEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case CLAIM:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.Use.CLAIM);
-        break;
-      case PREAUTHORIZATION:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.Use.PREAUTHORIZATION);
-        break;
-      case PREDETERMINATION:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.Use.PREDETERMINATION);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.Use.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.Use> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.ExplanationOfBenefit.UseEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case CLAIM:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.Use.CLAIM);
+                  break;
+              case PREAUTHORIZATION:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.Use.PREAUTHORIZATION);
+                  break;
+              case PREDETERMINATION:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.Use.PREDETERMINATION);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.Use.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.ClaimProcessingCodes> convertRemittanceOutcome(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.ClaimProcessingCodes> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Enumerations.ClaimProcessingCodesEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case QUEUED:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ClaimProcessingCodes.QUEUED);
-        break;
-      case COMPLETE:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ClaimProcessingCodes.COMPLETE);
-        break;
-      case ERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ClaimProcessingCodes.ERROR);
-        break;
-      case PARTIAL:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ClaimProcessingCodes.PARTIAL);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ClaimProcessingCodes.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Enumerations.ClaimProcessingCodes> tgt = new Enumeration<>(new Enumerations.ClaimProcessingCodesEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case QUEUED:
+                  tgt.setValue(Enumerations.ClaimProcessingCodes.QUEUED);
+                  break;
+              case COMPLETE:
+                  tgt.setValue(Enumerations.ClaimProcessingCodes.COMPLETE);
+                  break;
+              case ERROR:
+                  tgt.setValue(Enumerations.ClaimProcessingCodes.ERROR);
+                  break;
+              case PARTIAL:
+                  tgt.setValue(Enumerations.ClaimProcessingCodes.PARTIAL);
+                  break;
+              default:
+                  tgt.setValue(Enumerations.ClaimProcessingCodes.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome> convertRemittanceOutcome(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.ClaimProcessingCodes> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcomeEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case QUEUED:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome.QUEUED);
-        break;
-      case COMPLETE:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome.COMPLETE);
-        break;
-      case ERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome.ERROR);
-        break;
-      case PARTIAL:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome.PARTIAL);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcomeEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case QUEUED:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome.QUEUED);
+                  break;
+              case COMPLETE:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome.COMPLETE);
+                  break;
+              case ERROR:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome.ERROR);
+                  break;
+              case PARTIAL:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome.PARTIAL);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r5.model.ExplanationOfBenefit.RelatedClaimComponent convertRelatedClaimComponent(org.hl7.fhir.r4.model.ExplanationOfBenefit.RelatedClaimComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.RelatedClaimComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.RelatedClaimComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasClaim())
       tgt.setClaim(Reference40_50.convertReference(src.getClaim()));
     if (src.hasRelationship())
@@ -387,7 +425,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.RelatedClaimComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.RelatedClaimComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasClaim())
       tgt.setClaim(Reference40_50.convertReference(src.getClaim()));
     if (src.hasRelationship())
@@ -401,7 +439,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.PayeeComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.PayeeComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasParty())
@@ -413,7 +451,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.PayeeComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.PayeeComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasParty())
@@ -425,7 +463,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.CareTeamComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.CareTeamComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     if (src.hasProvider())
@@ -435,7 +473,7 @@ public class ExplanationOfBenefit40_50 {
     if (src.hasRole())
       tgt.setRole(CodeableConcept40_50.convertCodeableConcept(src.getRole()));
     if (src.hasQualification())
-      tgt.setQualification(CodeableConcept40_50.convertCodeableConcept(src.getQualification()));
+      tgt.setSpecialty(CodeableConcept40_50.convertCodeableConcept(src.getQualification()));
     return tgt;
   }
 
@@ -443,7 +481,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.CareTeamComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.CareTeamComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     if (src.hasProvider())
@@ -452,8 +490,8 @@ public class ExplanationOfBenefit40_50 {
       tgt.setResponsibleElement(Boolean40_50.convertBoolean(src.getResponsibleElement()));
     if (src.hasRole())
       tgt.setRole(CodeableConcept40_50.convertCodeableConcept(src.getRole()));
-    if (src.hasQualification())
-      tgt.setQualification(CodeableConcept40_50.convertCodeableConcept(src.getQualification()));
+    if (src.hasSpecialty())
+      tgt.setQualification(CodeableConcept40_50.convertCodeableConcept(src.getSpecialty()));
     return tgt;
   }
 
@@ -461,7 +499,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.SupportingInformationComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.SupportingInformationComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     if (src.hasCategory())
@@ -481,7 +519,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.SupportingInformationComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.SupportingInformationComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     if (src.hasCategory())
@@ -501,7 +539,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.DiagnosisComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.DiagnosisComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     if (src.hasDiagnosis())
@@ -510,8 +548,8 @@ public class ExplanationOfBenefit40_50 {
       tgt.addType(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasOnAdmission())
       tgt.setOnAdmission(CodeableConcept40_50.convertCodeableConcept(src.getOnAdmission()));
-    if (src.hasPackageCode())
-      tgt.setPackageCode(CodeableConcept40_50.convertCodeableConcept(src.getPackageCode()));
+//    if (src.hasPackageCode())
+//      tgt.setPackageCode(CodeableConcept40_50.convertCodeableConcept(src.getPackageCode()));
     return tgt;
   }
 
@@ -519,7 +557,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.DiagnosisComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.DiagnosisComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     if (src.hasDiagnosis())
@@ -528,8 +566,8 @@ public class ExplanationOfBenefit40_50 {
       tgt.addType(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasOnAdmission())
       tgt.setOnAdmission(CodeableConcept40_50.convertCodeableConcept(src.getOnAdmission()));
-    if (src.hasPackageCode())
-      tgt.setPackageCode(CodeableConcept40_50.convertCodeableConcept(src.getPackageCode()));
+//    if (src.hasPackageCode())
+//      tgt.setPackageCode(CodeableConcept40_50.convertCodeableConcept(src.getPackageCode()));
     return tgt;
   }
 
@@ -537,7 +575,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.ProcedureComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.ProcedureComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getType())
@@ -554,7 +592,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.ProcedureComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.ProcedureComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getType())
@@ -571,7 +609,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.InsuranceComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.InsuranceComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasFocal())
       tgt.setFocalElement(Boolean40_50.convertBoolean(src.getFocalElement()));
     if (src.hasCoverage())
@@ -585,7 +623,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.InsuranceComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.InsuranceComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasFocal())
       tgt.setFocalElement(Boolean40_50.convertBoolean(src.getFocalElement()));
     if (src.hasCoverage())
@@ -599,7 +637,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.AccidentComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.AccidentComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasDate())
       tgt.setDateElement(Date40_50.convertDate(src.getDateElement()));
     if (src.hasType())
@@ -613,7 +651,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.AccidentComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.AccidentComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasDate())
       tgt.setDateElement(Date40_50.convertDate(src.getDateElement()));
     if (src.hasType())
@@ -627,7 +665,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.ItemComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.ItemComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     for (org.hl7.fhir.r4.model.PositiveIntType t : src.getCareTeamSequence())
@@ -662,9 +700,9 @@ public class ExplanationOfBenefit40_50 {
       tgt.setNet(Money40_50.convertMoney(src.getNet()));
     for (org.hl7.fhir.r4.model.Reference t : src.getUdi()) tgt.addUdi(Reference40_50.convertReference(t));
     if (src.hasBodySite())
-      tgt.setBodySite(CodeableConcept40_50.convertCodeableConcept(src.getBodySite()));
+      tgt.getBodySiteFirstRep().addSite(CodeableConcept40_50.convertCodeableConceptToCodeableReference(src.getBodySite()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getSubSite())
-      tgt.addSubSite(CodeableConcept40_50.convertCodeableConcept(t));
+      tgt.getBodySiteFirstRep().addSubSite(CodeableConcept40_50.convertCodeableConcept(t));
     for (org.hl7.fhir.r4.model.Reference t : src.getEncounter()) tgt.addEncounter(Reference40_50.convertReference(t));
     for (org.hl7.fhir.r4.model.PositiveIntType t : src.getNoteNumber())
       tgt.getNoteNumber().add(PositiveInt40_50.convertPositiveInt(t));
@@ -679,7 +717,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.ItemComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.ItemComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     for (org.hl7.fhir.r5.model.PositiveIntType t : src.getCareTeamSequence())
@@ -713,9 +751,9 @@ public class ExplanationOfBenefit40_50 {
     if (src.hasNet())
       tgt.setNet(Money40_50.convertMoney(src.getNet()));
     for (org.hl7.fhir.r5.model.Reference t : src.getUdi()) tgt.addUdi(Reference40_50.convertReference(t));
-    if (src.hasBodySite())
-      tgt.setBodySite(CodeableConcept40_50.convertCodeableConcept(src.getBodySite()));
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getSubSite())
+    if (src.getBodySiteFirstRep().hasSite())
+      tgt.setBodySite(CodeableConcept40_50.convertCodeableReferenceToCodeableConcept(src.getBodySiteFirstRep().getSiteFirstRep()));
+    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getBodySiteFirstRep().getSubSite())
       tgt.addSubSite(CodeableConcept40_50.convertCodeableConcept(t));
     for (org.hl7.fhir.r5.model.Reference t : src.getEncounter()) tgt.addEncounter(Reference40_50.convertReference(t));
     for (org.hl7.fhir.r5.model.PositiveIntType t : src.getNoteNumber())
@@ -731,7 +769,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.AdjudicationComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.AdjudicationComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCategory())
       tgt.setCategory(CodeableConcept40_50.convertCodeableConcept(src.getCategory()));
     if (src.hasReason())
@@ -739,7 +777,7 @@ public class ExplanationOfBenefit40_50 {
     if (src.hasAmount())
       tgt.setAmount(Money40_50.convertMoney(src.getAmount()));
     if (src.hasValue())
-      tgt.setValueElement(Decimal40_50.convertDecimal(src.getValueElement()));
+      tgt.setQuantity(Decimal40_50.convertDecimalToQuantity(src.getValueElement()));
     return tgt;
   }
 
@@ -747,15 +785,15 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.AdjudicationComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.AdjudicationComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCategory())
       tgt.setCategory(CodeableConcept40_50.convertCodeableConcept(src.getCategory()));
     if (src.hasReason())
       tgt.setReason(CodeableConcept40_50.convertCodeableConcept(src.getReason()));
     if (src.hasAmount())
       tgt.setAmount(Money40_50.convertMoney(src.getAmount()));
-    if (src.hasValue())
-      tgt.setValueElement(Decimal40_50.convertDecimal(src.getValueElement()));
+    if (src.hasQuantity())
+      tgt.setValueElement(Decimal40_50.convertDecimal(src.getQuantity().getValueElement()));
     return tgt;
   }
 
@@ -763,7 +801,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.DetailComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.DetailComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     if (src.hasRevenue())
@@ -798,7 +836,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.DetailComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.DetailComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     if (src.hasRevenue())
@@ -833,7 +871,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.SubDetailComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.SubDetailComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     if (src.hasRevenue())
@@ -866,7 +904,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.SubDetailComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.SubDetailComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSequence())
       tgt.setSequenceElement(PositiveInt40_50.convertPositiveInt(src.getSequenceElement()));
     if (src.hasRevenue())
@@ -899,7 +937,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.AddedItemComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.AddedItemComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     for (org.hl7.fhir.r4.model.PositiveIntType t : src.getItemSequence())
       tgt.getItemSequence().add(PositiveInt40_50.convertPositiveInt(t));
     for (org.hl7.fhir.r4.model.PositiveIntType t : src.getDetailSequence())
@@ -926,9 +964,9 @@ public class ExplanationOfBenefit40_50 {
     if (src.hasNet())
       tgt.setNet(Money40_50.convertMoney(src.getNet()));
     if (src.hasBodySite())
-      tgt.setBodySite(CodeableConcept40_50.convertCodeableConcept(src.getBodySite()));
+      tgt.getBodySiteFirstRep().addSite(CodeableConcept40_50.convertCodeableConceptToCodeableReference(src.getBodySite()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getSubSite())
-      tgt.addSubSite(CodeableConcept40_50.convertCodeableConcept(t));
+      tgt.getBodySiteFirstRep().addSubSite(CodeableConcept40_50.convertCodeableConcept(t));
     for (org.hl7.fhir.r4.model.PositiveIntType t : src.getNoteNumber())
       tgt.getNoteNumber().add(PositiveInt40_50.convertPositiveInt(t));
     for (org.hl7.fhir.r4.model.ExplanationOfBenefit.AdjudicationComponent t : src.getAdjudication())
@@ -942,7 +980,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.AddedItemComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.AddedItemComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     for (org.hl7.fhir.r5.model.PositiveIntType t : src.getItemSequence())
       tgt.getItemSequence().add(PositiveInt40_50.convertPositiveInt(t));
     for (org.hl7.fhir.r5.model.PositiveIntType t : src.getDetailSequence())
@@ -968,9 +1006,9 @@ public class ExplanationOfBenefit40_50 {
       tgt.setFactorElement(Decimal40_50.convertDecimal(src.getFactorElement()));
     if (src.hasNet())
       tgt.setNet(Money40_50.convertMoney(src.getNet()));
-    if (src.hasBodySite())
-      tgt.setBodySite(CodeableConcept40_50.convertCodeableConcept(src.getBodySite()));
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getSubSite())
+    if (src.getBodySiteFirstRep().hasSite())
+      tgt.setBodySite(CodeableConcept40_50.convertCodeableReferenceToCodeableConcept(src.getBodySiteFirstRep().getSiteFirstRep()));
+    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getBodySiteFirstRep().getSubSite())
       tgt.addSubSite(CodeableConcept40_50.convertCodeableConcept(t));
     for (org.hl7.fhir.r5.model.PositiveIntType t : src.getNoteNumber())
       tgt.getNoteNumber().add(PositiveInt40_50.convertPositiveInt(t));
@@ -985,7 +1023,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.AddedItemDetailComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.AddedItemDetailComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasProductOrService())
       tgt.setProductOrService(CodeableConcept40_50.convertCodeableConcept(src.getProductOrService()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getModifier())
@@ -1011,7 +1049,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.AddedItemDetailComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.AddedItemDetailComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasProductOrService())
       tgt.setProductOrService(CodeableConcept40_50.convertCodeableConcept(src.getProductOrService()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getModifier())
@@ -1037,7 +1075,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.AddedItemDetailSubDetailComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.AddedItemDetailSubDetailComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasProductOrService())
       tgt.setProductOrService(CodeableConcept40_50.convertCodeableConcept(src.getProductOrService()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getModifier())
@@ -1061,7 +1099,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.AddedItemDetailSubDetailComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.AddedItemDetailSubDetailComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasProductOrService())
       tgt.setProductOrService(CodeableConcept40_50.convertCodeableConcept(src.getProductOrService()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getModifier())
@@ -1085,7 +1123,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.TotalComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.TotalComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCategory())
       tgt.setCategory(CodeableConcept40_50.convertCodeableConcept(src.getCategory()));
     if (src.hasAmount())
@@ -1097,7 +1135,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.TotalComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.TotalComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCategory())
       tgt.setCategory(CodeableConcept40_50.convertCodeableConcept(src.getCategory()));
     if (src.hasAmount())
@@ -1109,7 +1147,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.PaymentComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.PaymentComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasAdjustment())
@@ -1129,7 +1167,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.PaymentComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.PaymentComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasAdjustment())
@@ -1149,11 +1187,11 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.NoteComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.NoteComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasNumber())
       tgt.setNumberElement(PositiveInt40_50.convertPositiveInt(src.getNumberElement()));
     if (src.hasType())
-      tgt.setTypeElement(Enumerations40_50.convertNoteType(src.getTypeElement()));
+      tgt.getType().addCoding().setSystem("http://hl7.org/fhir/note-type").setCode(src.getType().toCode());
     if (src.hasText())
       tgt.setTextElement(String40_50.convertString(src.getTextElement()));
     if (src.hasLanguage())
@@ -1165,11 +1203,11 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.NoteComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.NoteComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasNumber())
       tgt.setNumberElement(PositiveInt40_50.convertPositiveInt(src.getNumberElement()));
-    if (src.hasType())
-      tgt.setTypeElement(Enumerations40_50.convertNoteType(src.getTypeElement()));
+    if (src.hasType() && src.getType().hasCoding("http://hl7.org/fhir/note-type"))
+      tgt.setType(org.hl7.fhir.r4.model.Enumerations.NoteType.fromCode(src.getType().getCode("http://hl7.org/fhir/note-type")));
     if (src.hasText())
       tgt.setTextElement(String40_50.convertString(src.getTextElement()));
     if (src.hasLanguage())
@@ -1181,7 +1219,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.BenefitBalanceComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.BenefitBalanceComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCategory())
       tgt.setCategory(CodeableConcept40_50.convertCodeableConcept(src.getCategory()));
     if (src.hasExcluded())
@@ -1205,7 +1243,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.BenefitBalanceComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.BenefitBalanceComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCategory())
       tgt.setCategory(CodeableConcept40_50.convertCodeableConcept(src.getCategory()));
     if (src.hasExcluded())
@@ -1229,7 +1267,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ExplanationOfBenefit.BenefitComponent tgt = new org.hl7.fhir.r5.model.ExplanationOfBenefit.BenefitComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasAllowed())
@@ -1243,7 +1281,7 @@ public class ExplanationOfBenefit40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ExplanationOfBenefit.BenefitComponent tgt = new org.hl7.fhir.r4.model.ExplanationOfBenefit.BenefitComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasAllowed())

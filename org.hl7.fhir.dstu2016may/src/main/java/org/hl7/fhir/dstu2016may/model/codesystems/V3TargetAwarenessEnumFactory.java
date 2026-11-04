@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3TargetAwarenessEnumFactory implements EnumFactory<V3TargetAwareness> {
@@ -54,11 +50,13 @@ public class V3TargetAwarenessEnumFactory implements EnumFactory<V3TargetAwarene
       return V3TargetAwareness.P;
     if ("U".equals(codeString))
       return V3TargetAwareness.U;
-    throw new IllegalArgumentException("Unknown V3TargetAwareness code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3TargetAwareness code '" + codeString + "'");
   }
 
   public String toCode(V3TargetAwareness code) {
-    if (code == V3TargetAwareness.D)
+       if (code == V3TargetAwareness.NULL)
+           return null;
+       if (code == V3TargetAwareness.D)
       return "D";
     if (code == V3TargetAwareness.F)
       return "F";
@@ -71,10 +69,10 @@ public class V3TargetAwarenessEnumFactory implements EnumFactory<V3TargetAwarene
     if (code == V3TargetAwareness.U)
       return "U";
     return "?";
-  }
+   }
 
-    public String toSystem(V3TargetAwareness code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3TargetAwareness code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ListOrderEnumFactory implements EnumFactory<ListOrder> {
@@ -58,11 +54,13 @@ public class ListOrderEnumFactory implements EnumFactory<ListOrder> {
       return ListOrder.CATEGORY;
     if ("patient".equals(codeString))
       return ListOrder.PATIENT;
-    throw new IllegalArgumentException("Unknown ListOrder code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ListOrder code '" + codeString + "'");
   }
 
   public String toCode(ListOrder code) {
-    if (code == ListOrder.USER)
+       if (code == ListOrder.NULL)
+           return null;
+       if (code == ListOrder.USER)
       return "user";
     if (code == ListOrder.SYSTEM)
       return "system";
@@ -79,10 +77,10 @@ public class ListOrderEnumFactory implements EnumFactory<ListOrder> {
     if (code == ListOrder.PATIENT)
       return "patient";
     return "?";
-  }
+   }
 
-    public String toSystem(ListOrder code) {
-      return code.getSystem();
-      }
+  public String toSystem(ListOrder code) {
+    return code.getSystem();
+  }
 
 }

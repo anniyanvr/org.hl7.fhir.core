@@ -30,7 +30,11 @@ package org.hl7.fhir.r5.utils;
  */
 
 
+import java.util.concurrent.TimeoutException;
+
+import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r5.model.Coding;
+import org.hl7.fhir.utilities.regex.RegexTimeout;
 
 public class CodingUtilities {
 
@@ -44,6 +48,61 @@ public class CodingUtilities {
     if (coding == null)
       return "";
     return coding.getSystem()+"::"+coding.getCode();
+  }
+
+  /**
+   * @param c the coding to compare
+   * @param fmt the format is [system](|[version])#[code], no display
+   * @return whether the code conforms to the filter
+   */
+  public static boolean filterEquals(Coding c, String fmt) {
+    if (fmt == null) {
+      return false;
+    }
+    if (fmt.contains("|")) {
+      return fmt.equals(""+c.getSystem()+"|"+c.getVersion()+"#"+c.getCode());
+    } else {
+      return fmt.equals(""+c.getSystem()+"#"+c.getCode());
+    }
+  }
+
+  /**
+   * @param c the coding to compare
+   * @param fmt the format is [system](|[version])#[code], no display
+   * @return whether the code conforms to the filter using regex
+   */
+  public static boolean filterMatches(Coding c, String fmt) {
+    try {
+      if (fmt.contains("|")) {
+        @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+        //False positive: RegexTimeout.matches is the approved timeout wrapper. The regex comes from a ValueSet filter value - user-supplied at runtime
+
+        boolean matches = RegexTimeout.matches("" + c.getSystem() + "|" + c.getVersion() + "#" + c.getCode(), fmt);
+        return matches;
+      } else {
+        @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+        //False positive: RegexTimeout.matches is the approved timeout wrapper. The regex comes from a ValueSet filter value - user-supplied at runtime
+
+        boolean matches = RegexTimeout.matches("" + c.getSystem() + "#" + c.getCode(), fmt);
+        return matches;
+      }
+    } catch (TimeoutException e) {
+      throw new FHIRException("The regex filter '"+fmt+"' took too long to evaluate");
+    }
+  }
+
+  /**
+   * @param c the coding to compare
+   * @param values a list of values, the format is [system](|[version])#[code], no display
+   * @return whether the code conforms to the filter using regex
+   */
+  public static boolean filterInList(Coding c, String[] values) {
+    for (String v : values) {
+      if (filterEquals(c, v)) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

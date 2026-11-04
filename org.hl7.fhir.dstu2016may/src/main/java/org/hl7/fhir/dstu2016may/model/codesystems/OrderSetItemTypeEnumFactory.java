@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class OrderSetItemTypeEnumFactory implements EnumFactory<OrderSetItemType> {
@@ -50,11 +46,13 @@ public class OrderSetItemTypeEnumFactory implements EnumFactory<OrderSetItemType
       return OrderSetItemType.REMOVE;
     if ("fire-event".equals(codeString))
       return OrderSetItemType.FIREEVENT;
-    throw new IllegalArgumentException("Unknown OrderSetItemType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown OrderSetItemType code '" + codeString + "'");
   }
 
   public String toCode(OrderSetItemType code) {
-    if (code == OrderSetItemType.CREATE)
+       if (code == OrderSetItemType.NULL)
+           return null;
+       if (code == OrderSetItemType.CREATE)
       return "create";
     if (code == OrderSetItemType.UPDATE)
       return "update";
@@ -63,10 +61,10 @@ public class OrderSetItemTypeEnumFactory implements EnumFactory<OrderSetItemType
     if (code == OrderSetItemType.FIREEVENT)
       return "fire-event";
     return "?";
-  }
+   }
 
-    public String toSystem(OrderSetItemType code) {
-      return code.getSystem();
-      }
+  public String toSystem(OrderSetItemType code) {
+    return code.getSystem();
+  }
 
 }

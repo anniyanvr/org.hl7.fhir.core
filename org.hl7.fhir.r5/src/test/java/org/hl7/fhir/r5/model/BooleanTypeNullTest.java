@@ -1,17 +1,20 @@
 package org.hl7.fhir.r5.model;
 
-import org.hl7.fhir.r5.model.BooleanType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class BooleanTypeNullTest {
 
   @Test
   @DisplayName("Test null value toString()")
   void testToString() {
-    BooleanType nullBoolean = new BooleanType();
-    System.out.println("Value -> " + nullBoolean);
+    assertDoesNotThrow(() -> {
+      BooleanType nullBoolean = new BooleanType();
+      System.out.println("Value -> " + nullBoolean);
+    });
   }
 
   @Test

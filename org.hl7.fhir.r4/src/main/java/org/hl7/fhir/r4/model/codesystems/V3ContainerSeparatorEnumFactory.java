@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3ContainerSeparatorEnumFactory implements EnumFactory<V3ContainerSeparator> {
@@ -46,19 +42,21 @@ public class V3ContainerSeparatorEnumFactory implements EnumFactory<V3ContainerS
       return V3ContainerSeparator.GEL;
     if ("NONE".equals(codeString))
       return V3ContainerSeparator.NONE;
-    throw new IllegalArgumentException("Unknown V3ContainerSeparator code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ContainerSeparator code '" + codeString + "'");
   }
 
   public String toCode(V3ContainerSeparator code) {
-    if (code == V3ContainerSeparator.GEL)
+       if (code == V3ContainerSeparator.NULL)
+           return null;
+       if (code == V3ContainerSeparator.GEL)
       return "GEL";
     if (code == V3ContainerSeparator.NONE)
       return "NONE";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ContainerSeparator code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ContainerSeparator code) {
+    return code.getSystem();
+  }
 
 }

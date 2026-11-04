@@ -1,5 +1,10 @@
 package org.hl7.fhir.utilities.validation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Objects;
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -61,29 +66,33 @@ package org.hl7.fhir.utilities.validation;
  */
 
 import java.util.Comparator;
-import java.util.EnumMap;
+import java.util.Date;
+import java.util.List;
 
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.utilities.Utilities;
 
-public class ValidationMessage implements Comparator<ValidationMessage>, Comparable<ValidationMessage>
-{
+public class ValidationMessage implements Comparator<ValidationMessage>, Comparable<ValidationMessage> {
+
   public enum Source {
     ExampleValidator, 
     ProfileValidator, 
     ResourceValidator, 
     InstanceValidator,
+    MatchetypeValidator,
     Template,
     Schema, 
     Schematron, 
-    Publisher, 
-    LinkChecker,
+    Publisher,
+    HtmlChecker,
     Ontology, 
     ProfileComparer, 
     TerminologyEngine,
-    QuestionnaireResponseValidator
+    QuestionnaireResponseValidator, 
+    IPAValidator
   }
 
   public enum IssueSeverity {
@@ -166,6 +175,32 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
     }
     public boolean isHint() {
       return this == INFORMATION;
+    }
+    
+    public static IssueSeverity max(IssueSeverity l1, IssueSeverity l2) {
+      switch (l1) {
+      case ERROR:
+        return l1 == FATAL ? FATAL : ERROR;
+      case FATAL:
+        return FATAL;
+      case INFORMATION:
+        return l2;
+      case NULL:
+        return l2;
+      case WARNING:
+        return l2 == INFORMATION ? WARNING : l2;
+      }
+      return null;
+    }
+    public String toShortCode() {
+      switch (this) {
+      case FATAL: return "fatal";
+      case ERROR: return "error";
+      case WARNING: return "warn";
+      case INFORMATION: return "info";
+      case NULL: return null;
+      default: return "?";
+      }
     }
   }
 
@@ -500,6 +535,7 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
 
 
   private Source source;
+  private String server;
   private int line;
   private int col;
   private String location; // fhirPath
@@ -511,11 +547,20 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
   private String locationLink;
   private String txLink;
   public String sliceHtml;
-  public String[] sliceText;
   private boolean slicingHint;
   private boolean signpost;
   private boolean criticalSignpost;
+  private Date ruleDate;
+  public static final String NO_RULE_DATE = null;
+  private boolean matched; // internal use counting matching filters
+  private boolean ignorableError;
+  private String invId;
+  private String comment;
+  private List<ValidationMessage> sliceInfo;
+  private int count;
+  private String validationContext;
 
+  @Getter private String diagnostics;
 
   /**
    * Constructor
@@ -525,7 +570,7 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
   }
 
   public ValidationMessage(Source source, IssueType type, String path, String message, IssueSeverity level) {
-    super();
+    this();
     this.line = -1;
     this.col = -1;
     this.location = path;
@@ -543,7 +588,7 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
   }
 
   public ValidationMessage(Source source, IssueType type, int line, int col, String path, String message, IssueSeverity level) {
-    super();
+    this();
     this.line = line;
     this.col = col;
     this.location = path;
@@ -559,7 +604,7 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
   }
 
   public ValidationMessage(Source source, IssueType type, String path, String message, String html, IssueSeverity level) {
-    super();
+    this();
     this.line = -1;
     this.col = -1;
     this.location = path;
@@ -577,7 +622,7 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
   }
 
   public ValidationMessage(Source source, IssueType type, int line, int col, String path, String message, String html, IssueSeverity level) {
-    super();
+    this();
     this.line = line;
     this.col = col;
     this.location = path;
@@ -633,8 +678,13 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
   }
 
   public String getMessage() {
-    return message;
+    return message+showCount();
   }
+  
+  private String showCount() {
+    return count == 0 ? "" : " (also in "+count+" other files)";
+  }
+
   public ValidationMessage setMessage(String message) {
     this.message = message;
     return this;
@@ -675,6 +725,16 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
   public String getLocation() {
     return location;
   }
+
+  public String getStrippedLocation() {
+    String loc = location;
+    while (loc.contains("/*")) {
+      int b = loc.indexOf("/*");
+      int e = loc.indexOf("*/");
+      loc = loc.substring(0, b) + loc.substring(e + 2);
+    }
+    return loc;
+  }
   public ValidationMessage setLocation(String location) {
     this.location = location;
     return this;
@@ -690,20 +750,24 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
   }
 
   public String summary() {
-    return level.toString()+" @ "+location+(line>= 0 && col >= 0 ? " (line "+Integer.toString(line)+", col"+Integer.toString(col)+"): " : ": ") +message +(source != null ? " (src = "+source+")" : "");
+    return level.toString()+" @ "+location+(line>= 0 && col >= 0 ? " (line "+Integer.toString(line)+", col"+Integer.toString(col)+"): " : ": ") +message+showCount() +(server != null ? " (src = "+server+")" : "");
+  }
+
+  public String summaryNoLevel() {
+    return location+(line>= 0 && col >= 0 ? " (line "+Integer.toString(line)+", col"+Integer.toString(col)+"): " : ": ") +message+showCount() +(server != null ? " (src = "+server+")" : "");
   }
 
 
   public String toXML() {
-    return "<message source=\"" + source + "\" line=\"" + line + "\" col=\"" + col + "\" location=\"" + Utilities.escapeXml(location) + "\" type=\"" + type + "\" level=\"" + level + "\" display=\"" + Utilities.escapeXml(getDisplay()) + "\" ><plain>" + Utilities.escapeXml(message) + "</plain><html>" + html + "</html></message>";
+    return "<message source=\"" + source + "\" line=\"" + line + "\" col=\"" + col + "\" location=\"" + Utilities.escapeXml(location) + "\" type=\"" + type + "\" level=\"" + level + "\" display=\"" + Utilities.escapeXml(getDisplay()) + "\" ><plain>" + Utilities.escapeXml(message)+showCount() + "</plain><html>" + html + "</html></message>";
   }
 
   public String getHtml() {
-    return html == null ? Utilities.escapeXml(message) : html;
+    return (html == null ? Utilities.escapeXml(message) : html)+showCount();
   }
 
   public String getDisplay() {
-    return level + ": " + (location==null || location.isEmpty() ? "" : (location + ": ")) + message;
+    return level + ": " + (location==null || location.isEmpty() ? "" : (location + ": ")) + message+showCount();
   }
 
   /**
@@ -717,13 +781,15 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
     b.append("level", level);
     b.append("type", type);
     b.append("location", location);
-    b.append("message", message);
+    b.append("message", message+showCount());
     return b.build();
   }
 
   @Override
   public boolean equals(Object o) {
-    return (this.getMessage() != null && this.getMessage().equals(((ValidationMessage)o).getMessage())) && (this.getLocation() != null && this.getLocation().equals(((ValidationMessage)o).getLocation()));
+    return (
+      this.getMessage() != null && this.getMessage().equals(((ValidationMessage)o).getMessage()))
+      && (this.getLocation() != null && this.getLocation().equals(((ValidationMessage)o).getLocation()));
   }
 
   @Override
@@ -773,9 +839,14 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
     return sliceHtml;
   }
 
-  public ValidationMessage setSliceHtml(String sliceHtml, String[] text) {
+  public ValidationMessage setSliceHtml(String sliceHtml, List<ValidationMessage> info) {
     this.sliceHtml = sliceHtml;
-    this.sliceText = text;
+    if (info != null) {
+      if (this.sliceInfo == null) {
+        this.sliceInfo = new ArrayList<ValidationMessage>();
+      }
+      this.sliceInfo.addAll(info);
+    }
     return this;
   }
 
@@ -806,5 +877,275 @@ public class ValidationMessage implements Comparator<ValidationMessage>, Compara
     return this;
   }
 
+  public Date getRuleDate() {
+    return ruleDate;
+  }
 
+  public ValidationMessage setRuleDate(Date ruleDate) {
+    this.ruleDate = ruleDate;
+    return this;
+  }
+
+
+  public ValidationMessage setRuleDate(String value) {
+    if (value == null) {
+      ruleDate = null;
+    } else {
+      Date d = null;
+      try {
+        d = new SimpleDateFormat("yyyy-MM-dd").parse(value);
+      } catch (ParseException e) {
+        e.printStackTrace();
+      }
+      ruleDate = d;
+    }
+    return this;
+  }
+
+  public boolean isError() {
+    return level == IssueSeverity.ERROR || level == IssueSeverity.FATAL;
+  }
+
+  public boolean isMatched() {
+    return matched;
+  }
+
+  public void setMatched(boolean matched) {
+    this.matched = matched;
+  }
+
+  public boolean isIgnorableError() {
+    return ignorableError;
+  }
+
+  public ValidationMessage setIgnorableError(boolean ignorableError) {
+    this.ignorableError = ignorableError;
+    return this;
+  }
+
+  public boolean matches(ValidationMessage other) {
+    if (location == null) {
+      if (other.location != null) {
+        return false;
+      }
+    } else {
+      String l1 = preprocessLocation(location);
+      String l2 = preprocessLocation(other.location);
+      if (!l1.equals(l2)) {
+        return false;
+      }
+    }
+    if (message == null) {
+      if (other.message != null) {
+        return false;
+      }
+    } else if (!message.equals(other.message)) {
+      return false;
+    }
+    if (messageId == null) {
+      if (other.messageId != null) {
+        return false;
+      }
+    } else if (!messageId.equals(other.messageId)) {
+      return false;
+    }
+    if (type != other.type) {
+      return false;
+    }
+    if (level != other.level) {
+      return false;
+    }
+    return true;
+  }
+
+  private String preprocessLocation(String loc) {
+    // some locations are prefixes with a location but they're not different since the location is fixed where .match is called from 
+    if (loc.contains(": ")) {
+      return loc.substring(loc.indexOf(": ")+2);
+    }
+    return loc;
+  }
+
+  public String getInvId() {
+    return invId;
+  }
+
+  public ValidationMessage setInvId(String invId) {
+    this.invId = invId;
+    return this;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
+
+  public List<ValidationMessage> getSliceInfo() {
+    return sliceInfo;
+  }
+
+  public void setSliceInfo(List<ValidationMessage> sliceInfo) {
+    this.sliceInfo = sliceInfo;
+  }
+
+  public String getServer() {
+    return server;
+  }
+
+  public void setServer(String server) {
+    this.server = server;
+  }
+
+  public void incCount() {
+    count++;
+  }
+
+  public boolean containsText(List<String> fragements) {
+    for (String s : fragements) {
+      if ((getMessage() != null && getMessage().contains(s)) || (getMessageId() != null && getMessageId().contains(s))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasSliceInfo() {
+    return sliceInfo != null && !sliceInfo.isEmpty();
+  }
+
+  public boolean preciseMatch(ValidationMessage other) {
+    if (other == null) {
+      return false;
+    }
+
+    // Compare source
+    if (this.source != other.source) {
+      return false;
+    }
+
+    // Compare server
+    if (!Objects.equals(this.server, other.server)) {
+      return false;
+    }
+
+    // Compare line
+    if (this.line != other.line) {
+      return false;
+    }
+
+    // Compare col
+    if (this.col != other.col) {
+      return false;
+    }
+
+    // Compare message
+    if (!Objects.equals(this.message, other.message)) {
+      return false;
+    }
+
+    // Compare messageId
+    if (!Objects.equals(this.messageId, other.messageId)) {
+      return false;
+    }
+
+    // Compare type
+    if (this.type != other.type) {
+      return false;
+    }
+
+    // Compare level
+    if (this.level != other.level) {
+      return false;
+    }
+
+    // Compare html
+    if (!Objects.equals(this.html, other.html)) {
+      return false;
+    }
+
+    // Compare locationLink
+    if (!Objects.equals(this.locationLink, other.locationLink)) {
+      return false;
+    }
+
+    // Compare txLink
+    if (!Objects.equals(this.txLink, other.txLink)) {
+      return false;
+    }
+
+    // Compare location
+    if (!Objects.equals(this.getStrippedLocation(), other.getStrippedLocation())) {
+      return false;
+    }
+
+    // Compare sliceHtml
+    if (!Objects.equals(this.sliceHtml, other.sliceHtml)) {
+      return false;
+    }
+
+    // Compare slicingHint
+    if (this.slicingHint != other.slicingHint) {
+      return false;
+    }
+
+    // Compare signpost
+    if (this.signpost != other.signpost) {
+      return false;
+    }
+
+    // Compare criticalSignpost
+    if (this.criticalSignpost != other.criticalSignpost) {
+      return false;
+    }
+
+    // Compare ruleDate
+    if (!Objects.equals(this.ruleDate, other.ruleDate)) {
+      return false;
+    }
+
+    // Compare matched
+    if (this.matched != other.matched) {
+      return false;
+    }
+
+    // Compare ignorableError
+    if (this.ignorableError != other.ignorableError) {
+      return false;
+    }
+
+    // Compare invId
+    if (!Objects.equals(this.invId, other.invId)) {
+      return false;
+    }
+
+    // Compare comment
+    if (!Objects.equals(this.comment, other.comment)) {
+      return false;
+    }
+
+    // Compare sliceInfo
+    if (!Objects.equals(this.sliceInfo, other.sliceInfo)) {
+      return false;
+    }
+
+
+    return true;
+  }
+
+  public String getValidationContext() {
+    return validationContext;
+  }
+
+  public ValidationMessage setValidationContext(String validationContext) {
+    this.validationContext = validationContext;
+    return this;
+  }
+
+  public ValidationMessage setDiagnostics(String diagnostics) {
+    this.diagnostics = diagnostics;
+    return this;
+  }
 }

@@ -8,92 +8,93 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hl7.fhir.convertors.conv30_50.VersionConvertor_30_50;
-import org.hl7.fhir.convertors.factory.VersionConvertorFactory_30_50;
-import org.hl7.fhir.convertors.factory.VersionConvertorFactory_40_50;
+import org.hl7.fhir.convertors.factory.*;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.context.IWorkerContext;
-import org.hl7.fhir.r5.elementmodel.Element;
-import org.hl7.fhir.r5.elementmodel.JsonParser;
-import org.hl7.fhir.r5.elementmodel.ObjectConverter;
-import org.hl7.fhir.r5.formats.IParser.OutputStyle;
-import org.hl7.fhir.r5.model.CodeableConcept;
-import org.hl7.fhir.r5.model.Coding;
-import org.hl7.fhir.r5.model.FhirPublication;
-import org.hl7.fhir.r5.model.Library;
-import org.hl7.fhir.r5.model.Measure;
-import org.hl7.fhir.r5.model.Measure.MeasureGroupComponent;
-import org.hl7.fhir.r5.model.Measure.MeasureGroupPopulationComponent;
-import org.hl7.fhir.r5.model.Measure.MeasureGroupStratifierComponent;
-import org.hl7.fhir.r5.model.Resource;
-import org.hl7.fhir.r5.renderers.DataRenderer;
-import org.hl7.fhir.r5.utils.XVerExtensionManager;
+import org.hl7.fhir.model.core.*;
+import org.hl7.fhir.services.elementmodel.Element;
+import org.hl7.fhir.services.elementmodel.ElementModelUtilities;
+import org.hl7.fhir.services.elementmodel.JsonParser;
+import org.hl7.fhir.services.elementmodel.ObjectConverter;
+import org.hl7.fhir.model.extensions.ExtensionDefinitions;
+import org.hl7.fhir.model.utilities.formats.OutputStyle;
+import org.hl7.fhir.model.core.Measure.MeasureGroupComponent;
+import org.hl7.fhir.model.core.Measure.MeasureGroupPopulationComponent;
+import org.hl7.fhir.model.core.Measure.MeasureGroupStratifierComponent;
+import org.hl7.fhir.services.renderers.DataRenderer;
+import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
+import org.hl7.fhir.utilities.FhirPublication;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.VersionUtilities;
 import org.hl7.fhir.utilities.i18n.I18nConstants;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.hl7.fhir.utilities.validation.ValidationMessage.IssueType;
-import org.hl7.fhir.utilities.validation.ValidationMessage.Source;
 import org.hl7.fhir.utilities.xml.XMLUtil;
 import org.hl7.fhir.validation.BaseValidator;
-import org.hl7.fhir.validation.TimeTracker;
+import org.hl7.fhir.validation.instance.InstanceValidator;
 import org.hl7.fhir.validation.instance.utils.NodeStack;
-import org.hl7.fhir.validation.instance.utils.ValidatorHostContext;
+import org.hl7.fhir.validation.instance.utils.ResolvedReference;
+import org.hl7.fhir.validation.instance.utils.ValidationContext;
 import org.w3c.dom.Document;
 
 public class MeasureValidator extends BaseValidator {
 
-  public MeasureValidator(IWorkerContext context, TimeTracker timeTracker, XVerExtensionManager xverManager) {
-    super(context, xverManager);
-    source = Source.InstanceValidator;
-    this.timeTracker = timeTracker;
+
+  public MeasureValidator(BaseValidator parent) {
+    super(parent);
   }
 
-  public void validateMeasure(ValidatorHostContext hostContext, List<ValidationMessage> errors, Element element, NodeStack stack) throws FHIRException {
+  public boolean validateMeasure(ValidationContext hostContext, List<ValidationMessage> errors, Element element, NodeStack stack) throws FHIRException {
+    boolean ok = true;
     MeasureContext mctxt = new MeasureContext();
     List<Element> libs = element.getChildrenByName("library");
     for (Element lib : libs) {
       String ref = lib.isPrimitive() ? lib.primitiveValue() : lib.getChildValue("reference");
       if (!Utilities.noString(ref)) {
-        Library l = context.fetchResource(Library.class, ref);
-        if (hint(errors, IssueType.NOTFOUND, lib.line(), lib.col(), stack.getLiteralPath(), l != null, I18nConstants.MEASURE_M_LIB_UNKNOWN, ref)) {
+        Library l = context.fetchResource(Library.class, ref, ElementModelUtilities.getVersionResolutionRules(lib));
+        if (hint(errors, NO_RULE_DATE, IssueType.NOTFOUND, lib.line(), lib.col(), stack.getLiteralPath(), l != null, I18nConstants.MEASURE_M_LIB_UNKNOWN, ref)) {
           mctxt.seeLibrary(l);
         }
       }
     }
 
     List<Element> groups = element.getChildrenByName("group");
-    if (warning(errors, IssueType.REQUIRED, element.line(), element.col(), stack.getLiteralPath(), groups.size() > 0, I18nConstants.MEASURE_M_NO_GROUPS)) {      
+    if (warning(errors, NO_RULE_DATE, IssueType.REQUIRED, element.line(), element.col(), stack.getLiteralPath(), groups.size() > 0, I18nConstants.MEASURE_M_NO_GROUPS)) {      
       int c = 0;
       for (Element group : groups) {
         NodeStack ns = stack.push(group, c, null, null);
-        warning(errors, IssueType.REQUIRED, group.line(), group.col(), ns.getLiteralPath(), groups.size() ==1 || group.hasChild("code"), I18nConstants.MEASURE_M_GROUP_CODE);
-        warning(errors, IssueType.REQUIRED, group.line(), group.col(), ns.getLiteralPath(), group.hasChildren("population"), I18nConstants.MEASURE_M_GROUP_POP);
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, group.line(), group.col(), ns.getLiteralPath(), groups.size() ==1 || group.hasChild("code", false), I18nConstants.MEASURE_M_GROUP_CODE);
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, group.line(), group.col(), ns.getLiteralPath(), group.hasChildren("population"), I18nConstants.MEASURE_M_GROUP_POP);
         int c1 = 0;
         List<Element> pl = group.getChildrenByName("population");
         for (Element p : pl) {
           NodeStack ns2 = ns.push(p, c1, null, null);
-          warning(errors, IssueType.REQUIRED, p.line(), p.col(), ns2.getLiteralPath(), pl.size() == 1 || p.hasChild("code"), I18nConstants.MEASURE_M_GROUP_POP_NO_CODE);
+          warning(errors, NO_RULE_DATE, IssueType.REQUIRED, p.line(), p.col(), ns2.getLiteralPath(), pl.size() == 1 || p.hasChild("code", false), I18nConstants.MEASURE_M_GROUP_POP_NO_CODE);
+          if (p.hasChild("criteria", false)) {
+            Element crit = p.getNamedChild("criteria", false);
+            NodeStack nsc = ns2.push(crit, -1, null, null);
+            ok = validateMeasureCriteria(hostContext, errors, mctxt, crit, nsc) && ok;
+          }
           c1++;
         }
         c1 = 0;
         List<Element> stl = group.getChildrenByName("stratifier");
         for (Element st : stl) {
           NodeStack ns2 = ns.push(st, c1, null, null);
-          warning(errors, IssueType.REQUIRED, st.line(), st.col(), ns2.getLiteralPath(), stl.size() == 1 || st.hasChild("code"), I18nConstants.MEASURE_M_GROUP_STRATA_NO_CODE);
-          if (st.hasChild("criteria")) {
-            Element crit = st.getNamedChild("criteria");
+          warning(errors, NO_RULE_DATE, IssueType.REQUIRED, st.line(), st.col(), ns2.getLiteralPath(), stl.size() == 1 || st.hasChild("code", false), I18nConstants.MEASURE_M_GROUP_STRATA_NO_CODE);
+          if (st.hasChild("criteria", false)) {
+            Element crit = st.getNamedChild("criteria", false);
             NodeStack nsc = ns2.push(crit, -1, null, null);
-            validateMeasureCriteria(hostContext, errors, mctxt, crit, nsc);
+            ok = validateMeasureCriteria(hostContext, errors, mctxt, crit, nsc) && ok;
           }
           int c2 = 0;
           List<Element> cpl = group.getChildrenByName("component");
           for (Element cp : cpl) {
             NodeStack ns3 = ns2.push(cp, c2, null, null);
-            warning(errors, IssueType.REQUIRED, cp.line(), cp.col(), ns3.getLiteralPath(), cpl.size() == 1 || cp.hasChild("code"), I18nConstants.MEASURE_M_GROUP_STRATA_COMP_NO_CODE);
-            if (cp.hasChild("criteria")) {
-              Element crit = cp.getNamedChild("criteria");
+            warning(errors, NO_RULE_DATE, IssueType.REQUIRED, cp.line(), cp.col(), ns3.getLiteralPath(), cpl.size() == 1 || cp.hasChild("code", false), I18nConstants.MEASURE_M_GROUP_STRATA_COMP_NO_CODE);
+            if (cp.hasChild("criteria", false)) {
+              Element crit = cp.getNamedChild("criteria", false);
               NodeStack nsc = ns3.push(crit, -1, null, null);
-              validateMeasureCriteria(hostContext, errors, mctxt, crit, nsc);
+              ok= validateMeasureCriteria(hostContext, errors, mctxt, crit, nsc) && ok;
             }
             c2++;
           }
@@ -102,52 +103,106 @@ public class MeasureValidator extends BaseValidator {
         c++;
       }            
     }
+
+    List<Element> supplementalData = element.getChildrenByName("supplementalData");
+    int c = 0;
+    for (Element sd : supplementalData) {
+      NodeStack ns = stack.push(sd, c, null, null);
+      if (sd.hasChild("criteria", false)) {
+        Element crit = sd.getNamedChild("criteria", false);
+        NodeStack nsc = ns.push(crit, -1, null, null);
+        ok = validateMeasureCriteria(hostContext, errors, mctxt, crit, nsc) && ok;
+      }
+      c++;
+    }
+
+    if (!stack.isContained()) {
+      ok = checkShareableMeasure(errors, element, stack) && ok;
+    }
+    return ok;
   }
   
-  private void validateMeasureCriteria(ValidatorHostContext hostContext, List<ValidationMessage> errors, MeasureContext mctxt, Element crit, NodeStack nsc) {
+
+  private boolean checkShareableMeasure(List<ValidationMessage> errors, Element cs, NodeStack stack) {
+    boolean ok = true;
+    if (settings.isForPublication()) { 
+      if (isHL7(cs)) {
+        ok = rule(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("url", false), I18nConstants.MEASURE_SHAREABLE_MISSING_HL7, "url") && ok;                      
+        ok = rule(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("version", false), I18nConstants.MEASURE_SHAREABLE_MISSING_HL7, "version") && ok;                      
+        ok = rule(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("name", false), I18nConstants.MEASURE_SHAREABLE_EXTRA_MISSING_HL7, "name") && ok;                      
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("title", false), I18nConstants.MEASURE_SHAREABLE_MISSING_HL7, "title");                      
+        ok = rule(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("status", false), I18nConstants.MEASURE_SHAREABLE_MISSING_HL7, "status") && ok;                      
+        ok = rule(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("experimental", false), I18nConstants.MEASURE_SHAREABLE_MISSING_HL7, "experimental") && ok;                      
+        ok = rule(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("publisher", false), I18nConstants.MEASURE_SHAREABLE_MISSING_HL7, "publisher") && ok; 
+        ok = rule(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("description", false), I18nConstants.MEASURE_SHAREABLE_MISSING_HL7, "description") && ok; 
+      } else {
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("url", false), I18nConstants.MEASURE_SHAREABLE_MISSING, "url");                      
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("version", false), I18nConstants.MEASURE_SHAREABLE_MISSING, "version");                      
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("name", false), I18nConstants.MEASURE_SHAREABLE_EXTRA_MISSING, "name");                      
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("title", false), I18nConstants.MEASURE_SHAREABLE_MISSING, "title");                      
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("status", false), I18nConstants.MEASURE_SHAREABLE_MISSING, "status");                      
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("experimental", false), I18nConstants.MEASURE_SHAREABLE_MISSING, "experimental");                      
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("description", false), I18nConstants.MEASURE_SHAREABLE_MISSING, "description"); 
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, cs.line(), cs.col(), stack.getLiteralPath(), cs.hasChild("publisher", false), I18nConstants.MEASURE_SHAREABLE_MISSING, "publisher"); 
+      }
+    }
+    return ok;
+  }
+  
+  private boolean validateMeasureCriteria(ValidationContext hostContext, List<ValidationMessage> errors, MeasureContext mctxt, Element crit, NodeStack nsc) {
+    boolean ok = true;
     String mimeType = crit.getChildValue("language");
-    if (!Utilities.noString(mimeType)) { // that would be an error elsewhere 
-      if ("text/cql".equals(mimeType) || "text/cql.identifier".equals(mimeType)) {
+    if (!Utilities.noString(mimeType)) { // that would be an error elsewhere
+      if (mimeType.startsWith("text/cql") && !mimeType.startsWith("text/cql-expression")) {
         String cqlRef = crit.getChildValue("expression");
         Library lib = null;
-        if (rule(errors, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), mctxt.libraries().size()> 0, I18nConstants.MEASURE_M_CRITERIA_CQL_NO_LIB)) {
+        if (rule(errors, NO_RULE_DATE, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), mctxt.libraries().size()> 0, I18nConstants.MEASURE_M_CRITERIA_CQL_NO_LIB)) {
           if (cqlRef.contains(".")) {
             String name = cqlRef.substring(0, cqlRef.indexOf(".")); 
             cqlRef = cqlRef.substring(cqlRef.indexOf(".")+1); 
             for (Library l : mctxt.libraries()) {
               if (name.equals(l.getName())) {
-                if (rule(errors, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), lib == null, I18nConstants.MEASURE_M_CRITERIA_CQL_LIB_DUPL)) {
+                if (rule(errors, NO_RULE_DATE, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), lib == null, I18nConstants.MEASURE_M_CRITERIA_CQL_LIB_DUPL)) {
                   lib = l;
+                } else {
+                  ok = false;
                 }
               }
             }
-            rule(errors, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), lib != null, I18nConstants.MEASURE_M_CRITERIA_CQL_LIB_NOT_FOUND, name);
+            ok = rule(errors, NO_RULE_DATE, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), lib != null, I18nConstants.MEASURE_M_CRITERIA_CQL_LIB_NOT_FOUND, name) && ok;
           } else {
-            if (rule(errors, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), mctxt.libraries().size() == 1, I18nConstants.MEASURE_M_CRITERIA_CQL_ONLY_ONE_LIB)) {
+            if (rule(errors, NO_RULE_DATE, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), mctxt.libraries().size() == 1, I18nConstants.MEASURE_M_CRITERIA_CQL_ONLY_ONE_LIB)) {
               lib = mctxt.libraries().get(0);
+            } else {
+              ok = false;
             }
           }
+        } else {
+          ok = false;
         }
         if (lib != null) {
-          if (rule(errors, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), lib.hasUserData(MeasureContext.USER_DATA_ELM), I18nConstants.MEASURE_M_CRITERIA_CQL_NO_ELM, lib.getUrl())) {
+          if (warning(errors, NO_RULE_DATE, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), lib.hasUserData(MeasureContext.USER_DATA_ELM), I18nConstants.MEASURE_M_CRITERIA_CQL_NO_ELM, lib.getUrl())) {
             if (lib.getUserData(MeasureContext.USER_DATA_ELM) instanceof String) {
-              rule(errors, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), false, I18nConstants.MEASURE_M_CRITERIA_CQL_ERROR, lib.getUrl(), lib.getUserString(MeasureContext.USER_DATA_ELM));            
+              ok = rule(errors, NO_RULE_DATE, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), false, I18nConstants.MEASURE_M_CRITERIA_CQL_ERROR, lib.getUrl(), lib.getUserString(MeasureContext.USER_DATA_ELM)) && ok;            
             } else if (lib.getUserData(MeasureContext.USER_DATA_ELM) instanceof Document) {
               org.w3c.dom.Element elm = ((Document)lib.getUserData(MeasureContext.USER_DATA_ELM)).getDocumentElement();
-              if (rule(errors, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), isValidElm(elm), I18nConstants.MEASURE_M_CRITERIA_CQL_ELM_NOT_VALID, lib.getUrl(), cqlRef)) {
-                rule(errors, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), hasCqlTarget(elm, cqlRef), I18nConstants.MEASURE_M_CRITERIA_CQL_NOT_FOUND, lib.getUrl(), cqlRef);
+              if (rule(errors, NO_RULE_DATE, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), isValidElm(elm), I18nConstants.MEASURE_M_CRITERIA_CQL_ELM_NOT_VALID, lib.getUrl(), cqlRef)) {
+                ok = rule(errors, NO_RULE_DATE, IssueType.INVALID, crit.line(), crit.col(), nsc.getLiteralPath(), hasCqlTarget(elm, cqlRef), I18nConstants.MEASURE_M_CRITERIA_CQL_NOT_FOUND, lib.getUrl(), cqlRef) && ok;
               }
             }
+          } else {
+            ok = false;
           }
         }
       } else if ("text/fhirpath".equals(mimeType)) {
-        warning(errors, IssueType.REQUIRED, crit.line(), crit.col(), nsc.getLiteralPath(), false, I18nConstants.MEASURE_M_CRITERIA_UNKNOWN, mimeType);
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, crit.line(), crit.col(), nsc.getLiteralPath(), false, I18nConstants.MEASURE_M_CRITERIA_UNKNOWN, mimeType);
       } else if ("application/x-fhir-query".equals(mimeType)) {
-        warning(errors, IssueType.REQUIRED, crit.line(), crit.col(), nsc.getLiteralPath(), false, I18nConstants.MEASURE_M_CRITERIA_UNKNOWN, mimeType);
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, crit.line(), crit.col(), nsc.getLiteralPath(), false, I18nConstants.MEASURE_M_CRITERIA_UNKNOWN, mimeType);
       } else {
-        warning(errors, IssueType.REQUIRED, crit.line(), crit.col(), nsc.getLiteralPath(), false, I18nConstants.MEASURE_M_CRITERIA_UNKNOWN, mimeType);
+        warning(errors, NO_RULE_DATE, IssueType.REQUIRED, crit.line(), crit.col(), nsc.getLiteralPath(), false, I18nConstants.MEASURE_M_CRITERIA_UNKNOWN, mimeType);
       }  
     }
+    return ok;
   }
     
   private boolean isValidElm(org.w3c.dom.Element elm) {
@@ -169,8 +224,9 @@ public class MeasureValidator extends BaseValidator {
 
   // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  public void validateMeasureReport(ValidatorHostContext hostContext, List<ValidationMessage> errors, Element element, NodeStack stack) throws FHIRException {
-    Element m = element.getNamedChild("measure");
+  public boolean validateMeasureReport(ValidationContext hostContext, List<ValidationMessage> errors, Element element, NodeStack stack) throws FHIRException {
+    boolean ok = true;
+    Element m = element.getNamedChild("measure", false);
     String measure = null;
     if (m != null) {
       /*
@@ -185,25 +241,38 @@ public class MeasureValidator extends BaseValidator {
         measure = m.getChildValue("reference");
       }
     }
-    if (hint(errors, IssueType.REQUIRED, element.line(), element.col(), stack.getLiteralPath(), measure != null, I18nConstants.MEASURE_MR_M_NONE)) {
+    if (hint(errors, NO_RULE_DATE, IssueType.REQUIRED, element.line(), element.col(), stack.getLiteralPath(), measure != null, I18nConstants.MEASURE_MR_M_NONE)) {
       long t = System.nanoTime();
-      Measure msrc = measure.startsWith("#") ? loadMeasure(element, measure.substring(1)) : context.fetchResource(Measure.class, measure);
+      Measure msrc = measure.startsWith("#") ? loadMeasure(element, measure.substring(1)) : context.fetchResource(Measure.class, measure, VersionResolutionRules.defaultRule());
       timeTracker.sd(t);
-      if (warning(errors, IssueType.REQUIRED, m.line(), m.col(), stack.getLiteralPath(), msrc != null, I18nConstants.MEASURE_MR_M_NOTFOUND, measure)) {
-        boolean inComplete = !"complete".equals(element.getNamedChildValue("status"));
+      if (warning(errors, NO_RULE_DATE, IssueType.REQUIRED, m.line(), m.col(), stack.getLiteralPath(), msrc != null, I18nConstants.MEASURE_MR_M_NOTFOUND, measure)) {
+        boolean inComplete = !"complete".equals(element.getNamedChildValue("status", false));
         MeasureContext mc = new MeasureContext(msrc, element);
         NodeStack ns = stack.push(m, -1, m.getProperty().getDefinition(), m.getProperty().getDefinition());
-        hint(errors, IssueType.BUSINESSRULE, m.line(), m.col(), ns.getLiteralPath(), Utilities.existsInList(mc.scoring(), "proportion", "ratio", "continuous-variable", "cohort"), I18nConstants.MEASURE_MR_M_SCORING_UNK); 
-        validateMeasureReportGroups(hostContext, mc, errors, element, stack, inComplete);
+        // todo disabled in R6?
+        // hint(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, m.line(), m.col(), ns.getLiteralPath(), mc.scoring() == null || Utilities.existsInList(mc.scoring(), "proportion", "ratio", "continuous-variable", "cohort", "composite", "attestation"), I18nConstants.MEASURE_MR_M_SCORING_UNK);
+        ok = validateMeasureReportGroups(hostContext, mc, errors, element, stack, inComplete) && ok;
+      } else {
+        if (measure.contains("|")) {
+          List<Measure> versionList = context.fetchResourceVersions(Measure.class, measure.substring(0, measure.indexOf("|")));
+          if (versionList != null && !versionList.isEmpty()) {
+            CommaSeparatedStringBuilder b = new CommaSeparatedStringBuilder();
+            for (Measure mm : versionList) {
+              b.append(mm.getVersion());
+            }
+            hint(errors, NO_RULE_DATE, IssueType.INFORMATIONAL, m.line(), m.col(), stack.getLiteralPath(), msrc != null, I18nConstants.CANONICAL_MULTIPLE_VERSIONS_KNOWN, "Measure", measure, measure.substring(measure.indexOf("|")+1), b.toString());            
+          }
+        }
       }
     }
+    return ok;
   }
 
   private Measure loadMeasure(Element resource, String id) throws FHIRException {
     try {
       for (Element contained : resource.getChildren("contained")) {
         if (contained.getIdBase().equals(id)) {
-          FhirPublication v = FhirPublication.fromCode(context.getVersion());
+          FhirPublication v = FhirPublication.fromCode(context.getFHIRVersion());
           ByteArrayOutputStream bs = new ByteArrayOutputStream();
           new JsonParser(context).compose(contained, bs, OutputStyle.NORMAL, id);
           byte[] json = bs.toByteArray();
@@ -216,22 +285,22 @@ public class MeasureValidator extends BaseValidator {
               throw new FHIRException(context.formatMessage(I18nConstants.UNSUPPORTED_VERSION_R2B));
             case STU3:
               org.hl7.fhir.dstu3.model.Resource r3 = new org.hl7.fhir.dstu3.formats.JsonParser().parse(json);
-              Resource r5 = VersionConvertorFactory_30_50.convertResource(r3);
-              if (r5 instanceof Measure)
-                return (Measure) r5;
+              Resource rN = VersionConvertorFactory_30_N.convertResource(r3);
+              if (rN instanceof Measure)
+                return (Measure) rN;
               else
                 return null;
             case R4:
               org.hl7.fhir.r4.model.Resource r4 = new org.hl7.fhir.r4.formats.JsonParser().parse(json);
-              r5 = VersionConvertorFactory_40_50.convertResource(r4);
-              if (r5 instanceof Measure)
-                return (Measure) r5;
+              rN = VersionConvertorFactory_40_N.convertResource(r4);
+              if (rN instanceof Measure)
+                return (Measure) rN;
               else
                 return null;
             case R5:
-              r5 = new org.hl7.fhir.r5.formats.JsonParser().parse(json);
-              if (r5 instanceof Measure)
-                return (Measure) r5;
+              rN = new org.hl7.fhir.model.core.formats.JsonParser(context.getModelContext()).parse(json);
+              if (rN instanceof Measure)
+                return (Measure) rN;
               else
                 return null;
           }
@@ -243,10 +312,12 @@ public class MeasureValidator extends BaseValidator {
     }
   }
 
-  private void validateMeasureReportGroups(ValidatorHostContext hostContext, MeasureContext m, List<ValidationMessage> errors, Element mr, NodeStack stack, boolean inProgress) {
+  private boolean validateMeasureReportGroups(ValidationContext hostContext, MeasureContext m, List<ValidationMessage> errors, Element mr, NodeStack stack, boolean inProgress) {
+    boolean ok = true;
+    
     if (m.groups().size() == 0) {
       // only validate the report groups if the measure has groups.
-      return;
+      return ok;
     }
 
     List<MeasureGroupComponent> groups = new ArrayList<MeasureGroupComponent>();
@@ -258,141 +329,283 @@ public class MeasureValidator extends BaseValidator {
       // but we still check that the code, if both have one, is consistent.
       Element mrg = glist.get(0);
       NodeStack ns = stack.push(mrg, 0, mrg.getProperty().getDefinition(), mrg.getProperty().getDefinition());
-      if (m.groups().get(0).hasCode() && mrg.hasChild("code")) {
-        CodeableConcept cc = ObjectConverter.readAsCodeableConcept(mrg.getNamedChild("code"));
-        if (rule(errors, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), hasUseableCode(cc), I18nConstants.MEASURE_MR_GRP_NO_USABLE_CODE)) {
-          rule(errors, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), cc.matches(m.groups().get(0).getCode()), I18nConstants.MEASURE_MR_GRP_NO_WRONG_CODE, DataRenderer.display(context, cc), DataRenderer.display(context, m.groups().get(0).getCode()));
+      if (m.groups().get(0).hasCode() && mrg.hasChild("code", false)) {
+        CodeableConcept cc = ObjectConverter.readAsCodeableConcept(mrg.getNamedChild("code", false));
+        String linkId = mrg.getNamedChildValue("linkId");
+        String id = mrg.getIdBase();
+        
+        if (rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), hasUseableCode(cc), I18nConstants.MEASURE_MR_GRP_NO_USABLE_CODE)) {
+          MeasureGroupComponent mg = m.groups().get(0);
+          if (VersionUtilities.isR5Plus(context.getFHIRVersion())) {
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), cc == null || mg.getCode() == null || codesMatch(cc, mg.getCode()), I18nConstants.MEASURE_MR_GRP_NO_WRONG_CODE, genCC(cc), genCC(mg.getCode())) && ok;
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), linkId == null || mg.getLinkId() == null || linkId.equals(mg.getLinkId()), I18nConstants.MEASURE_MR_GRP_NO_WRONG_LINKID, linkId, mg.getLinkId()) && ok;
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mg.getLinkId() == null && (id == null || mg.getId() == null || id.equals(mg.getId())), I18nConstants.MEASURE_MR_GRP_NO_WRONG_LINKID, id, mg.getId()) && ok;
+          } else {
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), cc == null || mg.getCode() == null || codesMatch(cc, mg.getCode()), I18nConstants.MEASURE_MR_GRP_NO_WRONG_CODE, DataRenderer.display(context, cc), DataRenderer.display(context, m.groups().get(0).getCode())) && ok;
+            // Also perform link/id mapping, for R4, linkId should be provided using a cross-version extension, falling back to id
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), linkId == null || mg.getLinkId() == null || linkId.equals(mg.getLinkId()), I18nConstants.MEASURE_MR_GRP_NO_WRONG_LINKID, linkId, mg.getLinkId()) && ok;
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mg.getLinkId() == null && (id == null || mg.getId() == null || id.equals(mg.getId())), I18nConstants.MEASURE_MR_GRP_NO_WRONG_LINKID, id, mg.getId()) && ok;
+          }
+        } else {
+          ok = false;
         }
       }
-      validateMeasureReportGroup(hostContext, m, m.groups().get(0), errors, mrg, ns, inProgress);
+      ok = validateMeasureReportGroup(hostContext, m, m.groups().get(0), errors, mrg, ns, inProgress) && ok;
     } else {
       int i = 0;
       for (Element mrg : glist) {
         NodeStack ns = stack.push(mrg, i, mrg.getProperty().getDefinition(), mrg.getProperty().getDefinition());
-        CodeableConcept cc = ObjectConverter.readAsCodeableConcept(mrg.getNamedChild("code"));
-        if (rule(errors, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), cc != null, I18nConstants.MEASURE_MR_GRP_NO_CODE)) {
-          MeasureGroupComponent mg = getGroupForCode(cc, m.measure());
-          if (rule(errors, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mg != null, I18nConstants.MEASURE_MR_GRP_UNK_CODE)) {
-            if (rule(errors, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), !groups.contains(mg), I18nConstants.MEASURE_MR_GRP_DUPL_CODE)) {
-              groups.add(mg);
-              validateMeasureReportGroup(hostContext, m, mg, errors, mrg, ns, inProgress);
+        CodeableConcept cc = ObjectConverter.readAsCodeableConcept(mrg.getNamedChild("code", false));
+        String linkId = mrg.getNamedChildValue("linkId");
+        String id = mrg.getIdBase();
+        
+        if (rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), cc != null || linkId != null, 
+            VersionUtilities.isR5Plus(context.getFHIRVersion()) ? I18nConstants.MEASURE_MR_GRP_NO_CODE_R5 : I18nConstants.MEASURE_MR_GRP_NO_CODE)) {
+          MeasureGroupComponent mg = null;
+          if (linkId != null) {
+            mg = getGroupForLinkId(linkId, m.measure());
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mg != null, I18nConstants.MEASURE_MR_GRP_UNK_LINKID, linkId) && ok;
+            if (mg != null) {
+              ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), cc == null || mg.getCode() == null || codesMatch(cc, mg.getCode()), I18nConstants.MEASURE_MR_GRP_CODE_MISMATCH, genCC(cc), genCC(mg.getCode())) && ok;
             }
+          } else if (id != null) {
+            mg = getGroupForId(id, m.measure());
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mg != null, I18nConstants.MEASURE_MR_GRP_UNK_LINKID, linkId) && ok;
+            if (mg != null) {
+              ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), cc == null || mg.getCode() == null || codesMatch(cc, mg.getCode()), I18nConstants.MEASURE_MR_GRP_CODE_MISMATCH, genCC(cc), genCC(mg.getCode())) && ok;
+            }
+          } else {
+            mg = getGroupForCode(cc, m.measure());
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mg != null, I18nConstants.MEASURE_MR_GRP_UNK_CODE, genCC(cc)) && ok;
           }
+          if (mg != null) {
+            if (rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), !groups.contains(mg), I18nConstants.MEASURE_MR_GRP_DUPL_CODE)) {
+              groups.add(mg);
+              ok = validateMeasureReportGroup(hostContext, m, mg, errors, mrg, ns, inProgress) && ok;
+            } else {
+              ok = false;
+            }
+          } else {
+            ok = false;
+          }
+        } else {
+          ok = false;
         }
         i++;
       }
       boolean dataCollection = isDataCollection(mr);
       for (MeasureGroupComponent mg : m.groups()) {
         if (!groups.contains(mg)) {
-          rule(errors, IssueType.BUSINESSRULE, mr.line(), mr.col(), stack.getLiteralPath(), groups.contains(mg) || dataCollection, I18nConstants.MEASURE_MR_GRP_MISSING_BY_CODE, DataRenderer.display(context, mg.getCode()));
+          ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mr.line(), mr.col(), stack.getLiteralPath(), groups.contains(mg) || dataCollection,
+              VersionUtilities.isR5Plus(context.getFHIRVersion()) ? I18nConstants.MEASURE_MR_GRP_MISSING_BY_CODE_R5 : I18nConstants.MEASURE_MR_GRP_MISSING_BY_CODE, genCC(mg.getCode()), mg.hasLinkId() ? mg.getLinkId() : "") && ok;
         }
       }
     }
+    return ok;
+  }
+
+  private String genCC(CodeableConcept cc) {
+    if (cc == null) {
+      return "";
+    }
+    StringBuilder b = new StringBuilder();
+    if (cc.hasCoding()) {
+      if (cc.getCodingList().size() > 1) {
+        b.append("[");
+      }
+      boolean first = true;
+      for (Coding c : cc.getCodingList()) {
+        if (first) first = false; else b.append(", ");
+        b.append(c.getSystem());
+        if (c.hasVersion()) {
+          b.append("|");
+          b.append(c.getVersion());
+        }
+        b.append("#");
+        b.append(c.getCode());
+      }
+      if (cc.getCodingList().size() > 1) {
+        b.append("]");
+      } 
+    }
+    if (cc.hasCoding() && cc.hasText()) {
+      b.append(": ");
+    }
+    if (cc.hasText()) {
+      b.append("'");
+      b.append(cc.getText());
+      b.append("'");
+    }
+    return b.toString();
+  }
+
+  private boolean codesMatch(CodeableConcept cc, CodeableConcept code) {
+    for (Coding c : cc.getCodingList()) {
+      if (code.hasCoding(c)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private MeasureGroupComponent getGroupForLinkId(String linkId, Measure m) {
+    for (MeasureGroupComponent t : m.getGroupList()) {
+      if (linkId.equals(t.getLinkId())) {
+        return t;
+      }
+    }
+    return null;
+  }
+
+  private MeasureGroupComponent getGroupForId(String id, Measure m) {
+    for (MeasureGroupComponent t : m.getGroupList()) {
+      if (id.equals(t.getId())) {
+        return t;
+      }
+    }
+    return null;
   }
 
   private boolean isDataCollection(Element mr) {
     return "data-collection".equals(mr.getChildValue("type"));
   }
 
-  private void validateMeasureReportGroup(ValidatorHostContext hostContext, MeasureContext m, MeasureGroupComponent mg, List<ValidationMessage> errors, Element mrg, NodeStack ns, boolean inProgress) {
-    validateMeasureReportGroupPopulations(hostContext, m, mg, errors, mrg, ns, inProgress);
-    validateScore(hostContext, m, errors, mrg, ns, inProgress);
-    validateMeasureReportGroupStratifiers(hostContext, m, mg, errors, mrg, ns, inProgress);
+  private boolean validateMeasureReportGroup(ValidationContext hostContext, MeasureContext m, MeasureGroupComponent mg, List<ValidationMessage> errors, Element mrg, NodeStack ns, boolean inProgress) {
+    boolean ok = true;
+    ok = validateMeasureReportGroupPopulations(hostContext, m, mg, errors, mrg, ns, inProgress) && ok;
+    ok = validateScore(hostContext, m, mg, errors, mrg, ns, inProgress) && ok;
+    ok = validateMeasureReportGroupStratifiers(hostContext, m, mg, errors, mrg, ns, inProgress) && ok;
+    return ok;
   }
 
-  private void validateScore(ValidatorHostContext hostContext, MeasureContext m, List<ValidationMessage> errors, Element mrg, NodeStack stack, boolean inProgress) {
-    Element ms = mrg.getNamedChild("measureScore");
+  private boolean validateScore(ValidationContext hostContext, MeasureContext m, MeasureGroupComponent mg, List<ValidationMessage> errors, Element mrg, NodeStack stack, boolean inProgress) {
+    boolean ok = true;
+    
+    Element ms = mrg.getNamedChild("measureScore", false);
     // first, we check MeasureReport.type
     if ("data-collection".equals(m.reportType())) {
-      banned(errors, stack, ms, I18nConstants.MEASURE_MR_SCORE_PROHIBITED_RT);
-    } else if ("cohort".equals(m.scoring())) {
+      ok = banned(errors, stack, ms, I18nConstants.MEASURE_MR_SCORE_PROHIBITED_RT) && ok;
+    //} else if ("cohort".equals(m.scoring(mg))) {
       //  cohort - there is no measure score
-      banned(errors, stack, ms, I18nConstants.MEASURE_MR_SCORE_PROHIBITED_MS);
-    } else if (Utilities.existsInList(m.scoring(), "proportion", "ratio", "continuous-variable")) {
-      if (rule(errors, IssueType.REQUIRED, mrg.line(), mrg.col(), stack.getLiteralPath(), ms != null, I18nConstants.MEASURE_MR_SCORE_REQUIRED, m.scoring())) {
+      // This isn't correct, measure score for a cohort measure is the population count, so it should be an integer
+    //  ok = banned(errors, stack, ms, I18nConstants.MEASURE_MR_SCORE_PROHIBITED_MS) && ok;
+    } else if (Utilities.existsInList(m.scoring(mg), "cohort", "proportion", "ratio", "continuous-variable")) {
+      if (rule(errors, NO_RULE_DATE, IssueType.REQUIRED, mrg.line(), mrg.col(), stack.getLiteralPath(), ms != null, I18nConstants.MEASURE_MR_SCORE_REQUIRED, m.scoring(mg))) {
         NodeStack ns = stack.push(ms, -1, ms.getProperty().getDefinition(), ms.getProperty().getDefinition());
-        Element v = ms.getNamedChild("value");
+        Element v = ms.getNamedChild("value", false);
         // TODO: this is a DEQM special and should be handled differently
         if (v == null) {
           if (ms.hasExtension("http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-alternateScoreType")) {
-            v = ms.getExtension("http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-alternateScoreType").getNamedChild("value");
+            v = ms.getExtension("http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-alternateScoreType").getNamedChild("value", false);
           }
         }
-        if ("proportion".equals(m.scoring())) {
-          //  proportion - score is a unitless number from 0 ... 1
-          banned(errors, ns, ms, "unit", I18nConstants.MEASURE_MR_SCORE_UNIT_PROHIBITED, "proportion");
-          banned(errors, ns, ms, "system", I18nConstants.MEASURE_MR_SCORE_UNIT_PROHIBITED, "proportion");
-          banned(errors, ns, ms, "code", I18nConstants.MEASURE_MR_SCORE_UNIT_PROHIBITED, "proportion");
-          if (rule(errors, IssueType.REQUIRED, ms.line(), ms.col(), ns.getLiteralPath(), v != null, I18nConstants.MEASURE_MR_SCORE_VALUE_REQUIRED, "proportion")) {
+        if (v == null) {
+          if (ms.hasExtension("http://hl7.org/fhir/uv/deqm/StructureDefinition/deqm-alternateScoreType")) {
+            v = ms.getExtension("http://hl7.org/fhir/uv/deqm/StructureDefinition/deqm-alternateScoreType").getNamedChild("value", false);
+          }
+        }
+        if ("cohort".equals(m.scoring(mg))) {
+          // cohort - score is a unitless number >= 0
+          ok = banned(errors, ns, ms, "unit", I18nConstants.MEASURE_MR_SCORE_UNIT_PROHIBITED, "cohort") && ok;
+          ok = banned(errors, ns, ms, "system", I18nConstants.MEASURE_MR_SCORE_UNIT_PROHIBITED, "cohort") && ok;
+          ok = banned(errors, ns, ms, "code", I18nConstants.MEASURE_MR_SCORE_UNIT_PROHIBITED, "cohort") && ok;
+          if (rule(errors, NO_RULE_DATE, IssueType.REQUIRED, ms.line(), ms.col(), ns.getLiteralPath(), v != null, I18nConstants.MEASURE_MR_SCORE_VALUE_REQUIRED, "cohort")) {
             try {
               BigDecimal dec = new BigDecimal(v.primitiveValue());
               NodeStack nsv = ns.push(v, -1, v.getProperty().getDefinition(), v.getProperty().getDefinition());
-              rule(errors, IssueType.REQUIRED, v.line(), v.col(), nsv.getLiteralPath(), dec.compareTo(new BigDecimal(0)) >= 0 && dec.compareTo(new BigDecimal(1)) <= 0, I18nConstants.MEASURE_MR_SCORE_VALUE_INVALID_01);
+              ok = rule(errors, NO_RULE_DATE, IssueType.REQUIRED, v.line(), v.col(), nsv.getLiteralPath(), dec.compareTo(new BigDecimal(0)) >= 0, I18nConstants.MEASURE_MR_SCORE_VALUE_INVALID_02) && ok;
+            } catch (Exception e) {
+              // nothing - will have caused an error elsewhere
+            }
+          } else {
+            ok = false;
+          }
+        } else if ("proportion".equals(m.scoring(mg))) {
+          //  proportion - score is a unitless number from 0 ... 1
+          ok = banned(errors, ns, ms, "unit", I18nConstants.MEASURE_MR_SCORE_UNIT_PROHIBITED, "proportion") && ok;
+          ok = banned(errors, ns, ms, "system", I18nConstants.MEASURE_MR_SCORE_UNIT_PROHIBITED, "proportion") && ok;
+          ok = banned(errors, ns, ms, "code", I18nConstants.MEASURE_MR_SCORE_UNIT_PROHIBITED, "proportion") && ok;
+          if (rule(errors, NO_RULE_DATE, IssueType.REQUIRED, ms.line(), ms.col(), ns.getLiteralPath(), v != null, I18nConstants.MEASURE_MR_SCORE_VALUE_REQUIRED, "proportion")) {
+            try {
+              BigDecimal dec = new BigDecimal(v.primitiveValue());
+              NodeStack nsv = ns.push(v, -1, v.getProperty().getDefinition(), v.getProperty().getDefinition());
+              ok = rule(errors, NO_RULE_DATE, IssueType.REQUIRED, v.line(), v.col(), nsv.getLiteralPath(), dec.compareTo(new BigDecimal(0)) >= 0 && dec.compareTo(new BigDecimal(1)) <= 0, I18nConstants.MEASURE_MR_SCORE_VALUE_INVALID_01) && ok;
             } catch (Exception e) {
               // nothing - will have caused an error elsewhere
             }            
+          } else {
+            ok = false;
           }
-        } else if ("ratio".equals(m.scoring())) {
+        } else if ("ratio".equals(m.scoring(mg))) {
           //  ratio -  score is a number with no value constraints, and maybe with a unit (perhaps constrained by extension)
-          if (rule(errors, IssueType.REQUIRED, ms.line(), ms.col(), ns.getLiteralPath(), v != null, I18nConstants.MEASURE_MR_SCORE_VALUE_REQUIRED, "ratio")) {
-            Element unit = ms.getNamedChild("code");
-            Coding c = m.measure().hasExtension("http://hl7.org/fhir/StructureDefinition/questionnaire-unit") ? (Coding) m.measure().getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/questionnaire-unit").getValue() : null;
+          if (rule(errors, NO_RULE_DATE, IssueType.REQUIRED, ms.line(), ms.col(), ns.getLiteralPath(), v != null, I18nConstants.MEASURE_MR_SCORE_VALUE_REQUIRED, "ratio")) {
+            Element unit = ms.getNamedChild("code", false);
+            Coding c = m.measure().hasExtension(ExtensionDefinitions.EXT_Q_UNIT) ? (Coding) m.measure().getExtensionByUrl(ExtensionDefinitions.EXT_Q_UNIT).getValue() : null;
             if (unit != null) {
               if (c != null) {
                 NodeStack nsc = ns.push(unit, -1, unit.getProperty().getDefinition(), unit.getProperty().getDefinition());
-                rule(errors, IssueType.CODEINVALID, unit.line(), unit.col(), nsc.getLiteralPath(), c.getCode().equals(unit.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getCode());
-                Element system = ms.getNamedChild("system");
+                ok = rule(errors, NO_RULE_DATE, IssueType.CODEINVALID, unit.line(), unit.col(), nsc.getLiteralPath(), c.getCode().equals(unit.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getCode()) && ok;
+                Element system = ms.getNamedChild("system", false);
                 if (system == null) {
                   NodeStack nss = system == null ? ns : ns.push(system, -1, system.getProperty().getDefinition(), system.getProperty().getDefinition());
-                  rule(errors, IssueType.CODEINVALID, system.line(), system.col(), nss.getLiteralPath(), c.getSystem().equals(system.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getSystem());
+                  ok = rule(errors, NO_RULE_DATE, IssueType.CODEINVALID, system.line(), system.col(), nss.getLiteralPath(), c.getSystem().equals(system.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getSystem()) && ok;
                 } else {
-                  rule(errors, IssueType.CODEINVALID, ms.line(), ms.col(), ns.getLiteralPath(), c.getSystem().equals(system.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getSystem());
+                  ok = rule(errors, NO_RULE_DATE, IssueType.CODEINVALID, ms.line(), ms.col(), ns.getLiteralPath(), c.getSystem().equals(system.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getSystem()) && ok;
                 }
               }
             } else if (c != null) {
-              rule(errors, IssueType.NOTFOUND, ms.line(), ms.col(), ns.getLiteralPath(), false, I18nConstants.MEASURE_MR_SCORE_FIXED, DataRenderer.display(context, c));            
+              ok = rule(errors, NO_RULE_DATE, IssueType.NOTFOUND, ms.line(), ms.col(), ns.getLiteralPath(), false, I18nConstants.MEASURE_MR_SCORE_FIXED, DataRenderer.display(context, c)) && ok;            
             } else {
-              warning(errors, IssueType.NOTFOUND, ms.line(), ms.col(), ns.getLiteralPath(), false, I18nConstants.MEASURE_MR_SCORE_UNIT_REQUIRED, "ratio");            
+              warning(errors, NO_RULE_DATE, IssueType.NOTFOUND, ms.line(), ms.col(), ns.getLiteralPath(), false, I18nConstants.MEASURE_MR_SCORE_UNIT_REQUIRED, "ratio");            
             }
+          } else {
+            ok = true;
           }
-        } else if ("continuous-variable".equals(m.scoring())) {
+        } else if ("continuous-variable".equals(m.scoring(mg))) {
           // continuous-variable - score is a quantity with a unit per the extension
-          if (rule(errors, IssueType.REQUIRED, ms.line(), ms.col(), ns.getLiteralPath(), v != null, I18nConstants.MEASURE_MR_SCORE_VALUE_REQUIRED, "continuous-variable")) {
-            Element unit = ms.getNamedChild("code");
-            Coding c = m.measure().hasExtension("http://hl7.org/fhir/StructureDefinition/questionnaire-unit") ? (Coding) m.measure().getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/questionnaire-unit").getValue() : null;
+          if (rule(errors, NO_RULE_DATE, IssueType.REQUIRED, ms.line(), ms.col(), ns.getLiteralPath(), v != null, I18nConstants.MEASURE_MR_SCORE_VALUE_REQUIRED, "continuous-variable")) {
+            Element unit = ms.getNamedChild("code", false);
+            Coding c = m.measure().hasExtension(ExtensionDefinitions.EXT_Q_UNIT) ? (Coding) m.measure().getExtensionByUrl(ExtensionDefinitions.EXT_Q_UNIT).getValue() : null;
             if (unit != null) {
               if (c != null) {
                 NodeStack nsc = ns.push(unit, -1, unit.getProperty().getDefinition(), unit.getProperty().getDefinition());
-                rule(errors, IssueType.CODEINVALID, unit.line(), unit.col(), nsc.getLiteralPath(), c.getCode().equals(unit.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getCode());
-                Element system = ms.getNamedChild("system");
+                rule(errors, NO_RULE_DATE, IssueType.CODEINVALID, unit.line(), unit.col(), nsc.getLiteralPath(), c.getCode().equals(unit.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getCode());
+                Element system = ms.getNamedChild("system", false);
                 if (system == null) {
                   NodeStack nss = system == null ? ns : ns.push(system, -1, system.getProperty().getDefinition(), system.getProperty().getDefinition());
-                  rule(errors, IssueType.CODEINVALID, system.line(), system.col(), nss.getLiteralPath(), c.getSystem().equals(system.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getSystem());
+                  ok = rule(errors, NO_RULE_DATE, IssueType.CODEINVALID, system.line(), system.col(), nss.getLiteralPath(), c.getSystem().equals(system.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getSystem()) && ok;
                 } else {
-                  rule(errors, IssueType.CODEINVALID, ms.line(), ms.col(), ns.getLiteralPath(), c.getSystem().equals(system.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getSystem());
+                  ok = rule(errors, NO_RULE_DATE, IssueType.CODEINVALID, ms.line(), ms.col(), ns.getLiteralPath(), c.getSystem().equals(system.primitiveValue()), I18nConstants.MEASURE_MR_SCORE_FIXED, c.getSystem()) && ok;
                 }
               }
             } else if (c != null) {
-              rule(errors, IssueType.NOTFOUND, ms.line(), ms.col(), ns.getLiteralPath(), false, I18nConstants.MEASURE_MR_SCORE_FIXED, DataRenderer.display(context, c));            
+              ok = rule(errors, NO_RULE_DATE, IssueType.NOTFOUND, ms.line(), ms.col(), ns.getLiteralPath(), false, I18nConstants.MEASURE_MR_SCORE_FIXED, DataRenderer.display(context, c)) && ok;            
             } 
           }
         }
-      } // else do nothing - there's a hint elsewhere
+      } else { // else do nothing - there's a hint elsewhere
+        ok = false;
+      }
     } 
+    return ok;
   }
 
-  private void banned(List<ValidationMessage> errors, NodeStack stack, Element parent, String childName, String msgId, Object... params) {
-    Element child = parent.getNamedChild(childName);
-    banned(errors, stack, child, msgId, params);
+  private boolean banned(List<ValidationMessage> errors, NodeStack stack, Element parent, String childName, String msgId, Object... params) {
+    Element child = parent.getNamedChild(childName, false);
+    return banned(errors, stack, child, msgId, params);
   }
   
-  private void banned(List<ValidationMessage> errors, NodeStack stack, Element e, String msgId, Object... params) {
+  private boolean banned(List<ValidationMessage> errors, NodeStack stack, Element e, String msgId, Object... params) {
     if (e != null) {
       NodeStack ns = stack.push(e, -1, e.getProperty().getDefinition(), e.getProperty().getDefinition());
-      rule(errors, IssueType.BUSINESSRULE, e.line(), e.col(), ns.getLiteralPath(), false, msgId, params);        
+      rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, e.line(), e.col(), ns.getLiteralPath(), false, msgId, params);
+      return false;
+    } else {
+      return true;
     }
   }
-  private void validateMeasureReportGroupPopulations(ValidatorHostContext hostContext, MeasureContext m, MeasureGroupComponent mg, List<ValidationMessage> errors, Element mrg, NodeStack stack, boolean inProgress) {
+  private boolean validateMeasureReportGroupPopulations(ValidationContext hostContext, MeasureContext m, MeasureGroupComponent mg, List<ValidationMessage> errors, Element mrg, NodeStack stack, boolean inProgress) {
+    boolean ok = true;
     // there must be a population for each population defined in the measure, and no 4others. 
     List<MeasureGroupPopulationComponent> pops = new ArrayList<MeasureGroupPopulationComponent>();
     List<Element> plist = mrg.getChildrenByName("population");
@@ -400,41 +613,157 @@ public class MeasureValidator extends BaseValidator {
     int i = 0;
     for (Element mrgp : plist) {
       NodeStack ns = stack.push(mrgp, i, mrgp.getProperty().getDefinition(), mrgp.getProperty().getDefinition());
-      CodeableConcept cc = ObjectConverter.readAsCodeableConcept(mrgp.getNamedChild("code"));
-      if (rule(errors, IssueType.BUSINESSRULE, mrgp.line(), mrgp.col(), ns.getLiteralPath(), cc != null, I18nConstants.MEASURE_MR_GRP_POP_NO_CODE)) {
-        MeasureGroupPopulationComponent mgp = getGroupPopForCode(cc, mg);
-        if (rule(errors, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mgp != null, I18nConstants.MEASURE_MR_GRP_POP_UNK_CODE)) {
-          if (rule(errors, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), !pops.contains(mgp), I18nConstants.MEASURE_MR_GRP_POP_DUPL_CODE)) {
-            pops.add(mgp);
-            validateMeasureReportGroupPopulation(hostContext, m, mgp, errors, mrgp, ns, inProgress);
+      CodeableConcept cc = ObjectConverter.readAsCodeableConcept(mrgp.getNamedChild("code", false));
+      String linkId = mrgp.getNamedChildValue("linkId");
+      String id = mrgp.getIdBase();
+      
+      if (rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrgp.line(), mrgp.col(), ns.getLiteralPath(), cc != null || linkId != null || id != null,
+            VersionUtilities.isR5Plus(context.getFHIRVersion()) ? I18nConstants.MEASURE_MR_GRP_POP_NO_CODE_R5 :  I18nConstants.MEASURE_MR_GRP_POP_NO_CODE)) {
+        MeasureGroupPopulationComponent mgp = null;
+        if (linkId != null) {
+          mgp = getGroupPopForLinkId(linkId, mg);
+          ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mgp != null, I18nConstants.MEASURE_MR_GRP_POP_UNK_LINKID, linkId) && ok;
+          if (mgp != null) {
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), cc == null || mgp.getCode() == null || codesMatch(cc, mgp.getCode()), 
+                I18nConstants.MEASURE_MR_GRP_POP_CODE_MISMATCH, linkId, genCC(cc), genCC(mgp.getCode())) && ok;              
           }
+        } else if (id != null) {
+          mgp = getGroupPopForId(id, mg);
+          ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mgp != null, I18nConstants.MEASURE_MR_GRP_POP_UNK_LINKID, id) && ok;
+          if (mgp != null) {
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), cc == null || mgp.getCode() == null || codesMatch(cc, mgp.getCode()),
+              I18nConstants.MEASURE_MR_GRP_POP_CODE_MISMATCH, linkId, genCC(cc), genCC(mgp.getCode())) && ok;
+          }
+        } else {
+          mgp = getGroupPopForCode(cc, mg);
+          ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mgp != null, I18nConstants.MEASURE_MR_GRP_POP_UNK_CODE, genCC(cc)) && ok;
         }
+        if (mgp != null) {
+          if (rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), !pops.contains(mgp), I18nConstants.MEASURE_MR_GRP_POP_DUPL_CODE)) {
+            pops.add(mgp);
+            ok = validateMeasureReportGroupPopulation(hostContext, m, mgp, errors, mrgp, ns, inProgress) && ok;
+          } else {
+            ok = false;
+          }
+        } else {
+          ok = false;
+        }
+      } else {
+        ok = false;
       }
       i++;
     }
-    for (MeasureGroupPopulationComponent mgp : mg.getPopulation()) {
+    for (MeasureGroupPopulationComponent mgp : mg.getPopulationList()) {
       if (!pops.contains(mgp) && !mgp.getCode().hasCoding("http://terminology.hl7.org/CodeSystem/measure-population", "measure-observation")) {
-        rule(errors, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), stack.getLiteralPath(), pops.contains(mg), I18nConstants.MEASURE_MR_GRP_MISSING_BY_CODE, DataRenderer.display(context, mgp.getCode()));
+        ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), stack.getLiteralPath(), false, I18nConstants.MEASURE_MR_GRP_POP_MISSING_BY_CODE, mgp.hasLinkId() ? mgp.getLinkId() : mgp.getId(), DataRenderer.display(context, mgp.getCode())) && ok;
       }
     }
+    return ok;
   }
   
-  private void validateMeasureReportGroupPopulation(ValidatorHostContext hostContext, MeasureContext m, MeasureGroupPopulationComponent mgp, List<ValidationMessage> errors, Element mrgp, NodeStack ns, boolean inProgress) {
-    List<Element> sr = mrgp.getChildrenByName("subjectResults");
+  private boolean validateMeasureReportGroupPopulation(ValidationContext hostContext, MeasureContext m, MeasureGroupPopulationComponent mgp, List<ValidationMessage> errors, Element mrgp, NodeStack ns, boolean inProgress) {
+    boolean ok = true;
+    List<Element> srl = mrgp.getChildrenByName("subjectResults");
     if ("subject-list".equals(m.reportType())) {
       try {
-        int c = Integer.parseInt(mrgp.getChildValue("count"));
-        rule(errors, IssueType.BUSINESSRULE, mrgp.line(), mrgp.col(), ns.getLiteralPath(), c == sr.size(), I18nConstants.MEASURE_MR_GRP_POP_COUNT_MISMATCH, c, sr.size());
+        int subCount = 0;
+        CommaSeparatedStringBuilder b = new CommaSeparatedStringBuilder("; ");
+        for (Element sr : srl) {
+          subCount = addToSubjectCount(subCount, hostContext, sr, m, ns, b);
+        }
+        if (mrgp.hasChild("count")) {
+          int c = Integer.parseInt(mrgp.getChildValue("count"));
+          if (subCount > -1) {
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrgp.line(), mrgp.col(), ns.getLiteralPath(), c == subCount, I18nConstants.MEASURE_MR_GRP_POP_COUNT_MISMATCH, c, subCount) && ok;
+          } else {
+            hint(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrgp.line(), mrgp.col(), ns.getLiteralPath(), false, I18nConstants.MEASURE_MR_GRP_POP_COUNT_CANT_CHECK, c, b.toString());          
+          }
+        }
       } catch (Exception e) {
         // nothing; that'll be because count is not valid, and that's a different error or its missing and we don't care
       }
     } else {
-      rule(errors, IssueType.BUSINESSRULE, mrgp.line(), mrgp.col(), ns.getLiteralPath(), sr.size() == 0, I18nConstants.MEASURE_MR_GRP_POP_NO_SUBJECTS);
-      warning(errors, IssueType.BUSINESSRULE, mrgp.line(), mrgp.col(), ns.getLiteralPath(), mrgp.hasChild("count"), I18nConstants.MEASURE_MR_GRP_POP_NO_COUNT);      
+      ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrgp.line(), mrgp.col(), ns.getLiteralPath(), srl.size() == 0, I18nConstants.MEASURE_MR_GRP_POP_NO_SUBJECTS) && ok;
+      warning(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrgp.line(), mrgp.col(), ns.getLiteralPath(), mrgp.hasChild("count", false), I18nConstants.MEASURE_MR_GRP_POP_NO_COUNT);      
+    }
+      return ok;
+  }
+
+  private int addToSubjectCount(int subCount, ValidationContext valContext, Element sr, MeasureContext m, NodeStack ns, CommaSeparatedStringBuilder b) throws FHIRException, IOException {
+    if (subCount < 0) {
+      return -1;
+    }
+
+    String ref = sr.getNamedChildValue("reference");
+    if (ref == null) {
+      b.append(context.formatMessage(I18nConstants.MEASURE_MR_GRP_POP_COUNT_NO_REF));
+      return -1;
+    }
+    BooleanHolder bh = new BooleanHolder();
+    BooleanHolder stop = new BooleanHolder();
+    ResolvedReference rr = ((InstanceValidator) parent).localResolve(ref, ns, new ArrayList<>(), ns.getLiteralPath(), valContext.getRootResource(), valContext.getGroupingResource(), sr, bh, stop);
+    Element tgt;
+    if (rr != null) {
+      tgt = rr.getResource();
+    } else {
+      tgt = fetcher.fetch(((InstanceValidator) parent), valContext.getAppContext(), ref);
+    }
+    if (tgt == null) {
+      // we couldn't resolve it, but we'll draw our own conclusion from the literal URL if we can. 
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //single literal character split
+      String[] parts = ref.split("\\/");
+      if (parts.length == 2 && context.getResourceNamesAsSet().contains(parts[0])) {
+        switch (parts[0]) {
+        case "Patient":
+        case "Practitioner":
+        case "Person":
+        case "PractitionerRole":
+        case "RelatedPerson":
+        case "Device":
+        case "Location":
+        case "Organization":
+          return subCount + 1;
+        case "List": 
+          b.append(context.formatMessage(I18nConstants.MEASURE_MR_GRP_POP_COUNT_UNRESOLVED, "List", ref));
+          return -1; // for now
+        case "Group":
+          b.append(context.formatMessage(I18nConstants.MEASURE_MR_GRP_POP_COUNT_UNRESOLVED, "Group", ref));
+          return -1; // for now
+        default: 
+          b.append(context.formatMessage(I18nConstants.MEASURE_MR_GRP_POP_COUNT_UNRESOLVED, parts[0], ref));
+          return -1;
+        }
+      } else {
+        // add information / hint?
+        b.append(context.formatMessage(I18nConstants.MEASURE_MR_GRP_POP_COUNT_NO_REF_RES, ref));
+        return -1;
+      }
+    }
+    switch (tgt.fhirType()) {
+    case "Patient":
+    case "Practitioner":
+    case "Person":
+    case "PractitionerRole":
+    case "RelatedPerson":
+    case "Device":
+    case "Location":
+    case "Organization":
+      return subCount + 1;
+    case "List": 
+      return subCount + tgt.getChildren("entry").size();
+    case "Group":
+      b.append(context.formatMessage(I18nConstants.MEASURE_MR_GRP_POP_COUNT_REF_UNPROCESSIBLE, "Group", ref));
+      return -1; // for now
+    default: 
+      b.append(context.formatMessage(I18nConstants.MEASURE_MR_GRP_POP_COUNT_REF_UNPROCESSIBLE, tgt.fhirType(), ref));
+      return -1;
     }
   }
 
-  private void validateMeasureReportGroupStratifiers(ValidatorHostContext hostContext, MeasureContext m, MeasureGroupComponent mg, List<ValidationMessage> errors, Element mrg, NodeStack stack, boolean inProgress) {
+  private boolean validateMeasureReportGroupStratifiers(ValidationContext hostContext, MeasureContext m, MeasureGroupComponent mg, List<ValidationMessage> errors, Element mrg, NodeStack stack, boolean inProgress) {
+    boolean ok = true;
+    
     // there must be a population for each population defined in the measure, and no 4others. 
     List<MeasureGroupStratifierComponent> strats = new ArrayList<>();
     List<Element> slist = mrg.getChildrenByName("stratifier");
@@ -442,34 +771,84 @@ public class MeasureValidator extends BaseValidator {
     int i = 0;
     for (Element mrgs : slist) {
       NodeStack ns = stack.push(mrgs, i, mrgs.getProperty().getDefinition(), mrgs.getProperty().getDefinition());
-      CodeableConcept cc = ObjectConverter.readAsCodeableConcept(mrgs.getNamedChild("code"));
-      if (rule(errors, IssueType.BUSINESSRULE, mrgs.line(), mrgs.col(), ns.getLiteralPath(), cc != null, I18nConstants.MEASURE_MR_GRP_POP_NO_CODE)) {
-        MeasureGroupStratifierComponent mgs = getGroupStratifierForCode(cc, mg);
-        if (rule(errors, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mgs != null, I18nConstants.MEASURE_MR_GRP_POP_UNK_CODE)) {
-          if (rule(errors, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), !strats.contains(mgs), I18nConstants.MEASURE_MR_GRP_POP_DUPL_CODE)) {
-            strats.add(mgs);
-            validateMeasureReportGroupStratifier(hostContext, m, mgs, errors, mrgs, ns, inProgress);
+      CodeableConcept cc = ObjectConverter.readAsCodeableConcept(mrgs.getNamedChild("code", false));
+      String linkId = mrgs.getNamedChildValue("linkId");
+      String id = mrgs.getIdBase();
+      if (rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrgs.line(), mrgs.col(), ns.getLiteralPath(), cc != null || linkId != null || id != null,
+          VersionUtilities.isR5Plus(context.getFHIRVersion()) ? I18nConstants.MEASURE_MR_GRP_STRAT_NO_CODE_R5 :  I18nConstants.MEASURE_MR_GRP_STRAT_NO_CODE)) {
+        MeasureGroupStratifierComponent mgs = null;
+        if (linkId != null) {
+          mgs = getGroupStratifierForLinkId(linkId, mg);
+          ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mgs != null, I18nConstants.MEASURE_MR_GRP_STRAT_UNK_LINKID, linkId) && ok;
+          if (mgs != null) {
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), cc == null || mgs.getCode() == null || codesMatch(cc, mgs.getCode()), I18nConstants.MEASURE_MR_GRP_STRAT_CODE_MISMATCH, genCC(cc), genCC(mgs.getCode())) && ok;              
+          }
+        } else if (id != null) {
+          mgs = getGroupStratifierForId(id, mg);
+          ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mgs != null, I18nConstants.MEASURE_MR_GRP_STRAT_UNK_LINKID, id) && ok;
+        } else {
+          mgs = getGroupStratifierForCode(cc, mg);
+          ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mgs != null, I18nConstants.MEASURE_MR_GRP_STRAT_UNK_CODE, genCC(cc)) && ok;
+          if (mgs != null) {
+            ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), cc == null || mgs.getCode() == null || codesMatch(cc, mgs.getCode()), I18nConstants.MEASURE_MR_GRP_STRAT_CODE_MISMATCH, genCC(cc), genCC(mgs.getCode())) && ok;
           }
         }
+        if (mgs != null) {
+          
+        }
+        
+        if (rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), mgs != null, I18nConstants.MEASURE_MR_GRP_STRAT_UNK_CODE)) {
+          if (rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), ns.getLiteralPath(), !strats.contains(mgs), I18nConstants.MEASURE_MR_GRP_STRAT_DUPL_CODE)) {
+            strats.add(mgs);
+            ok = validateMeasureReportGroupStratifier(hostContext, m, mgs, errors, mrgs, ns, inProgress) && ok;
+          } else {
+            ok = false;
+          }
+        } else {
+          ok = false;
+        }
+      } else {
+        ok = false;
       }
       i++;
     }
-    for (MeasureGroupStratifierComponent mgs : mg.getStratifier()) {
+    for (MeasureGroupStratifierComponent mgs : mg.getStratifierList()) {
       if (!strats.contains(mgs)) {
-        rule(errors, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), stack.getLiteralPath(), strats.contains(mg), I18nConstants.MEASURE_MR_GRP_MISSING_BY_CODE, DataRenderer.display(context, mgs.getCode()));
+        ok = rule(errors, NO_RULE_DATE, IssueType.BUSINESSRULE, mrg.line(), mrg.col(), stack.getLiteralPath(), false, 
+            VersionUtilities.isR5Plus(context.getFHIRVersion()) ? I18nConstants.MEASURE_MR_GRP_STRAT_MISSING_BY_CODE_R5 :  I18nConstants.MEASURE_MR_GRP_STRAT_MISSING_BY_CODE,
+                genCC(mgs.getCode()), mg.hasLinkId() ? mgs.getLinkId() : "", mg.hasId() ? mgs.getId() : "") && ok;
       }
     }
+    return true;
   }
   
-  private void validateMeasureReportGroupStratifier(ValidatorHostContext hostContext, MeasureContext m, MeasureGroupStratifierComponent mgs, List<ValidationMessage> errors, Element mrgs, NodeStack ns, boolean inProgress) {
+  private boolean validateMeasureReportGroupStratifier(ValidationContext hostContext, MeasureContext m, MeasureGroupStratifierComponent mgs, List<ValidationMessage> errors, Element mrgs, NodeStack ns, boolean inProgress) {
     // still to be done
-    
+    return true;
+  }
+
+  private MeasureGroupStratifierComponent getGroupStratifierForLinkId(String linkId, MeasureGroupComponent mg) {
+    for (MeasureGroupStratifierComponent t : mg.getStratifierList()) {
+      if (linkId.equals(t.getLinkId())) {
+        return t;
+      }
+    }
+    return null;
+  }
+
+  private MeasureGroupStratifierComponent getGroupStratifierForId(String id, MeasureGroupComponent mg) {
+    for (MeasureGroupStratifierComponent t : mg.getStratifierList()) {
+      if (id.equals(t.getId())) {
+        return t;
+      }
+    }
+    return null;
   }
 
   private MeasureGroupStratifierComponent getGroupStratifierForCode(CodeableConcept cc, MeasureGroupComponent mg) {
-    for (MeasureGroupStratifierComponent t : mg.getStratifier()) {
+    for (MeasureGroupStratifierComponent t : mg.getStratifierList()) {
       if (t.hasCode()) {
-        for (Coding c : t.getCode().getCoding()) {
+        for (Coding c : t.getCode().getCodingList()) {
           if (cc.hasCoding(c.getSystem(), c.getCode())) {
             return t;
           }
@@ -487,7 +866,7 @@ public class MeasureValidator extends BaseValidator {
   }
 
   private boolean hasUseableCode(CodeableConcept cc) {
-    for (Coding c : cc.getCoding()) {
+    for (Coding c : cc.getCodingList()) {
       if (c.hasSystem() && c.hasCode()) {
         return true;
       }
@@ -495,10 +874,26 @@ public class MeasureValidator extends BaseValidator {
     return false;
   }
 
+  private MeasureGroupPopulationComponent getGroupPopForLinkId(String linkId, MeasureGroupComponent mg) {
+    for (MeasureGroupPopulationComponent t : mg.getPopulationList()) {
+      if (linkId.equals(t.getLinkId())) {
+        return t;
+      }
+    }
+    return null;
+  }
+  private MeasureGroupPopulationComponent getGroupPopForId(String id, MeasureGroupComponent mg) {
+    for (MeasureGroupPopulationComponent t : mg.getPopulationList()) {
+      if (id.equals(t.getId())) {
+        return t;
+      }
+    }
+    return null;
+  }
   private MeasureGroupPopulationComponent getGroupPopForCode(CodeableConcept cc, MeasureGroupComponent mg) {
-    for (MeasureGroupPopulationComponent t : mg.getPopulation()) {
+    for (MeasureGroupPopulationComponent t : mg.getPopulationList()) {
       if (t.hasCode()) {
-        for (Coding c : t.getCode().getCoding()) {
+        for (Coding c : t.getCode().getCodingList()) {
           if (cc.hasCoding(c.getSystem(), c.getCode())) {
             return t;
           }
@@ -508,9 +903,9 @@ public class MeasureValidator extends BaseValidator {
     return null;
   }
   private MeasureGroupComponent getGroupForCode(CodeableConcept cc, Measure m) {
-    for (MeasureGroupComponent t : m.getGroup()) {
+    for (MeasureGroupComponent t : m.getGroupList()) {
       if (t.hasCode()) {
-        for (Coding c : t.getCode().getCoding()) {
+        for (Coding c : t.getCode().getCodingList()) {
           if (cc.hasCoding(c.getSystem(), c.getCode())) {
             return t;
           }

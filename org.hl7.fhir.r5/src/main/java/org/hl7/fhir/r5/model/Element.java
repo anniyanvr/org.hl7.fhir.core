@@ -29,26 +29,25 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
 import org.hl7.fhir.utilities.Utilities;
-import org.hl7.fhir.r5.model.Enumerations.*;
-import org.hl7.fhir.instance.model.api.IBaseDatatypeElement;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.instance.model.api.ICompositeType;
 import ca.uhn.fhir.model.api.annotation.Child;
-import ca.uhn.fhir.model.api.annotation.ChildOrder;
 import ca.uhn.fhir.model.api.annotation.DatatypeDef;
 import ca.uhn.fhir.model.api.annotation.Description;
-import ca.uhn.fhir.model.api.annotation.Block;
 
 import org.hl7.fhir.instance.model.api.IBaseElement;
 import  org.hl7.fhir.instance.model.api.IBaseHasExtensions;
+import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
+import org.hl7.fhir.utilities.FhirPublication;
+import  org.hl7.fhir.utilities.StandardsStatus;
 /**
- * Base StructureDefinition for Element Type: Base definition for all elements in a resource.
+ * Element Type: Base definition for all elements in a resource.
  */
 @DatatypeDef(name="Element")
 public abstract class Element extends Base implements IBaseHasExtensions, IBaseElement {
@@ -61,10 +60,10 @@ public abstract class Element extends Base implements IBaseHasExtensions, IBaseE
     protected StringType id;
 
     /**
-     * May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.
+     * May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and managable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.
      */
     @Child(name = "extension", type = {Extension.class}, order=1, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-    @Description(shortDefinition="Additional content defined by implementations", formalDefinition="May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension." )
+    @Description(shortDefinition="Additional content defined by implementations", formalDefinition="May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and managable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension." )
     protected List<Extension> extension;
 
     private static final long serialVersionUID = -1452745816L;
@@ -126,12 +125,21 @@ public abstract class Element extends Base implements IBaseHasExtensions, IBaseE
     }
 
     /**
-     * @return {@link #extension} (May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.)
+     * @return {@link #extension} (May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and managable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.)
      */
     public List<Extension> getExtension() { 
       if (this.extension == null)
         this.extension = new ArrayList<Extension>();
       return this.extension;
+    }
+
+    /**
+     * Read-only access to the extensions, for code that only searches them. Unlike
+     * {@link #getExtension()} this does not create (and store) an empty list when there are
+     * none, which both allocates and mutates elements that callers treat as read-only.
+     */
+    public List<Extension> getExtensionsForRead() { 
+      return this.extension == null ? java.util.Collections.<Extension>emptyList() : this.extension;
     }
 
     /**
@@ -181,14 +189,14 @@ public abstract class Element extends Base implements IBaseHasExtensions, IBaseE
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
         children.add(new Property("id", "string", "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.", 0, 1, id));
-        children.add(new Property("extension", "Extension", "May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.", 0, java.lang.Integer.MAX_VALUE, extension));
+        children.add(new Property("extension", "Extension", "May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and managable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.", 0, java.lang.Integer.MAX_VALUE, extension));
       }
 
       @Override
       public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
         switch (_hash) {
         case 3355: /*id*/  return new Property("id", "string", "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.", 0, 1, id);
-        case -612557761: /*extension*/  return new Property("extension", "Extension", "May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.", 0, java.lang.Integer.MAX_VALUE, extension);
+        case -612557761: /*extension*/  return new Property("extension", "Extension", "May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and managable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.", 0, java.lang.Integer.MAX_VALUE, extension);
         default: return super.getNamedProperty(_hash, _name, _checkValid);
         }
 
@@ -230,6 +238,17 @@ public abstract class Element extends Base implements IBaseHasExtensions, IBaseE
       }
 
       @Override
+      public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("id")) {
+          this.id = null;
+        } else if (name.equals("extension")) {
+          this.getExtension().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
+      @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
         case 3355:  return getIdElement();
@@ -252,7 +271,7 @@ public abstract class Element extends Base implements IBaseHasExtensions, IBaseE
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("id")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Element.id");
+          throw new FHIRException("Cannot call addChild on a singleton property Element.id");
         }
         else if (name.equals("extension")) {
           return addExtension();
@@ -267,6 +286,10 @@ public abstract class Element extends Base implements IBaseHasExtensions, IBaseE
   }
 
       public abstract Element copy();
+
+      public void assignValues(Base dst) {
+        copyValues((Element) dst);
+      }
 
       public void copyValues(Element dst) {
         super.copyValues(dst);
@@ -326,7 +349,7 @@ public abstract class Element extends Base implements IBaseHasExtensions, IBaseE
   /**
    * Returns an extension if one (and only one) matches the given URL.
    * 
-   * Note: BackbdoneElements override this to look in matching Modifier Extensions too
+   * Note: BackboneElements override this to look in matching Modifier Extensions too
    * 
    * @param theUrl The URL. Must not be blank or null.
    * @return the matching extension, or null
@@ -334,7 +357,7 @@ public abstract class Element extends Base implements IBaseHasExtensions, IBaseE
    public Extension getExtensionByUrl(String theUrl) {
      org.apache.commons.lang3.Validate.notBlank(theUrl, "theUrl must not be blank or null");
      ArrayList<Extension> retVal = new ArrayList<Extension>();
-     for (Extension next : getExtension()) {
+     for (Extension next : getExtensionsForRead()) {
        if (theUrl.equals(next.getUrl())) {
          retVal.add(next);
        }
@@ -348,9 +371,32 @@ public abstract class Element extends Base implements IBaseHasExtensions, IBaseE
    }
   
    /**
+    * Returns an extension if one (and only one) matches the given URL.
+    * 
+    * Note: BackboneElements override this to look in matching Modifier Extensions too
+    * 
+    * @param theUrls One or more URLs to match. Must not be blank or null.
+    * @return the matching extension, or null
+    */
+    public Extension getExtensionByUrl(String... theUrls) {
+      ArrayList<Extension> retVal = new ArrayList<Extension>();
+      for (Extension next : getExtensionsForRead()) {
+        if (Utilities.existsInList(next.getUrl(), theUrls)) {
+          retVal.add(next);
+        }
+      }
+      if (retVal.size() == 0)
+        return null;
+      else {
+        org.apache.commons.lang3.Validate.isTrue(retVal.size() == 1, "Url "+CommaSeparatedStringBuilder.join(",", theUrls)+" must have only one match");
+        return retVal.get(0);
+      }
+    }
+   
+   /**
     * Remove any extensions that match (by given URL).
     * 
-    * Note: BackbdoneElements override this to remove from Modifier Extensions too
+    * Note: BackboneElements override this to remove from Modifier Extensions too
     * 
     * @param theUrl The URL. Must not be blank or null.
     */
@@ -385,15 +431,19 @@ public abstract class Element extends Base implements IBaseHasExtensions, IBaseE
     * Returns an unmodifiable list containing all extensions on this element which 
     * match the given URL.
     * 
-    * Note: BackbdoneElements override this to add matching Modifier Extensions too
+    * Note: BackboneElements override this to add matching Modifier Extensions too
     * 
     * @param theUrl The URL. Must not be blank or null.
     * @return an unmodifiable list containing all extensions on this element which match the given URL
     */
    public List<Extension> getExtensionsByUrl(String theUrl) {
-     org.apache.commons.lang3.Validate.notBlank(theUrl, "theUrl must not be blank or null");
-     ArrayList<Extension> retVal = new ArrayList<Extension>();
-     for (Extension next : getExtension()) {
+     if (theUrl == null) {
+       throw new NullPointerException("theUrl must not be null");
+     } else if (theUrl.length() == 0) {
+       throw new IllegalArgumentException("theUrl must not be empty");
+     }
+     ArrayList<Extension> retVal = new ArrayList<>();
+     for (Extension next : getExtensionsForRead()) {
        if (theUrl.equals(next.getUrl())) {
          retVal.add(next);
        }
@@ -401,35 +451,156 @@ public abstract class Element extends Base implements IBaseHasExtensions, IBaseE
      return java.util.Collections.unmodifiableList(retVal);
    }
    
+   public List<Extension> getExtensionsByUrl(String... theUrls) {
+     
+     ArrayList<Extension> retVal = new ArrayList<>();
+     for (Extension next : getExtensionsForRead()) {
+       if (Utilities.existsInList(next.getUrl(), theUrls)) {
+         retVal.add(next);
+       }
+     }
+     return java.util.Collections.unmodifiableList(retVal);
+   }
+   
+
+   public boolean hasExtension(String... theUrls) {
+     for (Extension next : getExtensionsForRead()) {
+       if (Utilities.existsInList(next.getUrl(), theUrls)) {
+         return true;
+       }
+     }
+     return false;
+   }
+
+   public Base getExtensionValue(String... theUrls) {
+     
+     for (Extension next : getExtensionsForRead()) {
+       if (Utilities.existsInList(next.getUrl(), theUrls)) {
+         return next.getValue();
+       }
+     }
+     return null;
+   }
+
    /**
     * Returns an true if this element has an extension that matchs the given URL.
     * 
-    * Note: BackbdoneElements override this to check Modifier Extensions too
+    * Note: BackboneElements override this to check Modifier Extensions too
     * 
     * @param theUrl The URL. Must not be blank or null.
     */
    public boolean hasExtension(String theUrl) {
-     return !getExtensionsByUrl(theUrl).isEmpty(); 
+     if (extension == null || extension.size() == 0) {
+       return false;
+     }
+
+     for (Extension ext : extension) {
+       if (theUrl.equals(ext.getUrl())) {
+         return true;
+       }
+     }
+
+     return false;
    }
 
    /**
     * Returns the value as a string if this element has only one extension that matches the given URL, and that can be converted to a string.
     * 
-    * Note: BackbdoneElements override this to check Modifier Extensions too
+    * Note: BackboneElements override this to check Modifier Extensions too
     * 
     * @param theUrl The URL. Must not be blank or null.
     */
-  public String getExtensionString(String theUrl) throws FHIRException {
-    List<Extension> ext = getExtensionsByUrl(theUrl); 
-    if (ext.isEmpty()) 
-      return null; 
-    if (ext.size() > 1) 
-      throw new FHIRException("Multiple matching extensions found");
-    if (!ext.get(0).getValue().isPrimitive())
-      throw new FHIRException("Extension could not be converted to a string");
-    return ext.get(0).getValue().primitiveValue();
+
+   /**
+    * The single extension matching the URL, or null if there is none. Scans in place rather
+    * than building a list, because getExtensionString is on hot paths (getWorkingCode calls it
+    * for every FHIRPath System.* type reference). Subclasses that also expose modifier
+    * extensions override this alongside getExtensionsByUrl.
+    */
+   protected Extension getSingleExtensionByUrl(String theUrl) throws FHIRException {
+     if (theUrl == null) {
+       throw new NullPointerException("theUrl must not be null");
+     } else if (theUrl.length() == 0) {
+       throw new IllegalArgumentException("theUrl must not be empty");
+     }
+     return soleExtension(getExtensionsForRead(), theUrl, null);
+   }
+
+   /**
+    * @param found an extension already matched by a caller scanning another list, or null
+    */
+   protected static Extension soleExtension(List<Extension> list, String theUrl, Extension found) throws FHIRException {
+     for (Extension next : list) {
+       if (theUrl.equals(next.getUrl())) {
+         if (found != null) {
+           throw new FHIRException("Multiple matching extensions found for extension '"+theUrl+"'");
+         }
+         found = next;
+       }
+     }
+     return found;
+   }
+
+   public String getExtensionString(String theUrl) throws FHIRException {
+     Extension ext = getSingleExtensionByUrl(theUrl);
+     if (ext == null)
+       return null;
+     if (!ext.hasValue())
+       return null;
+     if (!ext.getValue().isPrimitive())
+       throw new FHIRException("Extension '"+theUrl+"' could not be converted to a string");
+     return ext.getValue().primitiveValue();
+   }
+
+   public String getExtensionString(String... theUrls) throws FHIRException {
+     for (String url : theUrls) {
+       if (hasExtension(url)) {
+         return getExtensionString(url);
+       }
+     }
+     return null;
+   }
+
+
+  public StandardsStatus getStandardsStatus() {
+    return ExtensionUtilities.getStandardsStatus(this);
+  }
+  
+  public void setStandardsStatus(StandardsStatus status, String thisVersion) {
+    ExtensionUtilities.setStandardsStatus(this, status, null, thisVersion);
   }
 
+  public boolean hasExtension(Extension ext) {
+    if (hasExtension()) {
+      for (Extension t : getExtension()) {
+        if (Base.compareDeep(t, ext, false)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  public void copyExtensions(org.hl7.fhir.r5.model.Element src, String... urls) {
+    for (Extension e : src.getExtension()) {
+      if (Utilities.existsInList(e.getUrl(), urls)) {
+        addExtension(e.copy());
+      }
+    }    
+  }
+
+  public void copyNewExtensions(org.hl7.fhir.r5.model.Element src, String... urls) {
+    for (Extension e : src.getExtension()) {
+      if (Utilities.existsInList(e.getUrl(), urls) && !hasExtension(e.getUrl())) {
+        addExtension(e.copy());
+      }
+    }    
+  }
+  
+
+  public FhirPublication getFHIRPublicationVersion() {
+    return FhirPublication.R5;
+  }
 // end addition
 
 }

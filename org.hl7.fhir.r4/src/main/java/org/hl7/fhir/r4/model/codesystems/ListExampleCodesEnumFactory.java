@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ListExampleCodesEnumFactory implements EnumFactory<ListExampleCodes> {
@@ -60,11 +56,13 @@ public class ListExampleCodesEnumFactory implements EnumFactory<ListExampleCodes
       return ListExampleCodes.PROTOCOLS;
     if ("plans".equals(codeString))
       return ListExampleCodes.PLANS;
-    throw new IllegalArgumentException("Unknown ListExampleCodes code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ListExampleCodes code '" + codeString + "'");
   }
 
   public String toCode(ListExampleCodes code) {
-    if (code == ListExampleCodes.ALERTS)
+       if (code == ListExampleCodes.NULL)
+           return null;
+       if (code == ListExampleCodes.ALERTS)
       return "alerts";
     if (code == ListExampleCodes.ADVERSERXNS)
       return "adverserxns";
@@ -83,10 +81,10 @@ public class ListExampleCodesEnumFactory implements EnumFactory<ListExampleCodes
     if (code == ListExampleCodes.PLANS)
       return "plans";
     return "?";
-  }
+   }
 
-    public String toSystem(ListExampleCodes code) {
-      return code.getSystem();
-      }
+  public String toSystem(ListExampleCodes code) {
+    return code.getSystem();
+  }
 
 }

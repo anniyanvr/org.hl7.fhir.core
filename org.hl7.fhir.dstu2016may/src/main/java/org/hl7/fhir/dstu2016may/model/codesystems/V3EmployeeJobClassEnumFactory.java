@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3EmployeeJobClassEnumFactory implements EnumFactory<V3EmployeeJobClass> {
@@ -46,19 +42,21 @@ public class V3EmployeeJobClassEnumFactory implements EnumFactory<V3EmployeeJobC
       return V3EmployeeJobClass.FT;
     if ("PT".equals(codeString))
       return V3EmployeeJobClass.PT;
-    throw new IllegalArgumentException("Unknown V3EmployeeJobClass code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3EmployeeJobClass code '" + codeString + "'");
   }
 
   public String toCode(V3EmployeeJobClass code) {
-    if (code == V3EmployeeJobClass.FT)
+       if (code == V3EmployeeJobClass.NULL)
+           return null;
+       if (code == V3EmployeeJobClass.FT)
       return "FT";
     if (code == V3EmployeeJobClass.PT)
       return "PT";
     return "?";
-  }
+   }
 
-    public String toSystem(V3EmployeeJobClass code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3EmployeeJobClass code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class InsuranceplanTypeEnumFactory implements EnumFactory<InsuranceplanType> {
@@ -62,11 +58,13 @@ public class InsuranceplanTypeEnumFactory implements EnumFactory<InsuranceplanTy
       return InsuranceplanType.HOSPICE;
     if ("home".equals(codeString))
       return InsuranceplanType.HOME;
-    throw new IllegalArgumentException("Unknown InsuranceplanType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown InsuranceplanType code '" + codeString + "'");
   }
 
   public String toCode(InsuranceplanType code) {
-    if (code == InsuranceplanType.MEDICAL)
+       if (code == InsuranceplanType.NULL)
+           return null;
+       if (code == InsuranceplanType.MEDICAL)
       return "medical";
     if (code == InsuranceplanType.DENTAL)
       return "dental";
@@ -87,10 +85,10 @@ public class InsuranceplanTypeEnumFactory implements EnumFactory<InsuranceplanTy
     if (code == InsuranceplanType.HOME)
       return "home";
     return "?";
-  }
+   }
 
-    public String toSystem(InsuranceplanType code) {
-      return code.getSystem();
-      }
+  public String toSystem(InsuranceplanType code) {
+    return code.getSystem();
+  }
 
 }

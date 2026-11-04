@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -84,11 +80,13 @@ public class FHIRVersionEnumFactory implements EnumFactory<FHIRVersion> {
       return FHIRVersion._3_5_0;
     if ("4.0.0".equals(codeString))
       return FHIRVersion._4_0_0;
-    throw new IllegalArgumentException("Unknown FHIRVersion code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown FHIRVersion code '" + codeString + "'");
   }
 
   public String toCode(FHIRVersion code) {
-    if (code == FHIRVersion._0_01)
+       if (code == FHIRVersion.NULL)
+           return null;
+       if (code == FHIRVersion._0_01)
       return "0.01";
     if (code == FHIRVersion._0_05)
       return "0.05";
@@ -131,10 +129,10 @@ public class FHIRVersionEnumFactory implements EnumFactory<FHIRVersion> {
     if (code == FHIRVersion._4_0_0)
       return "4.0.0";
     return "?";
-  }
+   }
 
-    public String toSystem(FHIRVersion code) {
-      return code.getSystem();
-      }
+  public String toSystem(FHIRVersion code) {
+    return code.getSystem();
+  }
 
 }

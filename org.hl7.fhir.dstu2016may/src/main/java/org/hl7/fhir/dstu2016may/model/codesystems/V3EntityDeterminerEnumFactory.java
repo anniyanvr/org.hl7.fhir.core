@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3EntityDeterminerEnumFactory implements EnumFactory<V3EntityDeterminer> {
@@ -52,11 +48,13 @@ public class V3EntityDeterminerEnumFactory implements EnumFactory<V3EntityDeterm
       return V3EntityDeterminer.GROUPKIND;
     if ("QUANTIFIED_KIND".equals(codeString))
       return V3EntityDeterminer.QUANTIFIEDKIND;
-    throw new IllegalArgumentException("Unknown V3EntityDeterminer code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3EntityDeterminer code '" + codeString + "'");
   }
 
   public String toCode(V3EntityDeterminer code) {
-    if (code == V3EntityDeterminer.INSTANCE)
+       if (code == V3EntityDeterminer.NULL)
+           return null;
+       if (code == V3EntityDeterminer.INSTANCE)
       return "INSTANCE";
     if (code == V3EntityDeterminer.GROUP)
       return "GROUP";
@@ -67,10 +65,10 @@ public class V3EntityDeterminerEnumFactory implements EnumFactory<V3EntityDeterm
     if (code == V3EntityDeterminer.QUANTIFIEDKIND)
       return "QUANTIFIED_KIND";
     return "?";
-  }
+   }
 
-    public String toSystem(V3EntityDeterminer code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3EntityDeterminer code) {
+    return code.getSystem();
+  }
 
 }

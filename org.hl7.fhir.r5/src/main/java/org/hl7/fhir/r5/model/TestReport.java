@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -104,6 +104,7 @@ public class TestReport extends DomainResource {
             case FAIL: return "fail";
             case WARNING: return "warning";
             case ERROR: return "error";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -114,6 +115,7 @@ public class TestReport extends DomainResource {
             case FAIL: return "http://hl7.org/fhir/report-action-result-codes";
             case WARNING: return "http://hl7.org/fhir/report-action-result-codes";
             case ERROR: return "http://hl7.org/fhir/report-action-result-codes";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -124,6 +126,7 @@ public class TestReport extends DomainResource {
             case FAIL: return "The action failed.";
             case WARNING: return "The action passed but with warnings.";
             case ERROR: return "The action encountered a fatal error and the engine was unable to process.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -134,6 +137,7 @@ public class TestReport extends DomainResource {
             case FAIL: return "Fail";
             case WARNING: return "Warning";
             case ERROR: return "Error";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -156,28 +160,30 @@ public class TestReport extends DomainResource {
           return TestReportActionResult.ERROR;
         throw new IllegalArgumentException("Unknown TestReportActionResult code '"+codeString+"'");
         }
-        public Enumeration<TestReportActionResult> fromType(Base code) throws FHIRException {
+        public Enumeration<TestReportActionResult> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<TestReportActionResult>(this);
+            return new Enumeration<TestReportActionResult>(this, TestReportActionResult.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<TestReportActionResult>(this, TestReportActionResult.NULL, code);
         if ("pass".equals(codeString))
-          return new Enumeration<TestReportActionResult>(this, TestReportActionResult.PASS);
+          return new Enumeration<TestReportActionResult>(this, TestReportActionResult.PASS, code);
         if ("skip".equals(codeString))
-          return new Enumeration<TestReportActionResult>(this, TestReportActionResult.SKIP);
+          return new Enumeration<TestReportActionResult>(this, TestReportActionResult.SKIP, code);
         if ("fail".equals(codeString))
-          return new Enumeration<TestReportActionResult>(this, TestReportActionResult.FAIL);
+          return new Enumeration<TestReportActionResult>(this, TestReportActionResult.FAIL, code);
         if ("warning".equals(codeString))
-          return new Enumeration<TestReportActionResult>(this, TestReportActionResult.WARNING);
+          return new Enumeration<TestReportActionResult>(this, TestReportActionResult.WARNING, code);
         if ("error".equals(codeString))
-          return new Enumeration<TestReportActionResult>(this, TestReportActionResult.ERROR);
+          return new Enumeration<TestReportActionResult>(this, TestReportActionResult.ERROR, code);
         throw new FHIRException("Unknown TestReportActionResult code '"+codeString+"'");
         }
     public String toCode(TestReportActionResult code) {
-      if (code == TestReportActionResult.PASS)
+       if (code == TestReportActionResult.NULL)
+           return null;
+       if (code == TestReportActionResult.PASS)
         return "pass";
       if (code == TestReportActionResult.SKIP)
         return "skip";
@@ -188,7 +194,7 @@ public class TestReport extends DomainResource {
       if (code == TestReportActionResult.ERROR)
         return "error";
       return "?";
-      }
+   }
     public String toSystem(TestReportActionResult code) {
       return code.getSystem();
       }
@@ -230,6 +236,7 @@ public class TestReport extends DomainResource {
             case TESTENGINE: return "test-engine";
             case CLIENT: return "client";
             case SERVER: return "server";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -238,6 +245,7 @@ public class TestReport extends DomainResource {
             case TESTENGINE: return "http://hl7.org/fhir/report-participant-type";
             case CLIENT: return "http://hl7.org/fhir/report-participant-type";
             case SERVER: return "http://hl7.org/fhir/report-participant-type";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -246,6 +254,7 @@ public class TestReport extends DomainResource {
             case TESTENGINE: return "The test execution engine.";
             case CLIENT: return "A FHIR Client.";
             case SERVER: return "A FHIR Server.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -254,6 +263,7 @@ public class TestReport extends DomainResource {
             case TESTENGINE: return "Test Engine";
             case CLIENT: return "Client";
             case SERVER: return "Server";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -272,31 +282,33 @@ public class TestReport extends DomainResource {
           return TestReportParticipantType.SERVER;
         throw new IllegalArgumentException("Unknown TestReportParticipantType code '"+codeString+"'");
         }
-        public Enumeration<TestReportParticipantType> fromType(Base code) throws FHIRException {
+        public Enumeration<TestReportParticipantType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<TestReportParticipantType>(this);
+            return new Enumeration<TestReportParticipantType>(this, TestReportParticipantType.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<TestReportParticipantType>(this, TestReportParticipantType.NULL, code);
         if ("test-engine".equals(codeString))
-          return new Enumeration<TestReportParticipantType>(this, TestReportParticipantType.TESTENGINE);
+          return new Enumeration<TestReportParticipantType>(this, TestReportParticipantType.TESTENGINE, code);
         if ("client".equals(codeString))
-          return new Enumeration<TestReportParticipantType>(this, TestReportParticipantType.CLIENT);
+          return new Enumeration<TestReportParticipantType>(this, TestReportParticipantType.CLIENT, code);
         if ("server".equals(codeString))
-          return new Enumeration<TestReportParticipantType>(this, TestReportParticipantType.SERVER);
+          return new Enumeration<TestReportParticipantType>(this, TestReportParticipantType.SERVER, code);
         throw new FHIRException("Unknown TestReportParticipantType code '"+codeString+"'");
         }
     public String toCode(TestReportParticipantType code) {
-      if (code == TestReportParticipantType.TESTENGINE)
+       if (code == TestReportParticipantType.NULL)
+           return null;
+       if (code == TestReportParticipantType.TESTENGINE)
         return "test-engine";
       if (code == TestReportParticipantType.CLIENT)
         return "client";
       if (code == TestReportParticipantType.SERVER)
         return "server";
       return "?";
-      }
+   }
     public String toSystem(TestReportParticipantType code) {
       return code.getSystem();
       }
@@ -338,6 +350,7 @@ public class TestReport extends DomainResource {
             case PASS: return "pass";
             case FAIL: return "fail";
             case PENDING: return "pending";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -346,6 +359,7 @@ public class TestReport extends DomainResource {
             case PASS: return "http://hl7.org/fhir/report-result-codes";
             case FAIL: return "http://hl7.org/fhir/report-result-codes";
             case PENDING: return "http://hl7.org/fhir/report-result-codes";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -354,6 +368,7 @@ public class TestReport extends DomainResource {
             case PASS: return "All test operations successfully passed all asserts.";
             case FAIL: return "One or more test operations failed one or more asserts.";
             case PENDING: return "One or more test operations is pending execution completion.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -362,6 +377,7 @@ public class TestReport extends DomainResource {
             case PASS: return "Pass";
             case FAIL: return "Fail";
             case PENDING: return "Pending";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -380,31 +396,33 @@ public class TestReport extends DomainResource {
           return TestReportResult.PENDING;
         throw new IllegalArgumentException("Unknown TestReportResult code '"+codeString+"'");
         }
-        public Enumeration<TestReportResult> fromType(Base code) throws FHIRException {
+        public Enumeration<TestReportResult> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<TestReportResult>(this);
+            return new Enumeration<TestReportResult>(this, TestReportResult.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<TestReportResult>(this, TestReportResult.NULL, code);
         if ("pass".equals(codeString))
-          return new Enumeration<TestReportResult>(this, TestReportResult.PASS);
+          return new Enumeration<TestReportResult>(this, TestReportResult.PASS, code);
         if ("fail".equals(codeString))
-          return new Enumeration<TestReportResult>(this, TestReportResult.FAIL);
+          return new Enumeration<TestReportResult>(this, TestReportResult.FAIL, code);
         if ("pending".equals(codeString))
-          return new Enumeration<TestReportResult>(this, TestReportResult.PENDING);
+          return new Enumeration<TestReportResult>(this, TestReportResult.PENDING, code);
         throw new FHIRException("Unknown TestReportResult code '"+codeString+"'");
         }
     public String toCode(TestReportResult code) {
-      if (code == TestReportResult.PASS)
+       if (code == TestReportResult.NULL)
+           return null;
+       if (code == TestReportResult.PASS)
         return "pass";
       if (code == TestReportResult.FAIL)
         return "fail";
       if (code == TestReportResult.PENDING)
         return "pending";
       return "?";
-      }
+   }
     public String toSystem(TestReportResult code) {
       return code.getSystem();
       }
@@ -460,6 +478,7 @@ public class TestReport extends DomainResource {
             case WAITING: return "waiting";
             case STOPPED: return "stopped";
             case ENTEREDINERROR: return "entered-in-error";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -470,6 +489,7 @@ public class TestReport extends DomainResource {
             case WAITING: return "http://hl7.org/fhir/report-status-codes";
             case STOPPED: return "http://hl7.org/fhir/report-status-codes";
             case ENTEREDINERROR: return "http://hl7.org/fhir/report-status-codes";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -480,6 +500,7 @@ public class TestReport extends DomainResource {
             case WAITING: return "A test operation is waiting for an external client request.";
             case STOPPED: return "The test script execution was manually stopped.";
             case ENTEREDINERROR: return "This test report was entered or created in error.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -490,6 +511,7 @@ public class TestReport extends DomainResource {
             case WAITING: return "Waiting";
             case STOPPED: return "Stopped";
             case ENTEREDINERROR: return "Entered In Error";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -512,28 +534,30 @@ public class TestReport extends DomainResource {
           return TestReportStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown TestReportStatus code '"+codeString+"'");
         }
-        public Enumeration<TestReportStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<TestReportStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<TestReportStatus>(this);
+            return new Enumeration<TestReportStatus>(this, TestReportStatus.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<TestReportStatus>(this, TestReportStatus.NULL, code);
         if ("completed".equals(codeString))
-          return new Enumeration<TestReportStatus>(this, TestReportStatus.COMPLETED);
+          return new Enumeration<TestReportStatus>(this, TestReportStatus.COMPLETED, code);
         if ("in-progress".equals(codeString))
-          return new Enumeration<TestReportStatus>(this, TestReportStatus.INPROGRESS);
+          return new Enumeration<TestReportStatus>(this, TestReportStatus.INPROGRESS, code);
         if ("waiting".equals(codeString))
-          return new Enumeration<TestReportStatus>(this, TestReportStatus.WAITING);
+          return new Enumeration<TestReportStatus>(this, TestReportStatus.WAITING, code);
         if ("stopped".equals(codeString))
-          return new Enumeration<TestReportStatus>(this, TestReportStatus.STOPPED);
+          return new Enumeration<TestReportStatus>(this, TestReportStatus.STOPPED, code);
         if ("entered-in-error".equals(codeString))
-          return new Enumeration<TestReportStatus>(this, TestReportStatus.ENTEREDINERROR);
+          return new Enumeration<TestReportStatus>(this, TestReportStatus.ENTEREDINERROR, code);
         throw new FHIRException("Unknown TestReportStatus code '"+codeString+"'");
         }
     public String toCode(TestReportStatus code) {
-      if (code == TestReportStatus.COMPLETED)
+       if (code == TestReportStatus.NULL)
+           return null;
+       if (code == TestReportStatus.COMPLETED)
         return "completed";
       if (code == TestReportStatus.INPROGRESS)
         return "in-progress";
@@ -544,7 +568,7 @@ public class TestReport extends DomainResource {
       if (code == TestReportStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(TestReportStatus code) {
       return code.getSystem();
       }
@@ -792,6 +816,20 @@ public class TestReport extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("type")) {
+          value = new TestReportParticipantTypeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.type = (Enumeration) value; // Enumeration<TestReportParticipantType>
+        } else if (name.equals("uri")) {
+          this.uri = null;
+        } else if (name.equals("display")) {
+          this.display = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -817,13 +855,13 @@ public class TestReport extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.participant.type");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.participant.type");
         }
         else if (name.equals("uri")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.participant.uri");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.participant.uri");
         }
         else if (name.equals("display")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.participant.display");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.participant.display");
         }
         else
           return super.addChild(name);
@@ -833,6 +871,10 @@ public class TestReport extends DomainResource {
         TestReportParticipantComponent dst = new TestReportParticipantComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((TestReportParticipantComponent) dst);
       }
 
       public void copyValues(TestReportParticipantComponent dst) {
@@ -997,6 +1039,15 @@ public class TestReport extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("action")) {
+          this.getAction().remove((SetupActionComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1028,6 +1079,10 @@ public class TestReport extends DomainResource {
         TestReportSetupComponent dst = new TestReportSetupComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((TestReportSetupComponent) dst);
       }
 
       public void copyValues(TestReportSetupComponent dst) {
@@ -1194,6 +1249,17 @@ public class TestReport extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("operation")) {
+          this.operation = (SetupActionOperationComponent) value; // SetupActionOperationComponent
+        } else if (name.equals("assert")) {
+          this.assert_ = (SetupActionAssertComponent) value; // SetupActionAssertComponent
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1232,6 +1298,10 @@ public class TestReport extends DomainResource {
         SetupActionComponent dst = new SetupActionComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SetupActionComponent) dst);
       }
 
       public void copyValues(SetupActionComponent dst) {
@@ -1396,7 +1466,7 @@ public class TestReport extends DomainResource {
          * @param value An explanatory message associated with the result.
          */
         public SetupActionOperationComponent setMessage(String value) { 
-          if (value == null)
+          if (Utilities.noString(value))
             this.message = null;
           else {
             if (this.message == null)
@@ -1516,6 +1586,20 @@ public class TestReport extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("result")) {
+          value = new TestReportActionResultEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.result = (Enumeration) value; // Enumeration<TestReportActionResult>
+        } else if (name.equals("message")) {
+          this.message = null;
+        } else if (name.equals("detail")) {
+          this.detail = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1541,13 +1625,13 @@ public class TestReport extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("result")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.setup.action.operation.result");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.setup.action.operation.result");
         }
         else if (name.equals("message")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.setup.action.operation.message");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.setup.action.operation.message");
         }
         else if (name.equals("detail")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.setup.action.operation.detail");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.setup.action.operation.detail");
         }
         else
           return super.addChild(name);
@@ -1557,6 +1641,10 @@ public class TestReport extends DomainResource {
         SetupActionOperationComponent dst = new SetupActionOperationComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SetupActionOperationComponent) dst);
       }
 
       public void copyValues(SetupActionOperationComponent dst) {
@@ -1624,7 +1712,14 @@ public class TestReport extends DomainResource {
         @Description(shortDefinition="A link to further details on the result", formalDefinition="A link to further details on the result." )
         protected StringType detail;
 
-        private static final long serialVersionUID = 467968193L;
+        /**
+         * Links or references providing traceability to the testing requirements for this assert.
+         */
+        @Child(name = "requirement", type = {}, order=4, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+        @Description(shortDefinition="Links or references to the testing requirements", formalDefinition="Links or references providing traceability to the testing requirements for this assert." )
+        protected List<SetupActionAssertRequirementComponent> requirement;
+
+        private static final long serialVersionUID = -132618689L;
 
     /**
      * Constructor
@@ -1725,7 +1820,7 @@ public class TestReport extends DomainResource {
          * @param value An explanatory message associated with the result.
          */
         public SetupActionAssertComponent setMessage(String value) { 
-          if (value == null)
+          if (Utilities.noString(value))
             this.message = null;
           else {
             if (this.message == null)
@@ -1784,11 +1879,65 @@ public class TestReport extends DomainResource {
           return this;
         }
 
+        /**
+         * @return {@link #requirement} (Links or references providing traceability to the testing requirements for this assert.)
+         */
+        public List<SetupActionAssertRequirementComponent> getRequirement() { 
+          if (this.requirement == null)
+            this.requirement = new ArrayList<SetupActionAssertRequirementComponent>();
+          return this.requirement;
+        }
+
+        /**
+         * @return Returns a reference to <code>this</code> for easy method chaining
+         */
+        public SetupActionAssertComponent setRequirement(List<SetupActionAssertRequirementComponent> theRequirement) { 
+          this.requirement = theRequirement;
+          return this;
+        }
+
+        public boolean hasRequirement() { 
+          if (this.requirement == null)
+            return false;
+          for (SetupActionAssertRequirementComponent item : this.requirement)
+            if (!item.isEmpty())
+              return true;
+          return false;
+        }
+
+        public SetupActionAssertRequirementComponent addRequirement() { //3
+          SetupActionAssertRequirementComponent t = new SetupActionAssertRequirementComponent();
+          if (this.requirement == null)
+            this.requirement = new ArrayList<SetupActionAssertRequirementComponent>();
+          this.requirement.add(t);
+          return t;
+        }
+
+        public SetupActionAssertComponent addRequirement(SetupActionAssertRequirementComponent t) { //3
+          if (t == null)
+            return this;
+          if (this.requirement == null)
+            this.requirement = new ArrayList<SetupActionAssertRequirementComponent>();
+          this.requirement.add(t);
+          return this;
+        }
+
+        /**
+         * @return The first repetition of repeating field {@link #requirement}, creating it if it does not already exist {3}
+         */
+        public SetupActionAssertRequirementComponent getRequirementFirstRep() { 
+          if (getRequirement().isEmpty()) {
+            addRequirement();
+          }
+          return getRequirement().get(0);
+        }
+
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
           children.add(new Property("result", "code", "The result of this assertion.", 0, 1, result));
           children.add(new Property("message", "markdown", "An explanatory message associated with the result.", 0, 1, message));
           children.add(new Property("detail", "string", "A link to further details on the result.", 0, 1, detail));
+          children.add(new Property("requirement", "", "Links or references providing traceability to the testing requirements for this assert.", 0, java.lang.Integer.MAX_VALUE, requirement));
         }
 
         @Override
@@ -1797,6 +1946,7 @@ public class TestReport extends DomainResource {
           case -934426595: /*result*/  return new Property("result", "code", "The result of this assertion.", 0, 1, result);
           case 954925063: /*message*/  return new Property("message", "markdown", "An explanatory message associated with the result.", 0, 1, message);
           case -1335224239: /*detail*/  return new Property("detail", "string", "A link to further details on the result.", 0, 1, detail);
+          case 363387971: /*requirement*/  return new Property("requirement", "", "Links or references providing traceability to the testing requirements for this assert.", 0, java.lang.Integer.MAX_VALUE, requirement);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
           }
 
@@ -1808,6 +1958,7 @@ public class TestReport extends DomainResource {
         case -934426595: /*result*/ return this.result == null ? new Base[0] : new Base[] {this.result}; // Enumeration<TestReportActionResult>
         case 954925063: /*message*/ return this.message == null ? new Base[0] : new Base[] {this.message}; // MarkdownType
         case -1335224239: /*detail*/ return this.detail == null ? new Base[0] : new Base[] {this.detail}; // StringType
+        case 363387971: /*requirement*/ return this.requirement == null ? new Base[0] : this.requirement.toArray(new Base[this.requirement.size()]); // SetupActionAssertRequirementComponent
         default: return super.getProperty(hash, name, checkValid);
         }
 
@@ -1826,6 +1977,9 @@ public class TestReport extends DomainResource {
         case -1335224239: // detail
           this.detail = TypeConvertor.castToString(value); // StringType
           return value;
+        case 363387971: // requirement
+          this.getRequirement().add((SetupActionAssertRequirementComponent) value); // SetupActionAssertRequirementComponent
+          return value;
         default: return super.setProperty(hash, name, value);
         }
 
@@ -1840,9 +1994,27 @@ public class TestReport extends DomainResource {
           this.message = TypeConvertor.castToMarkdown(value); // MarkdownType
         } else if (name.equals("detail")) {
           this.detail = TypeConvertor.castToString(value); // StringType
+        } else if (name.equals("requirement")) {
+          this.getRequirement().add((SetupActionAssertRequirementComponent) value);
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("result")) {
+          value = new TestReportActionResultEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.result = (Enumeration) value; // Enumeration<TestReportActionResult>
+        } else if (name.equals("message")) {
+          this.message = null;
+        } else if (name.equals("detail")) {
+          this.detail = null;
+        } else if (name.equals("requirement")) {
+          this.getRequirement().remove((SetupActionAssertRequirementComponent) value);
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -1851,6 +2023,7 @@ public class TestReport extends DomainResource {
         case -934426595:  return getResultElement();
         case 954925063:  return getMessageElement();
         case -1335224239:  return getDetailElement();
+        case 363387971:  return addRequirement(); 
         default: return super.makeProperty(hash, name);
         }
 
@@ -1862,6 +2035,7 @@ public class TestReport extends DomainResource {
         case -934426595: /*result*/ return new String[] {"code"};
         case 954925063: /*message*/ return new String[] {"markdown"};
         case -1335224239: /*detail*/ return new String[] {"string"};
+        case 363387971: /*requirement*/ return new String[] {};
         default: return super.getTypesForProperty(hash, name);
         }
 
@@ -1870,13 +2044,16 @@ public class TestReport extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("result")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.setup.action.assert.result");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.setup.action.assert.result");
         }
         else if (name.equals("message")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.setup.action.assert.message");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.setup.action.assert.message");
         }
         else if (name.equals("detail")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.setup.action.assert.detail");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.setup.action.assert.detail");
+        }
+        else if (name.equals("requirement")) {
+          return addRequirement();
         }
         else
           return super.addChild(name);
@@ -1888,11 +2065,20 @@ public class TestReport extends DomainResource {
         return dst;
       }
 
+      public void assignValues(Base dst) {
+        copyValues((SetupActionAssertComponent) dst);
+      }
+
       public void copyValues(SetupActionAssertComponent dst) {
         super.copyValues(dst);
         dst.result = result == null ? null : result.copy();
         dst.message = message == null ? null : message.copy();
         dst.detail = detail == null ? null : detail.copy();
+        if (requirement != null) {
+          dst.requirement = new ArrayList<SetupActionAssertRequirementComponent>();
+          for (SetupActionAssertRequirementComponent i : requirement)
+            dst.requirement.add(i.copy());
+        };
       }
 
       @Override
@@ -1903,7 +2089,7 @@ public class TestReport extends DomainResource {
           return false;
         SetupActionAssertComponent o = (SetupActionAssertComponent) other_;
         return compareDeep(result, o.result, true) && compareDeep(message, o.message, true) && compareDeep(detail, o.detail, true)
-          ;
+           && compareDeep(requirement, o.requirement, true);
       }
 
       @Override
@@ -1919,11 +2105,214 @@ public class TestReport extends DomainResource {
 
       public boolean isEmpty() {
         return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(result, message, detail
-          );
+          , requirement);
       }
 
   public String fhirType() {
     return "TestReport.setup.action.assert";
+
+  }
+
+  }
+
+    @Block()
+    public static class SetupActionAssertRequirementComponent extends BackboneElement implements IBaseBackboneElement {
+        /**
+         * Link or reference providing traceability to the testing requirement for this test.
+         */
+        @Child(name = "link", type = {UriType.class, CanonicalType.class}, order=1, min=0, max=1, modifier=false, summary=false)
+        @Description(shortDefinition="Link or reference to the testing requirement", formalDefinition="Link or reference providing traceability to the testing requirement for this test." )
+        protected DataType link;
+
+        private static final long serialVersionUID = -91187948L;
+
+    /**
+     * Constructor
+     */
+      public SetupActionAssertRequirementComponent() {
+        super();
+      }
+
+        /**
+         * @return {@link #link} (Link or reference providing traceability to the testing requirement for this test.)
+         */
+        public DataType getLink() { 
+          return this.link;
+        }
+
+        /**
+         * @return {@link #link} (Link or reference providing traceability to the testing requirement for this test.)
+         */
+        public UriType getLinkUriType() throws FHIRException { 
+          if (this.link == null)
+            this.link = new UriType();
+          if (!(this.link instanceof UriType))
+            throw new FHIRException("Type mismatch: the type UriType was expected, but "+this.link.getClass().getName()+" was encountered");
+          return (UriType) this.link;
+        }
+
+        public boolean hasLinkUriType() {
+            return this.link instanceof UriType;
+        }
+
+        /**
+         * @return {@link #link} (Link or reference providing traceability to the testing requirement for this test.)
+         */
+        public CanonicalType getLinkCanonicalType() throws FHIRException { 
+          if (this.link == null)
+            this.link = new CanonicalType();
+          if (!(this.link instanceof CanonicalType))
+            throw new FHIRException("Type mismatch: the type CanonicalType was expected, but "+this.link.getClass().getName()+" was encountered");
+          return (CanonicalType) this.link;
+        }
+
+        public boolean hasLinkCanonicalType() {
+            return this.link instanceof CanonicalType;
+        }
+
+        public boolean hasLink() { 
+          return this.link != null && !this.link.isEmpty();
+        }
+
+        /**
+         * @param value {@link #link} (Link or reference providing traceability to the testing requirement for this test.)
+         */
+        public SetupActionAssertRequirementComponent setLink(DataType value) { 
+          if (value != null && !(value instanceof UriType || value instanceof CanonicalType))
+            throw new FHIRException("Not the right type for TestReport.setup.action.assert.requirement.link[x]: "+value.fhirType());
+          this.link = value;
+          return this;
+        }
+
+        protected void listChildren(List<Property> children) {
+          super.listChildren(children);
+          children.add(new Property("link[x]", "uri|canonical(Requirements)", "Link or reference providing traceability to the testing requirement for this test.", 0, 1, link));
+        }
+
+        @Override
+        public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
+          switch (_hash) {
+          case 177076806: /*link[x]*/  return new Property("link[x]", "uri|canonical(Requirements)", "Link or reference providing traceability to the testing requirement for this test.", 0, 1, link);
+          case 3321850: /*link*/  return new Property("link[x]", "uri|canonical(Requirements)", "Link or reference providing traceability to the testing requirement for this test.", 0, 1, link);
+          case 177070866: /*linkUri*/  return new Property("link[x]", "uri", "Link or reference providing traceability to the testing requirement for this test.", 0, 1, link);
+          case -2064880102: /*linkCanonical*/  return new Property("link[x]", "canonical(Requirements)", "Link or reference providing traceability to the testing requirement for this test.", 0, 1, link);
+          default: return super.getNamedProperty(_hash, _name, _checkValid);
+          }
+
+        }
+
+      @Override
+      public Base[] getProperty(int hash, String name, boolean checkValid) throws FHIRException {
+        switch (hash) {
+        case 3321850: /*link*/ return this.link == null ? new Base[0] : new Base[] {this.link}; // DataType
+        default: return super.getProperty(hash, name, checkValid);
+        }
+
+      }
+
+      @Override
+      public Base setProperty(int hash, String name, Base value) throws FHIRException {
+        switch (hash) {
+        case 3321850: // link
+          this.link = TypeConvertor.castToType(value); // DataType
+          return value;
+        default: return super.setProperty(hash, name, value);
+        }
+
+      }
+
+      @Override
+      public Base setProperty(String name, Base value) throws FHIRException {
+        if (name.equals("link[x]")) {
+          this.link = TypeConvertor.castToType(value); // DataType
+        } else
+          return super.setProperty(name, value);
+        return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("link[x]")) {
+          this.link = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
+      @Override
+      public Base makeProperty(int hash, String name) throws FHIRException {
+        switch (hash) {
+        case 177076806:  return getLink();
+        case 3321850:  return getLink();
+        default: return super.makeProperty(hash, name);
+        }
+
+      }
+
+      @Override
+      public String[] getTypesForProperty(int hash, String name) throws FHIRException {
+        switch (hash) {
+        case 3321850: /*link*/ return new String[] {"uri", "canonical"};
+        default: return super.getTypesForProperty(hash, name);
+        }
+
+      }
+
+      @Override
+      public Base addChild(String name) throws FHIRException {
+        if (name.equals("linkUri")) {
+          this.link = new UriType();
+          return this.link;
+        }
+        else if (name.equals("linkCanonical")) {
+          this.link = new CanonicalType();
+          return this.link;
+        }
+        else
+          return super.addChild(name);
+      }
+
+      public SetupActionAssertRequirementComponent copy() {
+        SetupActionAssertRequirementComponent dst = new SetupActionAssertRequirementComponent();
+        copyValues(dst);
+        return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SetupActionAssertRequirementComponent) dst);
+      }
+
+      public void copyValues(SetupActionAssertRequirementComponent dst) {
+        super.copyValues(dst);
+        dst.link = link == null ? null : link.copy();
+      }
+
+      @Override
+      public boolean equalsDeep(Base other_) {
+        if (!super.equalsDeep(other_))
+          return false;
+        if (!(other_ instanceof SetupActionAssertRequirementComponent))
+          return false;
+        SetupActionAssertRequirementComponent o = (SetupActionAssertRequirementComponent) other_;
+        return compareDeep(link, o.link, true);
+      }
+
+      @Override
+      public boolean equalsShallow(Base other_) {
+        if (!super.equalsShallow(other_))
+          return false;
+        if (!(other_ instanceof SetupActionAssertRequirementComponent))
+          return false;
+        SetupActionAssertRequirementComponent o = (SetupActionAssertRequirementComponent) other_;
+        return true;
+      }
+
+      public boolean isEmpty() {
+        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(link);
+      }
+
+  public String fhirType() {
+    return "TestReport.setup.action.assert.requirement";
 
   }
 
@@ -2179,6 +2568,19 @@ public class TestReport extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("description")) {
+          this.description = null;
+        } else if (name.equals("action")) {
+          this.getAction().remove((TestActionComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -2204,10 +2606,10 @@ public class TestReport extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.test.name");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.test.name");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.test.description");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.test.description");
         }
         else if (name.equals("action")) {
           return addAction();
@@ -2220,6 +2622,10 @@ public class TestReport extends DomainResource {
         TestReportTestComponent dst = new TestReportTestComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((TestReportTestComponent) dst);
       }
 
       public void copyValues(TestReportTestComponent dst) {
@@ -2390,6 +2796,17 @@ public class TestReport extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("operation")) {
+          this.operation = (SetupActionOperationComponent) value; // SetupActionOperationComponent
+        } else if (name.equals("assert")) {
+          this.assert_ = (SetupActionAssertComponent) value; // SetupActionAssertComponent
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -2428,6 +2845,10 @@ public class TestReport extends DomainResource {
         TestActionComponent dst = new TestActionComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((TestActionComponent) dst);
       }
 
       public void copyValues(TestActionComponent dst) {
@@ -2589,6 +3010,15 @@ public class TestReport extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("action")) {
+          this.getAction().remove((TeardownActionComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -2620,6 +3050,10 @@ public class TestReport extends DomainResource {
         TestReportTeardownComponent dst = new TestReportTeardownComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((TestReportTeardownComponent) dst);
       }
 
       public void copyValues(TestReportTeardownComponent dst) {
@@ -2755,6 +3189,15 @@ public class TestReport extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("operation")) {
+          this.operation = (SetupActionOperationComponent) value; // SetupActionOperationComponent
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -2787,6 +3230,10 @@ public class TestReport extends DomainResource {
         TeardownActionComponent dst = new TeardownActionComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((TeardownActionComponent) dst);
       }
 
       public void copyValues(TeardownActionComponent dst) {
@@ -2826,17 +3273,17 @@ public class TestReport extends DomainResource {
   }
 
     /**
-     * Identifier for the TestScript assigned for external purposes outside the context of FHIR.
+     * Identifier for the TestReport assigned for external purposes outside the context of FHIR.
      */
     @Child(name = "identifier", type = {Identifier.class}, order=0, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="External identifier", formalDefinition="Identifier for the TestScript assigned for external purposes outside the context of FHIR." )
+    @Description(shortDefinition="External identifier", formalDefinition="Identifier for the TestReport assigned for external purposes outside the context of FHIR." )
     protected Identifier identifier;
 
     /**
-     * A free text natural language name identifying the executed TestScript.
+     * A free text natural language name identifying the executed TestReport.
      */
     @Child(name = "name", type = {StringType.class}, order=1, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Informal name of the executed TestScript", formalDefinition="A free text natural language name identifying the executed TestScript." )
+    @Description(shortDefinition="Informal name of the executed TestReport", formalDefinition="A free text natural language name identifying the executed TestReport." )
     protected StringType name;
 
     /**
@@ -2850,9 +3297,9 @@ public class TestReport extends DomainResource {
     /**
      * Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`.
      */
-    @Child(name = "testScript", type = {TestScript.class}, order=3, min=1, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Reference to the  version-specific TestScript that was executed to produce this TestReport", formalDefinition="Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`." )
-    protected Reference testScript;
+    @Child(name = "testScript", type = {CanonicalType.class}, order=3, min=1, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="Canonical URL to the  version-specific TestScript that was executed to produce this TestReport", formalDefinition="Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`." )
+    protected CanonicalType testScript;
 
     /**
      * The overall result from the execution of the TestScript.
@@ -2911,7 +3358,7 @@ public class TestReport extends DomainResource {
     @Description(shortDefinition="The results of running the series of required clean up steps", formalDefinition="The results of the series of operations required to clean up after all the tests were executed (successfully or otherwise)." )
     protected TestReportTeardownComponent teardown;
 
-    private static final long serialVersionUID = 1713142733L;
+    private static final long serialVersionUID = -1863229334L;
 
   /**
    * Constructor
@@ -2923,7 +3370,7 @@ public class TestReport extends DomainResource {
   /**
    * Constructor
    */
-    public TestReport(TestReportStatus status, Reference testScript, TestReportResult result) {
+    public TestReport(TestReportStatus status, String testScript, TestReportResult result) {
       super();
       this.setStatus(status);
       this.setTestScript(testScript);
@@ -2931,7 +3378,7 @@ public class TestReport extends DomainResource {
     }
 
     /**
-     * @return {@link #identifier} (Identifier for the TestScript assigned for external purposes outside the context of FHIR.)
+     * @return {@link #identifier} (Identifier for the TestReport assigned for external purposes outside the context of FHIR.)
      */
     public Identifier getIdentifier() { 
       if (this.identifier == null)
@@ -2947,7 +3394,7 @@ public class TestReport extends DomainResource {
     }
 
     /**
-     * @param value {@link #identifier} (Identifier for the TestScript assigned for external purposes outside the context of FHIR.)
+     * @param value {@link #identifier} (Identifier for the TestReport assigned for external purposes outside the context of FHIR.)
      */
     public TestReport setIdentifier(Identifier value) { 
       this.identifier = value;
@@ -2955,7 +3402,7 @@ public class TestReport extends DomainResource {
     }
 
     /**
-     * @return {@link #name} (A free text natural language name identifying the executed TestScript.). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
+     * @return {@link #name} (A free text natural language name identifying the executed TestReport.). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
      */
     public StringType getNameElement() { 
       if (this.name == null)
@@ -2975,7 +3422,7 @@ public class TestReport extends DomainResource {
     }
 
     /**
-     * @param value {@link #name} (A free text natural language name identifying the executed TestScript.). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
+     * @param value {@link #name} (A free text natural language name identifying the executed TestReport.). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
      */
     public TestReport setNameElement(StringType value) { 
       this.name = value;
@@ -2983,14 +3430,14 @@ public class TestReport extends DomainResource {
     }
 
     /**
-     * @return A free text natural language name identifying the executed TestScript.
+     * @return A free text natural language name identifying the executed TestReport.
      */
     public String getName() { 
       return this.name == null ? null : this.name.getValue();
     }
 
     /**
-     * @param value A free text natural language name identifying the executed TestScript.
+     * @param value A free text natural language name identifying the executed TestReport.
      */
     public TestReport setName(String value) { 
       if (Utilities.noString(value))
@@ -3049,15 +3496,19 @@ public class TestReport extends DomainResource {
     }
 
     /**
-     * @return {@link #testScript} (Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`.)
+     * @return {@link #testScript} (Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`.). This is the underlying object with id, value and extensions. The accessor "getTestScript" gives direct access to the value
      */
-    public Reference getTestScript() { 
+    public CanonicalType getTestScriptElement() { 
       if (this.testScript == null)
         if (Configuration.errorOnAutoCreate())
           throw new Error("Attempt to auto-create TestReport.testScript");
         else if (Configuration.doAutoCreate())
-          this.testScript = new Reference(); // cc
+          this.testScript = new CanonicalType(); // bb
       return this.testScript;
+    }
+
+    public boolean hasTestScriptElement() { 
+      return this.testScript != null && !this.testScript.isEmpty();
     }
 
     public boolean hasTestScript() { 
@@ -3065,10 +3516,27 @@ public class TestReport extends DomainResource {
     }
 
     /**
-     * @param value {@link #testScript} (Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`.)
+     * @param value {@link #testScript} (Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`.). This is the underlying object with id, value and extensions. The accessor "getTestScript" gives direct access to the value
      */
-    public TestReport setTestScript(Reference value) { 
+    public TestReport setTestScriptElement(CanonicalType value) { 
       this.testScript = value;
+      return this;
+    }
+
+    /**
+     * @return Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`.
+     */
+    public String getTestScript() { 
+      return this.testScript == null ? null : this.testScript.getValue();
+    }
+
+    /**
+     * @param value Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`.
+     */
+    public TestReport setTestScript(String value) { 
+        if (this.testScript == null)
+          this.testScript = new CanonicalType();
+        this.testScript.setValue(value);
       return this;
     }
 
@@ -3438,10 +3906,10 @@ public class TestReport extends DomainResource {
 
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
-        children.add(new Property("identifier", "Identifier", "Identifier for the TestScript assigned for external purposes outside the context of FHIR.", 0, 1, identifier));
-        children.add(new Property("name", "string", "A free text natural language name identifying the executed TestScript.", 0, 1, name));
+        children.add(new Property("identifier", "Identifier", "Identifier for the TestReport assigned for external purposes outside the context of FHIR.", 0, 1, identifier));
+        children.add(new Property("name", "string", "A free text natural language name identifying the executed TestReport.", 0, 1, name));
         children.add(new Property("status", "code", "The current state of this test report.", 0, 1, status));
-        children.add(new Property("testScript", "Reference(TestScript)", "Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`.", 0, 1, testScript));
+        children.add(new Property("testScript", "canonical(TestScript)", "Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`.", 0, 1, testScript));
         children.add(new Property("result", "code", "The overall result from the execution of the TestScript.", 0, 1, result));
         children.add(new Property("score", "decimal", "The final score (percentage of tests passed) resulting from the execution of the TestScript.", 0, 1, score));
         children.add(new Property("tester", "string", "Name of the tester producing this report (Organization or individual).", 0, 1, tester));
@@ -3455,10 +3923,10 @@ public class TestReport extends DomainResource {
       @Override
       public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
         switch (_hash) {
-        case -1618432855: /*identifier*/  return new Property("identifier", "Identifier", "Identifier for the TestScript assigned for external purposes outside the context of FHIR.", 0, 1, identifier);
-        case 3373707: /*name*/  return new Property("name", "string", "A free text natural language name identifying the executed TestScript.", 0, 1, name);
+        case -1618432855: /*identifier*/  return new Property("identifier", "Identifier", "Identifier for the TestReport assigned for external purposes outside the context of FHIR.", 0, 1, identifier);
+        case 3373707: /*name*/  return new Property("name", "string", "A free text natural language name identifying the executed TestReport.", 0, 1, name);
         case -892481550: /*status*/  return new Property("status", "code", "The current state of this test report.", 0, 1, status);
-        case 1712049149: /*testScript*/  return new Property("testScript", "Reference(TestScript)", "Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`.", 0, 1, testScript);
+        case 1712049149: /*testScript*/  return new Property("testScript", "canonical(TestScript)", "Ideally this is an absolute URL that is used to identify the version-specific TestScript that was executed, matching the `TestScript.url`.", 0, 1, testScript);
         case -934426595: /*result*/  return new Property("result", "code", "The overall result from the execution of the TestScript.", 0, 1, result);
         case 109264530: /*score*/  return new Property("score", "decimal", "The final score (percentage of tests passed) resulting from the execution of the TestScript.", 0, 1, score);
         case -877169473: /*tester*/  return new Property("tester", "string", "Name of the tester producing this report (Organization or individual).", 0, 1, tester);
@@ -3478,7 +3946,7 @@ public class TestReport extends DomainResource {
         case -1618432855: /*identifier*/ return this.identifier == null ? new Base[0] : new Base[] {this.identifier}; // Identifier
         case 3373707: /*name*/ return this.name == null ? new Base[0] : new Base[] {this.name}; // StringType
         case -892481550: /*status*/ return this.status == null ? new Base[0] : new Base[] {this.status}; // Enumeration<TestReportStatus>
-        case 1712049149: /*testScript*/ return this.testScript == null ? new Base[0] : new Base[] {this.testScript}; // Reference
+        case 1712049149: /*testScript*/ return this.testScript == null ? new Base[0] : new Base[] {this.testScript}; // CanonicalType
         case -934426595: /*result*/ return this.result == null ? new Base[0] : new Base[] {this.result}; // Enumeration<TestReportResult>
         case 109264530: /*score*/ return this.score == null ? new Base[0] : new Base[] {this.score}; // DecimalType
         case -877169473: /*tester*/ return this.tester == null ? new Base[0] : new Base[] {this.tester}; // StringType
@@ -3506,7 +3974,7 @@ public class TestReport extends DomainResource {
           this.status = (Enumeration) value; // Enumeration<TestReportStatus>
           return value;
         case 1712049149: // testScript
-          this.testScript = TypeConvertor.castToReference(value); // Reference
+          this.testScript = TypeConvertor.castToCanonical(value); // CanonicalType
           return value;
         case -934426595: // result
           value = new TestReportResultEnumFactory().fromType(TypeConvertor.castToCode(value));
@@ -3548,7 +4016,7 @@ public class TestReport extends DomainResource {
           value = new TestReportStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.status = (Enumeration) value; // Enumeration<TestReportStatus>
         } else if (name.equals("testScript")) {
-          this.testScript = TypeConvertor.castToReference(value); // Reference
+          this.testScript = TypeConvertor.castToCanonical(value); // CanonicalType
         } else if (name.equals("result")) {
           value = new TestReportResultEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.result = (Enumeration) value; // Enumeration<TestReportResult>
@@ -3571,13 +4039,46 @@ public class TestReport extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("identifier")) {
+          this.identifier = null;
+        } else if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("status")) {
+          value = new TestReportStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<TestReportStatus>
+        } else if (name.equals("testScript")) {
+          this.testScript = null;
+        } else if (name.equals("result")) {
+          value = new TestReportResultEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.result = (Enumeration) value; // Enumeration<TestReportResult>
+        } else if (name.equals("score")) {
+          this.score = null;
+        } else if (name.equals("tester")) {
+          this.tester = null;
+        } else if (name.equals("issued")) {
+          this.issued = null;
+        } else if (name.equals("participant")) {
+          this.getParticipant().remove((TestReportParticipantComponent) value);
+        } else if (name.equals("setup")) {
+          this.setup = (TestReportSetupComponent) value; // TestReportSetupComponent
+        } else if (name.equals("test")) {
+          this.getTest().remove((TestReportTestComponent) value);
+        } else if (name.equals("teardown")) {
+          this.teardown = (TestReportTeardownComponent) value; // TestReportTeardownComponent
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
         case -1618432855:  return getIdentifier();
         case 3373707:  return getNameElement();
         case -892481550:  return getStatusElement();
-        case 1712049149:  return getTestScript();
+        case 1712049149:  return getTestScriptElement();
         case -934426595:  return getResultElement();
         case 109264530:  return getScoreElement();
         case -877169473:  return getTesterElement();
@@ -3597,7 +4098,7 @@ public class TestReport extends DomainResource {
         case -1618432855: /*identifier*/ return new String[] {"Identifier"};
         case 3373707: /*name*/ return new String[] {"string"};
         case -892481550: /*status*/ return new String[] {"code"};
-        case 1712049149: /*testScript*/ return new String[] {"Reference"};
+        case 1712049149: /*testScript*/ return new String[] {"canonical"};
         case -934426595: /*result*/ return new String[] {"code"};
         case 109264530: /*score*/ return new String[] {"decimal"};
         case -877169473: /*tester*/ return new String[] {"string"};
@@ -3618,26 +4119,25 @@ public class TestReport extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.name");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.name");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.status");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.status");
         }
         else if (name.equals("testScript")) {
-          this.testScript = new Reference();
-          return this.testScript;
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.testScript");
         }
         else if (name.equals("result")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.result");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.result");
         }
         else if (name.equals("score")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.score");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.score");
         }
         else if (name.equals("tester")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.tester");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.tester");
         }
         else if (name.equals("issued")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.issued");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.issued");
         }
         else if (name.equals("participant")) {
           return addParticipant();
@@ -3666,6 +4166,10 @@ public class TestReport extends DomainResource {
         TestReport dst = new TestReport();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((TestReport) dst);
       }
 
       public void copyValues(TestReport dst) {
@@ -3717,9 +4221,9 @@ public class TestReport extends DomainResource {
         if (!(other_ instanceof TestReport))
           return false;
         TestReport o = (TestReport) other_;
-        return compareValues(name, o.name, true) && compareValues(status, o.status, true) && compareValues(result, o.result, true)
-           && compareValues(score, o.score, true) && compareValues(tester, o.tester, true) && compareValues(issued, o.issued, true)
-          ;
+        return compareValues(name, o.name, true) && compareValues(status, o.status, true) && compareValues(testScript, o.testScript, true)
+           && compareValues(result, o.result, true) && compareValues(score, o.score, true) && compareValues(tester, o.tester, true)
+           && compareValues(issued, o.issued, true);
       }
 
       public boolean isEmpty() {
@@ -3812,6 +4316,26 @@ public class TestReport extends DomainResource {
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.TokenClientParam RESULT = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_RESULT);
+
+ /**
+   * Search parameter: <b>status</b>
+   * <p>
+   * Description: <b>The current status of the test report</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>TestReport.status</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="status", path="TestReport.status", description="The current status of the test report", type="token" )
+  public static final String SP_STATUS = "status";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>status</b>
+   * <p>
+   * Description: <b>The current status of the test report</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>TestReport.status</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
 
  /**
    * Search parameter: <b>tester</b>

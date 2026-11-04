@@ -36,10 +36,10 @@ package org.hl7.fhir.r5.formats;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,15 +48,83 @@ import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.exceptions.FHIRFormatError;
 import org.hl7.fhir.r5.model.DataType;
 import org.hl7.fhir.r5.model.Resource;
-import org.hl7.fhir.r5.model.SearchParameter;
+import org.hl7.fhir.r5.model.StringType;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.xml.IXMLWriter;
 
 public abstract class ParserBase extends FormatUtilities implements IParser {
+
+  /**
+   * the registry of custom resource parsers/composers this parser consults. Defaults to the 
+   * process-wide CustomResourceRegistry.GLOBAL; a caller can scope a parser to a different set 
+   * of custom resources by passing a registry to the constructor, or via 
+   * setCustomResourceRegistry / withCustomResourceRegistry
+   */
+  protected CustomResourceRegistry customResourceRegistry;
+
+  protected ParserBase() {
+    this.customResourceRegistry = CustomResourceRegistry.GLOBAL;
+  }
+
+  protected ParserBase(CustomResourceRegistry customResourceRegistry) {
+    this.customResourceRegistry = customResourceRegistry == null ? CustomResourceRegistry.GLOBAL : customResourceRegistry;
+  }
+
+  /**
+   * Set the registry of custom resources this parser consults (null resets it to the global 
+   * registry). This is instance-level state, so it does not affect any other parser
+   */
+  public void setCustomResourceRegistry(CustomResourceRegistry customResourceRegistry) {
+    this.customResourceRegistry = customResourceRegistry == null ? CustomResourceRegistry.GLOBAL : customResourceRegistry;
+  }
+
+  /**
+   * fluent variant of setCustomResourceRegistry
+   */
+  public ParserBase withCustomResourceRegistry(CustomResourceRegistry customResourceRegistry) {
+    setCustomResourceRegistry(customResourceRegistry);
+    return this;
+  }
+
+  public CustomResourceRegistry getCustomResourceRegistry() {
+    return customResourceRegistry;
+  }
+
+  public interface IParserFactory {
+    public JsonParserBase composerJson(JsonCreator json);
+    public JsonParserBase parserJson(boolean allowUnknownContent, boolean allowComments);
+    public XmlParserBase composerXml(IXMLWriter xml);
+    public XmlParserBase parserXml(boolean allowUnknownContent);
+  }
+
+  public static class CustomResourceHandler {
+    private final IParserFactory factory;
+    private final boolean overridesBase;
+
+    public CustomResourceHandler(IParserFactory factory, boolean overridesBase) {
+      super();
+      this.factory = factory;
+      this.overridesBase = overridesBase;
+    }
+
+    public IParserFactory getFactory() {
+      return factory;
+    }
+
+    /**
+     * if true, this handler takes precedence over any resource with the same name defined 
+     * in the base specification. If false, the handler is only used for resource names that 
+     * the base specification doesn't define
+     */
+    public boolean isOverridesBase() {
+      return overridesBase;
+    }
+  }
 
   // -- implementation of variant type methods from the interface --------------------------------
   
   public Resource parse(String input) throws FHIRFormatError, IOException {
-  	return parse(input.getBytes("UTF-8"));
+  	return parse(input.getBytes(StandardCharsets.UTF_8));
   }
   
   public Resource parse(byte[] bytes) throws FHIRFormatError, IOException {
@@ -65,11 +133,11 @@ public abstract class ParserBase extends FormatUtilities implements IParser {
   }
 
   public DataType parseType(String input, String typeName) throws FHIRFormatError, IOException {
-    return parseType(input.getBytes("UTF-8"), typeName);
+    return parseType(input.getBytes(StandardCharsets.UTF_8), typeName);
   }
   
   public DataType parseAnyType(String input, String typeName) throws FHIRFormatError, IOException {
-    return parseAnyType(input.getBytes("UTF-8"), typeName);
+    return parseAnyType(input.getBytes(StandardCharsets.UTF_8), typeName);
   }
   
   public DataType parseType(byte[] bytes, String typeName) throws FHIRFormatError, IOException {
@@ -83,7 +151,7 @@ public abstract class ParserBase extends FormatUtilities implements IParser {
   }
 
   public String composeString(Resource resource) throws IOException {
-    return new String(composeBytes(resource), "UTF-8");
+    return new String(composeBytes(resource), StandardCharsets.UTF_8);
   }
 
   public byte[] composeBytes(Resource resource) throws IOException {
@@ -94,7 +162,7 @@ public abstract class ParserBase extends FormatUtilities implements IParser {
   }
 
   public String composeString(DataType type, String typeName) throws IOException {
-    return new String(composeBytes(type, typeName));
+    return new String(composeBytes(type, typeName), StandardCharsets.UTF_8);
   }
 
   public byte[] composeBytes(DataType type, String typeName) throws IOException {
@@ -140,7 +208,7 @@ public abstract class ParserBase extends FormatUtilities implements IParser {
    * @return Whether to throw an exception if unknown content is found (or just skip it) 
    */
   public boolean isAllowUnknownContent() {
-    return allowUnknownContent;
+    return true; // allowUnknownContent;
   }
   /**
    * @param allowUnknownContent Whether to throw an exception if unknown content is found (or just skip it)
@@ -245,6 +313,5 @@ public abstract class ParserBase extends FormatUtilities implements IParser {
       input.close();
     }
   }
-
 
 }

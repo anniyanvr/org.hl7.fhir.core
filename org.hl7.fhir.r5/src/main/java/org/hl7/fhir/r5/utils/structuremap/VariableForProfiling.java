@@ -1,5 +1,8 @@
 package org.hl7.fhir.r5.utils.structuremap;
 
+
+
+
 public class VariableForProfiling {
   private VariableMode mode;
   private String name;

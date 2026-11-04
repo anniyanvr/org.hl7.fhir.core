@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -72,11 +68,13 @@ public class V3HtmlLinkTypeEnumFactory implements EnumFactory<V3HtmlLinkType> {
       return V3HtmlLinkType.STYLESHEET;
     if ("subsection".equals(codeString))
       return V3HtmlLinkType.SUBSECTION;
-    throw new IllegalArgumentException("Unknown V3HtmlLinkType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3HtmlLinkType code '" + codeString + "'");
   }
 
   public String toCode(V3HtmlLinkType code) {
-    if (code == V3HtmlLinkType.ALTERNATE)
+       if (code == V3HtmlLinkType.NULL)
+           return null;
+       if (code == V3HtmlLinkType.ALTERNATE)
       return "alternate";
     if (code == V3HtmlLinkType.APPENDIX)
       return "appendix";
@@ -107,10 +105,10 @@ public class V3HtmlLinkTypeEnumFactory implements EnumFactory<V3HtmlLinkType> {
     if (code == V3HtmlLinkType.SUBSECTION)
       return "subsection";
     return "?";
-  }
+   }
 
-    public String toSystem(V3HtmlLinkType code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3HtmlLinkType code) {
+    return code.getSystem();
+  }
 
 }

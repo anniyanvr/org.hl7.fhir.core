@@ -1,6 +1,8 @@
 package org.hl7.fhir.convertors.advisors;
 
-import org.hl7.fhir.convertors.conv10_50.VersionConvertor_10_50;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_10_50;
 import org.hl7.fhir.convertors.advisors.support.ExpressionAdvisor50;
 import org.hl7.fhir.convertors.factory.VersionConvertorFactory_10_50;
@@ -9,9 +11,6 @@ import org.hl7.fhir.r5.model.Extension;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 public class Expression50Test {
 
@@ -36,13 +35,13 @@ public class Expression50Test {
 
   @Test
   @DisplayName("Ensure base advisor ignores Expression types and doesn't explode.")
-  public void testBaseAdvisorExpressionIgore() throws IOException {
+  public void testBaseAdvisorExpressionIgnore() throws IOException {
     Expression exp = new Expression();
     exp.setExpression("x + y = z");
     Extension ext = new Extension();
     ext.setValue(exp);
     BaseAdvisor_10_50 baseAdvisor50 = new BaseAdvisor_10_50();
-    Assertions.assertTrue(baseAdvisor50.ignoreExtension("", ext));
+    Assertions.assertTrue(baseAdvisor50.ignoreExtension(ext));
   }
 
   @Test

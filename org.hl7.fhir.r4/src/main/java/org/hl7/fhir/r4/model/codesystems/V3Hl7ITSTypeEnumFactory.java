@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3Hl7ITSTypeEnumFactory implements EnumFactory<V3Hl7ITSType> {
@@ -46,19 +42,21 @@ public class V3Hl7ITSTypeEnumFactory implements EnumFactory<V3Hl7ITSType> {
       return V3Hl7ITSType.UML;
     if ("XML".equals(codeString))
       return V3Hl7ITSType.XML;
-    throw new IllegalArgumentException("Unknown V3Hl7ITSType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3Hl7ITSType code '" + codeString + "'");
   }
 
   public String toCode(V3Hl7ITSType code) {
-    if (code == V3Hl7ITSType.UML)
+       if (code == V3Hl7ITSType.NULL)
+           return null;
+       if (code == V3Hl7ITSType.UML)
       return "UML";
     if (code == V3Hl7ITSType.XML)
       return "XML";
     return "?";
-  }
+   }
 
-    public String toSystem(V3Hl7ITSType code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3Hl7ITSType code) {
+    return code.getSystem();
+  }
 
 }

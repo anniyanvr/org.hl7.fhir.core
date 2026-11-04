@@ -48,15 +48,18 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.utilities.TextFile;
+import org.hl7.fhir.utilities.FileUtilities;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
 import org.hl7.fhir.utilities.xml.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+@Slf4j
 public class XLSXmlNormaliser {
   
   private static final String XLS_NS = "urn:schemas-microsoft-com:office:spreadsheet";
@@ -82,9 +85,9 @@ public class XLSXmlNormaliser {
   }
   
   public void go() throws FHIRException, TransformerException, ParserConfigurationException, SAXException, IOException {
-    File inp = new File(source);
+    File inp = ManagedFileAccess.file(source);
     long time = inp.lastModified();
-    xml = parseXml(new FileInputStream(inp));
+    xml = parseXml(ManagedFileAccess.inStream(inp));
     
     Element root = xml.getDocumentElement();
 
@@ -102,7 +105,7 @@ public class XLSXmlNormaliser {
     if (exceptionIfExcelNotNormalised)
       throw new FHIRException("The spreadsheet "+dest+" was committed after editing in excel, but before the build could run *after Excel was closed*");
     
-    System.out.println("normalise: "+source);
+    log.info("normalise: "+source);
     
     XMLUtil.deleteByName(root, "ActiveSheet");
     Element xw = XMLUtil.getNamedChild(root, "ExcelWorkbook");
@@ -117,14 +120,19 @@ public class XLSXmlNormaliser {
     if (!hasComment)
       root.appendChild(xml.createComment("canonicalized"));
     try {
-      saveXml(new FileOutputStream(dest));
-      String s = TextFile.fileToString(dest);
-      s = s.replaceAll("\r\n","\n");
+      FileOutputStream fs = ManagedFileAccess.outStream(dest);
+      try {
+        saveXml(fs);
+      } finally {
+        fs.close();
+      }
+      String s = FileUtilities.fileToString(dest);
+      s = s.replace("\r\n","\n");
       s = replaceSignificantEoln(s);
-      TextFile.stringToFile(s, dest, false);
-      new File(dest).setLastModified(time);
+      FileUtilities.stringToFile(s, dest);
+      ManagedFileAccess.file(dest).setLastModified(time);
     } catch (Exception e) {
-      System.out.println("The file "+dest+" is still open in Excel, and you will have to run the build after closing Excel before committing");
+      log.error("The file "+dest+" is still open in Excel, and you will have to run the build after closing Excel before committing");
     }
   }
 
@@ -215,7 +223,7 @@ public class XLSXmlNormaliser {
   
 
   private Document parseXml(InputStream in) throws FHIRException, ParserConfigurationException, SAXException, IOException  {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory factory = XMLUtil.newXXEProtectedDocumentBuilderFactory();
     factory.setNamespaceAware(true);
     DocumentBuilder builder = factory.newDocumentBuilder();
     return builder.parse(in);
@@ -223,7 +231,7 @@ public class XLSXmlNormaliser {
 
   private void saveXml(FileOutputStream stream) throws TransformerException, IOException {
 
-    TransformerFactory factory = TransformerFactory.newInstance();
+    TransformerFactory factory = XMLUtil.newXXEProtectedTransformerFactory();
     Transformer transformer = factory.newTransformer();
     Result result = new StreamResult(stream);
     Source source = new DOMSource(xml);

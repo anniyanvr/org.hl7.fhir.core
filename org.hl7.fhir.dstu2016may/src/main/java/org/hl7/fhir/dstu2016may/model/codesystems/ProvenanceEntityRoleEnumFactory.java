@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ProvenanceEntityRoleEnumFactory implements EnumFactory<ProvenanceEntityRole> {
@@ -52,11 +48,13 @@ public class ProvenanceEntityRoleEnumFactory implements EnumFactory<ProvenanceEn
       return ProvenanceEntityRole.SOURCE;
     if ("removal".equals(codeString))
       return ProvenanceEntityRole.REMOVAL;
-    throw new IllegalArgumentException("Unknown ProvenanceEntityRole code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ProvenanceEntityRole code '" + codeString + "'");
   }
 
   public String toCode(ProvenanceEntityRole code) {
-    if (code == ProvenanceEntityRole.DERIVATION)
+       if (code == ProvenanceEntityRole.NULL)
+           return null;
+       if (code == ProvenanceEntityRole.DERIVATION)
       return "derivation";
     if (code == ProvenanceEntityRole.REVISION)
       return "revision";
@@ -67,10 +65,10 @@ public class ProvenanceEntityRoleEnumFactory implements EnumFactory<ProvenanceEn
     if (code == ProvenanceEntityRole.REMOVAL)
       return "removal";
     return "?";
-  }
+   }
 
-    public String toSystem(ProvenanceEntityRole code) {
-      return code.getSystem();
-      }
+  public String toSystem(ProvenanceEntityRole code) {
+    return code.getSystem();
+  }
 
 }

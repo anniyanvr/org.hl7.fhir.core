@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class DataelementStringencyEnumFactory implements EnumFactory<DataelementStringency> {
@@ -54,11 +50,13 @@ public class DataelementStringencyEnumFactory implements EnumFactory<Dataelement
       return DataelementStringency.SCALEABLE;
     if ("flexible".equals(codeString))
       return DataelementStringency.FLEXIBLE;
-    throw new IllegalArgumentException("Unknown DataelementStringency code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown DataelementStringency code '" + codeString + "'");
   }
 
   public String toCode(DataelementStringency code) {
-    if (code == DataelementStringency.COMPARABLE)
+       if (code == DataelementStringency.NULL)
+           return null;
+       if (code == DataelementStringency.COMPARABLE)
       return "comparable";
     if (code == DataelementStringency.FULLYSPECIFIED)
       return "fully-specified";
@@ -71,10 +69,10 @@ public class DataelementStringencyEnumFactory implements EnumFactory<Dataelement
     if (code == DataelementStringency.FLEXIBLE)
       return "flexible";
     return "?";
-  }
+   }
 
-    public String toSystem(DataelementStringency code) {
-      return code.getSystem();
-      }
+  public String toSystem(DataelementStringency code) {
+    return code.getSystem();
+  }
 
 }

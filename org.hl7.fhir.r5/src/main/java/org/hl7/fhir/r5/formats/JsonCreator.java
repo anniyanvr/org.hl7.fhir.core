@@ -42,8 +42,8 @@ import java.math.BigDecimal;
  */
 public interface JsonCreator {
 
-  void setIndent(String string);
-
+  void comment(String comment);
+  
   void beginObject() throws IOException;
 
   void endObject() throws IOException;
@@ -70,4 +70,9 @@ public interface JsonCreator {
   // only used by an creator that actually produces xhtml
   void link(String href);
   void anchor(String string);
+  void externalLink(String string);
+  void elide();
+  boolean canElide();
+  
+  boolean isCanonical();
 }

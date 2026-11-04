@@ -135,12 +135,12 @@ public class Substance extends DomainResource {
           return FHIRSubstanceStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown FHIRSubstanceStatus code '"+codeString+"'");
         }
-        public Enumeration<FHIRSubstanceStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<FHIRSubstanceStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<FHIRSubstanceStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -152,14 +152,16 @@ public class Substance extends DomainResource {
         throw new FHIRException("Unknown FHIRSubstanceStatus code '"+codeString+"'");
         }
     public String toCode(FHIRSubstanceStatus code) {
-      if (code == FHIRSubstanceStatus.ACTIVE)
+       if (code == FHIRSubstanceStatus.NULL)
+           return null;
+       if (code == FHIRSubstanceStatus.ACTIVE)
         return "active";
       if (code == FHIRSubstanceStatus.INACTIVE)
         return "inactive";
       if (code == FHIRSubstanceStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(FHIRSubstanceStatus code) {
       return code.getSystem();
       }
@@ -382,7 +384,7 @@ public class Substance extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("expiry")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Substance.expiry");
+          throw new FHIRException("Cannot call addChild on a singleton property Substance.expiry");
         }
         else if (name.equals("quantity")) {
           this.quantity = new SimpleQuantity();
@@ -510,8 +512,8 @@ public class Substance extends DomainResource {
           return (CodeableConcept) this.substance;
         }
 
-        public boolean hasSubstanceCodeableConcept() { 
-          return this != null && this.substance instanceof CodeableConcept;
+        public boolean hasSubstanceCodeableConcept() {
+            return this.substance instanceof CodeableConcept;
         }
 
         /**
@@ -525,8 +527,8 @@ public class Substance extends DomainResource {
           return (Reference) this.substance;
         }
 
-        public boolean hasSubstanceReference() { 
-          return this != null && this.substance instanceof Reference;
+        public boolean hasSubstanceReference() {
+            return this.substance instanceof Reference;
         }
 
         public boolean hasSubstance() { 
@@ -1207,7 +1209,7 @@ public class Substance extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Substance.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Substance.status");
         }
         else if (name.equals("category")) {
           return addCategory();
@@ -1217,7 +1219,7 @@ public class Substance extends DomainResource {
           return this.code;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Substance.description");
+          throw new FHIRException("Cannot call addChild on a singleton property Substance.description");
         }
         else if (name.equals("instance")) {
           return addInstance();

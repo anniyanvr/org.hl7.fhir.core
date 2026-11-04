@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class SearchModifierCodeEnumFactory implements EnumFactory<SearchModifierCode> {
@@ -62,11 +58,13 @@ public class SearchModifierCodeEnumFactory implements EnumFactory<SearchModifier
       return SearchModifierCode.ABOVE;
     if ("type".equals(codeString))
       return SearchModifierCode.TYPE;
-    throw new IllegalArgumentException("Unknown SearchModifierCode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown SearchModifierCode code '" + codeString + "'");
   }
 
   public String toCode(SearchModifierCode code) {
-    if (code == SearchModifierCode.MISSING)
+       if (code == SearchModifierCode.NULL)
+           return null;
+       if (code == SearchModifierCode.MISSING)
       return "missing";
     if (code == SearchModifierCode.EXACT)
       return "exact";
@@ -87,10 +85,10 @@ public class SearchModifierCodeEnumFactory implements EnumFactory<SearchModifier
     if (code == SearchModifierCode.TYPE)
       return "type";
     return "?";
-  }
+   }
 
-    public String toSystem(SearchModifierCode code) {
-      return code.getSystem();
-      }
+  public String toSystem(SearchModifierCode code) {
+    return code.getSystem();
+  }
 
 }

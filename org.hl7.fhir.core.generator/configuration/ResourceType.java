@@ -1,11 +1,12 @@
-package org.hl7.fhir.r5.model;
+{{startMark}}
+package org.hl7.fhir.{{jid}}.core;
 
 {{license}}
 
-{{startMark}}
 
 import org.hl7.fhir.exceptions.FHIRException;
 
+{{generated}}
 public enum ResourceType {
 {{types-enum}};
 

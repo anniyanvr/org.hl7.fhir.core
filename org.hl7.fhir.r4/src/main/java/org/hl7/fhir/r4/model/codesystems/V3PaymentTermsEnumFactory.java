@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3PaymentTermsEnumFactory implements EnumFactory<V3PaymentTerms> {
@@ -50,11 +46,13 @@ public class V3PaymentTermsEnumFactory implements EnumFactory<V3PaymentTerms> {
       return V3PaymentTerms.N60;
     if ("N90".equals(codeString))
       return V3PaymentTerms.N90;
-    throw new IllegalArgumentException("Unknown V3PaymentTerms code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3PaymentTerms code '" + codeString + "'");
   }
 
   public String toCode(V3PaymentTerms code) {
-    if (code == V3PaymentTerms.COD)
+       if (code == V3PaymentTerms.NULL)
+           return null;
+       if (code == V3PaymentTerms.COD)
       return "COD";
     if (code == V3PaymentTerms.N30)
       return "N30";
@@ -63,10 +61,10 @@ public class V3PaymentTermsEnumFactory implements EnumFactory<V3PaymentTerms> {
     if (code == V3PaymentTerms.N90)
       return "N90";
     return "?";
-  }
+   }
 
-    public String toSystem(V3PaymentTerms code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3PaymentTerms code) {
+    return code.getSystem();
+  }
 
 }

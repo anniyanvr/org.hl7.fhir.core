@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class RepositoryTypeEnumFactory implements EnumFactory<RepositoryType> {
@@ -52,11 +48,13 @@ public class RepositoryTypeEnumFactory implements EnumFactory<RepositoryType> {
       return RepositoryType.OAUTH;
     if ("other".equals(codeString))
       return RepositoryType.OTHER;
-    throw new IllegalArgumentException("Unknown RepositoryType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown RepositoryType code '" + codeString + "'");
   }
 
   public String toCode(RepositoryType code) {
-    if (code == RepositoryType.DIRECTLINK)
+       if (code == RepositoryType.NULL)
+           return null;
+       if (code == RepositoryType.DIRECTLINK)
       return "directlink";
     if (code == RepositoryType.OPENAPI)
       return "openapi";
@@ -67,10 +65,10 @@ public class RepositoryTypeEnumFactory implements EnumFactory<RepositoryType> {
     if (code == RepositoryType.OTHER)
       return "other";
     return "?";
-  }
+   }
 
-    public String toSystem(RepositoryType code) {
-      return code.getSystem();
-      }
+  public String toSystem(RepositoryType code) {
+    return code.getSystem();
+  }
 
 }

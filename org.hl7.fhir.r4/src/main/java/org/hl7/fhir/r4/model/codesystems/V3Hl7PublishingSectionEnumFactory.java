@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3Hl7PublishingSectionEnumFactory implements EnumFactory<V3Hl7PublishingSection> {
@@ -50,11 +46,13 @@ public class V3Hl7PublishingSectionEnumFactory implements EnumFactory<V3Hl7Publi
       return V3Hl7PublishingSection.IM;
     if ("UU".equals(codeString))
       return V3Hl7PublishingSection.UU;
-    throw new IllegalArgumentException("Unknown V3Hl7PublishingSection code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3Hl7PublishingSection code '" + codeString + "'");
   }
 
   public String toCode(V3Hl7PublishingSection code) {
-    if (code == V3Hl7PublishingSection.AM)
+       if (code == V3Hl7PublishingSection.NULL)
+           return null;
+       if (code == V3Hl7PublishingSection.AM)
       return "AM";
     if (code == V3Hl7PublishingSection.HM)
       return "HM";
@@ -63,10 +61,10 @@ public class V3Hl7PublishingSectionEnumFactory implements EnumFactory<V3Hl7Publi
     if (code == V3Hl7PublishingSection.UU)
       return "UU";
     return "?";
-  }
+   }
 
-    public String toSystem(V3Hl7PublishingSection code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3Hl7PublishingSection code) {
+    return code.getSystem();
+  }
 
 }

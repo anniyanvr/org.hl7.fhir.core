@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class IdentityAssuranceLevelEnumFactory implements EnumFactory<IdentityAssuranceLevel> {
@@ -50,11 +46,13 @@ public class IdentityAssuranceLevelEnumFactory implements EnumFactory<IdentityAs
       return IdentityAssuranceLevel.LEVEL3;
     if ("level4".equals(codeString))
       return IdentityAssuranceLevel.LEVEL4;
-    throw new IllegalArgumentException("Unknown IdentityAssuranceLevel code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown IdentityAssuranceLevel code '" + codeString + "'");
   }
 
   public String toCode(IdentityAssuranceLevel code) {
-    if (code == IdentityAssuranceLevel.LEVEL1)
+       if (code == IdentityAssuranceLevel.NULL)
+           return null;
+       if (code == IdentityAssuranceLevel.LEVEL1)
       return "level1";
     if (code == IdentityAssuranceLevel.LEVEL2)
       return "level2";
@@ -63,10 +61,10 @@ public class IdentityAssuranceLevelEnumFactory implements EnumFactory<IdentityAs
     if (code == IdentityAssuranceLevel.LEVEL4)
       return "level4";
     return "?";
-  }
+   }
 
-    public String toSystem(IdentityAssuranceLevel code) {
-      return code.getSystem();
-      }
+  public String toSystem(IdentityAssuranceLevel code) {
+    return code.getSystem();
+  }
 
 }

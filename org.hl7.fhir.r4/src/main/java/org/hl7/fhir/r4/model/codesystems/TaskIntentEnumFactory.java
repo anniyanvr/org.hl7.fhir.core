@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class TaskIntentEnumFactory implements EnumFactory<TaskIntent> {
@@ -44,17 +40,19 @@ public class TaskIntentEnumFactory implements EnumFactory<TaskIntent> {
       return null;
     if ("unknown".equals(codeString))
       return TaskIntent.UNKNOWN;
-    throw new IllegalArgumentException("Unknown TaskIntent code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown TaskIntent code '" + codeString + "'");
   }
 
   public String toCode(TaskIntent code) {
-    if (code == TaskIntent.UNKNOWN)
+       if (code == TaskIntent.NULL)
+           return null;
+       if (code == TaskIntent.UNKNOWN)
       return "unknown";
     return "?";
-  }
+   }
 
-    public String toSystem(TaskIntent code) {
-      return code.getSystem();
-      }
+  public String toSystem(TaskIntent code) {
+    return code.getSystem();
+  }
 
 }

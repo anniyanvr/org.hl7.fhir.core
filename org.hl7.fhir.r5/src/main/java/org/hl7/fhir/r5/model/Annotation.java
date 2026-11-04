@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +45,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for Annotation Type: A  text note which also  contains information about who made the statement and when.
+ * Annotation Type: A  text note which also  contains information about who made the statement and when.
  */
 @DatatypeDef(name="Annotation")
 public class Annotation extends DataType implements ICompositeType {
@@ -106,8 +106,8 @@ public class Annotation extends DataType implements ICompositeType {
       return (Reference) this.author;
     }
 
-    public boolean hasAuthorReference() { 
-      return this != null && this.author instanceof Reference;
+    public boolean hasAuthorReference() {
+        return this.author instanceof Reference;
     }
 
     /**
@@ -121,8 +121,8 @@ public class Annotation extends DataType implements ICompositeType {
       return (StringType) this.author;
     }
 
-    public boolean hasAuthorStringType() { 
-      return this != null && this.author instanceof StringType;
+    public boolean hasAuthorStringType() {
+        return this.author instanceof StringType;
     }
 
     public boolean hasAuthor() { 
@@ -134,7 +134,7 @@ public class Annotation extends DataType implements ICompositeType {
      */
     public Annotation setAuthor(DataType value) { 
       if (value != null && !(value instanceof Reference || value instanceof StringType))
-        throw new Error("Not the right type for Annotation.author[x]: "+value.fhirType());
+        throw new FHIRException("Not the right type for Annotation.author[x]: "+value.fhirType());
       this.author = value;
       return this;
     }
@@ -295,6 +295,19 @@ public class Annotation extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("author[x]")) {
+          this.author = null;
+        } else if (name.equals("time")) {
+          this.time = null;
+        } else if (name.equals("text")) {
+          this.text = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -329,10 +342,10 @@ public class Annotation extends DataType implements ICompositeType {
           return this.author;
         }
         else if (name.equals("time")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Annotation.time");
+          throw new FHIRException("Cannot call addChild on a singleton property Annotation.time");
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Annotation.text");
+          throw new FHIRException("Cannot call addChild on a singleton property Annotation.text");
         }
         else
           return super.addChild(name);
@@ -347,6 +360,10 @@ public class Annotation extends DataType implements ICompositeType {
         Annotation dst = new Annotation();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Annotation) dst);
       }
 
       public void copyValues(Annotation dst) {

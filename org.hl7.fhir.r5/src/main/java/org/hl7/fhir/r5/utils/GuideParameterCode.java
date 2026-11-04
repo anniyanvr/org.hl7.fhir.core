@@ -1,11 +1,12 @@
 package org.hl7.fhir.r5.utils;
 
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.model.Base;
 import org.hl7.fhir.r5.model.Configuration;
 import org.hl7.fhir.r5.model.EnumFactory;
 import org.hl7.fhir.r5.model.Enumeration;
 import org.hl7.fhir.r5.model.PrimitiveType;
+
+
 
 public enum GuideParameterCode {
   /**
@@ -171,38 +172,40 @@ public enum GuideParameterCode {
         return GuideParameterCode.HTMLTEMPLATE;
       throw new IllegalArgumentException("Unknown GuideParameterCode code '"+codeString+"'");
     }
-    public Enumeration<GuideParameterCode> fromType(Base code) throws FHIRException {
+    public Enumeration<GuideParameterCode> fromType(PrimitiveType<?> code) throws FHIRException {
       if (code == null)
         return null;
       if (code.isEmpty())
-        return new Enumeration<GuideParameterCode>(this);
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.NULL, code);
       String codeString = ((PrimitiveType) code).asStringValue();
       if (codeString == null || "".equals(codeString))
-        return null;
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.NULL, code);
       if ("apply".equals(codeString))
-        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.APPLY);
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.APPLY, code);
       if ("path-resource".equals(codeString))
-        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.PATHRESOURCE);
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.PATHRESOURCE, code);
       if ("path-pages".equals(codeString))
-        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.PATHPAGES);
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.PATHPAGES, code);
       if ("path-tx-cache".equals(codeString))
-        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.PATHTXCACHE);
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.PATHTXCACHE, code);
       if ("expansion-parameter".equals(codeString))
-        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.EXPANSIONPARAMETER);
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.EXPANSIONPARAMETER, code);
       if ("rule-broken-links".equals(codeString))
-        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.RULEBROKENLINKS);
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.RULEBROKENLINKS, code);
       if ("generate-xml".equals(codeString))
-        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.GENERATEXML);
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.GENERATEXML, code);
       if ("generate-json".equals(codeString))
-        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.GENERATEJSON);
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.GENERATEJSON, code);
       if ("generate-turtle".equals(codeString))
-        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.GENERATETURTLE);
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.GENERATETURTLE, code);
       if ("html-template".equals(codeString))
-        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.HTMLTEMPLATE);
+        return new Enumeration<GuideParameterCode>(this, GuideParameterCode.HTMLTEMPLATE, code);
       throw new FHIRException("Unknown GuideParameterCode code '"+codeString+"'");
     }
     public String toCode(GuideParameterCode code) {
-      if (code == GuideParameterCode.APPLY)
+       if (code == GuideParameterCode.NULL)
+           return null;
+       if (code == GuideParameterCode.APPLY)
         return "apply";
       if (code == GuideParameterCode.PATHRESOURCE)
         return "path-resource";
@@ -223,7 +226,7 @@ public enum GuideParameterCode {
       if (code == GuideParameterCode.HTMLTEMPLATE)
         return "html-template";
       return "?";
-    }
+   }
     public String toSystem(GuideParameterCode code) {
       return code.getSystem();
     }

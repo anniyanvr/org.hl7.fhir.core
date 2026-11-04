@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ValueCodesEnumFactory implements EnumFactory<ValueCodes> {
@@ -46,19 +42,21 @@ public class ValueCodesEnumFactory implements EnumFactory<ValueCodes> {
       return ValueCodes._1001;
     if ("1002".equals(codeString))
       return ValueCodes._1002;
-    throw new IllegalArgumentException("Unknown ValueCodes code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ValueCodes code '" + codeString + "'");
   }
 
   public String toCode(ValueCodes code) {
-    if (code == ValueCodes._1001)
+       if (code == ValueCodes.NULL)
+           return null;
+       if (code == ValueCodes._1001)
       return "1001";
     if (code == ValueCodes._1002)
       return "1002";
     return "?";
-  }
+   }
 
-    public String toSystem(ValueCodes code) {
-      return code.getSystem();
-      }
+  public String toSystem(ValueCodes code) {
+    return code.getSystem();
+  }
 
 }

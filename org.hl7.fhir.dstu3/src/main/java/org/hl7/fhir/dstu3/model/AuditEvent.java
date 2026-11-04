@@ -157,12 +157,12 @@ public class AuditEvent extends DomainResource {
           return AuditEventAction.E;
         throw new IllegalArgumentException("Unknown AuditEventAction code '"+codeString+"'");
         }
-        public Enumeration<AuditEventAction> fromType(Base code) throws FHIRException {
+        public Enumeration<AuditEventAction> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<AuditEventAction>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("C".equals(codeString))
@@ -178,7 +178,9 @@ public class AuditEvent extends DomainResource {
         throw new FHIRException("Unknown AuditEventAction code '"+codeString+"'");
         }
     public String toCode(AuditEventAction code) {
-      if (code == AuditEventAction.C)
+       if (code == AuditEventAction.NULL)
+           return null;
+       if (code == AuditEventAction.C)
         return "C";
       if (code == AuditEventAction.R)
         return "R";
@@ -189,7 +191,7 @@ public class AuditEvent extends DomainResource {
       if (code == AuditEventAction.E)
         return "E";
       return "?";
-      }
+   }
     public String toSystem(AuditEventAction code) {
       return code.getSystem();
       }
@@ -289,12 +291,12 @@ public class AuditEvent extends DomainResource {
           return AuditEventOutcome._12;
         throw new IllegalArgumentException("Unknown AuditEventOutcome code '"+codeString+"'");
         }
-        public Enumeration<AuditEventOutcome> fromType(Base code) throws FHIRException {
+        public Enumeration<AuditEventOutcome> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<AuditEventOutcome>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("0".equals(codeString))
@@ -308,7 +310,9 @@ public class AuditEvent extends DomainResource {
         throw new FHIRException("Unknown AuditEventOutcome code '"+codeString+"'");
         }
     public String toCode(AuditEventOutcome code) {
-      if (code == AuditEventOutcome._0)
+       if (code == AuditEventOutcome.NULL)
+           return null;
+       if (code == AuditEventOutcome._0)
         return "0";
       if (code == AuditEventOutcome._4)
         return "4";
@@ -317,7 +321,7 @@ public class AuditEvent extends DomainResource {
       if (code == AuditEventOutcome._12)
         return "12";
       return "?";
-      }
+   }
     public String toSystem(AuditEventOutcome code) {
       return code.getSystem();
       }
@@ -429,12 +433,12 @@ public class AuditEvent extends DomainResource {
           return AuditEventAgentNetworkType._5;
         throw new IllegalArgumentException("Unknown AuditEventAgentNetworkType code '"+codeString+"'");
         }
-        public Enumeration<AuditEventAgentNetworkType> fromType(Base code) throws FHIRException {
+        public Enumeration<AuditEventAgentNetworkType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<AuditEventAgentNetworkType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("1".equals(codeString))
@@ -450,7 +454,9 @@ public class AuditEvent extends DomainResource {
         throw new FHIRException("Unknown AuditEventAgentNetworkType code '"+codeString+"'");
         }
     public String toCode(AuditEventAgentNetworkType code) {
-      if (code == AuditEventAgentNetworkType._1)
+       if (code == AuditEventAgentNetworkType.NULL)
+           return null;
+       if (code == AuditEventAgentNetworkType._1)
         return "1";
       if (code == AuditEventAgentNetworkType._2)
         return "2";
@@ -461,7 +467,7 @@ public class AuditEvent extends DomainResource {
       if (code == AuditEventAgentNetworkType._5)
         return "5";
       return "?";
-      }
+   }
     public String toSystem(AuditEventAgentNetworkType code) {
       return code.getSystem();
       }
@@ -1216,20 +1222,20 @@ public class AuditEvent extends DomainResource {
           return this.userId;
         }
         else if (name.equals("altId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.altId");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.altId");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.name");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.name");
         }
         else if (name.equals("requestor")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.requestor");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.requestor");
         }
         else if (name.equals("location")) {
           this.location = new Reference();
           return this.location;
         }
         else if (name.equals("policy")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.policy");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.policy");
         }
         else if (name.equals("media")) {
           this.media = new Coding();
@@ -1511,10 +1517,10 @@ public class AuditEvent extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("address")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.address");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.address");
         }
         else if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.type");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.type");
         }
         else
           return super.addChild(name);
@@ -1810,7 +1816,7 @@ public class AuditEvent extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("site")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.site");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.site");
         }
         else if (name.equals("identifier")) {
           this.identifier = new Identifier();
@@ -2523,13 +2529,13 @@ public class AuditEvent extends DomainResource {
           return addSecurityLabel();
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.name");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.name");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.description");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.description");
         }
         else if (name.equals("query")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.query");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.query");
         }
         else if (name.equals("detail")) {
           return addDetail();
@@ -2796,10 +2802,10 @@ public class AuditEvent extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.type");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.type");
         }
         else if (name.equals("value")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.value");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.value");
         }
         else
           return super.addChild(name);
@@ -3555,16 +3561,16 @@ public class AuditEvent extends DomainResource {
           return addSubtype();
         }
         else if (name.equals("action")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.action");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.action");
         }
         else if (name.equals("recorded")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.recorded");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.recorded");
         }
         else if (name.equals("outcome")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.outcome");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.outcome");
         }
         else if (name.equals("outcomeDesc")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AuditEvent.outcomeDesc");
+          throw new FHIRException("Cannot call addChild on a singleton property AuditEvent.outcomeDesc");
         }
         else if (name.equals("purposeOfEvent")) {
           return addPurposeOfEvent();

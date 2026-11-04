@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ImagingstudyStatusEnumFactory implements EnumFactory<ImagingstudyStatus> {
@@ -52,11 +48,13 @@ public class ImagingstudyStatusEnumFactory implements EnumFactory<ImagingstudySt
       return ImagingstudyStatus.ENTEREDINERROR;
     if ("unknown".equals(codeString))
       return ImagingstudyStatus.UNKNOWN;
-    throw new IllegalArgumentException("Unknown ImagingstudyStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ImagingstudyStatus code '" + codeString + "'");
   }
 
   public String toCode(ImagingstudyStatus code) {
-    if (code == ImagingstudyStatus.REGISTERED)
+       if (code == ImagingstudyStatus.NULL)
+           return null;
+       if (code == ImagingstudyStatus.REGISTERED)
       return "registered";
     if (code == ImagingstudyStatus.AVAILABLE)
       return "available";
@@ -67,10 +65,10 @@ public class ImagingstudyStatusEnumFactory implements EnumFactory<ImagingstudySt
     if (code == ImagingstudyStatus.UNKNOWN)
       return "unknown";
     return "?";
-  }
+   }
 
-    public String toSystem(ImagingstudyStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(ImagingstudyStatus code) {
+    return code.getSystem();
+  }
 
 }

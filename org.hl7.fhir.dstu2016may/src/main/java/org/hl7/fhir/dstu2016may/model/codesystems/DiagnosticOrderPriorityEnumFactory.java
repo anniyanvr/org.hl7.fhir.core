@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class DiagnosticOrderPriorityEnumFactory implements EnumFactory<DiagnosticOrderPriority> {
@@ -50,11 +46,13 @@ public class DiagnosticOrderPriorityEnumFactory implements EnumFactory<Diagnosti
       return DiagnosticOrderPriority.STAT;
     if ("asap".equals(codeString))
       return DiagnosticOrderPriority.ASAP;
-    throw new IllegalArgumentException("Unknown DiagnosticOrderPriority code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown DiagnosticOrderPriority code '" + codeString + "'");
   }
 
   public String toCode(DiagnosticOrderPriority code) {
-    if (code == DiagnosticOrderPriority.ROUTINE)
+       if (code == DiagnosticOrderPriority.NULL)
+           return null;
+       if (code == DiagnosticOrderPriority.ROUTINE)
       return "routine";
     if (code == DiagnosticOrderPriority.URGENT)
       return "urgent";
@@ -63,10 +61,10 @@ public class DiagnosticOrderPriorityEnumFactory implements EnumFactory<Diagnosti
     if (code == DiagnosticOrderPriority.ASAP)
       return "asap";
     return "?";
-  }
+   }
 
-    public String toSystem(DiagnosticOrderPriority code) {
-      return code.getSystem();
-      }
+  public String toSystem(DiagnosticOrderPriority code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3TableRulesEnumFactory implements EnumFactory<V3TableRules> {
@@ -52,11 +48,13 @@ public class V3TableRulesEnumFactory implements EnumFactory<V3TableRules> {
       return V3TableRules.NONE;
     if ("rows".equals(codeString))
       return V3TableRules.ROWS;
-    throw new IllegalArgumentException("Unknown V3TableRules code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3TableRules code '" + codeString + "'");
   }
 
   public String toCode(V3TableRules code) {
-    if (code == V3TableRules.ALL)
+       if (code == V3TableRules.NULL)
+           return null;
+       if (code == V3TableRules.ALL)
       return "all";
     if (code == V3TableRules.COLS)
       return "cols";
@@ -67,10 +65,10 @@ public class V3TableRulesEnumFactory implements EnumFactory<V3TableRules> {
     if (code == V3TableRules.ROWS)
       return "rows";
     return "?";
-  }
+   }
 
-    public String toSystem(V3TableRules code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3TableRules code) {
+    return code.getSystem();
+  }
 
 }

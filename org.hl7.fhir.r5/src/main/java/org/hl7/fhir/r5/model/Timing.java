@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +47,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for Timing Type: Specifies an event that may occur multiple times. Timing schedules are used to record when things are planned, expected or requested to occur. The most common usage is in dosage instructions for medications. They are also used when planning care of various kinds, and may be used for reporting the schedule to which past regular activities were carried out.
+ * Timing Type: Specifies an event that may occur multiple times. Timing schedules are used to record when things are planned, expected or requested to occur. The most common usage is in dosage instructions for medications. They are also used when planning care of various kinds, and may be used for reporting the schedule to which past regular activities were carried out.
  */
 @DatatypeDef(name="Timing")
 public class Timing extends BackboneType implements ICompositeType {
@@ -256,6 +256,7 @@ public class Timing extends BackboneType implements ICompositeType {
             case PCM: return "PCM";
             case PCD: return "PCD";
             case PCV: return "PCV";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -288,6 +289,7 @@ public class Timing extends BackboneType implements ICompositeType {
             case PCM: return "http://terminology.hl7.org/CodeSystem/v3-TimingEvent";
             case PCD: return "http://terminology.hl7.org/CodeSystem/v3-TimingEvent";
             case PCV: return "http://terminology.hl7.org/CodeSystem/v3-TimingEvent";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -320,6 +322,7 @@ public class Timing extends BackboneType implements ICompositeType {
             case PCM: return "";
             case PCD: return "";
             case PCV: return "";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -352,6 +355,7 @@ public class Timing extends BackboneType implements ICompositeType {
             case PCM: return "PCM";
             case PCD: return "PCD";
             case PCV: return "PCV";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -418,72 +422,74 @@ public class Timing extends BackboneType implements ICompositeType {
           return EventTiming.PCV;
         throw new IllegalArgumentException("Unknown EventTiming code '"+codeString+"'");
         }
-        public Enumeration<EventTiming> fromType(Base code) throws FHIRException {
+        public Enumeration<EventTiming> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<EventTiming>(this);
+            return new Enumeration<EventTiming>(this, EventTiming.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<EventTiming>(this, EventTiming.NULL, code);
         if ("MORN".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.MORN);
+          return new Enumeration<EventTiming>(this, EventTiming.MORN, code);
         if ("MORN.early".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.MORN_EARLY);
+          return new Enumeration<EventTiming>(this, EventTiming.MORN_EARLY, code);
         if ("MORN.late".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.MORN_LATE);
+          return new Enumeration<EventTiming>(this, EventTiming.MORN_LATE, code);
         if ("NOON".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.NOON);
+          return new Enumeration<EventTiming>(this, EventTiming.NOON, code);
         if ("AFT".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.AFT);
+          return new Enumeration<EventTiming>(this, EventTiming.AFT, code);
         if ("AFT.early".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.AFT_EARLY);
+          return new Enumeration<EventTiming>(this, EventTiming.AFT_EARLY, code);
         if ("AFT.late".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.AFT_LATE);
+          return new Enumeration<EventTiming>(this, EventTiming.AFT_LATE, code);
         if ("EVE".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.EVE);
+          return new Enumeration<EventTiming>(this, EventTiming.EVE, code);
         if ("EVE.early".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.EVE_EARLY);
+          return new Enumeration<EventTiming>(this, EventTiming.EVE_EARLY, code);
         if ("EVE.late".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.EVE_LATE);
+          return new Enumeration<EventTiming>(this, EventTiming.EVE_LATE, code);
         if ("NIGHT".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.NIGHT);
+          return new Enumeration<EventTiming>(this, EventTiming.NIGHT, code);
         if ("PHS".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.PHS);
+          return new Enumeration<EventTiming>(this, EventTiming.PHS, code);
         if ("IMD".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.IMD);
+          return new Enumeration<EventTiming>(this, EventTiming.IMD, code);
         if ("HS".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.HS);
+          return new Enumeration<EventTiming>(this, EventTiming.HS, code);
         if ("WAKE".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.WAKE);
+          return new Enumeration<EventTiming>(this, EventTiming.WAKE, code);
         if ("C".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.C);
+          return new Enumeration<EventTiming>(this, EventTiming.C, code);
         if ("CM".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.CM);
+          return new Enumeration<EventTiming>(this, EventTiming.CM, code);
         if ("CD".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.CD);
+          return new Enumeration<EventTiming>(this, EventTiming.CD, code);
         if ("CV".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.CV);
+          return new Enumeration<EventTiming>(this, EventTiming.CV, code);
         if ("AC".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.AC);
+          return new Enumeration<EventTiming>(this, EventTiming.AC, code);
         if ("ACM".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.ACM);
+          return new Enumeration<EventTiming>(this, EventTiming.ACM, code);
         if ("ACD".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.ACD);
+          return new Enumeration<EventTiming>(this, EventTiming.ACD, code);
         if ("ACV".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.ACV);
+          return new Enumeration<EventTiming>(this, EventTiming.ACV, code);
         if ("PC".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.PC);
+          return new Enumeration<EventTiming>(this, EventTiming.PC, code);
         if ("PCM".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.PCM);
+          return new Enumeration<EventTiming>(this, EventTiming.PCM, code);
         if ("PCD".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.PCD);
+          return new Enumeration<EventTiming>(this, EventTiming.PCD, code);
         if ("PCV".equals(codeString))
-          return new Enumeration<EventTiming>(this, EventTiming.PCV);
+          return new Enumeration<EventTiming>(this, EventTiming.PCV, code);
         throw new FHIRException("Unknown EventTiming code '"+codeString+"'");
         }
     public String toCode(EventTiming code) {
-      if (code == EventTiming.MORN)
+       if (code == EventTiming.NULL)
+           return null;
+       if (code == EventTiming.MORN)
         return "MORN";
       if (code == EventTiming.MORN_EARLY)
         return "MORN.early";
@@ -538,7 +544,7 @@ public class Timing extends BackboneType implements ICompositeType {
       if (code == EventTiming.PCV)
         return "PCV";
       return "?";
-      }
+   }
     public String toSystem(EventTiming code) {
       return code.getSystem();
       }
@@ -608,6 +614,7 @@ public class Timing extends BackboneType implements ICompositeType {
             case WK: return "wk";
             case MO: return "mo";
             case A: return "a";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -620,6 +627,7 @@ public class Timing extends BackboneType implements ICompositeType {
             case WK: return "http://unitsofmeasure.org";
             case MO: return "http://unitsofmeasure.org";
             case A: return "http://unitsofmeasure.org";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -632,18 +640,20 @@ public class Timing extends BackboneType implements ICompositeType {
             case WK: return "";
             case MO: return "";
             case A: return "";
+            case NULL: return null;
             default: return "?";
           }
         }
         public String getDisplay() {
           switch (this) {
-            case S: return "second";
-            case MIN: return "minute";
-            case H: return "hour";
-            case D: return "day";
-            case WK: return "week";
-            case MO: return "month";
-            case A: return "year";
+            case S: return "秒";
+            case MIN: return "分钟";
+            case H: return "小时";
+            case D: return "天";
+            case WK: return "星期";
+            case MO: return "月";
+            case A: return "年";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -670,32 +680,34 @@ public class Timing extends BackboneType implements ICompositeType {
           return UnitsOfTime.A;
         throw new IllegalArgumentException("Unknown UnitsOfTime code '"+codeString+"'");
         }
-        public Enumeration<UnitsOfTime> fromType(Base code) throws FHIRException {
+        public Enumeration<UnitsOfTime> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<UnitsOfTime>(this);
+            return new Enumeration<UnitsOfTime>(this, UnitsOfTime.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<UnitsOfTime>(this, UnitsOfTime.NULL, code);
         if ("s".equals(codeString))
-          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.S);
+          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.S, code);
         if ("min".equals(codeString))
-          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.MIN);
+          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.MIN, code);
         if ("h".equals(codeString))
-          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.H);
+          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.H, code);
         if ("d".equals(codeString))
-          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.D);
+          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.D, code);
         if ("wk".equals(codeString))
-          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.WK);
+          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.WK, code);
         if ("mo".equals(codeString))
-          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.MO);
+          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.MO, code);
         if ("a".equals(codeString))
-          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.A);
+          return new Enumeration<UnitsOfTime>(this, UnitsOfTime.A, code);
         throw new FHIRException("Unknown UnitsOfTime code '"+codeString+"'");
         }
     public String toCode(UnitsOfTime code) {
-      if (code == UnitsOfTime.S)
+       if (code == UnitsOfTime.NULL)
+           return null;
+       if (code == UnitsOfTime.S)
         return "s";
       if (code == UnitsOfTime.MIN)
         return "min";
@@ -710,7 +722,7 @@ public class Timing extends BackboneType implements ICompositeType {
       if (code == UnitsOfTime.A)
         return "a";
       return "?";
-      }
+   }
     public String toSystem(UnitsOfTime code) {
       return code.getSystem();
       }
@@ -856,8 +868,8 @@ Normal practice is to use the 'mo' code as a calendar month when calculating the
           return (Duration) this.bounds;
         }
 
-        public boolean hasBoundsDuration() { 
-          return this != null && this.bounds instanceof Duration;
+        public boolean hasBoundsDuration() {
+            return this.bounds instanceof Duration;
         }
 
         /**
@@ -871,8 +883,8 @@ Normal practice is to use the 'mo' code as a calendar month when calculating the
           return (Range) this.bounds;
         }
 
-        public boolean hasBoundsRange() { 
-          return this != null && this.bounds instanceof Range;
+        public boolean hasBoundsRange() {
+            return this.bounds instanceof Range;
         }
 
         /**
@@ -886,8 +898,8 @@ Normal practice is to use the 'mo' code as a calendar month when calculating the
           return (Period) this.bounds;
         }
 
-        public boolean hasBoundsPeriod() { 
-          return this != null && this.bounds instanceof Period;
+        public boolean hasBoundsPeriod() {
+            return this.bounds instanceof Period;
         }
 
         public boolean hasBounds() { 
@@ -899,7 +911,7 @@ Normal practice is to use the 'mo' code as a calendar month when calculating the
          */
         public TimingRepeatComponent setBounds(DataType value) { 
           if (value != null && !(value instanceof Duration || value instanceof Range || value instanceof Period))
-            throw new Error("Not the right type for Timing.repeat.bounds[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for Timing.repeat.bounds[x]: "+value.fhirType());
           this.bounds = value;
           return this;
         }
@@ -1853,6 +1865,47 @@ Normal practice is to use the 'mo' code as a calendar month when calculating the
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("bounds[x]")) {
+          this.bounds = null;
+        } else if (name.equals("count")) {
+          this.count = null;
+        } else if (name.equals("countMax")) {
+          this.countMax = null;
+        } else if (name.equals("duration")) {
+          this.duration = null;
+        } else if (name.equals("durationMax")) {
+          this.durationMax = null;
+        } else if (name.equals("durationUnit")) {
+          value = new UnitsOfTimeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.durationUnit = (Enumeration) value; // Enumeration<UnitsOfTime>
+        } else if (name.equals("frequency")) {
+          this.frequency = null;
+        } else if (name.equals("frequencyMax")) {
+          this.frequencyMax = null;
+        } else if (name.equals("period")) {
+          this.period = null;
+        } else if (name.equals("periodMax")) {
+          this.periodMax = null;
+        } else if (name.equals("periodUnit")) {
+          value = new UnitsOfTimeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.periodUnit = (Enumeration) value; // Enumeration<UnitsOfTime>
+        } else if (name.equals("dayOfWeek")) {
+          value = new DaysOfWeekEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.getDayOfWeek().remove((Enumeration) value);
+        } else if (name.equals("timeOfDay")) {
+          this.getTimeOfDay().remove(value);
+        } else if (name.equals("when")) {
+          value = new EventTimingEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.getWhen().remove((Enumeration) value);
+        } else if (name.equals("offset")) {
+          this.offset = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1915,46 +1968,46 @@ Normal practice is to use the 'mo' code as a calendar month when calculating the
           return this.bounds;
         }
         else if (name.equals("count")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.count");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.count");
         }
         else if (name.equals("countMax")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.countMax");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.countMax");
         }
         else if (name.equals("duration")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.duration");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.duration");
         }
         else if (name.equals("durationMax")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.durationMax");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.durationMax");
         }
         else if (name.equals("durationUnit")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.durationUnit");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.durationUnit");
         }
         else if (name.equals("frequency")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.frequency");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.frequency");
         }
         else if (name.equals("frequencyMax")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.frequencyMax");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.frequencyMax");
         }
         else if (name.equals("period")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.period");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.period");
         }
         else if (name.equals("periodMax")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.periodMax");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.periodMax");
         }
         else if (name.equals("periodUnit")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.periodUnit");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.periodUnit");
         }
         else if (name.equals("dayOfWeek")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.dayOfWeek");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.dayOfWeek");
         }
         else if (name.equals("timeOfDay")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.timeOfDay");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.timeOfDay");
         }
         else if (name.equals("when")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.when");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.when");
         }
         else if (name.equals("offset")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.repeat.offset");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.repeat.offset");
         }
         else
           return super.addChild(name);
@@ -1964,6 +2017,10 @@ Normal practice is to use the 'mo' code as a calendar month when calculating the
         TimingRepeatComponent dst = new TimingRepeatComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((TimingRepeatComponent) dst);
       }
 
       public void copyValues(TimingRepeatComponent dst) {
@@ -2239,6 +2296,19 @@ Normal practice is to use the 'mo' code as a calendar month when calculating the
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("event")) {
+          this.getEvent().remove(value);
+        } else if (name.equals("repeat")) {
+          this.repeat = (TimingRepeatComponent) value; // TimingRepeatComponent
+        } else if (name.equals("code")) {
+          this.code = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -2264,7 +2334,7 @@ Normal practice is to use the 'mo' code as a calendar month when calculating the
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("event")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Timing.event");
+          throw new FHIRException("Cannot call addChild on a singleton property Timing.event");
         }
         else if (name.equals("repeat")) {
           this.repeat = new TimingRepeatComponent();
@@ -2287,6 +2357,10 @@ Normal practice is to use the 'mo' code as a calendar month when calculating the
         Timing dst = new Timing();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Timing) dst);
       }
 
       public void copyValues(Timing dst) {

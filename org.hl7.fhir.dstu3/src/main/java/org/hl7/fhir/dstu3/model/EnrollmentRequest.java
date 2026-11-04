@@ -142,12 +142,12 @@ public class EnrollmentRequest extends DomainResource {
           return EnrollmentRequestStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown EnrollmentRequestStatus code '"+codeString+"'");
         }
-        public Enumeration<EnrollmentRequestStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<EnrollmentRequestStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<EnrollmentRequestStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -161,7 +161,9 @@ public class EnrollmentRequest extends DomainResource {
         throw new FHIRException("Unknown EnrollmentRequestStatus code '"+codeString+"'");
         }
     public String toCode(EnrollmentRequestStatus code) {
-      if (code == EnrollmentRequestStatus.ACTIVE)
+       if (code == EnrollmentRequestStatus.NULL)
+           return null;
+       if (code == EnrollmentRequestStatus.ACTIVE)
         return "active";
       if (code == EnrollmentRequestStatus.CANCELLED)
         return "cancelled";
@@ -170,7 +172,7 @@ public class EnrollmentRequest extends DomainResource {
       if (code == EnrollmentRequestStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(EnrollmentRequestStatus code) {
       return code.getSystem();
       }
@@ -777,10 +779,10 @@ public class EnrollmentRequest extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EnrollmentRequest.status");
+          throw new FHIRException("Cannot call addChild on a singleton property EnrollmentRequest.status");
         }
         else if (name.equals("created")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EnrollmentRequest.created");
+          throw new FHIRException("Cannot call addChild on a singleton property EnrollmentRequest.created");
         }
         else if (name.equals("insurer")) {
           this.insurer = new Reference();

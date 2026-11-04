@@ -181,12 +181,12 @@ public class PractitionerRole extends DomainResource {
           return DaysOfWeek.SUN;
         throw new IllegalArgumentException("Unknown DaysOfWeek code '"+codeString+"'");
         }
-        public Enumeration<DaysOfWeek> fromType(Base code) throws FHIRException {
+        public Enumeration<DaysOfWeek> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DaysOfWeek>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("mon".equals(codeString))
@@ -206,7 +206,9 @@ public class PractitionerRole extends DomainResource {
         throw new FHIRException("Unknown DaysOfWeek code '"+codeString+"'");
         }
     public String toCode(DaysOfWeek code) {
-      if (code == DaysOfWeek.MON)
+       if (code == DaysOfWeek.NULL)
+           return null;
+       if (code == DaysOfWeek.MON)
         return "mon";
       if (code == DaysOfWeek.TUE)
         return "tue";
@@ -221,7 +223,7 @@ public class PractitionerRole extends DomainResource {
       if (code == DaysOfWeek.SUN)
         return "sun";
       return "?";
-      }
+   }
     public String toSystem(DaysOfWeek code) {
       return code.getSystem();
       }
@@ -567,16 +569,16 @@ public class PractitionerRole extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("daysOfWeek")) {
-          throw new FHIRException("Cannot call addChild on a primitive type PractitionerRole.daysOfWeek");
+          throw new FHIRException("Cannot call addChild on a singleton property PractitionerRole.daysOfWeek");
         }
         else if (name.equals("allDay")) {
-          throw new FHIRException("Cannot call addChild on a primitive type PractitionerRole.allDay");
+          throw new FHIRException("Cannot call addChild on a singleton property PractitionerRole.allDay");
         }
         else if (name.equals("availableStartTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type PractitionerRole.availableStartTime");
+          throw new FHIRException("Cannot call addChild on a singleton property PractitionerRole.availableStartTime");
         }
         else if (name.equals("availableEndTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type PractitionerRole.availableEndTime");
+          throw new FHIRException("Cannot call addChild on a singleton property PractitionerRole.availableEndTime");
         }
         else
           return super.addChild(name);
@@ -806,7 +808,7 @@ public class PractitionerRole extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type PractitionerRole.description");
+          throw new FHIRException("Cannot call addChild on a singleton property PractitionerRole.description");
         }
         else if (name.equals("during")) {
           this.during = new Period();
@@ -1359,28 +1361,6 @@ public class PractitionerRole extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Location> getLocationTarget() { 
-      if (this.locationTarget == null)
-        this.locationTarget = new ArrayList<Location>();
-      return this.locationTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Location addLocationTarget() { 
-      Location r = new Location();
-      if (this.locationTarget == null)
-        this.locationTarget = new ArrayList<Location>();
-      this.locationTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #healthcareService} (The list of healthcare services that this worker provides for this role's Organization/Location(s).)
      */
     public List<Reference> getHealthcareService() { 
@@ -1431,28 +1411,6 @@ public class PractitionerRole extends DomainResource {
         addHealthcareService();
       }
       return getHealthcareService().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<HealthcareService> getHealthcareServiceTarget() { 
-      if (this.healthcareServiceTarget == null)
-        this.healthcareServiceTarget = new ArrayList<HealthcareService>();
-      return this.healthcareServiceTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public HealthcareService addHealthcareServiceTarget() { 
-      HealthcareService r = new HealthcareService();
-      if (this.healthcareServiceTarget == null)
-        this.healthcareServiceTarget = new ArrayList<HealthcareService>();
-      this.healthcareServiceTarget.add(r);
-      return r;
     }
 
     /**
@@ -1716,28 +1674,6 @@ public class PractitionerRole extends DomainResource {
       return getEndpoint().get(0);
     }
 
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Endpoint> getEndpointTarget() { 
-      if (this.endpointTarget == null)
-        this.endpointTarget = new ArrayList<Endpoint>();
-      return this.endpointTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Endpoint addEndpointTarget() { 
-      Endpoint r = new Endpoint();
-      if (this.endpointTarget == null)
-        this.endpointTarget = new ArrayList<Endpoint>();
-      this.endpointTarget.add(r);
-      return r;
-    }
-
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
         children.add(new Property("identifier", "Identifier", "Business Identifiers that are specific to a role/location.", 0, java.lang.Integer.MAX_VALUE, identifier));
@@ -1935,7 +1871,7 @@ public class PractitionerRole extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("active")) {
-          throw new FHIRException("Cannot call addChild on a primitive type PractitionerRole.active");
+          throw new FHIRException("Cannot call addChild on a singleton property PractitionerRole.active");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -1971,7 +1907,7 @@ public class PractitionerRole extends DomainResource {
           return addNotAvailable();
         }
         else if (name.equals("availabilityExceptions")) {
-          throw new FHIRException("Cannot call addChild on a primitive type PractitionerRole.availabilityExceptions");
+          throw new FHIRException("Cannot call addChild on a singleton property PractitionerRole.availabilityExceptions");
         }
         else if (name.equals("endpoint")) {
           return addEndpoint();

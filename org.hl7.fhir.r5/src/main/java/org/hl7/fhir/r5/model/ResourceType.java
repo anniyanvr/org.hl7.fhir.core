@@ -28,38 +28,39 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 
 
 import org.hl7.fhir.exceptions.FHIRException;
 
 public enum ResourceType {
-Account,
+    Account,
     ActivityDefinition,
+    ActorDefinition,
     AdministrableProductDefinition,
     AdverseEvent,
     AllergyIntolerance,
     Appointment,
     AppointmentResponse,
+    ArtifactAssessment,
     AuditEvent,
     Basic,
     Binary,
     BiologicallyDerivedProduct,
+    BiologicallyDerivedProductDispense,
     BodyStructure,
     Bundle,
     CapabilityStatement,
-    CapabilityStatement2,
     CarePlan,
     CareTeam,
-    CatalogEntry,
     ChargeItem,
     ChargeItemDefinition,
     Citation,
     Claim,
     ClaimResponse,
     ClinicalImpression,
-    ClinicalUseIssue,
+    ClinicalUseDefinition,
     CodeSystem,
     Communication,
     CommunicationRequest,
@@ -75,14 +76,16 @@ Account,
     CoverageEligibilityResponse,
     DetectedIssue,
     Device,
+    DeviceAssociation,
     DeviceDefinition,
+    DeviceDispense,
     DeviceMetric,
     DeviceRequest,
     DeviceUsage,
     DiagnosticReport,
-    DocumentManifest,
     DocumentReference,
     Encounter,
+    EncounterHistory,
     Endpoint,
     EnrollmentRequest,
     EnrollmentResponse,
@@ -95,11 +98,14 @@ Account,
     ExplanationOfBenefit,
     FamilyMemberHistory,
     Flag,
+    FormularyItem,
+    GenomicStudy,
     Goal,
     GraphDefinition,
     Group,
     GuidanceResponse,
     HealthcareService,
+    ImagingSelection,
     ImagingStudy,
     Immunization,
     ImmunizationEvaluation,
@@ -107,6 +113,7 @@ Account,
     ImplementationGuide,
     Ingredient,
     InsurancePlan,
+    InventoryItem,
     InventoryReport,
     Invoice,
     Library,
@@ -121,7 +128,7 @@ Account,
     MedicationDispense,
     MedicationKnowledge,
     MedicationRequest,
-    MedicationUsage,
+    MedicationStatement,
     MedicinalProductDefinition,
     MessageDefinition,
     MessageHeader,
@@ -152,7 +159,8 @@ Account,
     QuestionnaireResponse,
     RegulatedAuthorization,
     RelatedPerson,
-    RequestGroup,
+    RequestOrchestration,
+    Requirements,
     ResearchStudy,
     ResearchSubject,
     RiskAssessment,
@@ -178,11 +186,14 @@ Account,
     SupplyRequest,
     Task,
     TerminologyCapabilities,
+    TestPlan,
     TestReport,
     TestScript,
+    Transport,
     ValueSet,
     VerificationResult,
-    VisionPrescription;
+    VisionPrescription,
+    Custom;
 
 
     public String getPath() {;
@@ -191,6 +202,8 @@ Account,
       return "account";
     case ActivityDefinition:
       return "activitydefinition";
+    case ActorDefinition:
+      return "actordefinition";
     case AdministrableProductDefinition:
       return "administrableproductdefinition";
     case AdverseEvent:
@@ -201,6 +214,8 @@ Account,
       return "appointment";
     case AppointmentResponse:
       return "appointmentresponse";
+    case ArtifactAssessment:
+      return "artifactassessment";
     case AuditEvent:
       return "auditevent";
     case Basic:
@@ -209,20 +224,18 @@ Account,
       return "binary";
     case BiologicallyDerivedProduct:
       return "biologicallyderivedproduct";
+    case BiologicallyDerivedProductDispense:
+      return "biologicallyderivedproductdispense";
     case BodyStructure:
       return "bodystructure";
     case Bundle:
       return "bundle";
     case CapabilityStatement:
       return "capabilitystatement";
-    case CapabilityStatement2:
-      return "capabilitystatement2";
     case CarePlan:
       return "careplan";
     case CareTeam:
       return "careteam";
-    case CatalogEntry:
-      return "catalogentry";
     case ChargeItem:
       return "chargeitem";
     case ChargeItemDefinition:
@@ -235,8 +248,8 @@ Account,
       return "claimresponse";
     case ClinicalImpression:
       return "clinicalimpression";
-    case ClinicalUseIssue:
-      return "clinicaluseissue";
+    case ClinicalUseDefinition:
+      return "clinicalusedefinition";
     case CodeSystem:
       return "codesystem";
     case Communication:
@@ -267,8 +280,12 @@ Account,
       return "detectedissue";
     case Device:
       return "device";
+    case DeviceAssociation:
+      return "deviceassociation";
     case DeviceDefinition:
       return "devicedefinition";
+    case DeviceDispense:
+      return "devicedispense";
     case DeviceMetric:
       return "devicemetric";
     case DeviceRequest:
@@ -277,12 +294,12 @@ Account,
       return "deviceusage";
     case DiagnosticReport:
       return "diagnosticreport";
-    case DocumentManifest:
-      return "documentmanifest";
     case DocumentReference:
       return "documentreference";
     case Encounter:
       return "encounter";
+    case EncounterHistory:
+      return "encounterhistory";
     case Endpoint:
       return "endpoint";
     case EnrollmentRequest:
@@ -307,6 +324,10 @@ Account,
       return "familymemberhistory";
     case Flag:
       return "flag";
+    case FormularyItem:
+      return "formularyitem";
+    case GenomicStudy:
+      return "genomicstudy";
     case Goal:
       return "goal";
     case GraphDefinition:
@@ -317,6 +338,8 @@ Account,
       return "guidanceresponse";
     case HealthcareService:
       return "healthcareservice";
+    case ImagingSelection:
+      return "imagingselection";
     case ImagingStudy:
       return "imagingstudy";
     case Immunization:
@@ -331,6 +354,8 @@ Account,
       return "ingredient";
     case InsurancePlan:
       return "insuranceplan";
+    case InventoryItem:
+      return "inventoryitem";
     case InventoryReport:
       return "inventoryreport";
     case Invoice:
@@ -359,8 +384,8 @@ Account,
       return "medicationknowledge";
     case MedicationRequest:
       return "medicationrequest";
-    case MedicationUsage:
-      return "medicationusage";
+    case MedicationStatement:
+      return "medicationstatement";
     case MedicinalProductDefinition:
       return "medicinalproductdefinition";
     case MessageDefinition:
@@ -421,8 +446,10 @@ Account,
       return "regulatedauthorization";
     case RelatedPerson:
       return "relatedperson";
-    case RequestGroup:
-      return "requestgroup";
+    case RequestOrchestration:
+      return "requestorchestration";
+    case Requirements:
+      return "requirements";
     case ResearchStudy:
       return "researchstudy";
     case ResearchSubject:
@@ -473,17 +500,20 @@ Account,
       return "task";
     case TerminologyCapabilities:
       return "terminologycapabilities";
+    case TestPlan:
+      return "testplan";
     case TestReport:
       return "testreport";
     case TestScript:
       return "testscript";
+    case Transport:
+      return "transport";
     case ValueSet:
       return "valueset";
     case VerificationResult:
       return "verificationresult";
     case VisionPrescription:
       return "visionprescription";
-
     }
     return null;
   }
@@ -494,6 +524,8 @@ Account,
       return Account;
     if ("ActivityDefinition".equals(code))
       return ActivityDefinition;
+    if ("ActorDefinition".equals(code))
+      return ActorDefinition;
     if ("AdministrableProductDefinition".equals(code))
       return AdministrableProductDefinition;
     if ("AdverseEvent".equals(code))
@@ -504,6 +536,8 @@ Account,
       return Appointment;
     if ("AppointmentResponse".equals(code))
       return AppointmentResponse;
+    if ("ArtifactAssessment".equals(code))
+      return ArtifactAssessment;
     if ("AuditEvent".equals(code))
       return AuditEvent;
     if ("Basic".equals(code))
@@ -512,20 +546,18 @@ Account,
       return Binary;
     if ("BiologicallyDerivedProduct".equals(code))
       return BiologicallyDerivedProduct;
+    if ("BiologicallyDerivedProductDispense".equals(code))
+      return BiologicallyDerivedProductDispense;
     if ("BodyStructure".equals(code))
       return BodyStructure;
     if ("Bundle".equals(code))
       return Bundle;
     if ("CapabilityStatement".equals(code))
       return CapabilityStatement;
-    if ("CapabilityStatement2".equals(code))
-      return CapabilityStatement2;
     if ("CarePlan".equals(code))
       return CarePlan;
     if ("CareTeam".equals(code))
       return CareTeam;
-    if ("CatalogEntry".equals(code))
-      return CatalogEntry;
     if ("ChargeItem".equals(code))
       return ChargeItem;
     if ("ChargeItemDefinition".equals(code))
@@ -538,8 +570,8 @@ Account,
       return ClaimResponse;
     if ("ClinicalImpression".equals(code))
       return ClinicalImpression;
-    if ("ClinicalUseIssue".equals(code))
-      return ClinicalUseIssue;
+    if ("ClinicalUseDefinition".equals(code))
+      return ClinicalUseDefinition;
     if ("CodeSystem".equals(code))
       return CodeSystem;
     if ("Communication".equals(code))
@@ -570,8 +602,12 @@ Account,
       return DetectedIssue;
     if ("Device".equals(code))
       return Device;
+    if ("DeviceAssociation".equals(code))
+      return DeviceAssociation;
     if ("DeviceDefinition".equals(code))
       return DeviceDefinition;
+    if ("DeviceDispense".equals(code))
+      return DeviceDispense;
     if ("DeviceMetric".equals(code))
       return DeviceMetric;
     if ("DeviceRequest".equals(code))
@@ -580,12 +616,12 @@ Account,
       return DeviceUsage;
     if ("DiagnosticReport".equals(code))
       return DiagnosticReport;
-    if ("DocumentManifest".equals(code))
-      return DocumentManifest;
     if ("DocumentReference".equals(code))
       return DocumentReference;
     if ("Encounter".equals(code))
       return Encounter;
+    if ("EncounterHistory".equals(code))
+      return EncounterHistory;
     if ("Endpoint".equals(code))
       return Endpoint;
     if ("EnrollmentRequest".equals(code))
@@ -610,6 +646,10 @@ Account,
       return FamilyMemberHistory;
     if ("Flag".equals(code))
       return Flag;
+    if ("FormularyItem".equals(code))
+      return FormularyItem;
+    if ("GenomicStudy".equals(code))
+      return GenomicStudy;
     if ("Goal".equals(code))
       return Goal;
     if ("GraphDefinition".equals(code))
@@ -620,6 +660,8 @@ Account,
       return GuidanceResponse;
     if ("HealthcareService".equals(code))
       return HealthcareService;
+    if ("ImagingSelection".equals(code))
+      return ImagingSelection;
     if ("ImagingStudy".equals(code))
       return ImagingStudy;
     if ("Immunization".equals(code))
@@ -634,6 +676,8 @@ Account,
       return Ingredient;
     if ("InsurancePlan".equals(code))
       return InsurancePlan;
+    if ("InventoryItem".equals(code))
+      return InventoryItem;
     if ("InventoryReport".equals(code))
       return InventoryReport;
     if ("Invoice".equals(code))
@@ -662,8 +706,8 @@ Account,
       return MedicationKnowledge;
     if ("MedicationRequest".equals(code))
       return MedicationRequest;
-    if ("MedicationUsage".equals(code))
-      return MedicationUsage;
+    if ("MedicationStatement".equals(code))
+      return MedicationStatement;
     if ("MedicinalProductDefinition".equals(code))
       return MedicinalProductDefinition;
     if ("MessageDefinition".equals(code))
@@ -724,8 +768,10 @@ Account,
       return RegulatedAuthorization;
     if ("RelatedPerson".equals(code))
       return RelatedPerson;
-    if ("RequestGroup".equals(code))
-      return RequestGroup;
+    if ("RequestOrchestration".equals(code))
+      return RequestOrchestration;
+    if ("Requirements".equals(code))
+      return Requirements;
     if ("ResearchStudy".equals(code))
       return ResearchStudy;
     if ("ResearchSubject".equals(code))
@@ -776,10 +822,14 @@ Account,
       return Task;
     if ("TerminologyCapabilities".equals(code))
       return TerminologyCapabilities;
+    if ("TestPlan".equals(code))
+      return TestPlan;
     if ("TestReport".equals(code))
       return TestReport;
     if ("TestScript".equals(code))
       return TestScript;
+    if ("Transport".equals(code))
+      return Transport;
     if ("ValueSet".equals(code))
       return ValueSet;
     if ("VerificationResult".equals(code))
@@ -787,7 +837,7 @@ Account,
     if ("VisionPrescription".equals(code))
       return VisionPrescription;
 
-    throw new FHIRException("Unknown resource type"+code);
+    throw new FHIRException("Unknown resource type "+code);
   }
 
 }

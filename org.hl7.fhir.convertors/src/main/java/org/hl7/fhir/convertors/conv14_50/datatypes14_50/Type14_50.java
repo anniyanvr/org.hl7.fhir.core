@@ -1,8 +1,43 @@
 package org.hl7.fhir.convertors.conv14_50.datatypes14_50;
 
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_14_50;
-import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.*;
-import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.*;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Address14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Age14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Annotation14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Attachment14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.CodeableConcept14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Coding14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.ContactPoint14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Count14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Distance14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Duration14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.HumanName14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Identifier14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Money14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Period14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Quantity14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Range14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Ratio14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.SampledData14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Signature14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.complextypes14_50.Timing14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Base64Binary14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Boolean14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Code14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Date14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.DateTime14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Decimal14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Id14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Instant14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Integer14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.MarkDown14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Oid14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.PositiveInt14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.String14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Time14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.UnsignedInt14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Uri14_50;
+import org.hl7.fhir.convertors.conv14_50.datatypes14_50.primitivetypes14_50.Uuid14_50;
 import org.hl7.fhir.exceptions.FHIRException;
 
 public class Type14_50 {
@@ -45,10 +80,10 @@ public class Type14_50 {
       return UnsignedInt14_50.convertUnsignedInt((org.hl7.fhir.dstu2016may.model.UnsignedIntType) src);
     if (src instanceof org.hl7.fhir.dstu2016may.model.IntegerType)
       return Integer14_50.convertInteger((org.hl7.fhir.dstu2016may.model.IntegerType) src);
-    if (src instanceof org.hl7.fhir.dstu2016may.model.UriType)
-      return Uri14_50.convertUri((org.hl7.fhir.dstu2016may.model.UriType) src);
     if (src instanceof org.hl7.fhir.dstu2016may.model.UuidType)
       return Uuid14_50.convertUuid((org.hl7.fhir.dstu2016may.model.UuidType) src);
+    if (src instanceof org.hl7.fhir.dstu2016may.model.UriType)
+      return Uri14_50.convertUri((org.hl7.fhir.dstu2016may.model.UriType) src);
     if (src instanceof org.hl7.fhir.dstu2016may.model.Extension)
       return Extension14_50.convertExtension((org.hl7.fhir.dstu2016may.model.Extension) src);
     if (src instanceof org.hl7.fhir.dstu2016may.model.Narrative)
@@ -98,7 +133,7 @@ public class Type14_50 {
     if (src instanceof org.hl7.fhir.dstu2016may.model.Timing)
       return Timing14_50.convertTiming((org.hl7.fhir.dstu2016may.model.Timing) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown type " + src.fhirType());
+      throw new FHIRException("The type " + src.fhirType()+" cannot be converted from R2B to R5");
     } else {
       return null;
     }
@@ -134,9 +169,11 @@ public class Type14_50 {
       return UnsignedInt14_50.convertUnsignedInt((org.hl7.fhir.r5.model.UnsignedIntType) src);
     if (src instanceof org.hl7.fhir.r5.model.IntegerType)
       return Integer14_50.convertInteger((org.hl7.fhir.r5.model.IntegerType) src);
-    if (src instanceof org.hl7.fhir.r5.model.UriType) return Uri14_50.convertUri((org.hl7.fhir.r5.model.UriType) src);
+    if (src instanceof org.hl7.fhir.r5.model.Integer64Type)
+      return Integer14_50.convertInteger64((org.hl7.fhir.r5.model.Integer64Type) src);
     if (src instanceof org.hl7.fhir.r5.model.UuidType)
       return Uuid14_50.convertUuid((org.hl7.fhir.r5.model.UuidType) src);
+    if (src instanceof org.hl7.fhir.r5.model.UriType) return Uri14_50.convertUri((org.hl7.fhir.r5.model.UriType) src);
     if (src instanceof org.hl7.fhir.r5.model.Extension)
       return Extension14_50.convertExtension((org.hl7.fhir.r5.model.Extension) src);
     if (src instanceof org.hl7.fhir.r5.model.Narrative)
@@ -180,7 +217,7 @@ public class Type14_50 {
     if (src instanceof org.hl7.fhir.r5.model.Timing)
       return Timing14_50.convertTiming((org.hl7.fhir.r5.model.Timing) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown type " + src.fhirType());
+      throw new FHIRException("The type " + src.fhirType()+" cannot be converted from R5 to R2B");
     } else {
       return null;
     }

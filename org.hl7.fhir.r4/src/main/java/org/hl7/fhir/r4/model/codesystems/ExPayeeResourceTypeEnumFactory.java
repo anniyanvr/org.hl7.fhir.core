@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ExPayeeResourceTypeEnumFactory implements EnumFactory<ExPayeeResourceType> {
@@ -50,11 +46,13 @@ public class ExPayeeResourceTypeEnumFactory implements EnumFactory<ExPayeeResour
       return ExPayeeResourceType.PRACTITIONER;
     if ("relatedperson".equals(codeString))
       return ExPayeeResourceType.RELATEDPERSON;
-    throw new IllegalArgumentException("Unknown ExPayeeResourceType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ExPayeeResourceType code '" + codeString + "'");
   }
 
   public String toCode(ExPayeeResourceType code) {
-    if (code == ExPayeeResourceType.ORGANIZATION)
+       if (code == ExPayeeResourceType.NULL)
+           return null;
+       if (code == ExPayeeResourceType.ORGANIZATION)
       return "organization";
     if (code == ExPayeeResourceType.PATIENT)
       return "patient";
@@ -63,10 +61,10 @@ public class ExPayeeResourceTypeEnumFactory implements EnumFactory<ExPayeeResour
     if (code == ExPayeeResourceType.RELATEDPERSON)
       return "relatedperson";
     return "?";
-  }
+   }
 
-    public String toSystem(ExPayeeResourceType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ExPayeeResourceType code) {
+    return code.getSystem();
+  }
 
 }

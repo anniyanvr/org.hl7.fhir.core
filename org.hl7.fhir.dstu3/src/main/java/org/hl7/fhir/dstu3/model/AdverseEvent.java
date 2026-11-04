@@ -121,12 +121,12 @@ public class AdverseEvent extends DomainResource {
           return AdverseEventCategory.PAE;
         throw new IllegalArgumentException("Unknown AdverseEventCategory code '"+codeString+"'");
         }
-        public Enumeration<AdverseEventCategory> fromType(Base code) throws FHIRException {
+        public Enumeration<AdverseEventCategory> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<AdverseEventCategory>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("AE".equals(codeString))
@@ -136,12 +136,14 @@ public class AdverseEvent extends DomainResource {
         throw new FHIRException("Unknown AdverseEventCategory code '"+codeString+"'");
         }
     public String toCode(AdverseEventCategory code) {
-      if (code == AdverseEventCategory.AE)
+       if (code == AdverseEventCategory.NULL)
+           return null;
+       if (code == AdverseEventCategory.AE)
         return "AE";
       if (code == AdverseEventCategory.PAE)
         return "PAE";
       return "?";
-      }
+   }
     public String toSystem(AdverseEventCategory code) {
       return code.getSystem();
       }
@@ -217,12 +219,12 @@ public class AdverseEvent extends DomainResource {
           return AdverseEventCausality.CAUSALITY2;
         throw new IllegalArgumentException("Unknown AdverseEventCausality code '"+codeString+"'");
         }
-        public Enumeration<AdverseEventCausality> fromType(Base code) throws FHIRException {
+        public Enumeration<AdverseEventCausality> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<AdverseEventCausality>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("causality1".equals(codeString))
@@ -232,12 +234,14 @@ public class AdverseEvent extends DomainResource {
         throw new FHIRException("Unknown AdverseEventCausality code '"+codeString+"'");
         }
     public String toCode(AdverseEventCausality code) {
-      if (code == AdverseEventCausality.CAUSALITY1)
+       if (code == AdverseEventCausality.NULL)
+           return null;
+       if (code == AdverseEventCausality.CAUSALITY1)
         return "causality1";
       if (code == AdverseEventCausality.CAUSALITY2)
         return "causality2";
       return "?";
-      }
+   }
     public String toSystem(AdverseEventCausality code) {
       return code.getSystem();
       }
@@ -703,14 +707,14 @@ public class AdverseEvent extends DomainResource {
           return this.instance;
         }
         else if (name.equals("causality")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AdverseEvent.causality");
+          throw new FHIRException("Cannot call addChild on a singleton property AdverseEvent.causality");
         }
         else if (name.equals("causalityAssessment")) {
           this.causalityAssessment = new CodeableConcept();
           return this.causalityAssessment;
         }
         else if (name.equals("causalityProductRelatedness")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AdverseEvent.causalityProductRelatedness");
+          throw new FHIRException("Cannot call addChild on a singleton property AdverseEvent.causalityProductRelatedness");
         }
         else if (name.equals("causalityMethod")) {
           this.causalityMethod = new CodeableConcept();
@@ -1181,28 +1185,6 @@ public class AdverseEvent extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Condition> getReactionTarget() { 
-      if (this.reactionTarget == null)
-        this.reactionTarget = new ArrayList<Condition>();
-      return this.reactionTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Condition addReactionTarget() { 
-      Condition r = new Condition();
-      if (this.reactionTarget == null)
-        this.reactionTarget = new ArrayList<Condition>();
-      this.reactionTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #location} (The information about where the adverse event occurred.)
      */
     public Reference getLocation() { 
@@ -1528,16 +1510,6 @@ public class AdverseEvent extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getSubjectMedicalHistoryTarget() { 
-      if (this.subjectMedicalHistoryTarget == null)
-        this.subjectMedicalHistoryTarget = new ArrayList<Resource>();
-      return this.subjectMedicalHistoryTarget;
-    }
-
-    /**
      * @return {@link #referenceDocument} (AdverseEvent.referenceDocument.)
      */
     public List<Reference> getReferenceDocument() { 
@@ -1591,28 +1563,6 @@ public class AdverseEvent extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<DocumentReference> getReferenceDocumentTarget() { 
-      if (this.referenceDocumentTarget == null)
-        this.referenceDocumentTarget = new ArrayList<DocumentReference>();
-      return this.referenceDocumentTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public DocumentReference addReferenceDocumentTarget() { 
-      DocumentReference r = new DocumentReference();
-      if (this.referenceDocumentTarget == null)
-        this.referenceDocumentTarget = new ArrayList<DocumentReference>();
-      this.referenceDocumentTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #study} (AdverseEvent.study.)
      */
     public List<Reference> getStudy() { 
@@ -1663,28 +1613,6 @@ public class AdverseEvent extends DomainResource {
         addStudy();
       }
       return getStudy().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<ResearchStudy> getStudyTarget() { 
-      if (this.studyTarget == null)
-        this.studyTarget = new ArrayList<ResearchStudy>();
-      return this.studyTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public ResearchStudy addStudyTarget() { 
-      ResearchStudy r = new ResearchStudy();
-      if (this.studyTarget == null)
-        this.studyTarget = new ArrayList<ResearchStudy>();
-      this.studyTarget.add(r);
-      return r;
     }
 
       protected void listChildren(List<Property> children) {
@@ -1907,7 +1835,7 @@ public class AdverseEvent extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("category")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AdverseEvent.category");
+          throw new FHIRException("Cannot call addChild on a singleton property AdverseEvent.category");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
@@ -1918,7 +1846,7 @@ public class AdverseEvent extends DomainResource {
           return this.subject;
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AdverseEvent.date");
+          throw new FHIRException("Cannot call addChild on a singleton property AdverseEvent.date");
         }
         else if (name.equals("reaction")) {
           return addReaction();
@@ -1944,7 +1872,7 @@ public class AdverseEvent extends DomainResource {
           return this.eventParticipant;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AdverseEvent.description");
+          throw new FHIRException("Cannot call addChild on a singleton property AdverseEvent.description");
         }
         else if (name.equals("suspectEntity")) {
           return addSuspectEntity();

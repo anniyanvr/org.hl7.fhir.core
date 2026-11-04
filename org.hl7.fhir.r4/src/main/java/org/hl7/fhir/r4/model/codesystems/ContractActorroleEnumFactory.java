@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ContractActorroleEnumFactory implements EnumFactory<ContractActorrole> {
@@ -46,19 +42,21 @@ public class ContractActorroleEnumFactory implements EnumFactory<ContractActorro
       return ContractActorrole.PRACTITIONER;
     if ("patient".equals(codeString))
       return ContractActorrole.PATIENT;
-    throw new IllegalArgumentException("Unknown ContractActorrole code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ContractActorrole code '" + codeString + "'");
   }
 
   public String toCode(ContractActorrole code) {
-    if (code == ContractActorrole.PRACTITIONER)
+       if (code == ContractActorrole.NULL)
+           return null;
+       if (code == ContractActorrole.PRACTITIONER)
       return "practitioner";
     if (code == ContractActorrole.PATIENT)
       return "patient";
     return "?";
-  }
+   }
 
-    public String toSystem(ContractActorrole code) {
-      return code.getSystem();
-      }
+  public String toSystem(ContractActorrole code) {
+    return code.getSystem();
+  }
 
 }

@@ -145,6 +145,7 @@ local.properties
 **/.target
 **/.factorypath
 **/.springBeans
+**/.checkstyle
 
 
 # PDT-specific
@@ -293,7 +294,6 @@ local.properties
 /org.hl7.fhir.r5/src/test/resources/snapshot-generation/t9-actual.xml
 /org.hl7.fhir.r5/src/test/resources/snapshot-generation/dv1-actual.xml
 /org.hl7.fhir.r5/src/test/resources/snapshot-generation/t45-actual.xml
-/org.hl7.fhir.r4b
 /org.hl7.fhir.r5/src/test/resources/gen/gen.xml
 /org.hl7.fhir.r5/src/test/resources/graphql/*.out
 /org.hl7.fhir.validation/src/test/resources/comparison/output
@@ -304,3 +304,25 @@ local.properties
 /org.hl7.fhir.r5/src/test/resources/snapshot-generation/logical2-actual.xml
 /org.hl7.fhir.r5.new
 /org.hl7.fhir.r5.newc
+/org.hl7.fhir.r4b.new
+
+org.hl7.fhir.r5/var/lib/.fhir/packages/
+
+org.hl7.fhir.utilities/src/main/java/org/hl7/fhir/utilities/DebugUtilities.java
+
+org.hl7.fhir.utilities/src/main/resources copy/
+
+package.tgz
+
+org.hl7.fhir.model/effective-pom.xml
+
+org.hl7.fhir.support/effective-pom.xml
+
+.vscode/settings.json
+
+org.hl7.fhir.validation/src/test/java/org/hl7/fhir/terminology/tests/LocalTerminologyServiceTests.java
+
+# terminology cache bookkeeping written beside the .cache files (see TerminologyCache):
+# the nonce is local-only, and the .tmp files are scratch left behind by a hard kill
+*.cache.nonce
+*.cache*.tmp

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class UslabDoEventEnumFactory implements EnumFactory<UslabDoEvent> {
@@ -50,11 +46,13 @@ public class UslabDoEventEnumFactory implements EnumFactory<UslabDoEvent> {
       return UslabDoEvent.ORDERERCANCEL;
     if ("lab-cancel".equals(codeString))
       return UslabDoEvent.LABCANCEL;
-    throw new IllegalArgumentException("Unknown UslabDoEvent code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown UslabDoEvent code '" + codeString + "'");
   }
 
   public String toCode(UslabDoEvent code) {
-    if (code == UslabDoEvent.NEWREQUEST)
+       if (code == UslabDoEvent.NULL)
+           return null;
+       if (code == UslabDoEvent.NEWREQUEST)
       return "new-request";
     if (code == UslabDoEvent.ADDONREQUEST)
       return "add-on-request";
@@ -63,10 +61,10 @@ public class UslabDoEventEnumFactory implements EnumFactory<UslabDoEvent> {
     if (code == UslabDoEvent.LABCANCEL)
       return "lab-cancel";
     return "?";
-  }
+   }
 
-    public String toSystem(UslabDoEvent code) {
-      return code.getSystem();
-      }
+  public String toSystem(UslabDoEvent code) {
+    return code.getSystem();
+  }
 
 }

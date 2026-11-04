@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ObservationCategoryEnumFactory implements EnumFactory<ObservationCategory> {
@@ -60,11 +56,13 @@ public class ObservationCategoryEnumFactory implements EnumFactory<ObservationCa
       return ObservationCategory.THERAPY;
     if ("activity".equals(codeString))
       return ObservationCategory.ACTIVITY;
-    throw new IllegalArgumentException("Unknown ObservationCategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ObservationCategory code '" + codeString + "'");
   }
 
   public String toCode(ObservationCategory code) {
-    if (code == ObservationCategory.SOCIALHISTORY)
+       if (code == ObservationCategory.NULL)
+           return null;
+       if (code == ObservationCategory.SOCIALHISTORY)
       return "social-history";
     if (code == ObservationCategory.VITALSIGNS)
       return "vital-signs";
@@ -83,10 +81,10 @@ public class ObservationCategoryEnumFactory implements EnumFactory<ObservationCa
     if (code == ObservationCategory.ACTIVITY)
       return "activity";
     return "?";
-  }
+   }
 
-    public String toSystem(ObservationCategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(ObservationCategory code) {
+    return code.getSystem();
+  }
 
 }

@@ -2,35 +2,29 @@ package org.hl7.fhir.r5.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.xmlbeans.xml.stream.ReferenceResolver;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.fhirpath.ExpressionNode;
+import org.hl7.fhir.r5.fhirpath.FHIRPathEngine;
 import org.hl7.fhir.r5.model.Base;
 import org.hl7.fhir.r5.model.Bundle;
-import org.hl7.fhir.r5.model.Expression;
-import org.hl7.fhir.r5.model.ExpressionNode;
 import org.hl7.fhir.r5.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r5.model.GraphDefinition;
 import org.hl7.fhir.r5.model.GraphDefinition.GraphDefinitionLinkComponent;
-import org.hl7.fhir.r5.model.GraphDefinition.GraphDefinitionLinkTargetComponent;
-import org.hl7.fhir.r5.model.Reference;
 import org.hl7.fhir.r5.model.Resource;
-import org.hl7.fhir.r5.model.StringType;
+
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.graphql.Argument;
 import org.hl7.fhir.utilities.graphql.EGraphEngine;
 import org.hl7.fhir.utilities.graphql.EGraphQLException;
-import org.hl7.fhir.utilities.graphql.GraphQLResponse;
 import org.hl7.fhir.utilities.graphql.IGraphQLStorageServices;
-import org.hl7.fhir.utilities.graphql.IGraphQLStorageServices.ReferenceResolution;
 import org.hl7.fhir.utilities.graphql.StringValue;
-import org.hl7.fhir.instance.model.api.IBaseResource;
+
 
 public class GraphDefinitionEngine {
 
@@ -191,48 +185,48 @@ public class GraphDefinitionEngine {
     List<Base> matches = engine.evaluate(null, focus, focus, focus, node);
     check(!validating || matches.size() >= (link.hasMin() ? link.getMin() : 0), "Link at path "+path+" requires at least "+link.getMin()+" matches, but only found "+matches.size());
     check(!validating || matches.size() <= (link.hasMax() ?  Integer.parseInt(link.getMax()) : Integer.MAX_VALUE), "Link at path "+path+" requires at most "+link.getMax()+" matches, but found "+matches.size());
-    for (Base sel : matches) {
-      check(sel.fhirType().equals("Reference"), "Selected node from an expression must be a Reference"); // todo: should a URL be ok?
-      ReferenceResolution res = services.lookup(appInfo, focus, (Reference) sel);
-      if (res != null) {
-        check(res.getTargetContext() != focus, "how to handle contained resources is not yet resolved"); // todo
-        for (GraphDefinitionLinkTargetComponent tl : link.getTarget()) {
-          if (tl.getType().equals(res.getTarget().fhirType())) {
-            Resource r = (Resource) res.getTarget();
-            if (!isInBundle(r)) {
-              addToBundle(r);
-              for (GraphDefinitionLinkComponent l : graphDefinition.getLink()) {
-                processLink(focus.fhirType(), r, l, depth+1);
-              }
-            }
-          }
-        }
-      }
-    }
+//    for (Base sel : matches) {
+//      check(sel.fhirType().equals("Reference"), "Selected node from an expression must be a Reference"); // todo: should a URL be ok?
+//      ReferenceResolution res = services.lookup(appInfo, focus, (Reference) sel);
+//      if (res != null) {
+//        check(res.getTargetContext() != focus, "how to handle contained resources is not yet resolved"); // todo
+//        for (GraphDefinitionLinkTargetComponent tl : link.getTarget()) {
+//          if (tl.getType().equals(res.getTarget().fhirType())) {
+//            Resource r = (Resource) res.getTarget();
+//            if (!isInBundle(r)) {
+//              addToBundle(r);
+//              for (GraphDefinitionLinkComponent l : graphDefinition.getLink()) {
+//                processLink(focus.fhirType(), r, l, depth+1);
+//              }
+//            }
+//          }
+//        }
+//      }
+//    }
   }
   
   private void processLinkTarget(String focusPath, Resource focus, GraphDefinitionLinkComponent link, int depth) {
-    check(link.getTarget().size() == 1, "If there is no path, there must be one and only one target at "+focusPath);
-    check(link.getTarget().get(0).hasType(), "If there is no path, there must be type on the target at "+focusPath);
-    check(link.getTarget().get(0).getParams().contains("{ref}"), "If there is no path, the target must have parameters that include a parameter using {ref} at "+focusPath);
-    String path = focusPath+" -> "+link.getTarget().get(0).getType()+"?"+link.getTarget().get(0).getParams();
-    
-    List<IBaseResource> list = new ArrayList<>();
-    List<Argument> params = new ArrayList<>();
-    parseParams(params, link.getTarget().get(0).getParams(), focus);
-    services.listResources(appInfo, link.getTarget().get(0).getType(), params, list);
-    check(!validating || (list.size() >= (link.hasMin() ? link.getMin() : 0)), "Link at path "+path+" requires at least "+link.getMin()+" matches, but only found "+list.size());
-    check(!validating || (list.size() <= (link.hasMax() && !link.getMax().equals("*") ? Integer.parseInt(link.getMax()) : Integer.MAX_VALUE)), "Link at path "+path+" requires at most "+link.getMax()+" matches, but found "+list.size());
-    for (IBaseResource res : list) {
-      Resource r = (Resource) res;
-      if (!isInBundle(r)) {
-        addToBundle(r);
-        // Grahame Grieve 17-06-2020: this seems wrong to me - why restart? 
-        for (GraphDefinitionLinkComponent l : graphDefinition.getLink()) {
-          processLink(start.fhirType(), start, l, depth+1);
-        }
-      }
-    }
+//    check(link.getTarget().size() == 1, "If there is no path, there must be one and only one target at "+focusPath);
+//    check(link.getTarget().get(0).hasType(), "If there is no path, there must be type on the target at "+focusPath);
+//    check(link.getTarget().get(0).getParams().contains("{ref}"), "If there is no path, the target must have parameters that include a parameter using {ref} at "+focusPath);
+//    String path = focusPath+" -> "+link.getTarget().get(0).getType()+"?"+link.getTarget().get(0).getParams();
+//    
+//    List<IBaseResource> list = new ArrayList<>();
+//    List<Argument> params = new ArrayList<>();
+//    parseParams(params, link.getTarget().get(0).getParams(), focus);
+//    services.listResources(appInfo, link.getTarget().get(0).getType().toCode(), params, list);
+//    check(!validating || (list.size() >= (link.hasMin() ? link.getMin() : 0)), "Link at path "+path+" requires at least "+link.getMin()+" matches, but only found "+list.size());
+//    check(!validating || (list.size() <= (link.hasMax() && !link.getMax().equals("*") ? Integer.parseInt(link.getMax()) : Integer.MAX_VALUE)), "Link at path "+path+" requires at most "+link.getMax()+" matches, but found "+list.size());
+//    for (IBaseResource res : list) {
+//      Resource r = (Resource) res;
+//      if (!isInBundle(r)) {
+//        addToBundle(r);
+//        // Grahame Grieve 17-06-2020: this seems wrong to me - why restart? 
+//        for (GraphDefinitionLinkComponent l : graphDefinition.getLink()) {
+//          processLink(start.fhirType(), start, l, depth+1);
+//        }
+//      }
+//    }
   }
 
     private void parseParams(List<Argument> params, String value, Resource res) {
@@ -252,6 +246,8 @@ public class GraphDefinitionEngine {
 
   public Map<String, List<String>> splitQuery(String string) {
     final Map<String, List<String>> query_pairs = new LinkedHashMap<String, List<String>>();
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //single literal character split
     final String[] pairs = string.split("&");
     for (String pair : pairs) {
       final int idx = pair.indexOf("=");

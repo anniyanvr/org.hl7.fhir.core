@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -70,11 +66,13 @@ public class DiagnosticOrderStatusEnumFactory implements EnumFactory<DiagnosticO
       return DiagnosticOrderStatus.FAILED;
     if ("entered-in-error".equals(codeString))
       return DiagnosticOrderStatus.ENTEREDINERROR;
-    throw new IllegalArgumentException("Unknown DiagnosticOrderStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown DiagnosticOrderStatus code '" + codeString + "'");
   }
 
   public String toCode(DiagnosticOrderStatus code) {
-    if (code == DiagnosticOrderStatus.PROPOSED)
+       if (code == DiagnosticOrderStatus.NULL)
+           return null;
+       if (code == DiagnosticOrderStatus.PROPOSED)
       return "proposed";
     if (code == DiagnosticOrderStatus.DRAFT)
       return "draft";
@@ -103,10 +101,10 @@ public class DiagnosticOrderStatusEnumFactory implements EnumFactory<DiagnosticO
     if (code == DiagnosticOrderStatus.ENTEREDINERROR)
       return "entered-in-error";
     return "?";
-  }
+   }
 
-    public String toSystem(DiagnosticOrderStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(DiagnosticOrderStatus code) {
+    return code.getSystem();
+  }
 
 }

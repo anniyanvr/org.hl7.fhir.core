@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class GoalPriorityEnumFactory implements EnumFactory<GoalPriority> {
@@ -48,21 +44,23 @@ public class GoalPriorityEnumFactory implements EnumFactory<GoalPriority> {
       return GoalPriority.MEDIUMPRIORITY;
     if ("low-priority".equals(codeString))
       return GoalPriority.LOWPRIORITY;
-    throw new IllegalArgumentException("Unknown GoalPriority code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown GoalPriority code '" + codeString + "'");
   }
 
   public String toCode(GoalPriority code) {
-    if (code == GoalPriority.HIGHPRIORITY)
+       if (code == GoalPriority.NULL)
+           return null;
+       if (code == GoalPriority.HIGHPRIORITY)
       return "high-priority";
     if (code == GoalPriority.MEDIUMPRIORITY)
       return "medium-priority";
     if (code == GoalPriority.LOWPRIORITY)
       return "low-priority";
     return "?";
-  }
+   }
 
-    public String toSystem(GoalPriority code) {
-      return code.getSystem();
-      }
+  public String toSystem(GoalPriority code) {
+    return code.getSystem();
+  }
 
 }

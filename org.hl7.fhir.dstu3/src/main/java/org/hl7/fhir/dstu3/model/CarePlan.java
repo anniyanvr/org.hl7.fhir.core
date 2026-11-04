@@ -181,12 +181,12 @@ public class CarePlan extends DomainResource {
           return CarePlanStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown CarePlanStatus code '"+codeString+"'");
         }
-        public Enumeration<CarePlanStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<CarePlanStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<CarePlanStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -206,7 +206,9 @@ public class CarePlan extends DomainResource {
         throw new FHIRException("Unknown CarePlanStatus code '"+codeString+"'");
         }
     public String toCode(CarePlanStatus code) {
-      if (code == CarePlanStatus.DRAFT)
+       if (code == CarePlanStatus.NULL)
+           return null;
+       if (code == CarePlanStatus.DRAFT)
         return "draft";
       if (code == CarePlanStatus.ACTIVE)
         return "active";
@@ -221,7 +223,7 @@ public class CarePlan extends DomainResource {
       if (code == CarePlanStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(CarePlanStatus code) {
       return code.getSystem();
       }
@@ -323,12 +325,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return CarePlanIntent.OPTION;
         throw new IllegalArgumentException("Unknown CarePlanIntent code '"+codeString+"'");
         }
-        public Enumeration<CarePlanIntent> fromType(Base code) throws FHIRException {
+        public Enumeration<CarePlanIntent> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<CarePlanIntent>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("proposal".equals(codeString))
@@ -342,7 +344,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown CarePlanIntent code '"+codeString+"'");
         }
     public String toCode(CarePlanIntent code) {
-      if (code == CarePlanIntent.PROPOSAL)
+       if (code == CarePlanIntent.NULL)
+           return null;
+       if (code == CarePlanIntent.PROPOSAL)
         return "proposal";
       if (code == CarePlanIntent.PLAN)
         return "plan";
@@ -351,7 +355,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == CarePlanIntent.OPTION)
         return "option";
       return "?";
-      }
+   }
     public String toSystem(CarePlanIntent code) {
       return code.getSystem();
       }
@@ -487,12 +491,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return CarePlanActivityStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown CarePlanActivityStatus code '"+codeString+"'");
         }
-        public Enumeration<CarePlanActivityStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<CarePlanActivityStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<CarePlanActivityStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("not-started".equals(codeString))
@@ -512,7 +516,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown CarePlanActivityStatus code '"+codeString+"'");
         }
     public String toCode(CarePlanActivityStatus code) {
-      if (code == CarePlanActivityStatus.NOTSTARTED)
+       if (code == CarePlanActivityStatus.NULL)
+           return null;
+       if (code == CarePlanActivityStatus.NOTSTARTED)
         return "not-started";
       if (code == CarePlanActivityStatus.SCHEDULED)
         return "scheduled";
@@ -527,7 +533,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == CarePlanActivityStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(CarePlanActivityStatus code) {
       return code.getSystem();
       }
@@ -694,16 +700,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
             addOutcomeReference();
           }
           return getOutcomeReference().get(0);
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Resource> getOutcomeReferenceTarget() { 
-          if (this.outcomeReferenceTarget == null)
-            this.outcomeReferenceTarget = new ArrayList<Resource>();
-          return this.outcomeReferenceTarget;
         }
 
         /**
@@ -1358,28 +1354,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         }
 
         /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Condition> getReasonReferenceTarget() { 
-          if (this.reasonReferenceTarget == null)
-            this.reasonReferenceTarget = new ArrayList<Condition>();
-          return this.reasonReferenceTarget;
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public Condition addReasonReferenceTarget() { 
-          Condition r = new Condition();
-          if (this.reasonReferenceTarget == null)
-            this.reasonReferenceTarget = new ArrayList<Condition>();
-          this.reasonReferenceTarget.add(r);
-          return r;
-        }
-
-        /**
          * @return {@link #goal} (Internal reference that identifies the goals that this activity is intended to contribute towards meeting.)
          */
         public List<Reference> getGoal() { 
@@ -1430,28 +1404,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
             addGoal();
           }
           return getGoal().get(0);
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Goal> getGoalTarget() { 
-          if (this.goalTarget == null)
-            this.goalTarget = new ArrayList<Goal>();
-          return this.goalTarget;
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public Goal addGoalTarget() { 
-          Goal r = new Goal();
-          if (this.goalTarget == null)
-            this.goalTarget = new ArrayList<Goal>();
-          this.goalTarget.add(r);
-          return r;
         }
 
         /**
@@ -1611,8 +1563,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (Timing) this.scheduled;
         }
 
-        public boolean hasScheduledTiming() { 
-          return this != null && this.scheduled instanceof Timing;
+        public boolean hasScheduledTiming() {
+            return this.scheduled instanceof Timing;
         }
 
         /**
@@ -1626,8 +1578,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (Period) this.scheduled;
         }
 
-        public boolean hasScheduledPeriod() { 
-          return this != null && this.scheduled instanceof Period;
+        public boolean hasScheduledPeriod() {
+            return this.scheduled instanceof Period;
         }
 
         /**
@@ -1641,8 +1593,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (StringType) this.scheduled;
         }
 
-        public boolean hasScheduledStringType() { 
-          return this != null && this.scheduled instanceof StringType;
+        public boolean hasScheduledStringType() {
+            return this.scheduled instanceof StringType;
         }
 
         public boolean hasScheduled() { 
@@ -1757,16 +1709,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         }
 
         /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Resource> getPerformerTarget() { 
-          if (this.performerTarget == null)
-            this.performerTarget = new ArrayList<Resource>();
-          return this.performerTarget;
-        }
-
-        /**
          * @return {@link #product} (Identifies the food, drug or other product to be consumed or supplied in the activity.)
          */
         public Type getProduct() { 
@@ -1784,8 +1726,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (CodeableConcept) this.product;
         }
 
-        public boolean hasProductCodeableConcept() { 
-          return this != null && this.product instanceof CodeableConcept;
+        public boolean hasProductCodeableConcept() {
+            return this.product instanceof CodeableConcept;
         }
 
         /**
@@ -1799,8 +1741,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (Reference) this.product;
         }
 
-        public boolean hasProductReference() { 
-          return this != null && this.product instanceof Reference;
+        public boolean hasProductReference() {
+            return this.product instanceof Reference;
         }
 
         public boolean hasProduct() { 
@@ -2160,13 +2102,13 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return addGoal();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CarePlan.status");
+          throw new FHIRException("Cannot call addChild on a singleton property CarePlan.status");
         }
         else if (name.equals("statusReason")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CarePlan.statusReason");
+          throw new FHIRException("Cannot call addChild on a singleton property CarePlan.statusReason");
         }
         else if (name.equals("prohibited")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CarePlan.prohibited");
+          throw new FHIRException("Cannot call addChild on a singleton property CarePlan.prohibited");
         }
         else if (name.equals("scheduledTiming")) {
           this.scheduled = new Timing();
@@ -2204,7 +2146,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return this.quantity;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CarePlan.description");
+          throw new FHIRException("Cannot call addChild on a singleton property CarePlan.description");
         }
         else
           return super.addChild(name);
@@ -2611,16 +2553,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getDefinitionTarget() { 
-      if (this.definitionTarget == null)
-        this.definitionTarget = new ArrayList<Resource>();
-      return this.definitionTarget;
-    }
-
-    /**
      * @return {@link #basedOn} (A care plan that is fulfilled in whole or in part by this care plan.)
      */
     public List<Reference> getBasedOn() { 
@@ -2671,28 +2603,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addBasedOn();
       }
       return getBasedOn().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<CarePlan> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<CarePlan>();
-      return this.basedOnTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public CarePlan addBasedOnTarget() { 
-      CarePlan r = new CarePlan();
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<CarePlan>();
-      this.basedOnTarget.add(r);
-      return r;
     }
 
     /**
@@ -2749,28 +2659,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<CarePlan> getReplacesTarget() { 
-      if (this.replacesTarget == null)
-        this.replacesTarget = new ArrayList<CarePlan>();
-      return this.replacesTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public CarePlan addReplacesTarget() { 
-      CarePlan r = new CarePlan();
-      if (this.replacesTarget == null)
-        this.replacesTarget = new ArrayList<CarePlan>();
-      this.replacesTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #partOf} (A larger care plan of which this particular care plan is a component or step.)
      */
     public List<Reference> getPartOf() { 
@@ -2823,27 +2711,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return getPartOf().get(0);
     }
 
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<CarePlan> getPartOfTarget() { 
-      if (this.partOfTarget == null)
-        this.partOfTarget = new ArrayList<CarePlan>();
-      return this.partOfTarget;
-    }
 
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public CarePlan addPartOfTarget() { 
-      CarePlan r = new CarePlan();
-      if (this.partOfTarget == null)
-        this.partOfTarget = new ArrayList<CarePlan>();
-      this.partOfTarget.add(r);
-      return r;
-    }
 
     /**
      * @return {@link #status} (Indicates whether the plan is currently being acted upon, represents future intentions or is now a historical record.). This is the underlying object with id, value and extensions. The accessor "getStatus" gives direct access to the value
@@ -3242,16 +3110,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getAuthorTarget() { 
-      if (this.authorTarget == null)
-        this.authorTarget = new ArrayList<Resource>();
-      return this.authorTarget;
-    }
-
-    /**
      * @return {@link #careTeam} (Identifies all people and organizations who are expected to be involved in the care envisioned by this plan.)
      */
     public List<Reference> getCareTeam() { 
@@ -3302,28 +3160,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addCareTeam();
       }
       return getCareTeam().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<CareTeam> getCareTeamTarget() { 
-      if (this.careTeamTarget == null)
-        this.careTeamTarget = new ArrayList<CareTeam>();
-      return this.careTeamTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public CareTeam addCareTeamTarget() { 
-      CareTeam r = new CareTeam();
-      if (this.careTeamTarget == null)
-        this.careTeamTarget = new ArrayList<CareTeam>();
-      this.careTeamTarget.add(r);
-      return r;
     }
 
     /**
@@ -3380,28 +3216,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Condition> getAddressesTarget() { 
-      if (this.addressesTarget == null)
-        this.addressesTarget = new ArrayList<Condition>();
-      return this.addressesTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Condition addAddressesTarget() { 
-      Condition r = new Condition();
-      if (this.addressesTarget == null)
-        this.addressesTarget = new ArrayList<Condition>();
-      this.addressesTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #supportingInfo} (Identifies portions of the patient's record that specifically influenced the formation of the plan.  These might include co-morbidities, recent procedures, limitations, recent assessments, etc.)
      */
     public List<Reference> getSupportingInfo() { 
@@ -3455,16 +3269,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getSupportingInfoTarget() { 
-      if (this.supportingInfoTarget == null)
-        this.supportingInfoTarget = new ArrayList<Resource>();
-      return this.supportingInfoTarget;
-    }
-
-    /**
      * @return {@link #goal} (Describes the intended objective(s) of carrying out the care plan.)
      */
     public List<Reference> getGoal() { 
@@ -3515,28 +3319,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addGoal();
       }
       return getGoal().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Goal> getGoalTarget() { 
-      if (this.goalTarget == null)
-        this.goalTarget = new ArrayList<Goal>();
-      return this.goalTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Goal addGoalTarget() { 
-      Goal r = new Goal();
-      if (this.goalTarget == null)
-        this.goalTarget = new ArrayList<Goal>();
-      this.goalTarget.add(r);
-      return r;
     }
 
     /**
@@ -3918,19 +3700,19 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return addPartOf();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CarePlan.status");
+          throw new FHIRException("Cannot call addChild on a singleton property CarePlan.status");
         }
         else if (name.equals("intent")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CarePlan.intent");
+          throw new FHIRException("Cannot call addChild on a singleton property CarePlan.intent");
         }
         else if (name.equals("category")) {
           return addCategory();
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CarePlan.title");
+          throw new FHIRException("Cannot call addChild on a singleton property CarePlan.title");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CarePlan.description");
+          throw new FHIRException("Cannot call addChild on a singleton property CarePlan.description");
         }
         else if (name.equals("subject")) {
           this.subject = new Reference();

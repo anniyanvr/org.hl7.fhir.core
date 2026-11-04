@@ -10,14 +10,29 @@ import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.Codeab
 import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.Coding30_50;
 import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.Identifier30_50;
 import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.Period30_50;
-import org.hl7.fhir.convertors.conv30_50.datatypes30_50.primitivetypes30_50.*;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.primitivetypes30_50.Boolean30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.primitivetypes30_50.Date30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.primitivetypes30_50.DateTime30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.primitivetypes30_50.Integer30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.primitivetypes30_50.MarkDown30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.primitivetypes30_50.String30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.primitivetypes30_50.Uri30_50;
 import org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r5.model.CodeType;
+import org.hl7.fhir.r5.model.Enumeration;
 import org.hl7.fhir.r5.model.Questionnaire;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireAnswerConstraint;
 
 public class Questionnaire30_50 {
+
+  /**
+   * STU3 has no Questionnaire.item.answerConstraint; the STU3 item type carries part of the
+   * meaning (choice = optionsOnly, open-choice = optionsOrString) and there is no way at all to say
+   * optionsOrType. So an STU3 questionnaire says it with the cross-version extension, and that is
+   * what the author actually wrote - it wins over whatever the item type implies. See #2549.
+   */
+  public static final String ANSWER_CONSTRAINT_EXTENSION_URL = "http://hl7.org/fhir/5.0/StructureDefinition/extension-Questionnaire.item.answerConstraint";
 
   public static org.hl7.fhir.r5.model.Questionnaire convertQuestionnaire(org.hl7.fhir.dstu3.model.Questionnaire src) throws FHIRException {
     if (src == null)
@@ -119,7 +134,7 @@ public class Questionnaire30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemComponent tgt = new org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src, tgt, ANSWER_CONSTRAINT_EXTENSION_URL);
     if (src.hasLinkId())
       tgt.setLinkIdElement(String30_50.convertString(src.getLinkIdElement()));
     if (src.hasDefinition())
@@ -131,6 +146,11 @@ public class Questionnaire30_50 {
       tgt.setTextElement(String30_50.convertString(src.getTextElement()));
     if (src.hasType())
       tgt.setTypeElement(convertQuestionnaireItemType(src.getTypeElement(), src.getAnswerConstraint()));
+    if (src.hasAnswerConstraint() && src.getAnswerConstraint() == QuestionnaireAnswerConstraint.OPTIONSORTYPE) {
+      // optionsOnly and optionsOrString are both carried by the STU3 item type, but optionsOrType has
+      // nowhere to go, so it goes into the cross-version extension rather than being lost (#2549)
+      tgt.addExtension(ANSWER_CONSTRAINT_EXTENSION_URL, new org.hl7.fhir.dstu3.model.CodeType(src.getAnswerConstraint().toCode()));
+    }
     for (org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemEnableWhenComponent t : src.getEnableWhen())
       tgt.addEnableWhen(convertQuestionnaireItemEnableWhenComponent(t));
     if (src.hasRequired())
@@ -156,7 +176,7 @@ public class Questionnaire30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemComponent tgt = new org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src, tgt, ANSWER_CONSTRAINT_EXTENSION_URL);
     if (src.hasLinkId())
       tgt.setLinkIdElement(String30_50.convertString(src.getLinkIdElement()));
     if (src.hasDefinition())
@@ -172,6 +192,12 @@ public class Questionnaire30_50 {
         tgt.setAnswerConstraint(QuestionnaireAnswerConstraint.OPTIONSONLY);
       } else if (src.getType() == QuestionnaireItemType.OPENCHOICE) {
         tgt.setAnswerConstraint(QuestionnaireAnswerConstraint.OPTIONSORSTRING);
+      }
+    }
+    if (src.hasExtension(ANSWER_CONSTRAINT_EXTENSION_URL)) {
+      org.hl7.fhir.dstu3.model.Type v = src.getExtensionByUrl(ANSWER_CONSTRAINT_EXTENSION_URL).getValue();
+      if (v != null && v.primitiveValue() != null) {
+        tgt.setAnswerConstraint(QuestionnaireAnswerConstraint.fromCode(v.primitiveValue()));
       }
     }
     for (org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemEnableWhenComponent t : src.getEnableWhen())
@@ -203,7 +229,7 @@ public class Questionnaire30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemEnableWhenComponent tgt = new org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemEnableWhenComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src,tgt);
     if (src.hasQuestion())
       tgt.setQuestionElement(String30_50.convertString(src.getQuestionElement()));
     if (src.hasOperator() && src.getOperator() == org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemOperator.EXISTS)
@@ -217,7 +243,7 @@ public class Questionnaire30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemEnableWhenComponent tgt = new org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemEnableWhenComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src,tgt);
     if (src.hasQuestion())
       tgt.setQuestionElement(String30_50.convertString(src.getQuestionElement()));
     if (src.hasHasAnswer()) {
@@ -236,7 +262,7 @@ public class Questionnaire30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemAnswerOptionComponent tgt = new org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemAnswerOptionComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src,tgt);
     if (src.hasValue())
       tgt.setValue(ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().convertType(src.getValue()));
     return tgt;
@@ -246,7 +272,7 @@ public class Questionnaire30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemOptionComponent tgt = new org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemOptionComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src,tgt);
     if (src.hasValue())
       tgt.setValue(ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().convertType(src.getValue()));
     return tgt;
@@ -260,122 +286,130 @@ public class Questionnaire30_50 {
     if (src.hasExtension(VersionConvertorConstants.EXT_QUESTIONNAIRE_ITEM_TYPE_ORIGINAL)) {
       tgt.setValueAsString(src.getExtensionString(VersionConvertorConstants.EXT_QUESTIONNAIRE_ITEM_TYPE_ORIGINAL));
     } else {
-      switch (src.getValue()) {
-        case GROUP:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.GROUP);
-          break;
-        case DISPLAY:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.DISPLAY);
-          break;
-        case BOOLEAN:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.BOOLEAN);
-          break;
-        case DECIMAL:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.DECIMAL);
-          break;
-        case INTEGER:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.INTEGER);
-          break;
-        case DATE:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.DATE);
-          break;
-        case DATETIME:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.DATETIME);
-          break;
-        case TIME:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.TIME);
-          break;
-        case STRING:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.STRING);
-          break;
-        case TEXT:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.TEXT);
-          break;
-        case URL:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.URL);
-          break;
-        case CODING:
-          if (constraint == QuestionnaireAnswerConstraint.OPTIONSORSTRING)
-            tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.OPENCHOICE);
-          else
-            tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.CHOICE);
-          break;
-        case ATTACHMENT:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.ATTACHMENT);
-          break;
-        case REFERENCE:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.REFERENCE);
-          break;
-        case QUANTITY:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.QUANTITY);
-          break;
-        default:
-          tgt.setValue(org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType.NULL);
-          break;
-      }
+        if (src.getValue() == null) {
+            tgt.setValue(null);
+        } else {
+            switch (src.getValue()) {
+                case GROUP:
+                    tgt.setValue(QuestionnaireItemType.GROUP);
+                    break;
+                case DISPLAY:
+                    tgt.setValue(QuestionnaireItemType.DISPLAY);
+                    break;
+                case BOOLEAN:
+                    tgt.setValue(QuestionnaireItemType.BOOLEAN);
+                    break;
+                case DECIMAL:
+                    tgt.setValue(QuestionnaireItemType.DECIMAL);
+                    break;
+                case INTEGER:
+                    tgt.setValue(QuestionnaireItemType.INTEGER);
+                    break;
+                case DATE:
+                    tgt.setValue(QuestionnaireItemType.DATE);
+                    break;
+                case DATETIME:
+                    tgt.setValue(QuestionnaireItemType.DATETIME);
+                    break;
+                case TIME:
+                    tgt.setValue(QuestionnaireItemType.TIME);
+                    break;
+                case STRING:
+                    tgt.setValue(QuestionnaireItemType.STRING);
+                    break;
+                case TEXT:
+                    tgt.setValue(QuestionnaireItemType.TEXT);
+                    break;
+                case URL:
+                    tgt.setValue(QuestionnaireItemType.URL);
+                    break;
+                case CODING:
+                    if (constraint == QuestionnaireAnswerConstraint.OPTIONSORSTRING)
+                        tgt.setValue(QuestionnaireItemType.OPENCHOICE);
+                    else
+                        tgt.setValue(QuestionnaireItemType.CHOICE);
+                    break;
+                case ATTACHMENT:
+                    tgt.setValue(QuestionnaireItemType.ATTACHMENT);
+                    break;
+                case REFERENCE:
+                    tgt.setValue(QuestionnaireItemType.REFERENCE);
+                    break;
+                case QUANTITY:
+                    tgt.setValue(QuestionnaireItemType.QUANTITY);
+                    break;
+                default:
+                    tgt.setValue(QuestionnaireItemType.NULL);
+                    break;
+            }
+        }
     }
     return tgt;
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType> convertQuestionnaireItemType(org.hl7.fhir.dstu3.model.Enumeration<org.hl7.fhir.dstu3.model.Questionnaire.QuestionnaireItemType> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemTypeEnumFactory());
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
-    tgt.addExtension(VersionConvertorConstants.EXT_QUESTIONNAIRE_ITEM_TYPE_ORIGINAL, new CodeType(src.getValueAsString()));
-    switch (src.getValue()) {
-      case GROUP:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.GROUP);
-        break;
-      case DISPLAY:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.DISPLAY);
-        break;
-      case BOOLEAN:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.BOOLEAN);
-        break;
-      case DECIMAL:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.DECIMAL);
-        break;
-      case INTEGER:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.INTEGER);
-        break;
-      case DATE:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.DATE);
-        break;
-      case DATETIME:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.DATETIME);
-        break;
-      case TIME:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.TIME);
-        break;
-      case STRING:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.STRING);
-        break;
-      case TEXT:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.TEXT);
-        break;
-      case URL:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.URL);
-        break;
-      case CHOICE:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.CODING);
-        break;
-      case OPENCHOICE:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.CODING);
-        break;
-      case ATTACHMENT:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.ATTACHMENT);
-        break;
-      case REFERENCE:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.REFERENCE);
-        break;
-      case QUANTITY:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.QUANTITY);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Questionnaire.QuestionnaireItemType> tgt = new Enumeration<>(new Questionnaire.QuestionnaireItemTypeEnumFactory());
+      ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+      tgt.addExtension(VersionConvertorConstants.EXT_QUESTIONNAIRE_ITEM_TYPE_ORIGINAL, new CodeType(src.getValueAsString()));
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case GROUP:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.GROUP);
+                  break;
+              case DISPLAY:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.DISPLAY);
+                  break;
+              case BOOLEAN:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.BOOLEAN);
+                  break;
+              case DECIMAL:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.DECIMAL);
+                  break;
+              case INTEGER:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.INTEGER);
+                  break;
+              case DATE:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.DATE);
+                  break;
+              case DATETIME:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.DATETIME);
+                  break;
+              case TIME:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.TIME);
+                  break;
+              case STRING:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.STRING);
+                  break;
+              case TEXT:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.TEXT);
+                  break;
+              case URL:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.URL);
+                  break;
+              case CHOICE:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.CODING);
+                  break;
+              case OPENCHOICE:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.CODING);
+                  break;
+              case ATTACHMENT:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.ATTACHMENT);
+                  break;
+              case REFERENCE:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.REFERENCE);
+                  break;
+              case QUANTITY:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.QUANTITY);
+                  break;
+              default:
+                  tgt.setValue(Questionnaire.QuestionnaireItemType.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 }

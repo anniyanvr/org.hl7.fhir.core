@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ContractActionEnumFactory implements EnumFactory<ContractAction> {
@@ -46,19 +42,21 @@ public class ContractActionEnumFactory implements EnumFactory<ContractAction> {
       return ContractAction.ACTIONA;
     if ("action-b".equals(codeString))
       return ContractAction.ACTIONB;
-    throw new IllegalArgumentException("Unknown ContractAction code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ContractAction code '" + codeString + "'");
   }
 
   public String toCode(ContractAction code) {
-    if (code == ContractAction.ACTIONA)
+       if (code == ContractAction.NULL)
+           return null;
+       if (code == ContractAction.ACTIONA)
       return "action-a";
     if (code == ContractAction.ACTIONB)
       return "action-b";
     return "?";
-  }
+   }
 
-    public String toSystem(ContractAction code) {
-      return code.getSystem();
-      }
+  public String toSystem(ContractAction code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ServiceModifiersEnumFactory implements EnumFactory<ServiceModifiers> {
@@ -46,19 +42,21 @@ public class ServiceModifiersEnumFactory implements EnumFactory<ServiceModifiers
       return ServiceModifiers.SR;
     if ("ah".equals(codeString))
       return ServiceModifiers.AH;
-    throw new IllegalArgumentException("Unknown ServiceModifiers code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ServiceModifiers code '" + codeString + "'");
   }
 
   public String toCode(ServiceModifiers code) {
-    if (code == ServiceModifiers.SR)
+       if (code == ServiceModifiers.NULL)
+           return null;
+       if (code == ServiceModifiers.SR)
       return "sr";
     if (code == ServiceModifiers.AH)
       return "ah";
     return "?";
-  }
+   }
 
-    public String toSystem(ServiceModifiers code) {
-      return code.getSystem();
-      }
+  public String toSystem(ServiceModifiers code) {
+    return code.getSystem();
+  }
 
 }

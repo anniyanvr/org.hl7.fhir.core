@@ -68,6 +68,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r5.model.Base;
@@ -76,6 +77,7 @@ import org.hl7.fhir.r5.model.DomainResource;
 import org.hl7.fhir.r5.model.Element;
 import org.hl7.fhir.r5.model.Resource;
 import org.hl7.fhir.r5.model.StringType;
+import org.hl7.fhir.r5.test.utils.ClassesLoadedFlags;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlComposer;
@@ -83,6 +85,7 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.hl7.fhir.utilities.xhtml.XhtmlParser;
 import org.hl7.fhir.utilities.xml.IXMLWriter;
 import org.hl7.fhir.utilities.xml.XMLWriter;
+import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -94,6 +97,19 @@ import org.xmlpull.v1.XmlPullParserFactory;
  * The two classes are separated to keep generated and manually maintained code apart.
  */
 public abstract class XmlParserBase extends ParserBase implements IParser {
+
+  static {
+    LoggerFactory.getLogger("org.hl7.fhir.r5.formats.XmlParserBase").debug("XML Parser is being loaded");
+    ClassesLoadedFlags.ourXmlParserBaseLoaded = true;
+  }
+
+  protected XmlParserBase() {
+    super();
+  }
+
+  protected XmlParserBase(CustomResourceRegistry customResourceRegistry) {
+    super(customResourceRegistry);
+  }
 
 	@Override
 	public ParserType getType() {
@@ -110,6 +126,12 @@ public abstract class XmlParserBase extends ParserBase implements IParser {
 
 	/* -- entry points --------------------------------------------------- */
 
+	protected Base parseBase(XmlPullParser xpp) throws FHIRFormatError, XmlPullParserException, IOException {
+    throw new NotImplementedException("Still to do (for openEHR)");
+    // return parseType(xpp, null);
+  }
+
+  
 	/**
 	 * Parse content that is known to be a resource
 	 * @ 
@@ -206,7 +228,43 @@ public abstract class XmlParserBase extends ParserBase implements IParser {
 	}
 
 
+  protected boolean composeCustomResource(Resource resource) throws IOException {
+    if (customResourceRegistry.has(resource.fhirType())) {
+      XmlParserBase composer = customResourceRegistry.get(resource.fhirType()).getFactory().composerXml(xml);
+      composer.setCustomResourceRegistry(customResourceRegistry);
+      composer.composeResource(resource);
+      return true;
+    } else {
+      return false;
+    }
+  }
 
+  protected Resource parseCustomResource(XmlPullParser xpp) throws FHIRFormatError, IOException, XmlPullParserException {
+    if (customResourceRegistry.has(xpp.getName())) {
+      XmlParserBase parser = customResourceRegistry.get(xpp.getName()).getFactory().parserXml(allowUnknownContent);
+      parser.setCustomResourceRegistry(customResourceRegistry);
+      return parser.parse(xpp);
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * called at the start of resource dispatch: parse using a custom resource handler that is 
+   * registered as overriding the base specification (returns null if there's no such handler)
+   */
+  protected Resource parseOverridingCustomResource(XmlPullParser xpp) throws FHIRFormatError, IOException, XmlPullParserException {
+    CustomResourceHandler handler = customResourceRegistry.get(xpp.getName());
+    if (handler != null && handler.isOverridesBase()) {
+      XmlParserBase parser = handler.getFactory().parserXml(allowUnknownContent);
+      parser.setCustomResourceRegistry(customResourceRegistry);
+      return parser.parse(xpp);
+    } else {
+      return null;
+    }
+  }
+
+  
 	/* -- xml routines --------------------------------------------------- */
 
 	protected XmlPullParser loadXml(String source) throws UnsupportedEncodingException, XmlPullParserException, IOException {
@@ -226,11 +284,18 @@ public abstract class XmlParserBase extends ParserBase implements IParser {
 		return xpp;
 	}
 
+	private static final int MAX_XML_DEPTH = 500;
+
 	protected int next(XmlPullParser xpp) throws XmlPullParserException, IOException {
+    // guard against unbounded recursion in the generated per-type parse methods (e.g.
+    // Extension.extension, Parameters.parameter.part) on deeply nested resources.
+    if (xpp.getDepth() > MAX_XML_DEPTH) {
+			throw new FHIRFormatError("XML nesting depth exceeds maximum of "+MAX_XML_DEPTH+" @ "+pathForLocation(xpp));
+		}
 		if (handleComments)
 			return xpp.nextToken();
 		else
-			return xpp.next();    
+			return xpp.next();
 	}
 
 	protected List<String> comments = new ArrayList<String>();
@@ -377,7 +442,7 @@ public abstract class XmlParserBase extends ParserBase implements IParser {
 		next(xpp);
 		int eventType = nextNoWhitespace(xpp);
 		if (eventType == XmlPullParser.START_TAG) { 
-			Resource r = (Resource) parseResource(xpp);
+			Resource r = parseResource(xpp);
 			nextNoWhitespace(xpp);
 			next(xpp);
 			return r;
@@ -460,5 +525,20 @@ public abstract class XmlParserBase extends ParserBase implements IParser {
 	
 
 	protected abstract void composeResource(String name, Resource res) throws IOException ;
+
+
+	protected DataType parseNativePrimitive(XmlPullParser xpp) {
+    throw new NotImplementedException("Still to do (for openEHR)");
+  }
+
+
+	protected void composeNativePrimitive(String string, DataType defaultValue) {
+    throw new NotImplementedException("Still to do (for openEHR)");
+  }
+
+	protected void composeBase(String string, Base base) throws IOException {
+    throw new NotImplementedException("Still to do (for openEHR)");
+//     composeType(string, (DataType) base);
+  }
 
 }

@@ -1,0 +1,69 @@
+{{startMark}}
+package {{pid}};
+
+{{license}}
+
+
+import java.io.IOException;
+
+import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.exceptions.FHIRFormatError;
+
+import org.hl7.fhir.r5.formats.JsonCreator;
+import org.hl7.fhir.r5.formats.JsonParserBase;
+import org.hl7.fhir.r5.model.*;
+import org.hl7.fhir.utilities.Utilities;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+{{generated}}
+public class {{jname}}JsonParser extends org.hl7.fhir.r5.formats.JsonParser {
+ 
+  public {{jname}}JsonParser(JsonCreator json) {
+    super();
+    this.json = json;
+  }
+
+  public {{jname}}JsonParser(boolean allowUnknownContent, boolean allowComments) {
+    super();
+    setAllowUnknownContent(allowUnknownContent);
+    setAllowComments(allowComments);
+  }
+
+  public Resource parseResource(JsonObject json) throws IOException, FHIRFormatError {
+    if (!json.has("resourceType")) {
+      throw new FHIRFormatError("Unable to find resource type - maybe not a FHIR resource?");
+    }
+    String t = json.get("resourceType").getAsString();
+    if (Utilities.noString(t)) {
+      throw new FHIRFormatError("Unable to find resource type - maybe not a FHIR resource?");
+{{parse-resource}}
+    } else {
+      // not one of this package's resource types - the base parser knows the core ones, and the
+      // model context's registry knows the other add-on packages'. This matters for contained
+      // resources, which are parsed through this same call
+      return super.parseResource(json);
+    }
+  }
+
+{{parser}}
+  
+
+// -- compose ---------------------------------------------------------------------------------------------------------------------
+
+
+{{composer}}
+
+  @Override
+  protected void composeResource(Resource resource) throws IOException {
+    if (resource == null) {
+      throw new Error("Unhandled resource type: null");
+{{compose-resource}} 
+    } else {
+      // see the note in parseResource
+      super.composeResource(resource);
+    }
+  }
+
+}

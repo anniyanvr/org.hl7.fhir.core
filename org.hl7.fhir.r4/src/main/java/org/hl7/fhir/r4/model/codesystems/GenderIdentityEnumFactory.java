@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class GenderIdentityEnumFactory implements EnumFactory<GenderIdentity> {
@@ -56,11 +52,13 @@ public class GenderIdentityEnumFactory implements EnumFactory<GenderIdentity> {
       return GenderIdentity.OTHER;
     if ("non-disclose".equals(codeString))
       return GenderIdentity.NONDISCLOSE;
-    throw new IllegalArgumentException("Unknown GenderIdentity code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown GenderIdentity code '" + codeString + "'");
   }
 
   public String toCode(GenderIdentity code) {
-    if (code == GenderIdentity.TRANSGENDERFEMALE)
+       if (code == GenderIdentity.NULL)
+           return null;
+       if (code == GenderIdentity.TRANSGENDERFEMALE)
       return "transgender-female";
     if (code == GenderIdentity.TRANSGENDERMALE)
       return "transgender-male";
@@ -75,10 +73,10 @@ public class GenderIdentityEnumFactory implements EnumFactory<GenderIdentity> {
     if (code == GenderIdentity.NONDISCLOSE)
       return "non-disclose";
     return "?";
-  }
+   }
 
-    public String toSystem(GenderIdentity code) {
-      return code.getSystem();
-      }
+  public String toSystem(GenderIdentity code) {
+    return code.getSystem();
+  }
 
 }

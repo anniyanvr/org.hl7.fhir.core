@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class MeasureDataUsageEnumFactory implements EnumFactory<MeasureDataUsage> {
@@ -46,19 +42,21 @@ public class MeasureDataUsageEnumFactory implements EnumFactory<MeasureDataUsage
       return MeasureDataUsage.SUPPLEMENTALDATA;
     if ("risk-adjustment-factor".equals(codeString))
       return MeasureDataUsage.RISKADJUSTMENTFACTOR;
-    throw new IllegalArgumentException("Unknown MeasureDataUsage code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MeasureDataUsage code '" + codeString + "'");
   }
 
   public String toCode(MeasureDataUsage code) {
-    if (code == MeasureDataUsage.SUPPLEMENTALDATA)
+       if (code == MeasureDataUsage.NULL)
+           return null;
+       if (code == MeasureDataUsage.SUPPLEMENTALDATA)
       return "supplemental-data";
     if (code == MeasureDataUsage.RISKADJUSTMENTFACTOR)
       return "risk-adjustment-factor";
     return "?";
-  }
+   }
 
-    public String toSystem(MeasureDataUsage code) {
-      return code.getSystem();
-      }
+  public String toSystem(MeasureDataUsage code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class EntformulaAdditiveEnumFactory implements EnumFactory<EntformulaAdditive> {
@@ -52,11 +48,13 @@ public class EntformulaAdditiveEnumFactory implements EnumFactory<EntformulaAddi
       return EntformulaAdditive.FIBER;
     if ("water".equals(codeString))
       return EntformulaAdditive.WATER;
-    throw new IllegalArgumentException("Unknown EntformulaAdditive code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown EntformulaAdditive code '" + codeString + "'");
   }
 
   public String toCode(EntformulaAdditive code) {
-    if (code == EntformulaAdditive.LIPID)
+       if (code == EntformulaAdditive.NULL)
+           return null;
+       if (code == EntformulaAdditive.LIPID)
       return "lipid";
     if (code == EntformulaAdditive.PROTEIN)
       return "protein";
@@ -67,10 +65,10 @@ public class EntformulaAdditiveEnumFactory implements EnumFactory<EntformulaAddi
     if (code == EntformulaAdditive.WATER)
       return "water";
     return "?";
-  }
+   }
 
-    public String toSystem(EntformulaAdditive code) {
-      return code.getSystem();
-      }
+  public String toSystem(EntformulaAdditive code) {
+    return code.getSystem();
+  }
 
 }

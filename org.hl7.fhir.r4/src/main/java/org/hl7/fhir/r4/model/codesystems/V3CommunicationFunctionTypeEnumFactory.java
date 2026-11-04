@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3CommunicationFunctionTypeEnumFactory implements EnumFactory<V3CommunicationFunctionType> {
@@ -48,21 +44,23 @@ public class V3CommunicationFunctionTypeEnumFactory implements EnumFactory<V3Com
       return V3CommunicationFunctionType.RSP;
     if ("SND".equals(codeString))
       return V3CommunicationFunctionType.SND;
-    throw new IllegalArgumentException("Unknown V3CommunicationFunctionType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3CommunicationFunctionType code '" + codeString + "'");
   }
 
   public String toCode(V3CommunicationFunctionType code) {
-    if (code == V3CommunicationFunctionType.RCV)
+       if (code == V3CommunicationFunctionType.NULL)
+           return null;
+       if (code == V3CommunicationFunctionType.RCV)
       return "RCV";
     if (code == V3CommunicationFunctionType.RSP)
       return "RSP";
     if (code == V3CommunicationFunctionType.SND)
       return "SND";
     return "?";
-  }
+   }
 
-    public String toSystem(V3CommunicationFunctionType code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3CommunicationFunctionType code) {
+    return code.getSystem();
+  }
 
 }

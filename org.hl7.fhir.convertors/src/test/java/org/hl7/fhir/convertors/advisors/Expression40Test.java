@@ -1,6 +1,8 @@
 package org.hl7.fhir.convertors.advisors;
 
-import org.hl7.fhir.convertors.conv10_40.VersionConvertor_10_40;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_10_40;
 import org.hl7.fhir.convertors.advisors.support.ExpressionAdvisor40;
 import org.hl7.fhir.convertors.factory.VersionConvertorFactory_10_40;
@@ -9,9 +11,6 @@ import org.hl7.fhir.r4.model.Extension;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 public class Expression40Test {
 
@@ -42,7 +41,7 @@ public class Expression40Test {
     Extension ext = new Extension();
     ext.setValue(exp);
     BaseAdvisor_10_40 baseAdvisor1040 = new BaseAdvisor_10_40();
-    Assertions.assertTrue(baseAdvisor1040.ignoreExtension("", ext));
+    Assertions.assertTrue(baseAdvisor1040.ignoreExtension(ext));
   }
 
   @Test

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ActionParticipantTypeEnumFactory implements EnumFactory<ActionParticipantType> {
@@ -50,11 +46,13 @@ public class ActionParticipantTypeEnumFactory implements EnumFactory<ActionParti
       return ActionParticipantType.RELATEDPERSON;
     if ("device".equals(codeString))
       return ActionParticipantType.DEVICE;
-    throw new IllegalArgumentException("Unknown ActionParticipantType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ActionParticipantType code '" + codeString + "'");
   }
 
   public String toCode(ActionParticipantType code) {
-    if (code == ActionParticipantType.PATIENT)
+       if (code == ActionParticipantType.NULL)
+           return null;
+       if (code == ActionParticipantType.PATIENT)
       return "patient";
     if (code == ActionParticipantType.PRACTITIONER)
       return "practitioner";
@@ -63,10 +61,10 @@ public class ActionParticipantTypeEnumFactory implements EnumFactory<ActionParti
     if (code == ActionParticipantType.DEVICE)
       return "device";
     return "?";
-  }
+   }
 
-    public String toSystem(ActionParticipantType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ActionParticipantType code) {
+    return code.getSystem();
+  }
 
 }

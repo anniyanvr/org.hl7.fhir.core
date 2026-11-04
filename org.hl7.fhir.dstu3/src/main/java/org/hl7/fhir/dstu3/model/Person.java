@@ -146,12 +146,12 @@ public class Person extends DomainResource {
           return IdentityAssuranceLevel.LEVEL4;
         throw new IllegalArgumentException("Unknown IdentityAssuranceLevel code '"+codeString+"'");
         }
-        public Enumeration<IdentityAssuranceLevel> fromType(Base code) throws FHIRException {
+        public Enumeration<IdentityAssuranceLevel> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<IdentityAssuranceLevel>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("level1".equals(codeString))
@@ -165,7 +165,9 @@ public class Person extends DomainResource {
         throw new FHIRException("Unknown IdentityAssuranceLevel code '"+codeString+"'");
         }
     public String toCode(IdentityAssuranceLevel code) {
-      if (code == IdentityAssuranceLevel.LEVEL1)
+       if (code == IdentityAssuranceLevel.NULL)
+           return null;
+       if (code == IdentityAssuranceLevel.LEVEL1)
         return "level1";
       if (code == IdentityAssuranceLevel.LEVEL2)
         return "level2";
@@ -174,7 +176,7 @@ public class Person extends DomainResource {
       if (code == IdentityAssuranceLevel.LEVEL4)
         return "level4";
       return "?";
-      }
+   }
     public String toSystem(IdentityAssuranceLevel code) {
       return code.getSystem();
       }
@@ -387,7 +389,7 @@ public class Person extends DomainResource {
           return this.target;
         }
         else if (name.equals("assurance")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Person.assurance");
+          throw new FHIRException("Cannot call addChild on a singleton property Person.assurance");
         }
         else
           return super.addChild(name);
@@ -1158,10 +1160,10 @@ public class Person extends DomainResource {
           return addTelecom();
         }
         else if (name.equals("gender")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Person.gender");
+          throw new FHIRException("Cannot call addChild on a singleton property Person.gender");
         }
         else if (name.equals("birthDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Person.birthDate");
+          throw new FHIRException("Cannot call addChild on a singleton property Person.birthDate");
         }
         else if (name.equals("address")) {
           return addAddress();
@@ -1175,7 +1177,7 @@ public class Person extends DomainResource {
           return this.managingOrganization;
         }
         else if (name.equals("active")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Person.active");
+          throw new FHIRException("Cannot call addChild on a singleton property Person.active");
         }
         else if (name.equals("link")) {
           return addLink();

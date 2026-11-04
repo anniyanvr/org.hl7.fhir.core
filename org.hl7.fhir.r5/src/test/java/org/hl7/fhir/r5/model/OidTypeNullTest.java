@@ -1,17 +1,20 @@
 package org.hl7.fhir.r5.model;
 
-import org.hl7.fhir.r5.model.OidType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class OidTypeNullTest {
 
   @Test
   @DisplayName("Test null value toString()")
   void testToString() {
-    OidType nullOid = new OidType();
-    System.out.println("Value -> " + nullOid);
+    assertDoesNotThrow(() -> {
+      OidType nullOid = new OidType();
+      System.out.println("Value -> " + nullOid);
+    });
   }
 
   @Test

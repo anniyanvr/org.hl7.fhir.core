@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class GoalAcceptanceStatusEnumFactory implements EnumFactory<GoalAcceptanceStatus> {
@@ -48,21 +44,23 @@ public class GoalAcceptanceStatusEnumFactory implements EnumFactory<GoalAcceptan
       return GoalAcceptanceStatus.DISAGREE;
     if ("pending".equals(codeString))
       return GoalAcceptanceStatus.PENDING;
-    throw new IllegalArgumentException("Unknown GoalAcceptanceStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown GoalAcceptanceStatus code '" + codeString + "'");
   }
 
   public String toCode(GoalAcceptanceStatus code) {
-    if (code == GoalAcceptanceStatus.AGREE)
+       if (code == GoalAcceptanceStatus.NULL)
+           return null;
+       if (code == GoalAcceptanceStatus.AGREE)
       return "agree";
     if (code == GoalAcceptanceStatus.DISAGREE)
       return "disagree";
     if (code == GoalAcceptanceStatus.PENDING)
       return "pending";
     return "?";
-  }
+   }
 
-    public String toSystem(GoalAcceptanceStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(GoalAcceptanceStatus code) {
+    return code.getSystem();
+  }
 
 }

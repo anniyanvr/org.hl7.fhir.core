@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class QicoreAdverseeventTypeEnumFactory implements EnumFactory<QicoreAdverseeventType> {
@@ -48,21 +44,23 @@ public class QicoreAdverseeventTypeEnumFactory implements EnumFactory<QicoreAdve
       return QicoreAdverseeventType.NEARMISS;
     if ("unsafe".equals(codeString))
       return QicoreAdverseeventType.UNSAFE;
-    throw new IllegalArgumentException("Unknown QicoreAdverseeventType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown QicoreAdverseeventType code '" + codeString + "'");
   }
 
   public String toCode(QicoreAdverseeventType code) {
-    if (code == QicoreAdverseeventType.INCIDENT)
+       if (code == QicoreAdverseeventType.NULL)
+           return null;
+       if (code == QicoreAdverseeventType.INCIDENT)
       return "incident";
     if (code == QicoreAdverseeventType.NEARMISS)
       return "near-miss";
     if (code == QicoreAdverseeventType.UNSAFE)
       return "unsafe";
     return "?";
-  }
+   }
 
-    public String toSystem(QicoreAdverseeventType code) {
-      return code.getSystem();
-      }
+  public String toSystem(QicoreAdverseeventType code) {
+    return code.getSystem();
+  }
 
 }

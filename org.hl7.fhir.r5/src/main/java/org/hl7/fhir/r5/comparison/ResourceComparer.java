@@ -3,25 +3,28 @@ package org.hl7.fhir.r5.comparison;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hl7.fhir.r5.comparison.ResourceComparer.MessageCounts;
-import org.hl7.fhir.r5.comparison.ResourceComparer.ResourceComparison;
 import org.hl7.fhir.r5.model.CanonicalResource;
 import org.hl7.fhir.r5.model.CodeSystem;
 import org.hl7.fhir.r5.model.StructureDefinition;
 import org.hl7.fhir.r5.model.ValueSet;
+
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity;
 import org.hl7.fhir.utilities.validation.ValidationMessage.IssueType;
 import org.hl7.fhir.utilities.validation.ValidationMessage.Source;
 import org.hl7.fhir.utilities.xhtml.HierarchicalTableGenerator;
+import org.hl7.fhir.utilities.xhtml.HierarchicalTableGenerator.BackgroundColorCode;
 import org.hl7.fhir.utilities.xhtml.HierarchicalTableGenerator.Cell;
 import org.hl7.fhir.utilities.xhtml.HierarchicalTableGenerator.Piece;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 
+
 public class ResourceComparer {
- 
+
+  static int counter = 0;
+
   public static class MessageCounts {
     private int errors;
     private int warnings;
@@ -57,7 +60,7 @@ public class ResourceComparer {
       super();
       this.leftId = leftId;
       this.rightId = rightId;
-      id = abbreviation()+"-"+leftId + "-" + rightId;
+      id = abbreviation()+"-"+(++counter)+"-"+leftId + "-" + rightId; // no '+' - production web servers don't serve files with '+' in the name
     }
 
     protected String refCell(CanonicalResource cr) {
@@ -68,8 +71,8 @@ public class ResourceComparer {
       if (Utilities.noString(t)) {
         t = cr.getId();
       }
-      if (cr.hasUserData("path")) {
-        String p = cr.getUserString("path");
+      if (cr.hasWebPath()) {
+        String p = cr.getWebPath();
         return "<td><a href=\""+(Utilities.isAbsoluteUrl(p) ? "" : "../")+p+"\">"+Utilities.escapeXml(t)+"</td>";
       } else 
         return "<td>"+Utilities.escapeXml(t)+"</td>";
@@ -204,7 +207,7 @@ public class ResourceComparer {
         s = s + "<td><a href=\""+getId()+".html\">Failed<a></td>";
         color = COLOR_ISSUE;
       }
-      s = s + "<td>"+(e != null ? Utilities.escapeXml(e.getMessage()) : "")+"</td>";
+      s = s + "<td colspan=\"3\">"+(e != null ? Utilities.escapeXml(e.getMessage()) : "")+"</td>";
       return "<tr style=\"background-color: "+color+"\">"+s+"</tr>\r\n";
     }
 
@@ -244,17 +247,17 @@ public class ResourceComparer {
     return c;
   }
 
-  public Cell missingCell(HierarchicalTableGenerator gen, String color) {
+  public Cell missingCell(HierarchicalTableGenerator gen, BackgroundColorCode color) {
     Cell c = gen.new Cell(null, null, "", null, null);
     if (color != null) {
-      c.setStyle("background-color: "+color);
+      c.setBackgroundColor(color);
     }
     return c;
   }
 
   public XhtmlNode renderErrors(ResourceComparison csc) {
     XhtmlNode div = new XhtmlNode(NodeType.Element, "div");
-    XhtmlNode tbl = div.table("grid");
+    XhtmlNode tbl = div.table("grid", false);
     for (ValidationMessage vm : csc.messages) {
       XhtmlNode tr = tbl.tr();
       tr.style("background-color: "+colorForLevel(vm.getLevel()));
@@ -301,11 +304,11 @@ public class ResourceComparer {
   private String halfColorForLevel(IssueSeverity level) {
     switch (level) {
     case ERROR:
-      return "#ffeeee";
+      return "#ffdddd";
     case FATAL:
       return "#ffcccc";
     case WARNING:
-      return "#fff4ee";
+      return "#fff6ee";
     default: // INFORMATION:
       return "#fffff2";
     }
@@ -319,9 +322,14 @@ public class ResourceComparer {
       XhtmlNode li = new XhtmlNode(NodeType.Element, "li");
       piece.getChildren().add(li);
       li.style("background-color: "+halfColorForLevel(msg.getLevel()));
+      if (msg.getLevel() == IssueSeverity.ERROR) {
+        li.style("font-weight: bold");
+      }
       li.tx(msg.getMessage());
     }
     return cell;
   }
-  
+ 
+
+
 }

@@ -36,22 +36,20 @@ package org.hl7.fhir.r5.utils.client;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.hl7.fhir.r5.model.Resource;
 import org.hl7.fhir.r5.model.ResourceType;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.regex.RegexConstants;
 
 //Make resources address subclass of URI
 /**
@@ -62,7 +60,6 @@ import org.hl7.fhir.utilities.Utilities;
  */
 public class ResourceAddress {
 	
-	public static final String REGEX_ID_WITH_HISTORY = "(.*)(/)([a-zA-Z0-9]*)(/)([a-z0-9\\-\\.]{1,64})(/_history/)([a-z0-9\\-\\.]{1,64})$";
 	
 	private URI baseServiceUri;
 	
@@ -78,6 +75,15 @@ public class ResourceAddress {
 		return this.baseServiceUri;
 	}
 	
+
+  public URI resolveGetUriFromResourceClassAndId(String resourceClass, String id) {
+    return baseServiceUri.resolve(resourceClass + "/" + id);
+  }
+
+  public <T extends Resource> URI resolveGetResource(Class<T> resourceClass, String id) {
+    return baseServiceUri.resolve(nameForClassWithSlash(resourceClass) + "/" + id);
+  }
+  
 	public <T extends Resource> URI resolveOperationURLFromClass(Class<T> resourceClass, String name, String parameters) {
 		return baseServiceUri.resolve(nameForClassWithSlash(resourceClass) +"$"+name+"?"+ parameters);
 	}
@@ -92,17 +98,26 @@ public class ResourceAddress {
 	}
 	
   public <T extends Resource> URI resolveOperationUri(Class<T> resourceClass, String opName) {
-    return baseServiceUri.resolve(nameForClassWithSlash(resourceClass) +"/"+opName);
+    return baseServiceUri.resolve(nameForClassWithSlash(resourceClass) +"$"+opName);
   }
-  
+
   public <T extends Resource> URI resolveOperationUri(Class<T> resourceClass, String opName, Map<String,String> parameters) {
     return appendHttpParameters(baseServiceUri.resolve(nameForClassWithSlash(resourceClass) +"$"+opName), parameters);
   }
+
+  @Deprecated
+  public <T extends Resource> URI resolveOperationUriNoEscape(Class<T> resourceClass, String opName, Map<String,String> parameters) {
+    return appendHttpParameters(baseServiceUri.resolve(nameForClassWithSlash(resourceClass) +"$"+opName), parameters);
+  }
   
-	public <T extends Resource> URI resolveValidateUri(Class<T> resourceClass, String id) {
-		return baseServiceUri.resolve(nameForClassWithSlash(resourceClass) +"$validate/"+id);
-	}
-	
+  public <T extends Resource> URI resolveValidateUri(Class<T> resourceClass, String id) {
+    return baseServiceUri.resolve(nameForClassWithSlash(resourceClass) +"$validate"+(id == null ? "" : "/"+id));
+  }
+
+  public <T extends Resource> URI resolveValidateUri(String resourceType, String id) {
+    return baseServiceUri.resolve(resourceType +"/$validate"+(id == null ? "" : "/"+id));
+  }
+  
 	public <T extends Resource> URI resolveGetUriFromResourceClass(Class<T> resourceClass) {
 		return baseServiceUri.resolve(nameForClass(resourceClass));
 	}
@@ -230,10 +245,15 @@ public class ResourceAddress {
 	 * Generalize later: http://hl7connect.healthintersections.com.au/svc/fhir/318/_history/1
 	 */
 	public static ResourceAddress.ResourceVersionedIdentifier parseCreateLocation(String locationResponseHeader) {
-		Pattern pattern = Pattern.compile(REGEX_ID_WITH_HISTORY);
+		@SuppressWarnings("checkstyle:patternUsage")
+		//anchored segments, safe
+		Pattern pattern = Pattern.compile(RegexConstants.ID_WITH_HISTORY_REGEX);
 		Matcher matcher = pattern.matcher(locationResponseHeader);
 		ResourceVersionedIdentifier parsedHeader = null;
-		if(matcher.matches()){
+		@SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+		//False positive: Matcher.matches() on ID_WITH_HISTORY_REGEX which has been independently reviewed
+		boolean headerMatches = matcher.matches();
+		if(headerMatches){
 			String serviceRoot = matcher.group(1);
 			String resourceType = matcher.group(3);
 			String id = matcher.group(5);
@@ -246,7 +266,7 @@ public class ResourceAddress {
 	public static URI buildAbsoluteURI(String absoluteURI) {
 		
 		if(StringUtils.isBlank(absoluteURI)) {
-			throw new EFhirClientException("Invalid URI", new URISyntaxException(absoluteURI, "URI/URL cannot be blank"));
+			throw new EFhirClientException(0, "Invalid URI", new URISyntaxException(absoluteURI, "URI/URL cannot be blank"));
 		} 
 		
 		String endpoint = appendForwardSlashToPath(absoluteURI);
@@ -269,13 +289,13 @@ public class ResourceAddress {
 			String scheme = uri.getScheme();
 			String host = uri.getHost();
 			if(!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https")) {
-				throw new EFhirClientException("Scheme must be 'http' or 'https': " + uri);
+				throw new EFhirClientException(0, "Scheme must be 'http' or 'https': " + uri);
 			}
 			if(StringUtils.isBlank(host)) {
-				throw new EFhirClientException("host cannot be blank: " + uri);
+				throw new EFhirClientException(0, "host cannot be blank: " + uri);
 			}
 		} catch(URISyntaxException e) {
-			throw new EFhirClientException("Invalid URI", e);
+			throw new EFhirClientException(0, "Invalid URI", e);
 		}
 		return uri;
 	}
@@ -287,7 +307,7 @@ public class ResourceAddress {
 			uriBuilder.setQuery(parameterName + "=" + parameterValue);
 			modifiedUri = uriBuilder.build();
 		} catch(Exception e) {
-			throw new EFhirClientException("Unable to append query parameter '" + parameterName + "=" + parameterValue + " to URI " + uri, e);
+			throw new EFhirClientException(0, "Unable to append query parameter '" + parameterName + "=" + parameterValue + " to URI " + uri, e);
 		}
 		return modifiedUri;
 	}
@@ -408,21 +428,25 @@ public class ResourceAddress {
 	
 	public static URI appendHttpParameters(URI basePath, Map<String,String> parameters) {
         try {
-        	Set<String> httpParameterNames = parameters.keySet();
-        	String query = basePath.getQuery();
-        	
-        	for(String httpParameterName : httpParameterNames) {
-		        if(query != null) {
-			        query += "&";
-		        } else {
-		        	query = "";
-		        }
-		        query += httpParameterName + "=" + Utilities.encodeUri(parameters.get(httpParameterName));
-        	}
-	
-	        return new URI(basePath.getScheme(), basePath.getUserInfo(), basePath.getHost(),basePath.getPort(), basePath.getPath(), query, basePath.getFragment());
+          List<NameValuePair> existingParams = URLEncodedUtils.parse(basePath.getQuery(), StandardCharsets.UTF_8);
+
+          URIBuilder uriBuilder = new URIBuilder()
+            .setScheme(basePath.getScheme())
+            .setHost(basePath.getHost())
+            .setPort(basePath.getPort())
+            .setUserInfo(basePath.getUserInfo())
+            .setFragment(basePath.getFragment());
+          for (NameValuePair pair : existingParams) {
+            uriBuilder.addParameter(pair.getName(), pair.getValue());
+          }
+          for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            uriBuilder.addParameter(entry.getKey(), entry.getValue());
+          }
+          uriBuilder.setPath(basePath.getPath());
+
+          return uriBuilder.build();
         } catch(Exception e) {
-        	throw new EFhirClientException("Error appending http parameter", e);
+        	throw new EFhirClientException(0, "Error appending http parameter", e);
         }
     }
 	

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3DocumentStorageEnumFactory implements EnumFactory<V3DocumentStorage> {
@@ -50,11 +46,13 @@ public class V3DocumentStorageEnumFactory implements EnumFactory<V3DocumentStora
       return V3DocumentStorage.AR;
     if ("PU".equals(codeString))
       return V3DocumentStorage.PU;
-    throw new IllegalArgumentException("Unknown V3DocumentStorage code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3DocumentStorage code '" + codeString + "'");
   }
 
   public String toCode(V3DocumentStorage code) {
-    if (code == V3DocumentStorage.AC)
+       if (code == V3DocumentStorage.NULL)
+           return null;
+       if (code == V3DocumentStorage.AC)
       return "AC";
     if (code == V3DocumentStorage.AA)
       return "AA";
@@ -63,10 +61,10 @@ public class V3DocumentStorageEnumFactory implements EnumFactory<V3DocumentStora
     if (code == V3DocumentStorage.PU)
       return "PU";
     return "?";
-  }
+   }
 
-    public String toSystem(V3DocumentStorage code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3DocumentStorage code) {
+    return code.getSystem();
+  }
 
 }

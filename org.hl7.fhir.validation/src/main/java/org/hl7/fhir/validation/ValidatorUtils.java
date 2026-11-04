@@ -1,26 +1,5 @@
 package org.hl7.fhir.validation;
 
-import org.hl7.fhir.convertors.loaders.loaderR5.*;
-import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.context.IWorkerContext;
-import org.hl7.fhir.r5.context.SimpleWorkerContext;
-import org.hl7.fhir.r5.model.OperationOutcome;
-import org.hl7.fhir.r5.renderers.RendererFactory;
-import org.hl7.fhir.r5.renderers.utils.RenderingContext;
-import org.hl7.fhir.r5.utils.EOperationOutcome;
-import org.hl7.fhir.r5.utils.FHIRPathEngine;
-import org.hl7.fhir.r5.utils.OperationOutcomeUtilities;
-import org.hl7.fhir.utilities.Utilities;
-import org.hl7.fhir.utilities.i18n.I18nConstants;
-import org.hl7.fhir.utilities.validation.ValidationMessage;
-import org.hl7.fhir.validation.cli.utils.AsteriskFilter;
-import org.hl7.fhir.validation.cli.utils.Common;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -28,34 +7,125 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import lombok.extern.slf4j.Slf4j;
+import org.hl7.fhir.convertors.loaders.loaderR5.BaseLoaderR5;
+import org.hl7.fhir.convertors.loaders.loaderR5.ILoaderKnowledgeProviderR5;
+import org.hl7.fhir.convertors.loaders.loaderR5.NullLoaderKnowledgeProviderR5;
+import org.hl7.fhir.convertors.loaders.loaderR5.R2016MayToR5Loader;
+import org.hl7.fhir.convertors.loaders.loaderR5.R2ToR5Loader;
+import org.hl7.fhir.convertors.loaders.loaderR5.R3ToR5Loader;
+import org.hl7.fhir.convertors.loaders.loaderR5.R4BToR5Loader;
+import org.hl7.fhir.convertors.loaders.loaderR5.R4ToR5Loader;
+import org.hl7.fhir.convertors.loaders.loaderR5.R5ToR5Loader;
+import org.hl7.fhir.convertors.loaders.loaderR5.R6ToR5Loader;
+import org.hl7.fhir.convertors.loaders.loaderRN.*;
+import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.model.IModelContext;
+import org.hl7.fhir.services.renderers.IMarkdownProcessor;
+import org.hl7.fhir.standalone.context.SimpleWorkerContext;
+import org.hl7.fhir.services.fhirpath.FHIRPathEngine;
+import org.hl7.fhir.model.core.OperationOutcome;
+import org.hl7.fhir.services.renderers.RendererFactory;
+import org.hl7.fhir.services.renderers.utils.RenderingContext;
+import org.hl7.fhir.services.renderers.utils.RenderingContext.GenerationRules;
+import org.hl7.fhir.services.renderers.utils.ResourceWrapper;
+import org.hl7.fhir.model.utilities.EOperationOutcome;
+import org.hl7.fhir.model.utilities.OperationOutcomeUtilities;
+import org.hl7.fhir.model.extensions.ExtensionDefinitions;
+import org.hl7.fhir.model.extensions.ExtensionUtilities;
+import org.hl7.fhir.utilities.ByteProvider;
+import org.hl7.fhir.utilities.FileUtilities;
+import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.VersionUtil;
+import org.hl7.fhir.utilities.VersionUtilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+import org.hl7.fhir.utilities.i18n.I18nConstants;
+import org.hl7.fhir.utilities.validation.ValidationMessage;
+import org.hl7.fhir.utilities.xml.XMLUtil;
+import org.hl7.fhir.validation.service.utils.AsteriskFilter;
+import org.hl7.fhir.validation.service.utils.Common;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 //TODO find a home for these and clean it up
+@Slf4j
 public class ValidatorUtils {
 
-  protected static void grabNatives(Map<String, byte[]> source, Map<String, byte[]> binaries, String prefix) {
-    for (Map.Entry<String, byte[]> e : source.entrySet()) {
+  public static class SourceFile {
+    private String ref;
+    private long date;
+    private boolean process;
+    private Content cnt;
+    
+    public boolean isProcess() {
+      return process;
+    }
+    public void setProcess(boolean process) {
+      this.process = process;
+      this.cnt = null;
+    }
+    public String getRef() {
+      return ref;
+    }
+    public long getDate() {
+      return date;
+    }
+    public Content getCnt() {
+      return cnt;
+    }
+    public void setCnt(Content cnt) {
+      this.cnt = cnt;
+    }
+    public boolean isKnownToBeMissing () { 
+      return date == 0;  // File::lastModified() returns 0 if the file is missing
+    }
+  }
+  
+  protected static void grabNatives(Map<String, ByteProvider> source, Map<String, ByteProvider> binaries, String prefix) {
+    for (Map.Entry<String, ByteProvider> e : source.entrySet()) {
       if (e.getKey().endsWith(".zip"))
         binaries.put(prefix + "#" + e.getKey(), e.getValue());
     }
   }
 
-  protected static IWorkerContext.IContextResourceLoader loaderForVersion(String version) {
-    if (Utilities.noString(version))
+  public static BaseLoaderRN loaderForVersion(IModelContext context, String version) {
+    return loaderForVersion(context, version, new NullLoaderKnowledgeProviderRN());
+  }
+  
+  public static BaseLoaderRN loaderForVersion(IModelContext context, String version, ILoaderKnowledgeProviderRN loader) {
+    if (Utilities.noString(version)) {
       return null;
-    if (version.startsWith("1.0"))
-      return new R2ToR5Loader(new String[]{"Conformance", "StructureDefinition", "ValueSet", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"}, new NullLoaderKnowledgeProviderR5());
-    if (version.startsWith("1.4"))
-      return new R2016MayToR5Loader(new String[]{"Conformance", "StructureDefinition", "ValueSet", "CodeSystem", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"}, new NullLoaderKnowledgeProviderR5()); // special case
-    if (version.startsWith("3.0"))
-      return new R3ToR5Loader(new String[]{"CapabilityStatement", "StructureDefinition", "ValueSet", "CodeSystem", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"}, new NullLoaderKnowledgeProviderR5());
-    if (version.startsWith("4.0"))
-      return new R4ToR5Loader(new String[]{"CapabilityStatement", "StructureDefinition", "ValueSet", "CodeSystem", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"}, new NullLoaderKnowledgeProviderR5());
-    if (version.startsWith("5.0"))
-      return new R5ToR5Loader(new String[]{"CapabilityStatement", "StructureDefinition", "ValueSet", "CodeSystem", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"}, new NullLoaderKnowledgeProviderR5());
+    }
+    if (VersionUtilities.isR2Ver(version)) { 
+      return new R2ToRNLoader(context, Utilities.stringSet("Conformance", "StructureDefinition", "ValueSet", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"), loader);
+    } 
+    if (VersionUtilities.isR2BVer(version)) {
+      return new R2016MayToRNLoader(context, Utilities.stringSet("Conformance", "StructureDefinition", "ValueSet", "CodeSystem", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"), loader); // special case
+    }
+    if (VersionUtilities.isR3Ver(version)) {
+      return new R3ToRNLoader(context, Utilities.stringSet("CapabilityStatement", "StructureDefinition", "ValueSet", "CodeSystem", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"), loader);
+    }
+    if (VersionUtilities.isR4Ver(version)) {
+      return new R4ToRNLoader(context, Utilities.stringSet("CapabilityStatement", "StructureDefinition", "ValueSet", "CodeSystem", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"), loader, version);
+    }
+    if (VersionUtilities.isR4BVer(version)) {
+      return new R4BToRNLoader(context, Utilities.stringSet("CapabilityStatement", "StructureDefinition", "ValueSet", "CodeSystem", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"), loader, version);
+    }
+    if (VersionUtilities.isR5Ver(version)) {
+      return new R5ToRNLoader(context, Utilities.stringSet("CapabilityStatement", "StructureDefinition", "ValueSet", "CodeSystem", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"), loader);
+    }
+    if (VersionUtilities.isR6Ver(version)) {
+      return new RNToRNLoader(context, Utilities.stringSet("CapabilityStatement", "StructureDefinition", "ValueSet", "CodeSystem", "SearchParameter", "OperationDefinition", "Questionnaire", "ConceptMap", "StructureMap", "NamingSystem"), loader);
+    }
     return null;
   }
 
   protected static Document parseXml(byte[] cnt) throws ParserConfigurationException, SAXException, IOException {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory factory = XMLUtil.newXXEProtectedDocumentBuilderFactory();
     // xxe protection
     factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
     factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
@@ -68,32 +138,41 @@ public class ValidatorUtils {
     return builder.parse(new ByteArrayInputStream(cnt));
   }
 
-  protected static List<ValidationMessage> filterMessages(List<ValidationMessage> messages) {
-    List<ValidationMessage> filteredValidation = new ArrayList<ValidationMessage>();
+  protected static List<ValidationMessage> removeDuplicates(List<ValidationMessage> messages) {
+    List<ValidationMessage> uniqueMessages = new ArrayList<ValidationMessage>();
     for (ValidationMessage e : messages) {
-      if (!filteredValidation.contains(e))
-        filteredValidation.add(e);
+      if (!uniqueMessages.contains(e))
+        uniqueMessages.add(e);
     }
-    filteredValidation.sort(null);
-    return filteredValidation;
+    //filteredValidation.sort(null);
+    return uniqueMessages;
   }
 
   protected static OperationOutcome messagesToOutcome(List<ValidationMessage> messages, SimpleWorkerContext context, FHIRPathEngine fpe) throws IOException, FHIRException, EOperationOutcome {
     OperationOutcome op = new OperationOutcome();
-    for (ValidationMessage vm : filterMessages(messages)) {
+    for (ValidationMessage vm : removeDuplicates(messages)) {
       try {
         fpe.parse(vm.getLocation());
       } catch (Exception e) {
-        System.out.println("Internal error in location for message: '" + e.getMessage() + "', loc = '" + vm.getLocation() + "', err = '" + vm.getMessage() + "'");
+        log.error("Internal error in location for message: '" + e.getMessage() + "', loc = '" + vm.getLocation() + "', err = '" + vm.getMessage() + "'");
       }
-      op.getIssue().add(OperationOutcomeUtilities.convertToIssue(vm, op));
+      op.getIssueList().add(OperationOutcomeUtilities.convertToIssue(vm, op));
     }
     if (!op.hasIssue()) {
       op.addIssue().setSeverity(OperationOutcome.IssueSeverity.INFORMATION).setCode(OperationOutcome.IssueType.INFORMATIONAL).getDetails().setText(context.formatMessage(I18nConstants.ALL_OK));
     }
-    RenderingContext rc = new RenderingContext(context, null, null, "http://hl7.org/fhir", "", null, RenderingContext.ResourceRendererMode.END_USER);
-    RendererFactory.factory(op, rc).render(op);
+    ExtensionUtilities.addStringExtension(op, ExtensionDefinitions.EXT_VALIDATOR_VERSION, getValidatorVersionDescription());
+    RenderingContext rc = new RenderingContext(context, new RendererFactory(), null, null, "http://hl7.org/fhir", "", context.getLocale(), RenderingContext.ResourceRendererMode.END_USER, GenerationRules.VALID_RESOURCE);
+    new RendererFactory().factory(op, rc).renderResource(ResourceWrapper.forResource(rc.getContextUtilities(), op));
     return op;
+  }
+
+  /**
+   * A human readable description of this validator - the same string that the CLI logs on start up.
+   * It goes into the OperationOutcome so that a report always says what produced it (see FHIR-2459).
+   */
+  public static String getValidatorVersionDescription() {
+    return "FHIR Validation tool " + VersionUtil.getVersionString();
   }
 
   /**
@@ -101,37 +180,63 @@ public class ValidatorUtils {
    *
    * @return {@link Boolean#TRUE} if more than one reference is found.
    */
-  static boolean extractReferences(String name, List<String> refs, SimpleWorkerContext context) throws IOException {
+  static boolean extractReferences(String name, List<SourceFile> refs, SimpleWorkerContext context) throws IOException {
     if (Common.isNetworkPath(name)) {
-      refs.add(name);
+      SourceFile src = addSourceFile(refs, name);
+      src.date = Long.MAX_VALUE;
+      src.process = true;
     } else if (Common.isWildcardPath(name)) {
       AsteriskFilter filter = new AsteriskFilter(name);
-      File[] files = new File(filter.getDir()).listFiles(filter);
+      File[] files = ManagedFileAccess.file(filter.getDir()).listFiles(filter);
       for (File file : files) {
-        refs.add(file.getPath());
+        addSourceFile(refs, file);
       }
     } else {
-      File file = new File(name);
+      File file = ManagedFileAccess.file(name);
       if (!file.exists()) {
         if (System.console() != null) {
           System.console().printf(context.formatMessage(I18nConstants.BAD_FILE_PATH_ERROR, name));
         } else {
-          System.out.println(context.formatMessage(I18nConstants.BAD_FILE_PATH_ERROR, name));
+          log.error(context.formatMessage(I18nConstants.BAD_FILE_PATH_ERROR, name));
         }
         throw new IOException("File " + name + " does not exist");
       }
 
       if (file.isFile()) {
-        refs.add(name);
+        addSourceFile(refs, file);
       } else {
-        for (int i = 0; i < file.listFiles().length; i++) {
-          File[] fileList = file.listFiles();
-          if (fileList[i].isFile())
-            refs.add(fileList[i].getPath());
+        for (File fileInDirectory : file.listFiles()) {
+          if (fileInDirectory.isFile()) {
+            if (!FileUtilities.isIgnorableFile(fileInDirectory)) {
+              addSourceFile(refs, fileInDirectory);
+            }
+          }
         }
       }
     }
     return refs.size() > 1;
+  }
+
+  private static SourceFile addSourceFile(List<SourceFile> refs, File file) {
+    SourceFile src = addSourceFile(refs, file.getPath());
+    long l = file.lastModified();  // returns 0 if the file is missing
+    if (src.date != l) {
+      src.setProcess(l != 0);  // process only if not missing
+    }
+    src.date = l;
+    return src;
+  }
+
+  private static SourceFile addSourceFile(List<SourceFile> refs, String path) {
+    for (SourceFile t : refs) {
+      if (t.ref.equals(path)) {
+        return t;
+      }
+    }
+    SourceFile src = new SourceFile();
+    src.ref = path;
+    refs.add(src);
+    return src;
   }
 
   /**
@@ -139,7 +244,7 @@ public class ValidatorUtils {
    *
    * @return {@link Boolean#TRUE} if more than one reference is found.
    */
-  public static boolean parseSources(List<String> sources, List<String> refs, SimpleWorkerContext context) throws IOException {
+  public static boolean parseSources(List<String> sources, List<SourceFile> refs, SimpleWorkerContext context) throws IOException {
     boolean multipleRefsFound = sources.size() > 1;
     for (String source : sources) {
       multipleRefsFound |= extractReferences(source, refs, context);

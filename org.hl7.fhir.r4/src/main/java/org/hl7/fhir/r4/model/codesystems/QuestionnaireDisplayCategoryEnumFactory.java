@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class QuestionnaireDisplayCategoryEnumFactory implements EnumFactory<QuestionnaireDisplayCategory> {
@@ -48,21 +44,23 @@ public class QuestionnaireDisplayCategoryEnumFactory implements EnumFactory<Ques
       return QuestionnaireDisplayCategory.SECURITY;
     if ("help".equals(codeString))
       return QuestionnaireDisplayCategory.HELP;
-    throw new IllegalArgumentException("Unknown QuestionnaireDisplayCategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown QuestionnaireDisplayCategory code '" + codeString + "'");
   }
 
   public String toCode(QuestionnaireDisplayCategory code) {
-    if (code == QuestionnaireDisplayCategory.INSTRUCTIONS)
+       if (code == QuestionnaireDisplayCategory.NULL)
+           return null;
+       if (code == QuestionnaireDisplayCategory.INSTRUCTIONS)
       return "instructions";
     if (code == QuestionnaireDisplayCategory.SECURITY)
       return "security";
     if (code == QuestionnaireDisplayCategory.HELP)
       return "help";
     return "?";
-  }
+   }
 
-    public String toSystem(QuestionnaireDisplayCategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(QuestionnaireDisplayCategory code) {
+    return code.getSystem();
+  }
 
 }

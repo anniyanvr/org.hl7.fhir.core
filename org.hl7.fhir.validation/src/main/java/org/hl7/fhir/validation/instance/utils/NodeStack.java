@@ -2,14 +2,16 @@ package org.hl7.fhir.validation.instance.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.hl7.fhir.r5.context.IWorkerContext;
-import org.hl7.fhir.r5.elementmodel.Element;
-import org.hl7.fhir.r5.model.ElementDefinition;
-import org.hl7.fhir.r5.model.StructureDefinition;
-import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
+import org.hl7.fhir.services.context.IWorkerContext;
+import org.hl7.fhir.services.elementmodel.Element;
+import org.hl7.fhir.model.core.ElementDefinition;
+import org.hl7.fhir.model.core.StructureDefinition;
+import org.hl7.fhir.model.core.StructureDefinition.StructureDefinitionKind;
 import org.hl7.fhir.utilities.Utilities;
 
 public class NodeStack {
@@ -19,7 +21,7 @@ public class NodeStack {
   private Element element;
   private ElementDefinition extension;
   private String literalPath; // xpath format
-  private List<String> logicalPaths; // dotted format, various entry points
+  private Set<String> logicalPaths; // dotted format, various entry points
   private NodeStack parent;
   private ElementDefinition type;
   private String workingLang;
@@ -35,11 +37,28 @@ public class NodeStack {
     this.context = context;
     ids = new HashMap<>();
     this.element = element;
-    literalPath = (initialPath == null ? "" : initialPath+".") + element.getPath();
+    literalPath = (initialPath == null ? "" : initialPath+".") + buildPathForElement(element, true);
     workingLang = validationLanguage;
-    if (!element.getName().equals(element.fhirType())) {
-      logicalPaths = new ArrayList<>();
-      logicalPaths.add(element.fhirType());
+    logicalPaths = new HashSet<>();
+    logicalPaths.add(urlTail(element.fhirType()));
+  }
+
+  private String urlTail(String fhirType) {
+    return Utilities.isAbsoluteUrl(fhirType) ? fhirType.substring(fhirType.lastIndexOf("/") + 1) : fhirType;
+  }
+
+  private String buildPathForElement(Element e, boolean first) {
+    if (e.getParentForValidator() != null) {
+      String node = e.getName().contains("/") ? e.getName().substring(e.getName().lastIndexOf("/")+1) : e.getName();
+      if (e.hasIndex() && e.getProperty().isList() && e.getSpecial() == null) {
+        node = node+"["+Integer.toString(e.getIndex())+"]";
+      }
+      if (!first && e.isResource()) {
+        node = node +"/*"+e.fhirType()+"/"+e.getIdBase()+"*/";
+      }
+      return buildPathForElement(e.getParentForValidator(), false)+"."+node;
+    } else {
+      return e.getPath();
     }
   }
 
@@ -47,7 +66,12 @@ public class NodeStack {
     this.context = context;
     ids = new HashMap<>();
     this.element = element;
-    literalPath = refPath + "->" + element.getName();
+    int i = element.getName().indexOf(".");
+    if (i == -1) {
+      literalPath = refPath+".resolve().ofType(" + element.getName()+")";      
+    } else {
+      literalPath = refPath+".resolve().ofType(" + element.getName().substring(0, i)+")"+element.getName().substring(i);
+    }
     workingLang = validationLanguage;
   }
 
@@ -67,7 +91,7 @@ public class NodeStack {
     return b.toString();
   }
 
-  private ElementDefinition getDefinition() {
+  public ElementDefinition getDefinition() {
     return definition;
   }
 
@@ -79,8 +103,8 @@ public class NodeStack {
     return literalPath == null ? "" : literalPath;
   }
 
-  public List<String> getLogicalPaths() {
-    return logicalPaths == null ? new ArrayList<String>() : logicalPaths;
+  public Set<String> getLogicalPaths() {
+    return logicalPaths == null ? new HashSet<String>() : logicalPaths;
   }
 
   private ElementDefinition getType() {
@@ -96,6 +120,9 @@ public class NodeStack {
   }
 
   private NodeStack pushInternal(Element element, int count, ElementDefinition definition, ElementDefinition type, String sep) {
+    if (definition == null && element.getProperty() != null) {
+      definition = element.getProperty().getDefinition();
+    }
     NodeStack res = new NodeStack(context);
     res.ids = ids;
     res.parent = this;
@@ -111,15 +138,19 @@ public class NodeStack {
     else if (element.getProperty().isChoice()) {
       String n = res.literalPath.substring(res.literalPath.lastIndexOf(".") + 1);
       String en = element.getProperty().getName();
-      en = en.substring(0, en.length() - 3);
-      String t = n.substring(en.length());
-      if (isPrimitiveType(Utilities.uncapitalize(t)))
-        t = Utilities.uncapitalize(t);
-      res.literalPath = res.literalPath.substring(0, res.literalPath.lastIndexOf(".")) + "." + en + ".ofType(" + t + ")";
+      if (en.endsWith("[x]")) {
+        en = en.substring(0, en.length() - 3);
+        String t = n.substring(en.length());
+        if (context.isPrimitiveType(Utilities.uncapitalize(t)))
+          t = Utilities.uncapitalize(t);
+        res.literalPath = res.literalPath.substring(0, res.literalPath.lastIndexOf(".")) + "." + en + ".ofType(" + t + ")";
+      } else {
+        res.literalPath = res.literalPath.substring(0, res.literalPath.lastIndexOf(".")) + "." + en;;
+      }
     }
-    res.logicalPaths = new ArrayList<String>();
+    res.logicalPaths = new HashSet<String>();
     if (type != null) {
-      // type will be bull if we on a stitching point of a contained resource, or if....
+      // type will be null if we on a stitching point of a contained resource, or if....
       res.type = type;
       String tn = res.type.getPath();
       String t = tail(definition.getPath());
@@ -127,19 +158,46 @@ public class NodeStack {
         tn = element.fhirType();
       }
       for (String lp : getLogicalPaths()) {
-        res.logicalPaths.add(lp + "." + t);
-        if (t.endsWith("[x]"))
-          res.logicalPaths.add(lp + "." + t.substring(0, t.length() - 3) + type.getPath());
+        if (isRealPath(lp, t)) {
+          res.logicalPaths.add(lp + "." + t);
+          if (t.endsWith("[x]")) {
+            res.logicalPaths.add(lp + "." + t.substring(0, t.length() - 3) + ".ofType("+type.getPath()+")");
+            res.logicalPaths.add(lp + "." + t.substring(0, t.length() - 3) + type.getPath());
+          }
+        }
       }
       res.logicalPaths.add(tn);
     } else if (definition != null) {
       for (String lp : getLogicalPaths()) {
-        res.logicalPaths.add(lp + "." + element.getName());
+        if (isRealPath(lp, element.getName())) {
+          res.logicalPaths.add(lp + "." + element.getName());
+        }
       }
-      res.logicalPaths.add(definition.typeSummary());
-    } else
+      if (definition.hasContentReference()) {
+        res.logicalPaths.add(definition.getContentReference().substring(definition.getContentReference().indexOf("#")+1));        
+      } else {
+        res.logicalPaths.addAll(definition.typeNameList());
+      }
+    } else {
       res.logicalPaths.addAll(getLogicalPaths());
+    }
     return res;
+  }
+
+  private boolean isRealPath(String lp, String t) {
+    if (Utilities.existsInList(lp, "Element")) {
+      return Utilities.existsInList(t, "id", "extension");
+    }
+    if (Utilities.existsInList(lp, "BackboneElement", "BackboneType")) {
+      return Utilities.existsInList(t, "modifierExtension");
+    }
+    if (Utilities.existsInList(lp, "Resource")) {
+      return Utilities.existsInList(t, "id", "meta", "implicitRules", "language");
+    }
+    if (Utilities.existsInList(lp, "DomainResource")) {
+      return Utilities.existsInList(t, "text", "contained", "extension", "modifierExtension");
+    }
+    return true;
   }
 
   private void setType(ElementDefinition type) {
@@ -158,10 +216,6 @@ public class NodeStack {
     return path.substring(path.lastIndexOf(".") + 1);
   }
 
-  public boolean isPrimitiveType(String code) {
-    StructureDefinition sd = context.fetchTypeDefinition(code);
-    return sd != null && sd.getKind() == StructureDefinitionKind.PRIMITIVETYPE;
-  }
 
   public String getWorkingLang() {
     return workingLang;
@@ -175,8 +229,8 @@ public class NodeStack {
     return parent;
   }
 
-  public void qualifyPath(String qualifier) {
-    literalPath = literalPath + qualifier;
+  public void pathComment(String comment) {
+    literalPath = literalPath + "/*"+comment+"*/";
     
   }
 
@@ -205,5 +259,21 @@ public class NodeStack {
     this.contained = contained;
   }
 
+  public int line() {
+    return element.line();
+  }
 
+  public int col() {
+    return element.col();
+  }
+
+  public boolean isInBundle() {
+    if ("Bundle".equals(this.element.getProperty().getDefinition().getBase().getPath())) {
+      return true;
+    } else if (parent == null) {
+      return false;
+    } else {
+      return parent.isInBundle();
+    }
+  }
 }

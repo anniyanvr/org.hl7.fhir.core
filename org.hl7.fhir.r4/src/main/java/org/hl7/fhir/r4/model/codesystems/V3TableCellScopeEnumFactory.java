@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3TableCellScopeEnumFactory implements EnumFactory<V3TableCellScope> {
@@ -50,11 +46,13 @@ public class V3TableCellScopeEnumFactory implements EnumFactory<V3TableCellScope
       return V3TableCellScope.ROW;
     if ("rowgroup".equals(codeString))
       return V3TableCellScope.ROWGROUP;
-    throw new IllegalArgumentException("Unknown V3TableCellScope code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3TableCellScope code '" + codeString + "'");
   }
 
   public String toCode(V3TableCellScope code) {
-    if (code == V3TableCellScope.COL)
+       if (code == V3TableCellScope.NULL)
+           return null;
+       if (code == V3TableCellScope.COL)
       return "col";
     if (code == V3TableCellScope.COLGROUP)
       return "colgroup";
@@ -63,10 +61,10 @@ public class V3TableCellScopeEnumFactory implements EnumFactory<V3TableCellScope
     if (code == V3TableCellScope.ROWGROUP)
       return "rowgroup";
     return "?";
-  }
+   }
 
-    public String toSystem(V3TableCellScope code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3TableCellScope code) {
+    return code.getSystem();
+  }
 
 }

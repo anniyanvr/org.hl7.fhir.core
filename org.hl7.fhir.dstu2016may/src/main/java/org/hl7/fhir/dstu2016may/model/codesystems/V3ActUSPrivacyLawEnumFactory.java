@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3ActUSPrivacyLawEnumFactory implements EnumFactory<V3ActUSPrivacyLaw> {
@@ -56,11 +52,13 @@ public class V3ActUSPrivacyLawEnumFactory implements EnumFactory<V3ActUSPrivacyL
       return V3ActUSPrivacyLaw.HIPAASELFPAY;
     if ("Title38Section7332".equals(codeString))
       return V3ActUSPrivacyLaw.TITLE38SECTION7332;
-    throw new IllegalArgumentException("Unknown V3ActUSPrivacyLaw code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ActUSPrivacyLaw code '" + codeString + "'");
   }
 
   public String toCode(V3ActUSPrivacyLaw code) {
-    if (code == V3ActUSPrivacyLaw._ACTUSPRIVACYLAW)
+       if (code == V3ActUSPrivacyLaw.NULL)
+           return null;
+       if (code == V3ActUSPrivacyLaw._ACTUSPRIVACYLAW)
       return "_ActUSPrivacyLaw";
     if (code == V3ActUSPrivacyLaw._42CFRPART2)
       return "42CFRPart2";
@@ -75,10 +73,10 @@ public class V3ActUSPrivacyLawEnumFactory implements EnumFactory<V3ActUSPrivacyL
     if (code == V3ActUSPrivacyLaw.TITLE38SECTION7332)
       return "Title38Section7332";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ActUSPrivacyLaw code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ActUSPrivacyLaw code) {
+    return code.getSystem();
+  }
 
 }

@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,7 +48,7 @@ import ca.uhn.fhir.model.api.annotation.Block;
 import ca.uhn.fhir.util.DatatypeUtil;
 import  org.hl7.fhir.instance.model.api.IPrimitiveType;
 /**
- * Base StructureDefinition for HumanName Type: A human's name with the ability to identify parts and usage.
+ * HumanName Type: A name, normally of a human, that can be used for other living entities (e.g. animals but not organizations) that have been assigned names by a human and may need the use of name parts or the need for usage information.
  */
 @DatatypeDef(name="HumanName")
 public class HumanName extends DataType implements ICompositeType {
@@ -117,6 +117,7 @@ public class HumanName extends DataType implements ICompositeType {
             case ANONYMOUS: return "anonymous";
             case OLD: return "old";
             case MAIDEN: return "maiden";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -129,6 +130,7 @@ public class HumanName extends DataType implements ICompositeType {
             case ANONYMOUS: return "http://hl7.org/fhir/name-use";
             case OLD: return "http://hl7.org/fhir/name-use";
             case MAIDEN: return "http://hl7.org/fhir/name-use";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -141,6 +143,7 @@ public class HumanName extends DataType implements ICompositeType {
             case ANONYMOUS: return "Anonymous assigned name, alias, or pseudonym (used to protect a person's identity for privacy reasons).";
             case OLD: return "This name is no longer in use (or was never correct, but retained for records).";
             case MAIDEN: return "A name used prior to changing name because of marriage. This name use is for use by applications that collect and store names that were used prior to a marriage. Marriage naming customs vary greatly around the world, and are constantly changing. This term is not gender specific. The use of this term does not imply any particular history for a person's name.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -153,6 +156,7 @@ public class HumanName extends DataType implements ICompositeType {
             case ANONYMOUS: return "Anonymous";
             case OLD: return "Old";
             case MAIDEN: return "Name changed for Marriage";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -179,32 +183,34 @@ public class HumanName extends DataType implements ICompositeType {
           return NameUse.MAIDEN;
         throw new IllegalArgumentException("Unknown NameUse code '"+codeString+"'");
         }
-        public Enumeration<NameUse> fromType(Base code) throws FHIRException {
+        public Enumeration<NameUse> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<NameUse>(this);
+            return new Enumeration<NameUse>(this, NameUse.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<NameUse>(this, NameUse.NULL, code);
         if ("usual".equals(codeString))
-          return new Enumeration<NameUse>(this, NameUse.USUAL);
+          return new Enumeration<NameUse>(this, NameUse.USUAL, code);
         if ("official".equals(codeString))
-          return new Enumeration<NameUse>(this, NameUse.OFFICIAL);
+          return new Enumeration<NameUse>(this, NameUse.OFFICIAL, code);
         if ("temp".equals(codeString))
-          return new Enumeration<NameUse>(this, NameUse.TEMP);
+          return new Enumeration<NameUse>(this, NameUse.TEMP, code);
         if ("nickname".equals(codeString))
-          return new Enumeration<NameUse>(this, NameUse.NICKNAME);
+          return new Enumeration<NameUse>(this, NameUse.NICKNAME, code);
         if ("anonymous".equals(codeString))
-          return new Enumeration<NameUse>(this, NameUse.ANONYMOUS);
+          return new Enumeration<NameUse>(this, NameUse.ANONYMOUS, code);
         if ("old".equals(codeString))
-          return new Enumeration<NameUse>(this, NameUse.OLD);
+          return new Enumeration<NameUse>(this, NameUse.OLD, code);
         if ("maiden".equals(codeString))
-          return new Enumeration<NameUse>(this, NameUse.MAIDEN);
+          return new Enumeration<NameUse>(this, NameUse.MAIDEN, code);
         throw new FHIRException("Unknown NameUse code '"+codeString+"'");
         }
     public String toCode(NameUse code) {
-      if (code == NameUse.USUAL)
+       if (code == NameUse.NULL)
+           return null;
+       if (code == NameUse.USUAL)
         return "usual";
       if (code == NameUse.OFFICIAL)
         return "official";
@@ -219,7 +225,7 @@ public class HumanName extends DataType implements ICompositeType {
       if (code == NameUse.MAIDEN)
         return "maiden";
       return "?";
-      }
+   }
     public String toSystem(NameUse code) {
       return code.getSystem();
       }
@@ -731,6 +737,28 @@ public class HumanName extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("use")) {
+          value = new NameUseEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.use = (Enumeration) value; // Enumeration<NameUse>
+        } else if (name.equals("text")) {
+          this.text = null;
+        } else if (name.equals("family")) {
+          this.family = null;
+        } else if (name.equals("given")) {
+          this.getGiven().remove(value);
+        } else if (name.equals("prefix")) {
+          this.getPrefix().remove(value);
+        } else if (name.equals("suffix")) {
+          this.getSuffix().remove(value);
+        } else if (name.equals("period")) {
+          this.period = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -764,22 +792,22 @@ public class HumanName extends DataType implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("use")) {
-          throw new FHIRException("Cannot call addChild on a primitive type HumanName.use");
+          throw new FHIRException("Cannot call addChild on a singleton property HumanName.use");
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type HumanName.text");
+          throw new FHIRException("Cannot call addChild on a singleton property HumanName.text");
         }
         else if (name.equals("family")) {
-          throw new FHIRException("Cannot call addChild on a primitive type HumanName.family");
+          throw new FHIRException("Cannot call addChild on a singleton property HumanName.family");
         }
         else if (name.equals("given")) {
-          throw new FHIRException("Cannot call addChild on a primitive type HumanName.given");
+          throw new FHIRException("Cannot call addChild on a singleton property HumanName.given");
         }
         else if (name.equals("prefix")) {
-          throw new FHIRException("Cannot call addChild on a primitive type HumanName.prefix");
+          throw new FHIRException("Cannot call addChild on a singleton property HumanName.prefix");
         }
         else if (name.equals("suffix")) {
-          throw new FHIRException("Cannot call addChild on a primitive type HumanName.suffix");
+          throw new FHIRException("Cannot call addChild on a singleton property HumanName.suffix");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -798,6 +826,10 @@ public class HumanName extends DataType implements ICompositeType {
         HumanName dst = new HumanName();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((HumanName) dst);
       }
 
       public void copyValues(HumanName dst) {
@@ -883,20 +915,27 @@ public class HumanName extends DataType implements ICompositeType {
    */ 
   public String getSuffixAsSingleString() { 
     return joinStringsSpaceSeparated(getSuffix()); 
-  } 
+  }
 
-  /** 
-   * Returns all of the components of the name (prefix, given, family, suffix) as a single string with a single spaced 
-   * string separating each part. 
-   * <p> 
-   * If none of the parts are populated, returns the {@link #getTextElement() text} element value instead. 
-   * </p> 
-   */ 
+  /**
+   * <p>Returns the {@link #getTextElement() text} element value if it is not null.</p>
+
+   * <p>If the {@link #getTextElement() text} element value is null, returns all the components of the name (prefix,
+   * given, family, suffix) as a single string with a single spaced string separating each part. </p>
+   *
+   * @return the human name as a single string
+   */
   public String getNameAsSingleString() { 
-    List<StringType> nameParts = new ArrayList<StringType>(); 
+    if (hasText()) {
+      return getText().toString();
+    }
+
+    List<StringType> nameParts = new ArrayList<StringType>();
     nameParts.addAll(getPrefix()); 
     nameParts.addAll(getGiven()); 
-    nameParts.add(getFamilyElement()); 
+    if (hasFamilyElement()) {
+      nameParts.add(getFamilyElement());
+    }
     nameParts.addAll(getSuffix()); 
     if (nameParts.size() > 0) { 
       return joinStringsSpaceSeparated(nameParts); 
@@ -911,17 +950,17 @@ public class HumanName extends DataType implements ICompositeType {
    * TODO: replace with call to ca.uhn.fhir.util.DatatypeUtil.joinStringsSpaceSeparated when HAPI upgrades to 1.4 
    */ 
   private static String joinStringsSpaceSeparated(List<? extends IPrimitiveType<String>> theStrings) { 
-    StringBuilder b = new StringBuilder(); 
-    for (IPrimitiveType<String> next : theStrings) { 
-      if (next.isEmpty()) { 
-        continue; 
-      } 
-      if (b.length() > 0) { 
-        b.append(' '); 
-      } 
-      b.append(next.getValue()); 
-    } 
-    return b.toString(); 
+    StringBuilder stringBuilder = new StringBuilder();
+    for (IPrimitiveType<String> string : theStrings) {
+      if (string.isEmpty()) {
+        continue;
+      }
+      if (stringBuilder.length() > 0) {
+        stringBuilder.append(' ');
+      }
+      stringBuilder.append(string.getValue());
+    }
+    return stringBuilder.toString();
   }
 // end addition
 

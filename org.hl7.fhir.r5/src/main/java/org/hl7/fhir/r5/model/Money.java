@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +47,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for Money Type: An amount of economic utility in some recognized currency.
+ * Money Type: An amount of economic utility in some recognized currency.
  */
 @DatatypeDef(name="Money")
 public class Money extends DataType implements ICompositeType {
@@ -243,6 +243,17 @@ public class Money extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("value")) {
+          this.value = null;
+        } else if (name.equals("currency")) {
+          this.currency = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -266,10 +277,10 @@ public class Money extends DataType implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("value")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Money.value");
+          throw new FHIRException("Cannot call addChild on a singleton property Money.value");
         }
         else if (name.equals("currency")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Money.currency");
+          throw new FHIRException("Cannot call addChild on a singleton property Money.currency");
         }
         else
           return super.addChild(name);
@@ -284,6 +295,10 @@ public class Money extends DataType implements ICompositeType {
         Money dst = new Money();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Money) dst);
       }
 
       public void copyValues(Money dst) {

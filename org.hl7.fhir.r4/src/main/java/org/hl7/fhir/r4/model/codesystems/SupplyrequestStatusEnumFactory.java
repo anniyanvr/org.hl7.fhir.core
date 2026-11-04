@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class SupplyrequestStatusEnumFactory implements EnumFactory<SupplyrequestStatus> {
@@ -56,11 +52,13 @@ public class SupplyrequestStatusEnumFactory implements EnumFactory<Supplyrequest
       return SupplyrequestStatus.ENTEREDINERROR;
     if ("unknown".equals(codeString))
       return SupplyrequestStatus.UNKNOWN;
-    throw new IllegalArgumentException("Unknown SupplyrequestStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown SupplyrequestStatus code '" + codeString + "'");
   }
 
   public String toCode(SupplyrequestStatus code) {
-    if (code == SupplyrequestStatus.DRAFT)
+       if (code == SupplyrequestStatus.NULL)
+           return null;
+       if (code == SupplyrequestStatus.DRAFT)
       return "draft";
     if (code == SupplyrequestStatus.ACTIVE)
       return "active";
@@ -75,10 +73,10 @@ public class SupplyrequestStatusEnumFactory implements EnumFactory<Supplyrequest
     if (code == SupplyrequestStatus.UNKNOWN)
       return "unknown";
     return "?";
-  }
+   }
 
-    public String toSystem(SupplyrequestStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(SupplyrequestStatus code) {
+    return code.getSystem();
+  }
 
 }

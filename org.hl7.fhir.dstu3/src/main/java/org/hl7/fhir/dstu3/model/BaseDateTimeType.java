@@ -39,14 +39,16 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.hl7.fhir.utilities.DateTimeUtil;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import ca.uhn.fhir.parser.DataFormatException;
-import org.hl7.fhir.utilities.DateTimeUtil;
 
 public abstract class BaseDateTimeType extends PrimitiveType<Date> {
 
@@ -79,7 +81,7 @@ public abstract class BaseDateTimeType extends PrimitiveType<Date> {
    */
   public BaseDateTimeType(Date theDate, TemporalPrecisionEnum thePrecision) {
     setValue(theDate, thePrecision);
-    validatePrecisionAndThrowDataFormatException(getValueAsString(), getPrecision());
+    validatePrecisionAndThrowIllegalArgumentException();
   }
 
   /**
@@ -88,7 +90,7 @@ public abstract class BaseDateTimeType extends PrimitiveType<Date> {
   public BaseDateTimeType(Date theDate, TemporalPrecisionEnum thePrecision, TimeZone theTimeZone) {
     this(theDate, thePrecision);
     setTimeZone(theTimeZone);
-    validatePrecisionAndThrowDataFormatException(getValueAsString(), getPrecision());
+    validatePrecisionAndThrowIllegalArgumentException();
   }
 
   /**
@@ -99,7 +101,7 @@ public abstract class BaseDateTimeType extends PrimitiveType<Date> {
    */
   public BaseDateTimeType(String theString) {
     setValueAsString(theString);
-    validatePrecisionAndThrowDataFormatException(theString, getPrecision());
+    validatePrecisionAndThrowIllegalArgumentException();
   }
 
   /**
@@ -167,8 +169,21 @@ public abstract class BaseDateTimeType extends PrimitiveType<Date> {
     myTimeZoneZulu = false;
   }
 
+  /**
+   * @param thePrecision
+   * @return the String value of this instance with the specified precision.
+   */
+  public String getValueAsString(TemporalPrecisionEnum thePrecision) {
+    return encode(getValue(), thePrecision);
+  }
+
   @Override
   protected String encode(Date theValue) {
+    return encode(theValue, myPrecision);
+  }
+
+  @Nullable
+  private String encode(Date theValue, TemporalPrecisionEnum thePrecision) {
     if (theValue == null) {
       return null;
     } else {
@@ -184,21 +199,22 @@ public abstract class BaseDateTimeType extends PrimitiveType<Date> {
 
       StringBuilder b = new StringBuilder();
       leftPadWithZeros(cal.get(Calendar.YEAR), 4, b);
-      if (myPrecision.ordinal() > TemporalPrecisionEnum.YEAR.ordinal()) {
+
+      if (thePrecision.ordinal() > TemporalPrecisionEnum.YEAR.ordinal()) {
         b.append('-');
         leftPadWithZeros(cal.get(Calendar.MONTH) + 1, 2, b);
-        if (myPrecision.ordinal() > TemporalPrecisionEnum.MONTH.ordinal()) {
+        if (thePrecision.ordinal() > TemporalPrecisionEnum.MONTH.ordinal()) {
           b.append('-');
           leftPadWithZeros(cal.get(Calendar.DATE), 2, b);
-          if (myPrecision.ordinal() > TemporalPrecisionEnum.DAY.ordinal()) {
+          if (thePrecision.ordinal() > TemporalPrecisionEnum.DAY.ordinal()) {
             b.append('T');
             leftPadWithZeros(cal.get(Calendar.HOUR_OF_DAY), 2, b);
             b.append(':');
             leftPadWithZeros(cal.get(Calendar.MINUTE), 2, b);
-            if (myPrecision.ordinal() > TemporalPrecisionEnum.MINUTE.ordinal()) {
+            if (thePrecision.ordinal() > TemporalPrecisionEnum.MINUTE.ordinal()) {
               b.append(':');
               leftPadWithZeros(cal.get(Calendar.SECOND), 2, b);
-              if (myPrecision.ordinal() > TemporalPrecisionEnum.SECOND.ordinal()) {
+              if (thePrecision.ordinal() > TemporalPrecisionEnum.SECOND.ordinal()) {
                 b.append('.');
                 b.append(myFractionalSeconds);
                 for (int i = myFractionalSeconds.length(); i < 3; i++) {
@@ -504,7 +520,7 @@ public abstract class BaseDateTimeType extends PrimitiveType<Date> {
     }
 
     if (precision == TemporalPrecisionEnum.MINUTE) {
-      validatePrecisionAndThrowDataFormatException(value, precision);
+      validatePrecisionAndThrowIllegalArgumentException();
     }
 
     myPrecision = precision;
@@ -539,7 +555,7 @@ public abstract class BaseDateTimeType extends PrimitiveType<Date> {
     validateValueInRange(theValue, theMinimum, theMaximum);
     Calendar cal;
     if (getValue() == null) {
-      cal = new GregorianCalendar(0, 0, 0);
+      cal = new GregorianCalendar();
     } else {
       cal = getValueAsCalendar();
     }
@@ -710,9 +726,9 @@ public abstract class BaseDateTimeType extends PrimitiveType<Date> {
   }
 
   @Override
-  public void setValueAsString(String theValue) throws DataFormatException {
+  public void setValueAsString(String theString) throws DataFormatException {
     clearTimeZone();
-    super.setValueAsString(theValue);
+    super.setValueAsString(theString);
   }
 
   protected void setValueAsV3String(String theV3String) {
@@ -832,9 +848,9 @@ public abstract class BaseDateTimeType extends PrimitiveType<Date> {
     }
   }
 
-  private void validatePrecisionAndThrowDataFormatException(String theValue, TemporalPrecisionEnum thePrecision) {
-    if (isPrecisionAllowed(thePrecision) == false) {
-      throw new DataFormatException("Invalid date/time string (datatype " + getClass().getSimpleName() + " does not support " + thePrecision + " precision): " + theValue);
+  private void validatePrecisionAndThrowIllegalArgumentException() {
+    if (!isPrecisionAllowed(getPrecision())) {
+      throw new IllegalArgumentException("Invalid date/time string (datatype " + getClass().getSimpleName() + " does not support " + getPrecision() + " precision): " + getValueAsString());
     }
   }
 

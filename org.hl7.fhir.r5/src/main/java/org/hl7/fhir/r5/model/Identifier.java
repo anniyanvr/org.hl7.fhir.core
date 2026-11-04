@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,14 +46,14 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for Identifier Type: An identifier - identifies some entity uniquely and unambiguously. Typically this is used for business identifiers.
+ * Identifier Type: An identifier - identifies some entity uniquely and unambiguously. Typically this is used for business identifiers.
  */
 @DatatypeDef(name="Identifier")
 public class Identifier extends DataType implements ICompositeType {
 
     public enum IdentifierUse {
         /**
-         * The identifier recommended for display and use in real-world interactions.
+         * The identifier recommended for display and use in real-world interactions which should be used when such identifier is different from the \"official\" identifier.
          */
         USUAL, 
         /**
@@ -101,6 +101,7 @@ public class Identifier extends DataType implements ICompositeType {
             case TEMP: return "temp";
             case SECONDARY: return "secondary";
             case OLD: return "old";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -111,16 +112,18 @@ public class Identifier extends DataType implements ICompositeType {
             case TEMP: return "http://hl7.org/fhir/identifier-use";
             case SECONDARY: return "http://hl7.org/fhir/identifier-use";
             case OLD: return "http://hl7.org/fhir/identifier-use";
+            case NULL: return null;
             default: return "?";
           }
         }
         public String getDefinition() {
           switch (this) {
-            case USUAL: return "The identifier recommended for display and use in real-world interactions.";
+            case USUAL: return "The identifier recommended for display and use in real-world interactions which should be used when such identifier is different from the \"official\" identifier.";
             case OFFICIAL: return "The identifier considered to be most trusted for the identification of this item. Sometimes also known as \"primary\" and \"main\". The determination of \"official\" is subjective and implementation guides often provide additional guidelines for use.";
             case TEMP: return "A temporary identifier.";
             case SECONDARY: return "An identifier that was assigned in secondary use - it serves to identify the object in a relative context, but cannot be consistently assigned to the same object again in a different context.";
             case OLD: return "The identifier id no longer considered valid, but may be relevant for search purposes.  E.g. Changes to identifier schemes, account merges, etc.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -131,6 +134,7 @@ public class Identifier extends DataType implements ICompositeType {
             case TEMP: return "Temp";
             case SECONDARY: return "Secondary";
             case OLD: return "Old";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -153,28 +157,30 @@ public class Identifier extends DataType implements ICompositeType {
           return IdentifierUse.OLD;
         throw new IllegalArgumentException("Unknown IdentifierUse code '"+codeString+"'");
         }
-        public Enumeration<IdentifierUse> fromType(Base code) throws FHIRException {
+        public Enumeration<IdentifierUse> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<IdentifierUse>(this);
+            return new Enumeration<IdentifierUse>(this, IdentifierUse.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<IdentifierUse>(this, IdentifierUse.NULL, code);
         if ("usual".equals(codeString))
-          return new Enumeration<IdentifierUse>(this, IdentifierUse.USUAL);
+          return new Enumeration<IdentifierUse>(this, IdentifierUse.USUAL, code);
         if ("official".equals(codeString))
-          return new Enumeration<IdentifierUse>(this, IdentifierUse.OFFICIAL);
+          return new Enumeration<IdentifierUse>(this, IdentifierUse.OFFICIAL, code);
         if ("temp".equals(codeString))
-          return new Enumeration<IdentifierUse>(this, IdentifierUse.TEMP);
+          return new Enumeration<IdentifierUse>(this, IdentifierUse.TEMP, code);
         if ("secondary".equals(codeString))
-          return new Enumeration<IdentifierUse>(this, IdentifierUse.SECONDARY);
+          return new Enumeration<IdentifierUse>(this, IdentifierUse.SECONDARY, code);
         if ("old".equals(codeString))
-          return new Enumeration<IdentifierUse>(this, IdentifierUse.OLD);
+          return new Enumeration<IdentifierUse>(this, IdentifierUse.OLD, code);
         throw new FHIRException("Unknown IdentifierUse code '"+codeString+"'");
         }
     public String toCode(IdentifierUse code) {
-      if (code == IdentifierUse.USUAL)
+       if (code == IdentifierUse.NULL)
+           return null;
+       if (code == IdentifierUse.USUAL)
         return "usual";
       if (code == IdentifierUse.OFFICIAL)
         return "official";
@@ -185,7 +191,7 @@ public class Identifier extends DataType implements ICompositeType {
       if (code == IdentifierUse.OLD)
         return "old";
       return "?";
-      }
+   }
     public String toSystem(IdentifierUse code) {
       return code.getSystem();
       }
@@ -208,10 +214,10 @@ public class Identifier extends DataType implements ICompositeType {
     protected CodeableConcept type;
 
     /**
-     * Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+     * Establishes the namespace for the value - that is, an absolute URL that describes a set values that are unique.
      */
     @Child(name = "system", type = {UriType.class}, order=2, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="The namespace for the identifier value", formalDefinition="Establishes the namespace for the value - that is, a URL that describes a set values that are unique." )
+    @Description(shortDefinition="The namespace for the identifier value", formalDefinition="Establishes the namespace for the value - that is, an absolute URL that describes a set values that are unique." )
     protected UriType system;
 
     /**
@@ -318,7 +324,7 @@ public class Identifier extends DataType implements ICompositeType {
     }
 
     /**
-     * @return {@link #system} (Establishes the namespace for the value - that is, a URL that describes a set values that are unique.). This is the underlying object with id, value and extensions. The accessor "getSystem" gives direct access to the value
+     * @return {@link #system} (Establishes the namespace for the value - that is, an absolute URL that describes a set values that are unique.). This is the underlying object with id, value and extensions. The accessor "getSystem" gives direct access to the value
      */
     public UriType getSystemElement() { 
       if (this.system == null)
@@ -338,7 +344,7 @@ public class Identifier extends DataType implements ICompositeType {
     }
 
     /**
-     * @param value {@link #system} (Establishes the namespace for the value - that is, a URL that describes a set values that are unique.). This is the underlying object with id, value and extensions. The accessor "getSystem" gives direct access to the value
+     * @param value {@link #system} (Establishes the namespace for the value - that is, an absolute URL that describes a set values that are unique.). This is the underlying object with id, value and extensions. The accessor "getSystem" gives direct access to the value
      */
     public Identifier setSystemElement(UriType value) { 
       this.system = value;
@@ -346,14 +352,14 @@ public class Identifier extends DataType implements ICompositeType {
     }
 
     /**
-     * @return Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+     * @return Establishes the namespace for the value - that is, an absolute URL that describes a set values that are unique.
      */
     public String getSystem() { 
       return this.system == null ? null : this.system.getValue();
     }
 
     /**
-     * @param value Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+     * @param value Establishes the namespace for the value - that is, an absolute URL that describes a set values that are unique.
      */
     public Identifier setSystem(String value) { 
       if (Utilities.noString(value))
@@ -467,7 +473,7 @@ public class Identifier extends DataType implements ICompositeType {
         super.listChildren(children);
         children.add(new Property("use", "code", "The purpose of this identifier.", 0, 1, use));
         children.add(new Property("type", "CodeableConcept", "A coded type for the identifier that can be used to determine which identifier to use for a specific purpose.", 0, 1, type));
-        children.add(new Property("system", "uri", "Establishes the namespace for the value - that is, a URL that describes a set values that are unique.", 0, 1, system));
+        children.add(new Property("system", "uri", "Establishes the namespace for the value - that is, an absolute URL that describes a set values that are unique.", 0, 1, system));
         children.add(new Property("value", "string", "The portion of the identifier typically relevant to the user and which is unique within the context of the system.", 0, 1, value));
         children.add(new Property("period", "Period", "Time period during which identifier is/was valid for use.", 0, 1, period));
         children.add(new Property("assigner", "Reference(Organization)", "Organization that issued/manages the identifier.", 0, 1, assigner));
@@ -478,7 +484,7 @@ public class Identifier extends DataType implements ICompositeType {
         switch (_hash) {
         case 116103: /*use*/  return new Property("use", "code", "The purpose of this identifier.", 0, 1, use);
         case 3575610: /*type*/  return new Property("type", "CodeableConcept", "A coded type for the identifier that can be used to determine which identifier to use for a specific purpose.", 0, 1, type);
-        case -887328209: /*system*/  return new Property("system", "uri", "Establishes the namespace for the value - that is, a URL that describes a set values that are unique.", 0, 1, system);
+        case -887328209: /*system*/  return new Property("system", "uri", "Establishes the namespace for the value - that is, an absolute URL that describes a set values that are unique.", 0, 1, system);
         case 111972721: /*value*/  return new Property("value", "string", "The portion of the identifier typically relevant to the user and which is unique within the context of the system.", 0, 1, value);
         case -991726143: /*period*/  return new Property("period", "Period", "Time period during which identifier is/was valid for use.", 0, 1, period);
         case -369881636: /*assigner*/  return new Property("assigner", "Reference(Organization)", "Organization that issued/manages the identifier.", 0, 1, assigner);
@@ -548,6 +554,26 @@ public class Identifier extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("use")) {
+          value = new IdentifierUseEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.use = (Enumeration) value; // Enumeration<IdentifierUse>
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("system")) {
+          this.system = null;
+        } else if (name.equals("value")) {
+          this.value = null;
+        } else if (name.equals("period")) {
+          this.period = null;
+        } else if (name.equals("assigner")) {
+          this.assigner = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -579,17 +605,17 @@ public class Identifier extends DataType implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("use")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Identifier.use");
+          throw new FHIRException("Cannot call addChild on a singleton property Identifier.use");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
           return this.type;
         }
         else if (name.equals("system")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Identifier.system");
+          throw new FHIRException("Cannot call addChild on a singleton property Identifier.system");
         }
         else if (name.equals("value")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Identifier.value");
+          throw new FHIRException("Cannot call addChild on a singleton property Identifier.value");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -612,6 +638,10 @@ public class Identifier extends DataType implements ICompositeType {
         Identifier dst = new Identifier();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Identifier) dst);
       }
 
       public void copyValues(Identifier dst) {
@@ -654,6 +684,13 @@ public class Identifier extends DataType implements ICompositeType {
       public boolean isEmpty() {
         return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(use, type, system, value
           , period, assigner);
+      }
+
+      public boolean matches(Identifier other) {
+        @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+        //system and value are identifiers/URLs; safe
+        boolean result = hasSystem() && hasValue() && getSystem().matches(other.getSystem()) && getValue().matches(other.getValue());
+        return result;
       }
 
 

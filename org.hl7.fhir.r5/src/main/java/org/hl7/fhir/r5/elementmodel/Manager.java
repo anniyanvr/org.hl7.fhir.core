@@ -39,17 +39,21 @@ import java.util.List;
 import org.hl7.fhir.exceptions.DefinitionException;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
+import org.hl7.fhir.r5.conformance.profile.ProfileUtilities;
+import org.hl7.fhir.r5.context.ContextUtilities;
 import org.hl7.fhir.r5.context.IWorkerContext;
-import org.hl7.fhir.r5.elementmodel.ParserBase.NamedElement;
 import org.hl7.fhir.r5.formats.IParser.OutputStyle;
 import org.hl7.fhir.r5.model.StructureDefinition;
+
+
 
 public class Manager {
 
   //TODO use EnumMap
-  public enum FhirFormat { XML, JSON, TURTLE, TEXT, VBAR, SHC; 
+  public enum FhirFormat { XML, JSON, TURTLE, TEXT, VBAR, SHC, SHL, FML, NDJSON; 
     // SHC = smart health cards, including as text versions of QR codes
-
+    // SHL = smart health links, also a text version of the QR code
+    
     public String getExtension() {
       switch (this) {
         case JSON:
@@ -64,6 +68,12 @@ public class Manager {
           return "hl7";
         case SHC:
           return "shc";
+        case SHL:
+          return "shl";
+        case FML:
+          return "fml";
+        case NDJSON:
+          return "ndjson";
       }
       return null;
     }
@@ -80,19 +90,60 @@ public class Manager {
           return TEXT;
         case "hl7":
           return VBAR;
+        case "shc":
+          return SHC;
+        case "shl":
+          return SHL;
+        case "fml":
+          return FML;
+        case "ndjson":
+          return NDJSON;
+      }
+      return null;
+    }
+    public static FhirFormat readFromMimeType(String mt) {
+      if (mt == null) {
+        return null;
+      }
+      if (mt.contains("/xml") || mt.contains("+xml")) {
+        return FhirFormat.XML;
+      }
+      if (mt.contains("/json") || mt.contains("+json")) {
+        return FhirFormat.JSON;
       }
       return null;
     }
 
-    
+    public static FhirFormat fromCode(String code) {
+      FhirFormat fmt = getFhirFormat(code);
+      if (fmt == null) {
+        fmt = readFromMimeType(code);
+      } 
+      return fmt;
+    }
+
+    public String toMimeType() {
+      switch (this) {
+      case FML: return "text/fhir+fml";
+      case JSON: return "application/fhir+json";
+      case NDJSON: return "application/fhir+ndjson";
+      case SHC: return "application/shc";
+      case SHL: return "application/shl";
+      case TEXT: return "text/plain";
+      case TURTLE: return "application/fhir+turtle";
+      case VBAR: return "application/x-hl7-v2";
+      case XML: return "application/fhir+xml";
+      }
+      return "??";
+    }
   }
   
-  public static List<NamedElement> parse(IWorkerContext context, InputStream source, FhirFormat inputFormat) throws FHIRFormatError, DefinitionException, IOException, FHIRException {
+  public static List<ValidatedFragment> parse(IWorkerContext context, InputStream source, FhirFormat inputFormat) throws FHIRFormatError, DefinitionException, IOException, FHIRException {
     return makeParser(context, inputFormat).parse(source);
   }
 
   public static Element parseSingle(IWorkerContext context, InputStream source, FhirFormat inputFormat) throws FHIRFormatError, DefinitionException, IOException, FHIRException {
-    return makeParser(context, inputFormat).parseSingle(source);
+    return makeParser(context, inputFormat).parseSingle(source, null);
   }
   
 
@@ -101,20 +152,31 @@ public class Manager {
   }
 
   public static ParserBase makeParser(IWorkerContext context, FhirFormat format) {
+    if (format == null) {
+      throw new Error("Programming logic error: no format known");
+    }
     switch (format) {
     case JSON : return new JsonParser(context);
+    case NDJSON : return new NDJsonParser(context);
     case XML : return new XmlParser(context);
     case TURTLE : return new TurtleParser(context);
     case VBAR : return new VerticalBarParser(context);
     case SHC : return new SHCParser(context);
+    case SHL : return new SHLParser(context);
+    case FML : return new FmlParser(context, null);
     case TEXT : throw new Error("Programming logic error: do not call makeParser for a text resource");
     }
     return null;
   }
   
   public static Element build(IWorkerContext context, StructureDefinition sd) {
-    Property p = new Property(context, sd.getSnapshot().getElementFirstRep(), sd);
-    Element e = new Element(null, p);
+    return build(context, sd, new ProfileUtilities(context, null, null));
+  }
+  
+  public static Element build(IWorkerContext context, StructureDefinition sd, ProfileUtilities profileUtilities) {
+    Property p = new Property(context, sd.getSnapshot().getElementFirstRep(), sd, profileUtilities, new ContextUtilities(context));
+    Element e = new Element(p.getName(), p);
+    e.setPath(sd.getType());
     return e;
   }
 

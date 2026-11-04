@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ExtraSecurityRoleTypeEnumFactory implements EnumFactory<ExtraSecurityRoleType> {
@@ -52,11 +48,13 @@ public class ExtraSecurityRoleTypeEnumFactory implements EnumFactory<ExtraSecuri
       return ExtraSecurityRoleType.DATASUBJECT;
     if ("humanuser".equals(codeString))
       return ExtraSecurityRoleType.HUMANUSER;
-    throw new IllegalArgumentException("Unknown ExtraSecurityRoleType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ExtraSecurityRoleType code '" + codeString + "'");
   }
 
   public String toCode(ExtraSecurityRoleType code) {
-    if (code == ExtraSecurityRoleType.AUTHSERVER)
+       if (code == ExtraSecurityRoleType.NULL)
+           return null;
+       if (code == ExtraSecurityRoleType.AUTHSERVER)
       return "authserver";
     if (code == ExtraSecurityRoleType.DATACOLLECTOR)
       return "datacollector";
@@ -67,10 +65,10 @@ public class ExtraSecurityRoleTypeEnumFactory implements EnumFactory<ExtraSecuri
     if (code == ExtraSecurityRoleType.HUMANUSER)
       return "humanuser";
     return "?";
-  }
+   }
 
-    public String toSystem(ExtraSecurityRoleType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ExtraSecurityRoleType code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class PermittedDataTypeEnumFactory implements EnumFactory<PermittedDataType> {
@@ -64,11 +60,13 @@ public class PermittedDataTypeEnumFactory implements EnumFactory<PermittedDataTy
       return PermittedDataType.DATETIME;
     if ("Period".equals(codeString))
       return PermittedDataType.PERIOD;
-    throw new IllegalArgumentException("Unknown PermittedDataType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown PermittedDataType code '" + codeString + "'");
   }
 
   public String toCode(PermittedDataType code) {
-    if (code == PermittedDataType.QUANTITY)
+       if (code == PermittedDataType.NULL)
+           return null;
+       if (code == PermittedDataType.QUANTITY)
       return "Quantity";
     if (code == PermittedDataType.CODEABLECONCEPT)
       return "CodeableConcept";
@@ -91,10 +89,10 @@ public class PermittedDataTypeEnumFactory implements EnumFactory<PermittedDataTy
     if (code == PermittedDataType.PERIOD)
       return "Period";
     return "?";
-  }
+   }
 
-    public String toSystem(PermittedDataType code) {
-      return code.getSystem();
-      }
+  public String toSystem(PermittedDataType code) {
+    return code.getSystem();
+  }
 
 }

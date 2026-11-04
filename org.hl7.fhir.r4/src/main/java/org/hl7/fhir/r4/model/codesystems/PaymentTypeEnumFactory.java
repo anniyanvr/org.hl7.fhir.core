@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class PaymentTypeEnumFactory implements EnumFactory<PaymentType> {
@@ -48,21 +44,23 @@ public class PaymentTypeEnumFactory implements EnumFactory<PaymentType> {
       return PaymentType.ADJUSTMENT;
     if ("advance".equals(codeString))
       return PaymentType.ADVANCE;
-    throw new IllegalArgumentException("Unknown PaymentType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown PaymentType code '" + codeString + "'");
   }
 
   public String toCode(PaymentType code) {
-    if (code == PaymentType.PAYMENT)
+       if (code == PaymentType.NULL)
+           return null;
+       if (code == PaymentType.PAYMENT)
       return "payment";
     if (code == PaymentType.ADJUSTMENT)
       return "adjustment";
     if (code == PaymentType.ADVANCE)
       return "advance";
     return "?";
-  }
+   }
 
-    public String toSystem(PaymentType code) {
-      return code.getSystem();
-      }
+  public String toSystem(PaymentType code) {
+    return code.getSystem();
+  }
 
 }

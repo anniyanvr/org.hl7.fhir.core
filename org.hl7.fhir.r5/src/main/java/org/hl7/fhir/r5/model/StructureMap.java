@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,6 +83,7 @@ public class StructureMap extends CanonicalResource {
           switch (this) {
             case TYPES: return "types";
             case TYPEANDTYPES: return "type-and-types";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -90,6 +91,7 @@ public class StructureMap extends CanonicalResource {
           switch (this) {
             case TYPES: return "http://hl7.org/fhir/map-group-type-mode";
             case TYPEANDTYPES: return "http://hl7.org/fhir/map-group-type-mode";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -97,6 +99,7 @@ public class StructureMap extends CanonicalResource {
           switch (this) {
             case TYPES: return "This group is a default mapping group for the specified types and for the primary source type.";
             case TYPEANDTYPES: return "This group is a default mapping group for the specified types.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -104,6 +107,7 @@ public class StructureMap extends CanonicalResource {
           switch (this) {
             case TYPES: return "Default for Type Combination";
             case TYPEANDTYPES: return "Default for type + combination";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -120,27 +124,29 @@ public class StructureMap extends CanonicalResource {
           return StructureMapGroupTypeMode.TYPEANDTYPES;
         throw new IllegalArgumentException("Unknown StructureMapGroupTypeMode code '"+codeString+"'");
         }
-        public Enumeration<StructureMapGroupTypeMode> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapGroupTypeMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<StructureMapGroupTypeMode>(this);
+            return new Enumeration<StructureMapGroupTypeMode>(this, StructureMapGroupTypeMode.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<StructureMapGroupTypeMode>(this, StructureMapGroupTypeMode.NULL, code);
         if ("types".equals(codeString))
-          return new Enumeration<StructureMapGroupTypeMode>(this, StructureMapGroupTypeMode.TYPES);
+          return new Enumeration<StructureMapGroupTypeMode>(this, StructureMapGroupTypeMode.TYPES, code);
         if ("type-and-types".equals(codeString))
-          return new Enumeration<StructureMapGroupTypeMode>(this, StructureMapGroupTypeMode.TYPEANDTYPES);
+          return new Enumeration<StructureMapGroupTypeMode>(this, StructureMapGroupTypeMode.TYPEANDTYPES, code);
         throw new FHIRException("Unknown StructureMapGroupTypeMode code '"+codeString+"'");
         }
     public String toCode(StructureMapGroupTypeMode code) {
-      if (code == StructureMapGroupTypeMode.TYPES)
+       if (code == StructureMapGroupTypeMode.NULL)
+           return null;
+       if (code == StructureMapGroupTypeMode.TYPES)
         return "types";
       if (code == StructureMapGroupTypeMode.TYPEANDTYPES)
         return "type-and-types";
       return "?";
-      }
+   }
     public String toSystem(StructureMapGroupTypeMode code) {
       return code.getSystem();
       }
@@ -175,6 +181,7 @@ public class StructureMap extends CanonicalResource {
           switch (this) {
             case SOURCE: return "source";
             case TARGET: return "target";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -182,6 +189,7 @@ public class StructureMap extends CanonicalResource {
           switch (this) {
             case SOURCE: return "http://hl7.org/fhir/map-input-mode";
             case TARGET: return "http://hl7.org/fhir/map-input-mode";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -189,6 +197,7 @@ public class StructureMap extends CanonicalResource {
           switch (this) {
             case SOURCE: return "Names an input instance used a source for mapping.";
             case TARGET: return "Names an instance that is being populated.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -196,6 +205,7 @@ public class StructureMap extends CanonicalResource {
           switch (this) {
             case SOURCE: return "Source Instance";
             case TARGET: return "Target Instance";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -212,27 +222,29 @@ public class StructureMap extends CanonicalResource {
           return StructureMapInputMode.TARGET;
         throw new IllegalArgumentException("Unknown StructureMapInputMode code '"+codeString+"'");
         }
-        public Enumeration<StructureMapInputMode> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapInputMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<StructureMapInputMode>(this);
+            return new Enumeration<StructureMapInputMode>(this, StructureMapInputMode.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<StructureMapInputMode>(this, StructureMapInputMode.NULL, code);
         if ("source".equals(codeString))
-          return new Enumeration<StructureMapInputMode>(this, StructureMapInputMode.SOURCE);
+          return new Enumeration<StructureMapInputMode>(this, StructureMapInputMode.SOURCE, code);
         if ("target".equals(codeString))
-          return new Enumeration<StructureMapInputMode>(this, StructureMapInputMode.TARGET);
+          return new Enumeration<StructureMapInputMode>(this, StructureMapInputMode.TARGET, code);
         throw new FHIRException("Unknown StructureMapInputMode code '"+codeString+"'");
         }
     public String toCode(StructureMapInputMode code) {
-      if (code == StructureMapInputMode.SOURCE)
+       if (code == StructureMapInputMode.NULL)
+           return null;
+       if (code == StructureMapInputMode.SOURCE)
         return "source";
       if (code == StructureMapInputMode.TARGET)
         return "target";
       return "?";
-      }
+   }
     public String toSystem(StructureMapInputMode code) {
       return code.getSystem();
       }
@@ -281,6 +293,7 @@ public class StructureMap extends CanonicalResource {
             case QUERIED: return "queried";
             case TARGET: return "target";
             case PRODUCED: return "produced";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -290,6 +303,7 @@ public class StructureMap extends CanonicalResource {
             case QUERIED: return "http://hl7.org/fhir/map-model-mode";
             case TARGET: return "http://hl7.org/fhir/map-model-mode";
             case PRODUCED: return "http://hl7.org/fhir/map-model-mode";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -299,6 +313,7 @@ public class StructureMap extends CanonicalResource {
             case QUERIED: return "This structure describes an instance that the mapping engine may ask for that is used a source of data.";
             case TARGET: return "This structure describes an instance passed to the mapping engine that is used a target of data.";
             case PRODUCED: return "This structure describes an instance that the mapping engine may ask to create that is used a target of data.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -308,6 +323,7 @@ public class StructureMap extends CanonicalResource {
             case QUERIED: return "Queried Structure Definition";
             case TARGET: return "Target Structure Definition";
             case PRODUCED: return "Produced Structure Definition";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -328,26 +344,28 @@ public class StructureMap extends CanonicalResource {
           return StructureMapModelMode.PRODUCED;
         throw new IllegalArgumentException("Unknown StructureMapModelMode code '"+codeString+"'");
         }
-        public Enumeration<StructureMapModelMode> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapModelMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<StructureMapModelMode>(this);
+            return new Enumeration<StructureMapModelMode>(this, StructureMapModelMode.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<StructureMapModelMode>(this, StructureMapModelMode.NULL, code);
         if ("source".equals(codeString))
-          return new Enumeration<StructureMapModelMode>(this, StructureMapModelMode.SOURCE);
+          return new Enumeration<StructureMapModelMode>(this, StructureMapModelMode.SOURCE, code);
         if ("queried".equals(codeString))
-          return new Enumeration<StructureMapModelMode>(this, StructureMapModelMode.QUERIED);
+          return new Enumeration<StructureMapModelMode>(this, StructureMapModelMode.QUERIED, code);
         if ("target".equals(codeString))
-          return new Enumeration<StructureMapModelMode>(this, StructureMapModelMode.TARGET);
+          return new Enumeration<StructureMapModelMode>(this, StructureMapModelMode.TARGET, code);
         if ("produced".equals(codeString))
-          return new Enumeration<StructureMapModelMode>(this, StructureMapModelMode.PRODUCED);
+          return new Enumeration<StructureMapModelMode>(this, StructureMapModelMode.PRODUCED, code);
         throw new FHIRException("Unknown StructureMapModelMode code '"+codeString+"'");
         }
     public String toCode(StructureMapModelMode code) {
-      if (code == StructureMapModelMode.SOURCE)
+       if (code == StructureMapModelMode.NULL)
+           return null;
+       if (code == StructureMapModelMode.SOURCE)
         return "source";
       if (code == StructureMapModelMode.QUERIED)
         return "queried";
@@ -356,7 +374,7 @@ public class StructureMap extends CanonicalResource {
       if (code == StructureMapModelMode.PRODUCED)
         return "produced";
       return "?";
-      }
+   }
     public String toSystem(StructureMapModelMode code) {
       return code.getSystem();
       }
@@ -412,6 +430,7 @@ public class StructureMap extends CanonicalResource {
             case LAST: return "last";
             case NOTLAST: return "not_last";
             case ONLYONE: return "only_one";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -422,6 +441,7 @@ public class StructureMap extends CanonicalResource {
             case LAST: return "http://hl7.org/fhir/map-source-list-mode";
             case NOTLAST: return "http://hl7.org/fhir/map-source-list-mode";
             case ONLYONE: return "http://hl7.org/fhir/map-source-list-mode";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -432,6 +452,7 @@ public class StructureMap extends CanonicalResource {
             case LAST: return "Only process this rule for the last in the list.";
             case NOTLAST: return "Process this rule for all but the last.";
             case ONLYONE: return "Only process this rule is there is only item.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -442,6 +463,7 @@ public class StructureMap extends CanonicalResource {
             case LAST: return "Last";
             case NOTLAST: return "All but the last";
             case ONLYONE: return "Enforce only one";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -464,28 +486,30 @@ public class StructureMap extends CanonicalResource {
           return StructureMapSourceListMode.ONLYONE;
         throw new IllegalArgumentException("Unknown StructureMapSourceListMode code '"+codeString+"'");
         }
-        public Enumeration<StructureMapSourceListMode> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapSourceListMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<StructureMapSourceListMode>(this);
+            return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.NULL, code);
         if ("first".equals(codeString))
-          return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.FIRST);
+          return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.FIRST, code);
         if ("not_first".equals(codeString))
-          return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.NOTFIRST);
+          return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.NOTFIRST, code);
         if ("last".equals(codeString))
-          return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.LAST);
+          return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.LAST, code);
         if ("not_last".equals(codeString))
-          return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.NOTLAST);
+          return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.NOTLAST, code);
         if ("only_one".equals(codeString))
-          return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.ONLYONE);
+          return new Enumeration<StructureMapSourceListMode>(this, StructureMapSourceListMode.ONLYONE, code);
         throw new FHIRException("Unknown StructureMapSourceListMode code '"+codeString+"'");
         }
     public String toCode(StructureMapSourceListMode code) {
-      if (code == StructureMapSourceListMode.FIRST)
+       if (code == StructureMapSourceListMode.NULL)
+           return null;
+       if (code == StructureMapSourceListMode.FIRST)
         return "first";
       if (code == StructureMapSourceListMode.NOTFIRST)
         return "not_first";
@@ -496,7 +520,7 @@ public class StructureMap extends CanonicalResource {
       if (code == StructureMapSourceListMode.ONLYONE)
         return "only_one";
       return "?";
-      }
+   }
     public String toSystem(StructureMapSourceListMode code) {
       return code.getSystem();
       }
@@ -516,9 +540,9 @@ public class StructureMap extends CanonicalResource {
          */
         LAST, 
         /**
-         * re-use the first item in the list, and keep adding content to it.
+         * the target instance is shared with a number of target instances generated by another rule (up to the first common n items, then create new ones).
          */
-        COLLATE, 
+        SINGLE, 
         /**
          * added to help the parsers with the generic types
          */
@@ -532,8 +556,8 @@ public class StructureMap extends CanonicalResource {
           return SHARE;
         if ("last".equals(codeString))
           return LAST;
-        if ("collate".equals(codeString))
-          return COLLATE;
+        if ("single".equals(codeString))
+          return SINGLE;
         if (Configuration.isAcceptInvalidEnums())
           return null;
         else
@@ -544,7 +568,8 @@ public class StructureMap extends CanonicalResource {
             case FIRST: return "first";
             case SHARE: return "share";
             case LAST: return "last";
-            case COLLATE: return "collate";
+            case SINGLE: return "single";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -553,7 +578,8 @@ public class StructureMap extends CanonicalResource {
             case FIRST: return "http://hl7.org/fhir/map-target-list-mode";
             case SHARE: return "http://hl7.org/fhir/map-target-list-mode";
             case LAST: return "http://hl7.org/fhir/map-target-list-mode";
-            case COLLATE: return "http://hl7.org/fhir/map-target-list-mode";
+            case SINGLE: return "http://hl7.org/fhir/map-target-list-mode";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -562,7 +588,8 @@ public class StructureMap extends CanonicalResource {
             case FIRST: return "when the target list is being assembled, the items for this rule go first. If more than one rule defines a first item (for a given instance of mapping) then this is an error.";
             case SHARE: return "the target instance is shared with the target instances generated by another rule (up to the first common n items, then create new ones).";
             case LAST: return "when the target list is being assembled, the items for this rule go last. If more than one rule defines a last item (for a given instance of mapping) then this is an error.";
-            case COLLATE: return "re-use the first item in the list, and keep adding content to it.";
+            case SINGLE: return "the target instance is shared with a number of target instances generated by another rule (up to the first common n items, then create new ones).";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -571,7 +598,8 @@ public class StructureMap extends CanonicalResource {
             case FIRST: return "First";
             case SHARE: return "Share";
             case LAST: return "Last";
-            case COLLATE: return "Collate";
+            case SINGLE: return "single";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -588,39 +616,41 @@ public class StructureMap extends CanonicalResource {
           return StructureMapTargetListMode.SHARE;
         if ("last".equals(codeString))
           return StructureMapTargetListMode.LAST;
-        if ("collate".equals(codeString))
-          return StructureMapTargetListMode.COLLATE;
+        if ("single".equals(codeString))
+          return StructureMapTargetListMode.SINGLE;
         throw new IllegalArgumentException("Unknown StructureMapTargetListMode code '"+codeString+"'");
         }
-        public Enumeration<StructureMapTargetListMode> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapTargetListMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<StructureMapTargetListMode>(this);
+            return new Enumeration<StructureMapTargetListMode>(this, StructureMapTargetListMode.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<StructureMapTargetListMode>(this, StructureMapTargetListMode.NULL, code);
         if ("first".equals(codeString))
-          return new Enumeration<StructureMapTargetListMode>(this, StructureMapTargetListMode.FIRST);
+          return new Enumeration<StructureMapTargetListMode>(this, StructureMapTargetListMode.FIRST, code);
         if ("share".equals(codeString))
-          return new Enumeration<StructureMapTargetListMode>(this, StructureMapTargetListMode.SHARE);
+          return new Enumeration<StructureMapTargetListMode>(this, StructureMapTargetListMode.SHARE, code);
         if ("last".equals(codeString))
-          return new Enumeration<StructureMapTargetListMode>(this, StructureMapTargetListMode.LAST);
-        if ("collate".equals(codeString))
-          return new Enumeration<StructureMapTargetListMode>(this, StructureMapTargetListMode.COLLATE);
+          return new Enumeration<StructureMapTargetListMode>(this, StructureMapTargetListMode.LAST, code);
+        if ("single".equals(codeString))
+          return new Enumeration<StructureMapTargetListMode>(this, StructureMapTargetListMode.SINGLE, code);
         throw new FHIRException("Unknown StructureMapTargetListMode code '"+codeString+"'");
         }
     public String toCode(StructureMapTargetListMode code) {
-      if (code == StructureMapTargetListMode.FIRST)
+       if (code == StructureMapTargetListMode.NULL)
+           return null;
+       if (code == StructureMapTargetListMode.FIRST)
         return "first";
       if (code == StructureMapTargetListMode.SHARE)
         return "share";
       if (code == StructureMapTargetListMode.LAST)
         return "last";
-      if (code == StructureMapTargetListMode.COLLATE)
-        return "collate";
+      if (code == StructureMapTargetListMode.SINGLE)
+        return "single";
       return "?";
-      }
+   }
     public String toSystem(StructureMapTargetListMode code) {
       return code.getSystem();
       }
@@ -644,7 +674,7 @@ public class StructureMap extends CanonicalResource {
          */
         ESCAPE, 
         /**
-         * cast(source, type?) - case source from one type to another. target type can be left as implicit if there is one and only one target type known.
+         * cast(source, type?) - cast (convert) source from one type to another. Target type can be left as implicit if there is one and only one target type known. The default namespace for the type is 'FHIR' (see [FHIRPath type specifiers](http://hl7.org/fhirpath/N1/#is-type-specifier))
          */
         CAST, 
         /**
@@ -760,6 +790,7 @@ public class StructureMap extends CanonicalResource {
             case QTY: return "qty";
             case ID: return "id";
             case CP: return "cp";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -782,6 +813,7 @@ public class StructureMap extends CanonicalResource {
             case QTY: return "http://hl7.org/fhir/map-transform";
             case ID: return "http://hl7.org/fhir/map-transform";
             case CP: return "http://hl7.org/fhir/map-transform";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -791,7 +823,7 @@ public class StructureMap extends CanonicalResource {
             case COPY: return "copy(source).";
             case TRUNCATE: return "truncate(source, length) - source must be stringy type.";
             case ESCAPE: return "escape(source, fmt1, fmt2) - change source from one kind of escaping to another (plain, java, xml, json). note that this is for when the string itself is escaped.";
-            case CAST: return "cast(source, type?) - case source from one type to another. target type can be left as implicit if there is one and only one target type known.";
+            case CAST: return "cast(source, type?) - cast (convert) source from one type to another. Target type can be left as implicit if there is one and only one target type known. The default namespace for the type is 'FHIR' (see [FHIRPath type specifiers](http://hl7.org/fhirpath/N1/#is-type-specifier))";
             case APPEND: return "append(source...) - source is element or string.";
             case TRANSLATE: return "translate(source, uri_of_map) - use the translate operation.";
             case REFERENCE: return "reference(source : object) - return a string that references the provided tree properly.";
@@ -804,6 +836,7 @@ public class StructureMap extends CanonicalResource {
             case QTY: return "Create a quantity. Parameters = (text) or (value, unit, [system, code]) where text is the natural representation e.g. [comparator]value[space]unit.";
             case ID: return "Create an identifier. Parameters = (system, value[, type]) where type is a code from the identifier type value set.";
             case CP: return "Create a contact details. Parameters = (value) or (system, value). If no system is provided, the system should be inferred from the content of the value.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -826,6 +859,7 @@ public class StructureMap extends CanonicalResource {
             case QTY: return "qty";
             case ID: return "id";
             case CP: return "cp";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -872,52 +906,54 @@ public class StructureMap extends CanonicalResource {
           return StructureMapTransform.CP;
         throw new IllegalArgumentException("Unknown StructureMapTransform code '"+codeString+"'");
         }
-        public Enumeration<StructureMapTransform> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapTransform> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<StructureMapTransform>(this);
+            return new Enumeration<StructureMapTransform>(this, StructureMapTransform.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<StructureMapTransform>(this, StructureMapTransform.NULL, code);
         if ("create".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.CREATE);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.CREATE, code);
         if ("copy".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.COPY);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.COPY, code);
         if ("truncate".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.TRUNCATE);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.TRUNCATE, code);
         if ("escape".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.ESCAPE);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.ESCAPE, code);
         if ("cast".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.CAST);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.CAST, code);
         if ("append".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.APPEND);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.APPEND, code);
         if ("translate".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.TRANSLATE);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.TRANSLATE, code);
         if ("reference".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.REFERENCE);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.REFERENCE, code);
         if ("dateOp".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.DATEOP);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.DATEOP, code);
         if ("uuid".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.UUID);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.UUID, code);
         if ("pointer".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.POINTER);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.POINTER, code);
         if ("evaluate".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.EVALUATE);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.EVALUATE, code);
         if ("cc".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.CC);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.CC, code);
         if ("c".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.C);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.C, code);
         if ("qty".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.QTY);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.QTY, code);
         if ("id".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.ID);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.ID, code);
         if ("cp".equals(codeString))
-          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.CP);
+          return new Enumeration<StructureMapTransform>(this, StructureMapTransform.CP, code);
         throw new FHIRException("Unknown StructureMapTransform code '"+codeString+"'");
         }
     public String toCode(StructureMapTransform code) {
-      if (code == StructureMapTransform.CREATE)
+       if (code == StructureMapTransform.NULL)
+           return null;
+       if (code == StructureMapTransform.CREATE)
         return "create";
       if (code == StructureMapTransform.COPY)
         return "copy";
@@ -952,7 +988,7 @@ public class StructureMap extends CanonicalResource {
       if (code == StructureMapTransform.CP)
         return "cp";
       return "?";
-      }
+   }
     public String toSystem(StructureMapTransform code) {
       return code.getSystem();
       }
@@ -1264,6 +1300,22 @@ public class StructureMap extends CanonicalResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("url")) {
+          this.url = null;
+        } else if (name.equals("mode")) {
+          value = new StructureMapModelModeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.mode = (Enumeration) value; // Enumeration<StructureMapModelMode>
+        } else if (name.equals("alias")) {
+          this.alias = null;
+        } else if (name.equals("documentation")) {
+          this.documentation = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1291,16 +1343,16 @@ public class StructureMap extends CanonicalResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.structure.url");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.structure.url");
         }
         else if (name.equals("mode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.structure.mode");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.structure.mode");
         }
         else if (name.equals("alias")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.structure.alias");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.structure.alias");
         }
         else if (name.equals("documentation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.structure.documentation");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.structure.documentation");
         }
         else
           return super.addChild(name);
@@ -1310,6 +1362,10 @@ public class StructureMap extends CanonicalResource {
         StructureMapStructureComponent dst = new StructureMapStructureComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((StructureMapStructureComponent) dst);
       }
 
       public void copyValues(StructureMapStructureComponent dst) {
@@ -1349,6 +1405,270 @@ public class StructureMap extends CanonicalResource {
 
   public String fhirType() {
     return "StructureMap.structure";
+
+  }
+
+  }
+
+    @Block()
+    public static class StructureMapConstComponent extends BackboneElement implements IBaseBackboneElement {
+        /**
+         * Other maps used by this map (canonical URLs).
+         */
+        @Child(name = "name", type = {IdType.class}, order=1, min=0, max=1, modifier=false, summary=true)
+        @Description(shortDefinition="Constant name", formalDefinition="Other maps used by this map (canonical URLs)." )
+        protected IdType name;
+
+        /**
+         * A FHIRPath expression that is the value of this variable.
+         */
+        @Child(name = "value", type = {StringType.class}, order=2, min=0, max=1, modifier=false, summary=true)
+        @Description(shortDefinition="FHIRPath exression - value of the constant", formalDefinition="A FHIRPath expression that is the value of this variable." )
+        protected StringType value;
+
+        private static final long serialVersionUID = 19170614L;
+
+    /**
+     * Constructor
+     */
+      public StructureMapConstComponent() {
+        super();
+      }
+
+        /**
+         * @return {@link #name} (Other maps used by this map (canonical URLs).). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
+         */
+        public IdType getNameElement() { 
+          if (this.name == null)
+            if (Configuration.errorOnAutoCreate())
+              throw new Error("Attempt to auto-create StructureMapConstComponent.name");
+            else if (Configuration.doAutoCreate())
+              this.name = new IdType(); // bb
+          return this.name;
+        }
+
+        public boolean hasNameElement() { 
+          return this.name != null && !this.name.isEmpty();
+        }
+
+        public boolean hasName() { 
+          return this.name != null && !this.name.isEmpty();
+        }
+
+        /**
+         * @param value {@link #name} (Other maps used by this map (canonical URLs).). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
+         */
+        public StructureMapConstComponent setNameElement(IdType value) { 
+          this.name = value;
+          return this;
+        }
+
+        /**
+         * @return Other maps used by this map (canonical URLs).
+         */
+        public String getName() { 
+          return this.name == null ? null : this.name.getValue();
+        }
+
+        /**
+         * @param value Other maps used by this map (canonical URLs).
+         */
+        public StructureMapConstComponent setName(String value) { 
+          if (Utilities.noString(value))
+            this.name = null;
+          else {
+            if (this.name == null)
+              this.name = new IdType();
+            this.name.setValue(value);
+          }
+          return this;
+        }
+
+        /**
+         * @return {@link #value} (A FHIRPath expression that is the value of this variable.). This is the underlying object with id, value and extensions. The accessor "getValue" gives direct access to the value
+         */
+        public StringType getValueElement() { 
+          if (this.value == null)
+            if (Configuration.errorOnAutoCreate())
+              throw new Error("Attempt to auto-create StructureMapConstComponent.value");
+            else if (Configuration.doAutoCreate())
+              this.value = new StringType(); // bb
+          return this.value;
+        }
+
+        public boolean hasValueElement() { 
+          return this.value != null && !this.value.isEmpty();
+        }
+
+        public boolean hasValue() { 
+          return this.value != null && !this.value.isEmpty();
+        }
+
+        /**
+         * @param value {@link #value} (A FHIRPath expression that is the value of this variable.). This is the underlying object with id, value and extensions. The accessor "getValue" gives direct access to the value
+         */
+        public StructureMapConstComponent setValueElement(StringType value) { 
+          this.value = value;
+          return this;
+        }
+
+        /**
+         * @return A FHIRPath expression that is the value of this variable.
+         */
+        public String getValue() { 
+          return this.value == null ? null : this.value.getValue();
+        }
+
+        /**
+         * @param value A FHIRPath expression that is the value of this variable.
+         */
+        public StructureMapConstComponent setValue(String value) { 
+          if (Utilities.noString(value))
+            this.value = null;
+          else {
+            if (this.value == null)
+              this.value = new StringType();
+            this.value.setValue(value);
+          }
+          return this;
+        }
+
+        protected void listChildren(List<Property> children) {
+          super.listChildren(children);
+          children.add(new Property("name", "id", "Other maps used by this map (canonical URLs).", 0, 1, name));
+          children.add(new Property("value", "string", "A FHIRPath expression that is the value of this variable.", 0, 1, value));
+        }
+
+        @Override
+        public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
+          switch (_hash) {
+          case 3373707: /*name*/  return new Property("name", "id", "Other maps used by this map (canonical URLs).", 0, 1, name);
+          case 111972721: /*value*/  return new Property("value", "string", "A FHIRPath expression that is the value of this variable.", 0, 1, value);
+          default: return super.getNamedProperty(_hash, _name, _checkValid);
+          }
+
+        }
+
+      @Override
+      public Base[] getProperty(int hash, String name, boolean checkValid) throws FHIRException {
+        switch (hash) {
+        case 3373707: /*name*/ return this.name == null ? new Base[0] : new Base[] {this.name}; // IdType
+        case 111972721: /*value*/ return this.value == null ? new Base[0] : new Base[] {this.value}; // StringType
+        default: return super.getProperty(hash, name, checkValid);
+        }
+
+      }
+
+      @Override
+      public Base setProperty(int hash, String name, Base value) throws FHIRException {
+        switch (hash) {
+        case 3373707: // name
+          this.name = TypeConvertor.castToId(value); // IdType
+          return value;
+        case 111972721: // value
+          this.value = TypeConvertor.castToString(value); // StringType
+          return value;
+        default: return super.setProperty(hash, name, value);
+        }
+
+      }
+
+      @Override
+      public Base setProperty(String name, Base value) throws FHIRException {
+        if (name.equals("name")) {
+          this.name = TypeConvertor.castToId(value); // IdType
+        } else if (name.equals("value")) {
+          this.value = TypeConvertor.castToString(value); // StringType
+        } else
+          return super.setProperty(name, value);
+        return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("value")) {
+          this.value = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
+      @Override
+      public Base makeProperty(int hash, String name) throws FHIRException {
+        switch (hash) {
+        case 3373707:  return getNameElement();
+        case 111972721:  return getValueElement();
+        default: return super.makeProperty(hash, name);
+        }
+
+      }
+
+      @Override
+      public String[] getTypesForProperty(int hash, String name) throws FHIRException {
+        switch (hash) {
+        case 3373707: /*name*/ return new String[] {"id"};
+        case 111972721: /*value*/ return new String[] {"string"};
+        default: return super.getTypesForProperty(hash, name);
+        }
+
+      }
+
+      @Override
+      public Base addChild(String name) throws FHIRException {
+        if (name.equals("name")) {
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.const.name");
+        }
+        else if (name.equals("value")) {
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.const.value");
+        }
+        else
+          return super.addChild(name);
+      }
+
+      public StructureMapConstComponent copy() {
+        StructureMapConstComponent dst = new StructureMapConstComponent();
+        copyValues(dst);
+        return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((StructureMapConstComponent) dst);
+      }
+
+      public void copyValues(StructureMapConstComponent dst) {
+        super.copyValues(dst);
+        dst.name = name == null ? null : name.copy();
+        dst.value = value == null ? null : value.copy();
+      }
+
+      @Override
+      public boolean equalsDeep(Base other_) {
+        if (!super.equalsDeep(other_))
+          return false;
+        if (!(other_ instanceof StructureMapConstComponent))
+          return false;
+        StructureMapConstComponent o = (StructureMapConstComponent) other_;
+        return compareDeep(name, o.name, true) && compareDeep(value, o.value, true);
+      }
+
+      @Override
+      public boolean equalsShallow(Base other_) {
+        if (!super.equalsShallow(other_))
+          return false;
+        if (!(other_ instanceof StructureMapConstComponent))
+          return false;
+        StructureMapConstComponent o = (StructureMapConstComponent) other_;
+        return compareValues(name, o.name, true) && compareValues(value, o.value, true);
+      }
+
+      public boolean isEmpty() {
+        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(name, value);
+      }
+
+  public String fhirType() {
+    return "StructureMap.const";
 
   }
 
@@ -1800,6 +2120,26 @@ public class StructureMap extends CanonicalResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("extends")) {
+          this.extends_ = null;
+        } else if (name.equals("typeMode")) {
+          value = new StructureMapGroupTypeModeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.typeMode = (Enumeration) value; // Enumeration<StructureMapGroupTypeMode>
+        } else if (name.equals("documentation")) {
+          this.documentation = null;
+        } else if (name.equals("input")) {
+          this.getInput().remove((StructureMapGroupInputComponent) value);
+        } else if (name.equals("rule")) {
+          this.getRule().remove((StructureMapGroupRuleComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1831,16 +2171,16 @@ public class StructureMap extends CanonicalResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.name");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.name");
         }
         else if (name.equals("extends")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.extends");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.extends");
         }
         else if (name.equals("typeMode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.typeMode");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.typeMode");
         }
         else if (name.equals("documentation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.documentation");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.documentation");
         }
         else if (name.equals("input")) {
           return addInput();
@@ -1856,6 +2196,10 @@ public class StructureMap extends CanonicalResource {
         StructureMapGroupComponent dst = new StructureMapGroupComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((StructureMapGroupComponent) dst);
       }
 
       public void copyValues(StructureMapGroupComponent dst) {
@@ -2222,6 +2566,22 @@ public String toString() {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("mode")) {
+          value = new StructureMapInputModeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.mode = (Enumeration) value; // Enumeration<StructureMapInputMode>
+        } else if (name.equals("documentation")) {
+          this.documentation = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -2249,16 +2609,16 @@ public String toString() {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.input.name");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.input.name");
         }
         else if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.input.type");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.input.type");
         }
         else if (name.equals("mode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.input.mode");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.input.mode");
         }
         else if (name.equals("documentation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.input.documentation");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.input.documentation");
         }
         else
           return super.addChild(name);
@@ -2268,6 +2628,10 @@ public String toString() {
         StructureMapGroupInputComponent dst = new StructureMapGroupInputComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((StructureMapGroupInputComponent) dst);
       }
 
       public void copyValues(StructureMapGroupInputComponent dst) {
@@ -2766,6 +3130,25 @@ public String toString() {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("source")) {
+          this.getSource().remove((StructureMapGroupRuleSourceComponent) value);
+        } else if (name.equals("target")) {
+          this.getTarget().remove((StructureMapGroupRuleTargetComponent) value);
+        } else if (name.equals("rule")) {
+          this.getRule().remove((StructureMapGroupRuleComponent) value);
+        } else if (name.equals("dependent")) {
+          this.getDependent().remove((StructureMapGroupRuleDependentComponent) value);
+        } else if (name.equals("documentation")) {
+          this.documentation = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -2797,7 +3180,7 @@ public String toString() {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.name");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.name");
         }
         else if (name.equals("source")) {
           return addSource();
@@ -2812,7 +3195,7 @@ public String toString() {
           return addDependent();
         }
         else if (name.equals("documentation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.documentation");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.documentation");
         }
         else
           return super.addChild(name);
@@ -2822,6 +3205,10 @@ public String toString() {
         StructureMapGroupRuleComponent dst = new StructureMapGroupRuleComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((StructureMapGroupRuleComponent) dst);
       }
 
       public void copyValues(StructureMapGroupRuleComponent dst) {
@@ -2922,9 +3309,9 @@ public String toString() {
         /**
          * A value to use if there is no existing value in the source object.
          */
-        @Child(name = "defaultValue", type = {Base64BinaryType.class, BooleanType.class, CanonicalType.class, CodeType.class, DateType.class, DateTimeType.class, DecimalType.class, IdType.class, InstantType.class, IntegerType.class, Integer64Type.class, MarkdownType.class, OidType.class, PositiveIntType.class, StringType.class, TimeType.class, UnsignedIntType.class, UriType.class, UrlType.class, UuidType.class, Address.class, Age.class, Annotation.class, Attachment.class, CodeableConcept.class, Coding.class, ContactPoint.class, Count.class, Distance.class, Duration.class, HumanName.class, Identifier.class, Money.class, Period.class, Quantity.class, Range.class, Ratio.class, Reference.class, SampledData.class, Signature.class, Timing.class, ContactDetail.class, Contributor.class, DataRequirement.class, Expression.class, ParameterDefinition.class, RelatedArtifact.class, TriggerDefinition.class, UsageContext.class, Dosage.class, Meta.class}, order=5, min=0, max=1, modifier=false, summary=true)
+        @Child(name = "defaultValue", type = {StringType.class}, order=5, min=0, max=1, modifier=false, summary=true)
         @Description(shortDefinition="Default value if no value exists", formalDefinition="A value to use if there is no existing value in the source object." )
-        protected DataType defaultValue;
+        protected StringType defaultValue;
 
         /**
          * Optional field for this source.
@@ -2969,7 +3356,7 @@ public String toString() {
         @Description(shortDefinition="Message to put in log if source exists (FHIRPath)", formalDefinition="A FHIRPath expression which specifies a message to put in the transform log when content matching the source rule is found." )
         protected StringType logMessage;
 
-        private static final long serialVersionUID = 1708673504L;
+        private static final long serialVersionUID = 214178119L;
 
     /**
      * Constructor
@@ -3175,775 +3562,19 @@ public String toString() {
         }
 
         /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
+         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.). This is the underlying object with id, value and extensions. The accessor "getDefaultValue" gives direct access to the value
          */
-        public DataType getDefaultValue() { 
+        public StringType getDefaultValueElement() { 
+          if (this.defaultValue == null)
+            if (Configuration.errorOnAutoCreate())
+              throw new Error("Attempt to auto-create StructureMapGroupRuleSourceComponent.defaultValue");
+            else if (Configuration.doAutoCreate())
+              this.defaultValue = new StringType(); // bb
           return this.defaultValue;
         }
 
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Base64BinaryType getDefaultValueBase64BinaryType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Base64BinaryType();
-          if (!(this.defaultValue instanceof Base64BinaryType))
-            throw new FHIRException("Type mismatch: the type Base64BinaryType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Base64BinaryType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueBase64BinaryType() { 
-          return this != null && this.defaultValue instanceof Base64BinaryType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public BooleanType getDefaultValueBooleanType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new BooleanType();
-          if (!(this.defaultValue instanceof BooleanType))
-            throw new FHIRException("Type mismatch: the type BooleanType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (BooleanType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueBooleanType() { 
-          return this != null && this.defaultValue instanceof BooleanType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public CanonicalType getDefaultValueCanonicalType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new CanonicalType();
-          if (!(this.defaultValue instanceof CanonicalType))
-            throw new FHIRException("Type mismatch: the type CanonicalType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (CanonicalType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueCanonicalType() { 
-          return this != null && this.defaultValue instanceof CanonicalType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public CodeType getDefaultValueCodeType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new CodeType();
-          if (!(this.defaultValue instanceof CodeType))
-            throw new FHIRException("Type mismatch: the type CodeType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (CodeType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueCodeType() { 
-          return this != null && this.defaultValue instanceof CodeType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public DateType getDefaultValueDateType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new DateType();
-          if (!(this.defaultValue instanceof DateType))
-            throw new FHIRException("Type mismatch: the type DateType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (DateType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueDateType() { 
-          return this != null && this.defaultValue instanceof DateType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public DateTimeType getDefaultValueDateTimeType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new DateTimeType();
-          if (!(this.defaultValue instanceof DateTimeType))
-            throw new FHIRException("Type mismatch: the type DateTimeType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (DateTimeType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueDateTimeType() { 
-          return this != null && this.defaultValue instanceof DateTimeType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public DecimalType getDefaultValueDecimalType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new DecimalType();
-          if (!(this.defaultValue instanceof DecimalType))
-            throw new FHIRException("Type mismatch: the type DecimalType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (DecimalType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueDecimalType() { 
-          return this != null && this.defaultValue instanceof DecimalType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public IdType getDefaultValueIdType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new IdType();
-          if (!(this.defaultValue instanceof IdType))
-            throw new FHIRException("Type mismatch: the type IdType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (IdType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueIdType() { 
-          return this != null && this.defaultValue instanceof IdType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public InstantType getDefaultValueInstantType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new InstantType();
-          if (!(this.defaultValue instanceof InstantType))
-            throw new FHIRException("Type mismatch: the type InstantType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (InstantType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueInstantType() { 
-          return this != null && this.defaultValue instanceof InstantType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public IntegerType getDefaultValueIntegerType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new IntegerType();
-          if (!(this.defaultValue instanceof IntegerType))
-            throw new FHIRException("Type mismatch: the type IntegerType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (IntegerType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueIntegerType() { 
-          return this != null && this.defaultValue instanceof IntegerType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Integer64Type getDefaultValueInteger64Type() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Integer64Type();
-          if (!(this.defaultValue instanceof Integer64Type))
-            throw new FHIRException("Type mismatch: the type Integer64Type was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Integer64Type) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueInteger64Type() { 
-          return this != null && this.defaultValue instanceof Integer64Type;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public MarkdownType getDefaultValueMarkdownType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new MarkdownType();
-          if (!(this.defaultValue instanceof MarkdownType))
-            throw new FHIRException("Type mismatch: the type MarkdownType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (MarkdownType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueMarkdownType() { 
-          return this != null && this.defaultValue instanceof MarkdownType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public OidType getDefaultValueOidType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new OidType();
-          if (!(this.defaultValue instanceof OidType))
-            throw new FHIRException("Type mismatch: the type OidType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (OidType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueOidType() { 
-          return this != null && this.defaultValue instanceof OidType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public PositiveIntType getDefaultValuePositiveIntType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new PositiveIntType();
-          if (!(this.defaultValue instanceof PositiveIntType))
-            throw new FHIRException("Type mismatch: the type PositiveIntType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (PositiveIntType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValuePositiveIntType() { 
-          return this != null && this.defaultValue instanceof PositiveIntType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public StringType getDefaultValueStringType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new StringType();
-          if (!(this.defaultValue instanceof StringType))
-            throw new FHIRException("Type mismatch: the type StringType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (StringType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueStringType() { 
-          return this != null && this.defaultValue instanceof StringType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public TimeType getDefaultValueTimeType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new TimeType();
-          if (!(this.defaultValue instanceof TimeType))
-            throw new FHIRException("Type mismatch: the type TimeType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (TimeType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueTimeType() { 
-          return this != null && this.defaultValue instanceof TimeType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public UnsignedIntType getDefaultValueUnsignedIntType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new UnsignedIntType();
-          if (!(this.defaultValue instanceof UnsignedIntType))
-            throw new FHIRException("Type mismatch: the type UnsignedIntType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (UnsignedIntType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueUnsignedIntType() { 
-          return this != null && this.defaultValue instanceof UnsignedIntType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public UriType getDefaultValueUriType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new UriType();
-          if (!(this.defaultValue instanceof UriType))
-            throw new FHIRException("Type mismatch: the type UriType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (UriType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueUriType() { 
-          return this != null && this.defaultValue instanceof UriType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public UrlType getDefaultValueUrlType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new UrlType();
-          if (!(this.defaultValue instanceof UrlType))
-            throw new FHIRException("Type mismatch: the type UrlType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (UrlType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueUrlType() { 
-          return this != null && this.defaultValue instanceof UrlType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public UuidType getDefaultValueUuidType() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new UuidType();
-          if (!(this.defaultValue instanceof UuidType))
-            throw new FHIRException("Type mismatch: the type UuidType was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (UuidType) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueUuidType() { 
-          return this != null && this.defaultValue instanceof UuidType;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Address getDefaultValueAddress() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Address();
-          if (!(this.defaultValue instanceof Address))
-            throw new FHIRException("Type mismatch: the type Address was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Address) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueAddress() { 
-          return this != null && this.defaultValue instanceof Address;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Age getDefaultValueAge() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Age();
-          if (!(this.defaultValue instanceof Age))
-            throw new FHIRException("Type mismatch: the type Age was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Age) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueAge() { 
-          return this != null && this.defaultValue instanceof Age;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Annotation getDefaultValueAnnotation() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Annotation();
-          if (!(this.defaultValue instanceof Annotation))
-            throw new FHIRException("Type mismatch: the type Annotation was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Annotation) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueAnnotation() { 
-          return this != null && this.defaultValue instanceof Annotation;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Attachment getDefaultValueAttachment() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Attachment();
-          if (!(this.defaultValue instanceof Attachment))
-            throw new FHIRException("Type mismatch: the type Attachment was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Attachment) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueAttachment() { 
-          return this != null && this.defaultValue instanceof Attachment;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public CodeableConcept getDefaultValueCodeableConcept() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new CodeableConcept();
-          if (!(this.defaultValue instanceof CodeableConcept))
-            throw new FHIRException("Type mismatch: the type CodeableConcept was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (CodeableConcept) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueCodeableConcept() { 
-          return this != null && this.defaultValue instanceof CodeableConcept;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Coding getDefaultValueCoding() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Coding();
-          if (!(this.defaultValue instanceof Coding))
-            throw new FHIRException("Type mismatch: the type Coding was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Coding) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueCoding() { 
-          return this != null && this.defaultValue instanceof Coding;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public ContactPoint getDefaultValueContactPoint() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new ContactPoint();
-          if (!(this.defaultValue instanceof ContactPoint))
-            throw new FHIRException("Type mismatch: the type ContactPoint was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (ContactPoint) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueContactPoint() { 
-          return this != null && this.defaultValue instanceof ContactPoint;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Count getDefaultValueCount() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Count();
-          if (!(this.defaultValue instanceof Count))
-            throw new FHIRException("Type mismatch: the type Count was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Count) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueCount() { 
-          return this != null && this.defaultValue instanceof Count;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Distance getDefaultValueDistance() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Distance();
-          if (!(this.defaultValue instanceof Distance))
-            throw new FHIRException("Type mismatch: the type Distance was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Distance) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueDistance() { 
-          return this != null && this.defaultValue instanceof Distance;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Duration getDefaultValueDuration() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Duration();
-          if (!(this.defaultValue instanceof Duration))
-            throw new FHIRException("Type mismatch: the type Duration was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Duration) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueDuration() { 
-          return this != null && this.defaultValue instanceof Duration;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public HumanName getDefaultValueHumanName() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new HumanName();
-          if (!(this.defaultValue instanceof HumanName))
-            throw new FHIRException("Type mismatch: the type HumanName was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (HumanName) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueHumanName() { 
-          return this != null && this.defaultValue instanceof HumanName;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Identifier getDefaultValueIdentifier() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Identifier();
-          if (!(this.defaultValue instanceof Identifier))
-            throw new FHIRException("Type mismatch: the type Identifier was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Identifier) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueIdentifier() { 
-          return this != null && this.defaultValue instanceof Identifier;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Money getDefaultValueMoney() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Money();
-          if (!(this.defaultValue instanceof Money))
-            throw new FHIRException("Type mismatch: the type Money was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Money) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueMoney() { 
-          return this != null && this.defaultValue instanceof Money;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Period getDefaultValuePeriod() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Period();
-          if (!(this.defaultValue instanceof Period))
-            throw new FHIRException("Type mismatch: the type Period was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Period) this.defaultValue;
-        }
-
-        public boolean hasDefaultValuePeriod() { 
-          return this != null && this.defaultValue instanceof Period;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Quantity getDefaultValueQuantity() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Quantity();
-          if (!(this.defaultValue instanceof Quantity))
-            throw new FHIRException("Type mismatch: the type Quantity was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Quantity) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueQuantity() { 
-          return this != null && this.defaultValue instanceof Quantity;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Range getDefaultValueRange() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Range();
-          if (!(this.defaultValue instanceof Range))
-            throw new FHIRException("Type mismatch: the type Range was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Range) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueRange() { 
-          return this != null && this.defaultValue instanceof Range;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Ratio getDefaultValueRatio() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Ratio();
-          if (!(this.defaultValue instanceof Ratio))
-            throw new FHIRException("Type mismatch: the type Ratio was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Ratio) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueRatio() { 
-          return this != null && this.defaultValue instanceof Ratio;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Reference getDefaultValueReference() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Reference();
-          if (!(this.defaultValue instanceof Reference))
-            throw new FHIRException("Type mismatch: the type Reference was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Reference) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueReference() { 
-          return this != null && this.defaultValue instanceof Reference;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public SampledData getDefaultValueSampledData() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new SampledData();
-          if (!(this.defaultValue instanceof SampledData))
-            throw new FHIRException("Type mismatch: the type SampledData was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (SampledData) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueSampledData() { 
-          return this != null && this.defaultValue instanceof SampledData;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Signature getDefaultValueSignature() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Signature();
-          if (!(this.defaultValue instanceof Signature))
-            throw new FHIRException("Type mismatch: the type Signature was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Signature) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueSignature() { 
-          return this != null && this.defaultValue instanceof Signature;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Timing getDefaultValueTiming() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Timing();
-          if (!(this.defaultValue instanceof Timing))
-            throw new FHIRException("Type mismatch: the type Timing was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Timing) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueTiming() { 
-          return this != null && this.defaultValue instanceof Timing;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public ContactDetail getDefaultValueContactDetail() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new ContactDetail();
-          if (!(this.defaultValue instanceof ContactDetail))
-            throw new FHIRException("Type mismatch: the type ContactDetail was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (ContactDetail) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueContactDetail() { 
-          return this != null && this.defaultValue instanceof ContactDetail;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Contributor getDefaultValueContributor() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Contributor();
-          if (!(this.defaultValue instanceof Contributor))
-            throw new FHIRException("Type mismatch: the type Contributor was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Contributor) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueContributor() { 
-          return this != null && this.defaultValue instanceof Contributor;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public DataRequirement getDefaultValueDataRequirement() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new DataRequirement();
-          if (!(this.defaultValue instanceof DataRequirement))
-            throw new FHIRException("Type mismatch: the type DataRequirement was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (DataRequirement) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueDataRequirement() { 
-          return this != null && this.defaultValue instanceof DataRequirement;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Expression getDefaultValueExpression() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Expression();
-          if (!(this.defaultValue instanceof Expression))
-            throw new FHIRException("Type mismatch: the type Expression was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Expression) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueExpression() { 
-          return this != null && this.defaultValue instanceof Expression;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public ParameterDefinition getDefaultValueParameterDefinition() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new ParameterDefinition();
-          if (!(this.defaultValue instanceof ParameterDefinition))
-            throw new FHIRException("Type mismatch: the type ParameterDefinition was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (ParameterDefinition) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueParameterDefinition() { 
-          return this != null && this.defaultValue instanceof ParameterDefinition;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public RelatedArtifact getDefaultValueRelatedArtifact() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new RelatedArtifact();
-          if (!(this.defaultValue instanceof RelatedArtifact))
-            throw new FHIRException("Type mismatch: the type RelatedArtifact was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (RelatedArtifact) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueRelatedArtifact() { 
-          return this != null && this.defaultValue instanceof RelatedArtifact;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public TriggerDefinition getDefaultValueTriggerDefinition() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new TriggerDefinition();
-          if (!(this.defaultValue instanceof TriggerDefinition))
-            throw new FHIRException("Type mismatch: the type TriggerDefinition was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (TriggerDefinition) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueTriggerDefinition() { 
-          return this != null && this.defaultValue instanceof TriggerDefinition;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public UsageContext getDefaultValueUsageContext() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new UsageContext();
-          if (!(this.defaultValue instanceof UsageContext))
-            throw new FHIRException("Type mismatch: the type UsageContext was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (UsageContext) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueUsageContext() { 
-          return this != null && this.defaultValue instanceof UsageContext;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Dosage getDefaultValueDosage() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Dosage();
-          if (!(this.defaultValue instanceof Dosage))
-            throw new FHIRException("Type mismatch: the type Dosage was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Dosage) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueDosage() { 
-          return this != null && this.defaultValue instanceof Dosage;
-        }
-
-        /**
-         * @return {@link #defaultValue} (A value to use if there is no existing value in the source object.)
-         */
-        public Meta getDefaultValueMeta() throws FHIRException { 
-          if (this.defaultValue == null)
-            this.defaultValue = new Meta();
-          if (!(this.defaultValue instanceof Meta))
-            throw new FHIRException("Type mismatch: the type Meta was expected, but "+this.defaultValue.getClass().getName()+" was encountered");
-          return (Meta) this.defaultValue;
-        }
-
-        public boolean hasDefaultValueMeta() { 
-          return this != null && this.defaultValue instanceof Meta;
+        public boolean hasDefaultValueElement() { 
+          return this.defaultValue != null && !this.defaultValue.isEmpty();
         }
 
         public boolean hasDefaultValue() { 
@@ -3951,12 +3582,31 @@ public String toString() {
         }
 
         /**
-         * @param value {@link #defaultValue} (A value to use if there is no existing value in the source object.)
+         * @param value {@link #defaultValue} (A value to use if there is no existing value in the source object.). This is the underlying object with id, value and extensions. The accessor "getDefaultValue" gives direct access to the value
          */
-        public StructureMapGroupRuleSourceComponent setDefaultValue(DataType value) { 
-          if (value != null && !(value instanceof Base64BinaryType || value instanceof BooleanType || value instanceof CanonicalType || value instanceof CodeType || value instanceof DateType || value instanceof DateTimeType || value instanceof DecimalType || value instanceof IdType || value instanceof InstantType || value instanceof IntegerType || value instanceof Integer64Type || value instanceof MarkdownType || value instanceof OidType || value instanceof PositiveIntType || value instanceof StringType || value instanceof TimeType || value instanceof UnsignedIntType || value instanceof UriType || value instanceof UrlType || value instanceof UuidType || value instanceof Address || value instanceof Age || value instanceof Annotation || value instanceof Attachment || value instanceof CodeableConcept || value instanceof Coding || value instanceof ContactPoint || value instanceof Count || value instanceof Distance || value instanceof Duration || value instanceof HumanName || value instanceof Identifier || value instanceof Money || value instanceof Period || value instanceof Quantity || value instanceof Range || value instanceof Ratio || value instanceof Reference || value instanceof SampledData || value instanceof Signature || value instanceof Timing || value instanceof ContactDetail || value instanceof Contributor || value instanceof DataRequirement || value instanceof Expression || value instanceof ParameterDefinition || value instanceof RelatedArtifact || value instanceof TriggerDefinition || value instanceof UsageContext || value instanceof Dosage || value instanceof Meta))
-            throw new Error("Not the right type for StructureMap.group.rule.source.defaultValue[x]: "+value.fhirType());
+        public StructureMapGroupRuleSourceComponent setDefaultValueElement(StringType value) { 
           this.defaultValue = value;
+          return this;
+        }
+
+        /**
+         * @return A value to use if there is no existing value in the source object.
+         */
+        public String getDefaultValue() { 
+          return this.defaultValue == null ? null : this.defaultValue.getValue();
+        }
+
+        /**
+         * @param value A value to use if there is no existing value in the source object.
+         */
+        public StructureMapGroupRuleSourceComponent setDefaultValue(String value) { 
+          if (Utilities.noString(value))
+            this.defaultValue = null;
+          else {
+            if (this.defaultValue == null)
+              this.defaultValue = new StringType();
+            this.defaultValue.setValue(value);
+          }
           return this;
         }
 
@@ -4260,7 +3910,7 @@ public String toString() {
           children.add(new Property("min", "integer", "Specified minimum cardinality for the element. This is optional; if present, it acts an implicit check on the input content.", 0, 1, min));
           children.add(new Property("max", "string", "Specified maximum cardinality for the element - a number or a \"*\". This is optional; if present, it acts an implicit check on the input content (* just serves as documentation; it's the default value).", 0, 1, max));
           children.add(new Property("type", "string", "Specified type for the element. This works as a condition on the mapping - use for polymorphic elements.", 0, 1, type));
-          children.add(new Property("defaultValue[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|Reference|SampledData|Signature|Timing|ContactDetail|Contributor|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Dosage|Meta", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue));
+          children.add(new Property("defaultValue", "string", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue));
           children.add(new Property("element", "string", "Optional field for this source.", 0, 1, element));
           children.add(new Property("listMode", "code", "How to handle the list mode for this element.", 0, 1, listMode));
           children.add(new Property("variable", "id", "Named context for field, if a field is specified.", 0, 1, variable));
@@ -4276,59 +3926,7 @@ public String toString() {
           case 108114: /*min*/  return new Property("min", "integer", "Specified minimum cardinality for the element. This is optional; if present, it acts an implicit check on the input content.", 0, 1, min);
           case 107876: /*max*/  return new Property("max", "string", "Specified maximum cardinality for the element - a number or a \"*\". This is optional; if present, it acts an implicit check on the input content (* just serves as documentation; it's the default value).", 0, 1, max);
           case 3575610: /*type*/  return new Property("type", "string", "Specified type for the element. This works as a condition on the mapping - use for polymorphic elements.", 0, 1, type);
-          case 587922128: /*defaultValue[x]*/  return new Property("defaultValue[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|Reference|SampledData|Signature|Timing|ContactDetail|Contributor|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Dosage|Meta", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -659125328: /*defaultValue*/  return new Property("defaultValue[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|Reference|SampledData|Signature|Timing|ContactDetail|Contributor|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Dosage|Meta", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 1470297600: /*defaultValueBase64Binary*/  return new Property("defaultValue[x]", "base64Binary", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 600437336: /*defaultValueBoolean*/  return new Property("defaultValue[x]", "boolean", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 264593188: /*defaultValueCanonical*/  return new Property("defaultValue[x]", "canonical", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 1044993469: /*defaultValueCode*/  return new Property("defaultValue[x]", "code", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 1045010302: /*defaultValueDate*/  return new Property("defaultValue[x]", "date", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 1220374379: /*defaultValueDateTime*/  return new Property("defaultValue[x]", "dateTime", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 2077989249: /*defaultValueDecimal*/  return new Property("defaultValue[x]", "decimal", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -2059245333: /*defaultValueId*/  return new Property("defaultValue[x]", "id", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -1801671663: /*defaultValueInstant*/  return new Property("defaultValue[x]", "instant", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -1801189522: /*defaultValueInteger*/  return new Property("defaultValue[x]", "integer", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -71308628: /*defaultValueInteger64*/  return new Property("defaultValue[x]", "integer64", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -325436225: /*defaultValueMarkdown*/  return new Property("defaultValue[x]", "markdown", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 587910138: /*defaultValueOid*/  return new Property("defaultValue[x]", "oid", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -737344154: /*defaultValuePositiveInt*/  return new Property("defaultValue[x]", "positiveInt", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -320515103: /*defaultValueString*/  return new Property("defaultValue[x]", "string", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 1045494429: /*defaultValueTime*/  return new Property("defaultValue[x]", "time", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 539117290: /*defaultValueUnsignedInt*/  return new Property("defaultValue[x]", "unsignedInt", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 587916188: /*defaultValueUri*/  return new Property("defaultValue[x]", "uri", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 587916191: /*defaultValueUrl*/  return new Property("defaultValue[x]", "url", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 1045535627: /*defaultValueUuid*/  return new Property("defaultValue[x]", "uuid", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -611966428: /*defaultValueAddress*/  return new Property("defaultValue[x]", "Address", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 587896623: /*defaultValueAge*/  return new Property("defaultValue[x]", "Age", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -1851689217: /*defaultValueAnnotation*/  return new Property("defaultValue[x]", "Annotation", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 2034820339: /*defaultValueAttachment*/  return new Property("defaultValue[x]", "Attachment", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -410434095: /*defaultValueCodeableConcept*/  return new Property("defaultValue[x]", "CodeableConcept", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -783616198: /*defaultValueCoding*/  return new Property("defaultValue[x]", "Coding", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -344740576: /*defaultValueContactPoint*/  return new Property("defaultValue[x]", "ContactPoint", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -1964924097: /*defaultValueCount*/  return new Property("defaultValue[x]", "Count", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -283915323: /*defaultValueDistance*/  return new Property("defaultValue[x]", "Distance", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 1730579812: /*defaultValueDuration*/  return new Property("defaultValue[x]", "Duration", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -975393912: /*defaultValueHumanName*/  return new Property("defaultValue[x]", "HumanName", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -1915078535: /*defaultValueIdentifier*/  return new Property("defaultValue[x]", "Identifier", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -1955695888: /*defaultValueMoney*/  return new Property("defaultValue[x]", "Money", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -420255343: /*defaultValuePeriod*/  return new Property("defaultValue[x]", "Period", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -1857379237: /*defaultValueQuantity*/  return new Property("defaultValue[x]", "Quantity", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -1951495315: /*defaultValueRange*/  return new Property("defaultValue[x]", "Range", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -1951489477: /*defaultValueRatio*/  return new Property("defaultValue[x]", "Ratio", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -1488914053: /*defaultValueReference*/  return new Property("defaultValue[x]", "Reference", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -449641228: /*defaultValueSampledData*/  return new Property("defaultValue[x]", "SampledData", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 509825768: /*defaultValueSignature*/  return new Property("defaultValue[x]", "Signature", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -302193638: /*defaultValueTiming*/  return new Property("defaultValue[x]", "Timing", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 1845473985: /*defaultValueContactDetail*/  return new Property("defaultValue[x]", "ContactDetail", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 1793609483: /*defaultValueContributor*/  return new Property("defaultValue[x]", "Contributor", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 375217257: /*defaultValueDataRequirement*/  return new Property("defaultValue[x]", "DataRequirement", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -2092097944: /*defaultValueExpression*/  return new Property("defaultValue[x]", "Expression", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -701053940: /*defaultValueParameterDefinition*/  return new Property("defaultValue[x]", "ParameterDefinition", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 412877133: /*defaultValueRelatedArtifact*/  return new Property("defaultValue[x]", "RelatedArtifact", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 1913203547: /*defaultValueTriggerDefinition*/  return new Property("defaultValue[x]", "TriggerDefinition", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -701644642: /*defaultValueUsageContext*/  return new Property("defaultValue[x]", "UsageContext", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case -754548089: /*defaultValueDosage*/  return new Property("defaultValue[x]", "Dosage", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
-          case 1045282261: /*defaultValueMeta*/  return new Property("defaultValue[x]", "Meta", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
+          case -659125328: /*defaultValue*/  return new Property("defaultValue", "string", "A value to use if there is no existing value in the source object.", 0, 1, defaultValue);
           case -1662836996: /*element*/  return new Property("element", "string", "Optional field for this source.", 0, 1, element);
           case 1345445729: /*listMode*/  return new Property("listMode", "code", "How to handle the list mode for this element.", 0, 1, listMode);
           case -1249586564: /*variable*/  return new Property("variable", "id", "Named context for field, if a field is specified.", 0, 1, variable);
@@ -4347,7 +3945,7 @@ public String toString() {
         case 108114: /*min*/ return this.min == null ? new Base[0] : new Base[] {this.min}; // IntegerType
         case 107876: /*max*/ return this.max == null ? new Base[0] : new Base[] {this.max}; // StringType
         case 3575610: /*type*/ return this.type == null ? new Base[0] : new Base[] {this.type}; // StringType
-        case -659125328: /*defaultValue*/ return this.defaultValue == null ? new Base[0] : new Base[] {this.defaultValue}; // DataType
+        case -659125328: /*defaultValue*/ return this.defaultValue == null ? new Base[0] : new Base[] {this.defaultValue}; // StringType
         case -1662836996: /*element*/ return this.element == null ? new Base[0] : new Base[] {this.element}; // StringType
         case 1345445729: /*listMode*/ return this.listMode == null ? new Base[0] : new Base[] {this.listMode}; // Enumeration<StructureMapSourceListMode>
         case -1249586564: /*variable*/ return this.variable == null ? new Base[0] : new Base[] {this.variable}; // IdType
@@ -4375,7 +3973,7 @@ public String toString() {
           this.type = TypeConvertor.castToString(value); // StringType
           return value;
         case -659125328: // defaultValue
-          this.defaultValue = TypeConvertor.castToType(value); // DataType
+          this.defaultValue = TypeConvertor.castToString(value); // StringType
           return value;
         case -1662836996: // element
           this.element = TypeConvertor.castToString(value); // StringType
@@ -4411,8 +4009,8 @@ public String toString() {
           this.max = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("type")) {
           this.type = TypeConvertor.castToString(value); // StringType
-        } else if (name.equals("defaultValue[x]")) {
-          this.defaultValue = TypeConvertor.castToType(value); // DataType
+        } else if (name.equals("defaultValue")) {
+          this.defaultValue = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("element")) {
           this.element = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("listMode")) {
@@ -4431,6 +4029,36 @@ public String toString() {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("context")) {
+          this.context = null;
+        } else if (name.equals("min")) {
+          this.min = null;
+        } else if (name.equals("max")) {
+          this.max = null;
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("defaultValue")) {
+          this.defaultValue = null;
+        } else if (name.equals("element")) {
+          this.element = null;
+        } else if (name.equals("listMode")) {
+          value = new StructureMapSourceListModeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.listMode = (Enumeration) value; // Enumeration<StructureMapSourceListMode>
+        } else if (name.equals("variable")) {
+          this.variable = null;
+        } else if (name.equals("condition")) {
+          this.condition = null;
+        } else if (name.equals("check")) {
+          this.check = null;
+        } else if (name.equals("logMessage")) {
+          this.logMessage = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -4438,8 +4066,7 @@ public String toString() {
         case 108114:  return getMinElement();
         case 107876:  return getMaxElement();
         case 3575610:  return getTypeElement();
-        case 587922128:  return getDefaultValue();
-        case -659125328:  return getDefaultValue();
+        case -659125328:  return getDefaultValueElement();
         case -1662836996:  return getElementElement();
         case 1345445729:  return getListModeElement();
         case -1249586564:  return getVariableElement();
@@ -4458,7 +4085,7 @@ public String toString() {
         case 108114: /*min*/ return new String[] {"integer"};
         case 107876: /*max*/ return new String[] {"string"};
         case 3575610: /*type*/ return new String[] {"string"};
-        case -659125328: /*defaultValue*/ return new String[] {"base64Binary", "boolean", "canonical", "code", "date", "dateTime", "decimal", "id", "instant", "integer", "integer64", "markdown", "oid", "positiveInt", "string", "time", "unsignedInt", "uri", "url", "uuid", "Address", "Age", "Annotation", "Attachment", "CodeableConcept", "Coding", "ContactPoint", "Count", "Distance", "Duration", "HumanName", "Identifier", "Money", "Period", "Quantity", "Range", "Ratio", "Reference", "SampledData", "Signature", "Timing", "ContactDetail", "Contributor", "DataRequirement", "Expression", "ParameterDefinition", "RelatedArtifact", "TriggerDefinition", "UsageContext", "Dosage", "Meta"};
+        case -659125328: /*defaultValue*/ return new String[] {"string"};
         case -1662836996: /*element*/ return new String[] {"string"};
         case 1345445729: /*listMode*/ return new String[] {"code"};
         case -1249586564: /*variable*/ return new String[] {"id"};
@@ -4473,238 +4100,37 @@ public String toString() {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("context")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.source.context");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.source.context");
         }
         else if (name.equals("min")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.source.min");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.source.min");
         }
         else if (name.equals("max")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.source.max");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.source.max");
         }
         else if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.source.type");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.source.type");
         }
-        else if (name.equals("defaultValueBase64Binary")) {
-          this.defaultValue = new Base64BinaryType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueBoolean")) {
-          this.defaultValue = new BooleanType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueCanonical")) {
-          this.defaultValue = new CanonicalType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueCode")) {
-          this.defaultValue = new CodeType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueDate")) {
-          this.defaultValue = new DateType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueDateTime")) {
-          this.defaultValue = new DateTimeType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueDecimal")) {
-          this.defaultValue = new DecimalType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueId")) {
-          this.defaultValue = new IdType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueInstant")) {
-          this.defaultValue = new InstantType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueInteger")) {
-          this.defaultValue = new IntegerType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueInteger64")) {
-          this.defaultValue = new Integer64Type();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueMarkdown")) {
-          this.defaultValue = new MarkdownType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueOid")) {
-          this.defaultValue = new OidType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValuePositiveInt")) {
-          this.defaultValue = new PositiveIntType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueString")) {
-          this.defaultValue = new StringType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueTime")) {
-          this.defaultValue = new TimeType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueUnsignedInt")) {
-          this.defaultValue = new UnsignedIntType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueUri")) {
-          this.defaultValue = new UriType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueUrl")) {
-          this.defaultValue = new UrlType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueUuid")) {
-          this.defaultValue = new UuidType();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueAddress")) {
-          this.defaultValue = new Address();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueAge")) {
-          this.defaultValue = new Age();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueAnnotation")) {
-          this.defaultValue = new Annotation();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueAttachment")) {
-          this.defaultValue = new Attachment();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueCodeableConcept")) {
-          this.defaultValue = new CodeableConcept();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueCoding")) {
-          this.defaultValue = new Coding();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueContactPoint")) {
-          this.defaultValue = new ContactPoint();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueCount")) {
-          this.defaultValue = new Count();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueDistance")) {
-          this.defaultValue = new Distance();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueDuration")) {
-          this.defaultValue = new Duration();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueHumanName")) {
-          this.defaultValue = new HumanName();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueIdentifier")) {
-          this.defaultValue = new Identifier();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueMoney")) {
-          this.defaultValue = new Money();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValuePeriod")) {
-          this.defaultValue = new Period();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueQuantity")) {
-          this.defaultValue = new Quantity();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueRange")) {
-          this.defaultValue = new Range();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueRatio")) {
-          this.defaultValue = new Ratio();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueReference")) {
-          this.defaultValue = new Reference();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueSampledData")) {
-          this.defaultValue = new SampledData();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueSignature")) {
-          this.defaultValue = new Signature();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueTiming")) {
-          this.defaultValue = new Timing();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueContactDetail")) {
-          this.defaultValue = new ContactDetail();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueContributor")) {
-          this.defaultValue = new Contributor();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueDataRequirement")) {
-          this.defaultValue = new DataRequirement();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueExpression")) {
-          this.defaultValue = new Expression();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueParameterDefinition")) {
-          this.defaultValue = new ParameterDefinition();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueRelatedArtifact")) {
-          this.defaultValue = new RelatedArtifact();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueTriggerDefinition")) {
-          this.defaultValue = new TriggerDefinition();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueUsageContext")) {
-          this.defaultValue = new UsageContext();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueDosage")) {
-          this.defaultValue = new Dosage();
-          return this.defaultValue;
-        }
-        else if (name.equals("defaultValueMeta")) {
-          this.defaultValue = new Meta();
-          return this.defaultValue;
+        else if (name.equals("defaultValue")) {
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.source.defaultValue");
         }
         else if (name.equals("element")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.source.element");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.source.element");
         }
         else if (name.equals("listMode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.source.listMode");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.source.listMode");
         }
         else if (name.equals("variable")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.source.variable");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.source.variable");
         }
         else if (name.equals("condition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.source.condition");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.source.condition");
         }
         else if (name.equals("check")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.source.check");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.source.check");
         }
         else if (name.equals("logMessage")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.source.logMessage");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.source.logMessage");
         }
         else
           return super.addChild(name);
@@ -4714,6 +4140,10 @@ public String toString() {
         StructureMapGroupRuleSourceComponent dst = new StructureMapGroupRuleSourceComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((StructureMapGroupRuleSourceComponent) dst);
       }
 
       public void copyValues(StructureMapGroupRuleSourceComponent dst) {
@@ -4752,9 +4182,9 @@ public String toString() {
           return false;
         StructureMapGroupRuleSourceComponent o = (StructureMapGroupRuleSourceComponent) other_;
         return compareValues(context, o.context, true) && compareValues(min, o.min, true) && compareValues(max, o.max, true)
-           && compareValues(type, o.type, true) && compareValues(element, o.element, true) && compareValues(listMode, o.listMode, true)
-           && compareValues(variable, o.variable, true) && compareValues(condition, o.condition, true) && compareValues(check, o.check, true)
-           && compareValues(logMessage, o.logMessage, true);
+           && compareValues(type, o.type, true) && compareValues(defaultValue, o.defaultValue, true) && compareValues(element, o.element, true)
+           && compareValues(listMode, o.listMode, true) && compareValues(variable, o.variable, true) && compareValues(condition, o.condition, true)
+           && compareValues(check, o.check, true) && compareValues(logMessage, o.logMessage, true);
       }
 
       public boolean isEmpty() {
@@ -4779,9 +4209,9 @@ public String toString() {
         /**
          * Variable this rule applies to.
          */
-        @Child(name = "context", type = {IdType.class}, order=1, min=0, max=1, modifier=false, summary=true)
+        @Child(name = "context", type = {StringType.class}, order=1, min=0, max=1, modifier=false, summary=true)
         @Description(shortDefinition="Variable this rule applies to", formalDefinition="Variable this rule applies to." )
-        protected IdType context;
+        protected StringType context;
 
         /**
          * Field to create in the context.
@@ -4801,7 +4231,7 @@ public String toString() {
          * If field is a list, how to manage the list.
          */
         @Child(name = "listMode", type = {CodeType.class}, order=4, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
-        @Description(shortDefinition="first | share | last | collate", formalDefinition="If field is a list, how to manage the list." )
+        @Description(shortDefinition="first | share | last | single", formalDefinition="If field is a list, how to manage the list." )
         @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/map-target-list-mode")
         protected List<Enumeration<StructureMapTargetListMode>> listMode;
 
@@ -4827,7 +4257,7 @@ public String toString() {
         @Description(shortDefinition="Parameters to the transform", formalDefinition="Parameters to the transform." )
         protected List<StructureMapGroupRuleTargetParameterComponent> parameter;
 
-        private static final long serialVersionUID = 1225668521L;
+        private static final long serialVersionUID = 1565495071L;
 
     /**
      * Constructor
@@ -4839,12 +4269,12 @@ public String toString() {
         /**
          * @return {@link #context} (Variable this rule applies to.). This is the underlying object with id, value and extensions. The accessor "getContext" gives direct access to the value
          */
-        public IdType getContextElement() { 
+        public StringType getContextElement() { 
           if (this.context == null)
             if (Configuration.errorOnAutoCreate())
               throw new Error("Attempt to auto-create StructureMapGroupRuleTargetComponent.context");
             else if (Configuration.doAutoCreate())
-              this.context = new IdType(); // bb
+              this.context = new StringType(); // bb
           return this.context;
         }
 
@@ -4859,7 +4289,7 @@ public String toString() {
         /**
          * @param value {@link #context} (Variable this rule applies to.). This is the underlying object with id, value and extensions. The accessor "getContext" gives direct access to the value
          */
-        public StructureMapGroupRuleTargetComponent setContextElement(IdType value) { 
+        public StructureMapGroupRuleTargetComponent setContextElement(StringType value) { 
           this.context = value;
           return this;
         }
@@ -4879,7 +4309,7 @@ public String toString() {
             this.context = null;
           else {
             if (this.context == null)
-              this.context = new IdType();
+              this.context = new StringType();
             this.context.setValue(value);
           }
           return this;
@@ -5197,7 +4627,7 @@ public String toString() {
 
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
-          children.add(new Property("context", "id", "Variable this rule applies to.", 0, 1, context));
+          children.add(new Property("context", "string", "Variable this rule applies to.", 0, 1, context));
           children.add(new Property("element", "string", "Field to create in the context.", 0, 1, element));
           children.add(new Property("variable", "id", "Named context for field, if desired, and a field is specified.", 0, 1, variable));
           children.add(new Property("listMode", "code", "If field is a list, how to manage the list.", 0, java.lang.Integer.MAX_VALUE, listMode));
@@ -5209,7 +4639,7 @@ public String toString() {
         @Override
         public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
           switch (_hash) {
-          case 951530927: /*context*/  return new Property("context", "id", "Variable this rule applies to.", 0, 1, context);
+          case 951530927: /*context*/  return new Property("context", "string", "Variable this rule applies to.", 0, 1, context);
           case -1662836996: /*element*/  return new Property("element", "string", "Field to create in the context.", 0, 1, element);
           case -1249586564: /*variable*/  return new Property("variable", "id", "Named context for field, if desired, and a field is specified.", 0, 1, variable);
           case 1345445729: /*listMode*/  return new Property("listMode", "code", "If field is a list, how to manage the list.", 0, java.lang.Integer.MAX_VALUE, listMode);
@@ -5224,7 +4654,7 @@ public String toString() {
       @Override
       public Base[] getProperty(int hash, String name, boolean checkValid) throws FHIRException {
         switch (hash) {
-        case 951530927: /*context*/ return this.context == null ? new Base[0] : new Base[] {this.context}; // IdType
+        case 951530927: /*context*/ return this.context == null ? new Base[0] : new Base[] {this.context}; // StringType
         case -1662836996: /*element*/ return this.element == null ? new Base[0] : new Base[] {this.element}; // StringType
         case -1249586564: /*variable*/ return this.variable == null ? new Base[0] : new Base[] {this.variable}; // IdType
         case 1345445729: /*listMode*/ return this.listMode == null ? new Base[0] : this.listMode.toArray(new Base[this.listMode.size()]); // Enumeration<StructureMapTargetListMode>
@@ -5240,7 +4670,7 @@ public String toString() {
       public Base setProperty(int hash, String name, Base value) throws FHIRException {
         switch (hash) {
         case 951530927: // context
-          this.context = TypeConvertor.castToId(value); // IdType
+          this.context = TypeConvertor.castToString(value); // StringType
           return value;
         case -1662836996: // element
           this.element = TypeConvertor.castToString(value); // StringType
@@ -5270,7 +4700,7 @@ public String toString() {
       @Override
       public Base setProperty(String name, Base value) throws FHIRException {
         if (name.equals("context")) {
-          this.context = TypeConvertor.castToId(value); // IdType
+          this.context = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("element")) {
           this.element = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("variable")) {
@@ -5288,6 +4718,29 @@ public String toString() {
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("context")) {
+          this.context = null;
+        } else if (name.equals("element")) {
+          this.element = null;
+        } else if (name.equals("variable")) {
+          this.variable = null;
+        } else if (name.equals("listMode")) {
+          value = new StructureMapTargetListModeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.getListMode().remove((Enumeration) value);
+        } else if (name.equals("listRuleId")) {
+          this.listRuleId = null;
+        } else if (name.equals("transform")) {
+          value = new StructureMapTransformEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.transform = (Enumeration) value; // Enumeration<StructureMapTransform>
+        } else if (name.equals("parameter")) {
+          this.getParameter().remove((StructureMapGroupRuleTargetParameterComponent) value);
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -5308,7 +4761,7 @@ public String toString() {
       @Override
       public String[] getTypesForProperty(int hash, String name) throws FHIRException {
         switch (hash) {
-        case 951530927: /*context*/ return new String[] {"id"};
+        case 951530927: /*context*/ return new String[] {"string"};
         case -1662836996: /*element*/ return new String[] {"string"};
         case -1249586564: /*variable*/ return new String[] {"id"};
         case 1345445729: /*listMode*/ return new String[] {"code"};
@@ -5323,22 +4776,22 @@ public String toString() {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("context")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.target.context");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.target.context");
         }
         else if (name.equals("element")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.target.element");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.target.element");
         }
         else if (name.equals("variable")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.target.variable");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.target.variable");
         }
         else if (name.equals("listMode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.target.listMode");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.target.listMode");
         }
         else if (name.equals("listRuleId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.target.listRuleId");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.target.listRuleId");
         }
         else if (name.equals("transform")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.target.transform");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.target.transform");
         }
         else if (name.equals("parameter")) {
           return addParameter();
@@ -5351,6 +4804,10 @@ public String toString() {
         StructureMapGroupRuleTargetComponent dst = new StructureMapGroupRuleTargetComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((StructureMapGroupRuleTargetComponent) dst);
       }
 
       public void copyValues(StructureMapGroupRuleTargetComponent dst) {
@@ -5418,7 +4875,7 @@ public String toString() {
         /**
          * Parameter value - variable or literal.
          */
-        @Child(name = "value", type = {IdType.class, StringType.class, BooleanType.class, IntegerType.class, DecimalType.class}, order=1, min=1, max=1, modifier=false, summary=true)
+        @Child(name = "value", type = {IdType.class, StringType.class, BooleanType.class, IntegerType.class, DecimalType.class, DateType.class, TimeType.class, DateTimeType.class}, order=1, min=1, max=1, modifier=false, summary=true)
         @Description(shortDefinition="Parameter value - variable or literal", formalDefinition="Parameter value - variable or literal." )
         protected DataType value;
 
@@ -5457,8 +4914,8 @@ public String toString() {
           return (IdType) this.value;
         }
 
-        public boolean hasValueIdType() { 
-          return this != null && this.value instanceof IdType;
+        public boolean hasValueIdType() {
+            return this.value instanceof IdType;
         }
 
         /**
@@ -5472,8 +4929,8 @@ public String toString() {
           return (StringType) this.value;
         }
 
-        public boolean hasValueStringType() { 
-          return this != null && this.value instanceof StringType;
+        public boolean hasValueStringType() {
+            return this.value instanceof StringType;
         }
 
         /**
@@ -5487,8 +4944,8 @@ public String toString() {
           return (BooleanType) this.value;
         }
 
-        public boolean hasValueBooleanType() { 
-          return this != null && this.value instanceof BooleanType;
+        public boolean hasValueBooleanType() {
+            return this.value instanceof BooleanType;
         }
 
         /**
@@ -5502,8 +4959,8 @@ public String toString() {
           return (IntegerType) this.value;
         }
 
-        public boolean hasValueIntegerType() { 
-          return this != null && this.value instanceof IntegerType;
+        public boolean hasValueIntegerType() {
+            return this.value instanceof IntegerType;
         }
 
         /**
@@ -5517,8 +4974,53 @@ public String toString() {
           return (DecimalType) this.value;
         }
 
-        public boolean hasValueDecimalType() { 
-          return this != null && this.value instanceof DecimalType;
+        public boolean hasValueDecimalType() {
+            return this.value instanceof DecimalType;
+        }
+
+        /**
+         * @return {@link #value} (Parameter value - variable or literal.)
+         */
+        public DateType getValueDateType() throws FHIRException { 
+          if (this.value == null)
+            this.value = new DateType();
+          if (!(this.value instanceof DateType))
+            throw new FHIRException("Type mismatch: the type DateType was expected, but "+this.value.getClass().getName()+" was encountered");
+          return (DateType) this.value;
+        }
+
+        public boolean hasValueDateType() {
+            return this.value instanceof DateType;
+        }
+
+        /**
+         * @return {@link #value} (Parameter value - variable or literal.)
+         */
+        public TimeType getValueTimeType() throws FHIRException { 
+          if (this.value == null)
+            this.value = new TimeType();
+          if (!(this.value instanceof TimeType))
+            throw new FHIRException("Type mismatch: the type TimeType was expected, but "+this.value.getClass().getName()+" was encountered");
+          return (TimeType) this.value;
+        }
+
+        public boolean hasValueTimeType() {
+            return this.value instanceof TimeType;
+        }
+
+        /**
+         * @return {@link #value} (Parameter value - variable or literal.)
+         */
+        public DateTimeType getValueDateTimeType() throws FHIRException { 
+          if (this.value == null)
+            this.value = new DateTimeType();
+          if (!(this.value instanceof DateTimeType))
+            throw new FHIRException("Type mismatch: the type DateTimeType was expected, but "+this.value.getClass().getName()+" was encountered");
+          return (DateTimeType) this.value;
+        }
+
+        public boolean hasValueDateTimeType() {
+            return this.value instanceof DateTimeType;
         }
 
         public boolean hasValue() { 
@@ -5529,27 +5031,30 @@ public String toString() {
          * @param value {@link #value} (Parameter value - variable or literal.)
          */
         public StructureMapGroupRuleTargetParameterComponent setValue(DataType value) { 
-          if (value != null && !(value instanceof IdType || value instanceof StringType || value instanceof BooleanType || value instanceof IntegerType || value instanceof DecimalType))
-            throw new Error("Not the right type for StructureMap.group.rule.target.parameter.value[x]: "+value.fhirType());
+          if (value != null && !(value instanceof IdType || value instanceof StringType || value instanceof BooleanType || value instanceof IntegerType || value instanceof DecimalType || value instanceof DateType || value instanceof TimeType || value instanceof DateTimeType))
+            throw new FHIRException("Not the right type for StructureMap.group.rule.target.parameter.value[x]: "+value.fhirType());
           this.value = value;
           return this;
         }
 
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
-          children.add(new Property("value[x]", "id|string|boolean|integer|decimal", "Parameter value - variable or literal.", 0, 1, value));
+          children.add(new Property("value[x]", "id|string|boolean|integer|decimal|date|time|dateTime", "Parameter value - variable or literal.", 0, 1, value));
         }
 
         @Override
         public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
           switch (_hash) {
-          case -1410166417: /*value[x]*/  return new Property("value[x]", "id|string|boolean|integer|decimal", "Parameter value - variable or literal.", 0, 1, value);
-          case 111972721: /*value*/  return new Property("value[x]", "id|string|boolean|integer|decimal", "Parameter value - variable or literal.", 0, 1, value);
+          case -1410166417: /*value[x]*/  return new Property("value[x]", "id|string|boolean|integer|decimal|date|time|dateTime", "Parameter value - variable or literal.", 0, 1, value);
+          case 111972721: /*value*/  return new Property("value[x]", "id|string|boolean|integer|decimal|date|time|dateTime", "Parameter value - variable or literal.", 0, 1, value);
           case 231604844: /*valueId*/  return new Property("value[x]", "id", "Parameter value - variable or literal.", 0, 1, value);
           case -1424603934: /*valueString*/  return new Property("value[x]", "string", "Parameter value - variable or literal.", 0, 1, value);
           case 733421943: /*valueBoolean*/  return new Property("value[x]", "boolean", "Parameter value - variable or literal.", 0, 1, value);
           case -1668204915: /*valueInteger*/  return new Property("value[x]", "integer", "Parameter value - variable or literal.", 0, 1, value);
           case -2083993440: /*valueDecimal*/  return new Property("value[x]", "decimal", "Parameter value - variable or literal.", 0, 1, value);
+          case -766192449: /*valueDate*/  return new Property("value[x]", "date", "Parameter value - variable or literal.", 0, 1, value);
+          case -765708322: /*valueTime*/  return new Property("value[x]", "time", "Parameter value - variable or literal.", 0, 1, value);
+          case 1047929900: /*valueDateTime*/  return new Property("value[x]", "dateTime", "Parameter value - variable or literal.", 0, 1, value);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
           }
 
@@ -5584,6 +5089,15 @@ public String toString() {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("value[x]")) {
+          this.value = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -5597,7 +5111,7 @@ public String toString() {
       @Override
       public String[] getTypesForProperty(int hash, String name) throws FHIRException {
         switch (hash) {
-        case 111972721: /*value*/ return new String[] {"id", "string", "boolean", "integer", "decimal"};
+        case 111972721: /*value*/ return new String[] {"id", "string", "boolean", "integer", "decimal", "date", "time", "dateTime"};
         default: return super.getTypesForProperty(hash, name);
         }
 
@@ -5625,6 +5139,18 @@ public String toString() {
           this.value = new DecimalType();
           return this.value;
         }
+        else if (name.equals("valueDate")) {
+          this.value = new DateType();
+          return this.value;
+        }
+        else if (name.equals("valueTime")) {
+          this.value = new TimeType();
+          return this.value;
+        }
+        else if (name.equals("valueDateTime")) {
+          this.value = new DateTimeType();
+          return this.value;
+        }
         else
           return super.addChild(name);
       }
@@ -5633,6 +5159,10 @@ public String toString() {
         StructureMapGroupRuleTargetParameterComponent dst = new StructureMapGroupRuleTargetParameterComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((StructureMapGroupRuleTargetParameterComponent) dst);
       }
 
       public void copyValues(StructureMapGroupRuleTargetParameterComponent dst) {
@@ -5686,13 +5216,13 @@ public String toString() {
         protected IdType name;
 
         /**
-         * Variable to pass to the rule or group.
+         * Parameter to pass to the rule or group.
          */
-        @Child(name = "variable", type = {StringType.class}, order=2, min=1, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
-        @Description(shortDefinition="Variable to pass to the rule or group", formalDefinition="Variable to pass to the rule or group." )
-        protected List<StringType> variable;
+        @Child(name = "parameter", type = {StructureMapGroupRuleTargetParameterComponent.class}, order=2, min=1, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+        @Description(shortDefinition="Parameter to pass to the rule or group", formalDefinition="Parameter to pass to the rule or group." )
+        protected List<StructureMapGroupRuleTargetParameterComponent> parameter;
 
-        private static final long serialVersionUID = 1021661591L;
+        private static final long serialVersionUID = -290346576L;
 
     /**
      * Constructor
@@ -5704,10 +5234,10 @@ public String toString() {
     /**
      * Constructor
      */
-      public StructureMapGroupRuleDependentComponent(String name, String variable) {
+      public StructureMapGroupRuleDependentComponent(String name, StructureMapGroupRuleTargetParameterComponent parameter) {
         super();
         this.setName(name);
-        this.addVariable(variable);
+        this.addParameter(parameter);
       }
 
         /**
@@ -5756,77 +5286,69 @@ public String toString() {
         }
 
         /**
-         * @return {@link #variable} (Variable to pass to the rule or group.)
+         * @return {@link #parameter} (Parameter to pass to the rule or group.)
          */
-        public List<StringType> getVariable() { 
-          if (this.variable == null)
-            this.variable = new ArrayList<StringType>();
-          return this.variable;
+        public List<StructureMapGroupRuleTargetParameterComponent> getParameter() { 
+          if (this.parameter == null)
+            this.parameter = new ArrayList<StructureMapGroupRuleTargetParameterComponent>();
+          return this.parameter;
         }
 
         /**
          * @return Returns a reference to <code>this</code> for easy method chaining
          */
-        public StructureMapGroupRuleDependentComponent setVariable(List<StringType> theVariable) { 
-          this.variable = theVariable;
+        public StructureMapGroupRuleDependentComponent setParameter(List<StructureMapGroupRuleTargetParameterComponent> theParameter) { 
+          this.parameter = theParameter;
           return this;
         }
 
-        public boolean hasVariable() { 
-          if (this.variable == null)
+        public boolean hasParameter() { 
+          if (this.parameter == null)
             return false;
-          for (StringType item : this.variable)
+          for (StructureMapGroupRuleTargetParameterComponent item : this.parameter)
             if (!item.isEmpty())
               return true;
           return false;
         }
 
-        /**
-         * @return {@link #variable} (Variable to pass to the rule or group.)
-         */
-        public StringType addVariableElement() {//2 
-          StringType t = new StringType();
-          if (this.variable == null)
-            this.variable = new ArrayList<StringType>();
-          this.variable.add(t);
+        public StructureMapGroupRuleTargetParameterComponent addParameter() { //3
+          StructureMapGroupRuleTargetParameterComponent t = new StructureMapGroupRuleTargetParameterComponent();
+          if (this.parameter == null)
+            this.parameter = new ArrayList<StructureMapGroupRuleTargetParameterComponent>();
+          this.parameter.add(t);
           return t;
         }
 
-        /**
-         * @param value {@link #variable} (Variable to pass to the rule or group.)
-         */
-        public StructureMapGroupRuleDependentComponent addVariable(String value) { //1
-          StringType t = new StringType();
-          t.setValue(value);
-          if (this.variable == null)
-            this.variable = new ArrayList<StringType>();
-          this.variable.add(t);
+        public StructureMapGroupRuleDependentComponent addParameter(StructureMapGroupRuleTargetParameterComponent t) { //3
+          if (t == null)
+            return this;
+          if (this.parameter == null)
+            this.parameter = new ArrayList<StructureMapGroupRuleTargetParameterComponent>();
+          this.parameter.add(t);
           return this;
         }
 
         /**
-         * @param value {@link #variable} (Variable to pass to the rule or group.)
+         * @return The first repetition of repeating field {@link #parameter}, creating it if it does not already exist {3}
          */
-        public boolean hasVariable(String value) { 
-          if (this.variable == null)
-            return false;
-          for (StringType v : this.variable)
-            if (v.getValue().equals(value)) // string
-              return true;
-          return false;
+        public StructureMapGroupRuleTargetParameterComponent getParameterFirstRep() { 
+          if (getParameter().isEmpty()) {
+            addParameter();
+          }
+          return getParameter().get(0);
         }
 
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
           children.add(new Property("name", "id", "Name of a rule or group to apply.", 0, 1, name));
-          children.add(new Property("variable", "string", "Variable to pass to the rule or group.", 0, java.lang.Integer.MAX_VALUE, variable));
+          children.add(new Property("parameter", "@StructureMap.group.rule.target.parameter", "Parameter to pass to the rule or group.", 0, java.lang.Integer.MAX_VALUE, parameter));
         }
 
         @Override
         public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
           switch (_hash) {
           case 3373707: /*name*/  return new Property("name", "id", "Name of a rule or group to apply.", 0, 1, name);
-          case -1249586564: /*variable*/  return new Property("variable", "string", "Variable to pass to the rule or group.", 0, java.lang.Integer.MAX_VALUE, variable);
+          case 1954460585: /*parameter*/  return new Property("parameter", "@StructureMap.group.rule.target.parameter", "Parameter to pass to the rule or group.", 0, java.lang.Integer.MAX_VALUE, parameter);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
           }
 
@@ -5836,7 +5358,7 @@ public String toString() {
       public Base[] getProperty(int hash, String name, boolean checkValid) throws FHIRException {
         switch (hash) {
         case 3373707: /*name*/ return this.name == null ? new Base[0] : new Base[] {this.name}; // IdType
-        case -1249586564: /*variable*/ return this.variable == null ? new Base[0] : this.variable.toArray(new Base[this.variable.size()]); // StringType
+        case 1954460585: /*parameter*/ return this.parameter == null ? new Base[0] : this.parameter.toArray(new Base[this.parameter.size()]); // StructureMapGroupRuleTargetParameterComponent
         default: return super.getProperty(hash, name, checkValid);
         }
 
@@ -5848,8 +5370,8 @@ public String toString() {
         case 3373707: // name
           this.name = TypeConvertor.castToId(value); // IdType
           return value;
-        case -1249586564: // variable
-          this.getVariable().add(TypeConvertor.castToString(value)); // StringType
+        case 1954460585: // parameter
+          this.getParameter().add((StructureMapGroupRuleTargetParameterComponent) value); // StructureMapGroupRuleTargetParameterComponent
           return value;
         default: return super.setProperty(hash, name, value);
         }
@@ -5860,18 +5382,29 @@ public String toString() {
       public Base setProperty(String name, Base value) throws FHIRException {
         if (name.equals("name")) {
           this.name = TypeConvertor.castToId(value); // IdType
-        } else if (name.equals("variable")) {
-          this.getVariable().add(TypeConvertor.castToString(value));
+        } else if (name.equals("parameter")) {
+          this.getParameter().add((StructureMapGroupRuleTargetParameterComponent) value);
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("parameter")) {
+          this.getParameter().remove((StructureMapGroupRuleTargetParameterComponent) value);
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
         case 3373707:  return getNameElement();
-        case -1249586564:  return addVariableElement();
+        case 1954460585:  return addParameter(); 
         default: return super.makeProperty(hash, name);
         }
 
@@ -5881,7 +5414,7 @@ public String toString() {
       public String[] getTypesForProperty(int hash, String name) throws FHIRException {
         switch (hash) {
         case 3373707: /*name*/ return new String[] {"id"};
-        case -1249586564: /*variable*/ return new String[] {"string"};
+        case 1954460585: /*parameter*/ return new String[] {"@StructureMap.group.rule.target.parameter"};
         default: return super.getTypesForProperty(hash, name);
         }
 
@@ -5890,10 +5423,10 @@ public String toString() {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.dependent.name");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.group.rule.dependent.name");
         }
-        else if (name.equals("variable")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.group.rule.dependent.variable");
+        else if (name.equals("parameter")) {
+          return addParameter();
         }
         else
           return super.addChild(name);
@@ -5905,13 +5438,17 @@ public String toString() {
         return dst;
       }
 
+      public void assignValues(Base dst) {
+        copyValues((StructureMapGroupRuleDependentComponent) dst);
+      }
+
       public void copyValues(StructureMapGroupRuleDependentComponent dst) {
         super.copyValues(dst);
         dst.name = name == null ? null : name.copy();
-        if (variable != null) {
-          dst.variable = new ArrayList<StringType>();
-          for (StringType i : variable)
-            dst.variable.add(i.copy());
+        if (parameter != null) {
+          dst.parameter = new ArrayList<StructureMapGroupRuleTargetParameterComponent>();
+          for (StructureMapGroupRuleTargetParameterComponent i : parameter)
+            dst.parameter.add(i.copy());
         };
       }
 
@@ -5922,7 +5459,7 @@ public String toString() {
         if (!(other_ instanceof StructureMapGroupRuleDependentComponent))
           return false;
         StructureMapGroupRuleDependentComponent o = (StructureMapGroupRuleDependentComponent) other_;
-        return compareDeep(name, o.name, true) && compareDeep(variable, o.variable, true);
+        return compareDeep(name, o.name, true) && compareDeep(parameter, o.parameter, true);
       }
 
       @Override
@@ -5932,11 +5469,11 @@ public String toString() {
         if (!(other_ instanceof StructureMapGroupRuleDependentComponent))
           return false;
         StructureMapGroupRuleDependentComponent o = (StructureMapGroupRuleDependentComponent) other_;
-        return compareValues(name, o.name, true) && compareValues(variable, o.variable, true);
+        return compareValues(name, o.name, true);
       }
 
       public boolean isEmpty() {
-        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(name, variable);
+        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(name, parameter);
       }
 
   public String fhirType() {
@@ -5947,10 +5484,10 @@ public String toString() {
   }
 
     /**
-     * An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.
+     * An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.
      */
     @Child(name = "url", type = {UriType.class}, order=0, min=1, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Canonical identifier for this structure map, represented as a URI (globally unique)", formalDefinition="An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers." )
+    @Description(shortDefinition="Canonical identifier for this structure map, represented as a URI (globally unique)", formalDefinition="An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers." )
     protected UriType url;
 
     /**
@@ -5968,23 +5505,31 @@ public String toString() {
     protected StringType version;
 
     /**
+     * Indicates the mechanism used to compare versions to determine which is more current.
+     */
+    @Child(name = "versionAlgorithm", type = {StringType.class, Coding.class}, order=3, min=0, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="How to compare versions", formalDefinition="Indicates the mechanism used to compare versions to determine which is more current." )
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/version-algorithm")
+    protected DataType versionAlgorithm;
+
+    /**
      * A natural language name identifying the structure map. This name should be usable as an identifier for the module by machine processing applications such as code generation.
      */
-    @Child(name = "name", type = {StringType.class}, order=3, min=1, max=1, modifier=false, summary=true)
+    @Child(name = "name", type = {StringType.class}, order=4, min=1, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Name for this structure map (computer friendly)", formalDefinition="A natural language name identifying the structure map. This name should be usable as an identifier for the module by machine processing applications such as code generation." )
     protected StringType name;
 
     /**
      * A short, descriptive, user-friendly title for the structure map.
      */
-    @Child(name = "title", type = {StringType.class}, order=4, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "title", type = {StringType.class}, order=5, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Name for this structure map (human friendly)", formalDefinition="A short, descriptive, user-friendly title for the structure map." )
     protected StringType title;
 
     /**
      * The status of this structure map. Enables tracking the life-cycle of the content.
      */
-    @Child(name = "status", type = {CodeType.class}, order=5, min=1, max=1, modifier=true, summary=true)
+    @Child(name = "status", type = {CodeType.class}, order=6, min=1, max=1, modifier=true, summary=true)
     @Description(shortDefinition="draft | active | retired | unknown", formalDefinition="The status of this structure map. Enables tracking the life-cycle of the content." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/publication-status")
     protected Enumeration<PublicationStatus> status;
@@ -5992,49 +5537,49 @@ public String toString() {
     /**
      * A Boolean value to indicate that this structure map is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
      */
-    @Child(name = "experimental", type = {BooleanType.class}, order=6, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "experimental", type = {BooleanType.class}, order=7, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="For testing purposes, not real usage", formalDefinition="A Boolean value to indicate that this structure map is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage." )
     protected BooleanType experimental;
 
     /**
-     * The date  (and optionally time) when the structure map was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.
+     * The date  (and optionally time) when the structure map was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.
      */
-    @Child(name = "date", type = {DateTimeType.class}, order=7, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Date last changed", formalDefinition="The date  (and optionally time) when the structure map was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes." )
+    @Child(name = "date", type = {DateTimeType.class}, order=8, min=0, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="Date last changed", formalDefinition="The date  (and optionally time) when the structure map was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes." )
     protected DateTimeType date;
 
     /**
-     * The name of the organization or individual that published the structure map.
+     * The name of the organization or individual responsible for the release and ongoing maintenance of the structure map.
      */
-    @Child(name = "publisher", type = {StringType.class}, order=8, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Name of the publisher (organization or individual)", formalDefinition="The name of the organization or individual that published the structure map." )
+    @Child(name = "publisher", type = {StringType.class}, order=9, min=0, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="Name of the publisher/steward (organization or individual)", formalDefinition="The name of the organization or individual responsible for the release and ongoing maintenance of the structure map." )
     protected StringType publisher;
 
     /**
      * Contact details to assist a user in finding and communicating with the publisher.
      */
-    @Child(name = "contact", type = {ContactDetail.class}, order=9, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "contact", type = {ContactDetail.class}, order=10, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Contact details for the publisher", formalDefinition="Contact details to assist a user in finding and communicating with the publisher." )
     protected List<ContactDetail> contact;
 
     /**
      * A free text natural language description of the structure map from a consumer's perspective.
      */
-    @Child(name = "description", type = {MarkdownType.class}, order=10, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "description", type = {MarkdownType.class}, order=11, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Natural language description of the structure map", formalDefinition="A free text natural language description of the structure map from a consumer's perspective." )
     protected MarkdownType description;
 
     /**
      * The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (insurance plans, studies, ...) and may be used to assist with indexing and searching for appropriate structure map instances.
      */
-    @Child(name = "useContext", type = {UsageContext.class}, order=11, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "useContext", type = {UsageContext.class}, order=12, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="The context that the content is intended to support", formalDefinition="The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (insurance plans, studies, ...) and may be used to assist with indexing and searching for appropriate structure map instances." )
     protected List<UsageContext> useContext;
 
     /**
      * A legal or geographic region in which the structure map is intended to be used.
      */
-    @Child(name = "jurisdiction", type = {CodeableConcept.class}, order=12, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "jurisdiction", type = {CodeableConcept.class}, order=13, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Intended jurisdiction for structure map (if applicable)", formalDefinition="A legal or geographic region in which the structure map is intended to be used." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/jurisdiction")
     protected List<CodeableConcept> jurisdiction;
@@ -6042,39 +5587,53 @@ public String toString() {
     /**
      * Explanation of why this structure map is needed and why it has been designed as it has.
      */
-    @Child(name = "purpose", type = {MarkdownType.class}, order=13, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "purpose", type = {MarkdownType.class}, order=14, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Why this structure map is defined", formalDefinition="Explanation of why this structure map is needed and why it has been designed as it has." )
     protected MarkdownType purpose;
 
     /**
      * A copyright statement relating to the structure map and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the structure map.
      */
-    @Child(name = "copyright", type = {MarkdownType.class}, order=14, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "copyright", type = {MarkdownType.class}, order=15, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Use and/or publishing restrictions", formalDefinition="A copyright statement relating to the structure map and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the structure map." )
     protected MarkdownType copyright;
 
     /**
+     * A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').
+     */
+    @Child(name = "copyrightLabel", type = {StringType.class}, order=16, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="Copyright holder and year(s)", formalDefinition="A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved')." )
+    protected StringType copyrightLabel;
+
+    /**
      * A structure definition used by this map. The structure definition may describe instances that are converted, or the instances that are produced.
      */
-    @Child(name = "structure", type = {}, order=15, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "structure", type = {}, order=17, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Structure Definition used by this map", formalDefinition="A structure definition used by this map. The structure definition may describe instances that are converted, or the instances that are produced." )
     protected List<StructureMapStructureComponent> structure;
 
     /**
      * Other maps used by this map (canonical URLs).
      */
-    @Child(name = "import", type = {CanonicalType.class}, order=16, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "import", type = {CanonicalType.class}, order=18, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Other maps used by this map (canonical URLs)", formalDefinition="Other maps used by this map (canonical URLs)." )
     protected List<CanonicalType> import_;
 
     /**
-     * Organizes the mapping into manageable chunks for human review/ease of maintenance.
+     * Definition of a constant value used in the map rules.
      */
-    @Child(name = "group", type = {}, order=17, min=1, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
-    @Description(shortDefinition="Named sections for reader convenience", formalDefinition="Organizes the mapping into manageable chunks for human review/ease of maintenance." )
+    @Child(name = "const", type = {}, order=19, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Description(shortDefinition="Definition of the constant value used in the map rules", formalDefinition="Definition of a constant value used in the map rules." )
+    protected List<StructureMapConstComponent> const_;
+
+    /**
+     * Organizes the mapping into managable chunks for human review/ease of maintenance.
+     */
+    @Child(name = "group", type = {}, order=20, min=1, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Description(shortDefinition="Named sections for reader convenience", formalDefinition="Organizes the mapping into managable chunks for human review/ease of maintenance." )
     protected List<StructureMapGroupComponent> group;
 
-    private static final long serialVersionUID = 573973893L;
+    private static final long serialVersionUID = -1875777589L;
 
   /**
    * Constructor
@@ -6095,7 +5654,7 @@ public String toString() {
     }
 
     /**
-     * @return {@link #url} (An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.). This is the underlying object with id, value and extensions. The accessor "getUrl" gives direct access to the value
+     * @return {@link #url} (An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.). This is the underlying object with id, value and extensions. The accessor "getUrl" gives direct access to the value
      */
     public UriType getUrlElement() { 
       if (this.url == null)
@@ -6115,7 +5674,7 @@ public String toString() {
     }
 
     /**
-     * @param value {@link #url} (An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.). This is the underlying object with id, value and extensions. The accessor "getUrl" gives direct access to the value
+     * @param value {@link #url} (An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.). This is the underlying object with id, value and extensions. The accessor "getUrl" gives direct access to the value
      */
     public StructureMap setUrlElement(UriType value) { 
       this.url = value;
@@ -6123,14 +5682,14 @@ public String toString() {
     }
 
     /**
-     * @return An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.
+     * @return An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.
      */
     public String getUrl() { 
       return this.url == null ? null : this.url.getValue();
     }
 
     /**
-     * @param value An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.
+     * @param value An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.
      */
     public StructureMap setUrl(String value) { 
         if (this.url == null)
@@ -6238,6 +5797,57 @@ public String toString() {
           this.version = new StringType();
         this.version.setValue(value);
       }
+      return this;
+    }
+
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public DataType getVersionAlgorithm() { 
+      return this.versionAlgorithm;
+    }
+
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public StringType getVersionAlgorithmStringType() throws FHIRException { 
+      if (this.versionAlgorithm == null)
+        this.versionAlgorithm = new StringType();
+      if (!(this.versionAlgorithm instanceof StringType))
+        throw new FHIRException("Type mismatch: the type StringType was expected, but "+this.versionAlgorithm.getClass().getName()+" was encountered");
+      return (StringType) this.versionAlgorithm;
+    }
+
+    public boolean hasVersionAlgorithmStringType() {
+        return this.versionAlgorithm instanceof StringType;
+    }
+
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public Coding getVersionAlgorithmCoding() throws FHIRException { 
+      if (this.versionAlgorithm == null)
+        this.versionAlgorithm = new Coding();
+      if (!(this.versionAlgorithm instanceof Coding))
+        throw new FHIRException("Type mismatch: the type Coding was expected, but "+this.versionAlgorithm.getClass().getName()+" was encountered");
+      return (Coding) this.versionAlgorithm;
+    }
+
+    public boolean hasVersionAlgorithmCoding() {
+        return this.versionAlgorithm instanceof Coding;
+    }
+
+    public boolean hasVersionAlgorithm() { 
+      return this.versionAlgorithm != null && !this.versionAlgorithm.isEmpty();
+    }
+
+    /**
+     * @param value {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public StructureMap setVersionAlgorithm(DataType value) { 
+      if (value != null && !(value instanceof StringType || value instanceof Coding))
+        throw new FHIRException("Not the right type for StructureMap.versionAlgorithm[x]: "+value.fhirType());
+      this.versionAlgorithm = value;
       return this;
     }
 
@@ -6426,7 +6036,7 @@ public String toString() {
     }
 
     /**
-     * @return {@link #date} (The date  (and optionally time) when the structure map was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
+     * @return {@link #date} (The date  (and optionally time) when the structure map was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
      */
     public DateTimeType getDateElement() { 
       if (this.date == null)
@@ -6446,7 +6056,7 @@ public String toString() {
     }
 
     /**
-     * @param value {@link #date} (The date  (and optionally time) when the structure map was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
+     * @param value {@link #date} (The date  (and optionally time) when the structure map was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
      */
     public StructureMap setDateElement(DateTimeType value) { 
       this.date = value;
@@ -6454,14 +6064,14 @@ public String toString() {
     }
 
     /**
-     * @return The date  (and optionally time) when the structure map was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.
+     * @return The date  (and optionally time) when the structure map was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.
      */
     public Date getDate() { 
       return this.date == null ? null : this.date.getValue();
     }
 
     /**
-     * @param value The date  (and optionally time) when the structure map was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.
+     * @param value The date  (and optionally time) when the structure map was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.
      */
     public StructureMap setDate(Date value) { 
       if (value == null)
@@ -6475,7 +6085,7 @@ public String toString() {
     }
 
     /**
-     * @return {@link #publisher} (The name of the organization or individual that published the structure map.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
+     * @return {@link #publisher} (The name of the organization or individual responsible for the release and ongoing maintenance of the structure map.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
      */
     public StringType getPublisherElement() { 
       if (this.publisher == null)
@@ -6495,7 +6105,7 @@ public String toString() {
     }
 
     /**
-     * @param value {@link #publisher} (The name of the organization or individual that published the structure map.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
+     * @param value {@link #publisher} (The name of the organization or individual responsible for the release and ongoing maintenance of the structure map.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
      */
     public StructureMap setPublisherElement(StringType value) { 
       this.publisher = value;
@@ -6503,14 +6113,14 @@ public String toString() {
     }
 
     /**
-     * @return The name of the organization or individual that published the structure map.
+     * @return The name of the organization or individual responsible for the release and ongoing maintenance of the structure map.
      */
     public String getPublisher() { 
       return this.publisher == null ? null : this.publisher.getValue();
     }
 
     /**
-     * @param value The name of the organization or individual that published the structure map.
+     * @param value The name of the organization or individual responsible for the release and ongoing maintenance of the structure map.
      */
     public StructureMap setPublisher(String value) { 
       if (Utilities.noString(value))
@@ -6615,7 +6225,7 @@ public String toString() {
      * @param value A free text natural language description of the structure map from a consumer's perspective.
      */
     public StructureMap setDescription(String value) { 
-      if (value == null)
+      if (Utilities.noString(value))
         this.description = null;
       else {
         if (this.description == null)
@@ -6770,7 +6380,7 @@ public String toString() {
      * @param value Explanation of why this structure map is needed and why it has been designed as it has.
      */
     public StructureMap setPurpose(String value) { 
-      if (value == null)
+      if (Utilities.noString(value))
         this.purpose = null;
       else {
         if (this.purpose == null)
@@ -6819,12 +6429,61 @@ public String toString() {
      * @param value A copyright statement relating to the structure map and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the structure map.
      */
     public StructureMap setCopyright(String value) { 
-      if (value == null)
+      if (Utilities.noString(value))
         this.copyright = null;
       else {
         if (this.copyright == null)
           this.copyright = new MarkdownType();
         this.copyright.setValue(value);
+      }
+      return this;
+    }
+
+    /**
+     * @return {@link #copyrightLabel} (A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').). This is the underlying object with id, value and extensions. The accessor "getCopyrightLabel" gives direct access to the value
+     */
+    public StringType getCopyrightLabelElement() { 
+      if (this.copyrightLabel == null)
+        if (Configuration.errorOnAutoCreate())
+          throw new Error("Attempt to auto-create StructureMap.copyrightLabel");
+        else if (Configuration.doAutoCreate())
+          this.copyrightLabel = new StringType(); // bb
+      return this.copyrightLabel;
+    }
+
+    public boolean hasCopyrightLabelElement() { 
+      return this.copyrightLabel != null && !this.copyrightLabel.isEmpty();
+    }
+
+    public boolean hasCopyrightLabel() { 
+      return this.copyrightLabel != null && !this.copyrightLabel.isEmpty();
+    }
+
+    /**
+     * @param value {@link #copyrightLabel} (A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').). This is the underlying object with id, value and extensions. The accessor "getCopyrightLabel" gives direct access to the value
+     */
+    public StructureMap setCopyrightLabelElement(StringType value) { 
+      this.copyrightLabel = value;
+      return this;
+    }
+
+    /**
+     * @return A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').
+     */
+    public String getCopyrightLabel() { 
+      return this.copyrightLabel == null ? null : this.copyrightLabel.getValue();
+    }
+
+    /**
+     * @param value A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').
+     */
+    public StructureMap setCopyrightLabel(String value) { 
+      if (Utilities.noString(value))
+        this.copyrightLabel = null;
+      else {
+        if (this.copyrightLabel == null)
+          this.copyrightLabel = new StringType();
+        this.copyrightLabel.setValue(value);
       }
       return this;
     }
@@ -6944,7 +6603,60 @@ public String toString() {
     }
 
     /**
-     * @return {@link #group} (Organizes the mapping into manageable chunks for human review/ease of maintenance.)
+     * @return {@link #const_} (Definition of a constant value used in the map rules.)
+     */
+    public List<StructureMapConstComponent> getConst() { 
+      if (this.const_ == null)
+        this.const_ = new ArrayList<StructureMapConstComponent>();
+      return this.const_;
+    }
+
+    /**
+     * @return Returns a reference to <code>this</code> for easy method chaining
+     */
+    public StructureMap setConst(List<StructureMapConstComponent> theConst) { 
+      this.const_ = theConst;
+      return this;
+    }
+
+    public boolean hasConst() { 
+      if (this.const_ == null)
+        return false;
+      for (StructureMapConstComponent item : this.const_)
+        if (!item.isEmpty())
+          return true;
+      return false;
+    }
+
+    public StructureMapConstComponent addConst() { //3
+      StructureMapConstComponent t = new StructureMapConstComponent();
+      if (this.const_ == null)
+        this.const_ = new ArrayList<StructureMapConstComponent>();
+      this.const_.add(t);
+      return t;
+    }
+
+    public StructureMap addConst(StructureMapConstComponent t) { //3
+      if (t == null)
+        return this;
+      if (this.const_ == null)
+        this.const_ = new ArrayList<StructureMapConstComponent>();
+      this.const_.add(t);
+      return this;
+    }
+
+    /**
+     * @return The first repetition of repeating field {@link #const_}, creating it if it does not already exist {3}
+     */
+    public StructureMapConstComponent getConstFirstRep() { 
+      if (getConst().isEmpty()) {
+        addConst();
+      }
+      return getConst().get(0);
+    }
+
+    /**
+     * @return {@link #group} (Organizes the mapping into managable chunks for human review/ease of maintenance.)
      */
     public List<StructureMapGroupComponent> getGroup() { 
       if (this.group == null)
@@ -6998,47 +6710,56 @@ public String toString() {
 
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
-        children.add(new Property("url", "uri", "An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.", 0, 1, url));
+        children.add(new Property("url", "uri", "An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.", 0, 1, url));
         children.add(new Property("identifier", "Identifier", "A formal identifier that is used to identify this structure map when it is represented in other formats, or referenced in a specification, model, design or an instance.", 0, java.lang.Integer.MAX_VALUE, identifier));
         children.add(new Property("version", "string", "The identifier that is used to identify this version of the structure map when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the structure map author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions can be placed in a lexicographical sequence.", 0, 1, version));
+        children.add(new Property("versionAlgorithm[x]", "string|Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm));
         children.add(new Property("name", "string", "A natural language name identifying the structure map. This name should be usable as an identifier for the module by machine processing applications such as code generation.", 0, 1, name));
         children.add(new Property("title", "string", "A short, descriptive, user-friendly title for the structure map.", 0, 1, title));
         children.add(new Property("status", "code", "The status of this structure map. Enables tracking the life-cycle of the content.", 0, 1, status));
         children.add(new Property("experimental", "boolean", "A Boolean value to indicate that this structure map is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.", 0, 1, experimental));
-        children.add(new Property("date", "dateTime", "The date  (and optionally time) when the structure map was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.", 0, 1, date));
-        children.add(new Property("publisher", "string", "The name of the organization or individual that published the structure map.", 0, 1, publisher));
+        children.add(new Property("date", "dateTime", "The date  (and optionally time) when the structure map was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.", 0, 1, date));
+        children.add(new Property("publisher", "string", "The name of the organization or individual responsible for the release and ongoing maintenance of the structure map.", 0, 1, publisher));
         children.add(new Property("contact", "ContactDetail", "Contact details to assist a user in finding and communicating with the publisher.", 0, java.lang.Integer.MAX_VALUE, contact));
         children.add(new Property("description", "markdown", "A free text natural language description of the structure map from a consumer's perspective.", 0, 1, description));
         children.add(new Property("useContext", "UsageContext", "The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (insurance plans, studies, ...) and may be used to assist with indexing and searching for appropriate structure map instances.", 0, java.lang.Integer.MAX_VALUE, useContext));
         children.add(new Property("jurisdiction", "CodeableConcept", "A legal or geographic region in which the structure map is intended to be used.", 0, java.lang.Integer.MAX_VALUE, jurisdiction));
         children.add(new Property("purpose", "markdown", "Explanation of why this structure map is needed and why it has been designed as it has.", 0, 1, purpose));
         children.add(new Property("copyright", "markdown", "A copyright statement relating to the structure map and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the structure map.", 0, 1, copyright));
+        children.add(new Property("copyrightLabel", "string", "A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').", 0, 1, copyrightLabel));
         children.add(new Property("structure", "", "A structure definition used by this map. The structure definition may describe instances that are converted, or the instances that are produced.", 0, java.lang.Integer.MAX_VALUE, structure));
         children.add(new Property("import", "canonical(StructureMap)", "Other maps used by this map (canonical URLs).", 0, java.lang.Integer.MAX_VALUE, import_));
-        children.add(new Property("group", "", "Organizes the mapping into manageable chunks for human review/ease of maintenance.", 0, java.lang.Integer.MAX_VALUE, group));
+        children.add(new Property("const", "", "Definition of a constant value used in the map rules.", 0, java.lang.Integer.MAX_VALUE, const_));
+        children.add(new Property("group", "", "Organizes the mapping into managable chunks for human review/ease of maintenance.", 0, java.lang.Integer.MAX_VALUE, group));
       }
 
       @Override
       public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
         switch (_hash) {
-        case 116079: /*url*/  return new Property("url", "uri", "An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.", 0, 1, url);
+        case 116079: /*url*/  return new Property("url", "uri", "An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this structure map is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the structure map is stored on different servers.", 0, 1, url);
         case -1618432855: /*identifier*/  return new Property("identifier", "Identifier", "A formal identifier that is used to identify this structure map when it is represented in other formats, or referenced in a specification, model, design or an instance.", 0, java.lang.Integer.MAX_VALUE, identifier);
         case 351608024: /*version*/  return new Property("version", "string", "The identifier that is used to identify this version of the structure map when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the structure map author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions can be placed in a lexicographical sequence.", 0, 1, version);
+        case -115699031: /*versionAlgorithm[x]*/  return new Property("versionAlgorithm[x]", "string|Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
+        case 1508158071: /*versionAlgorithm*/  return new Property("versionAlgorithm[x]", "string|Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
+        case 1836908904: /*versionAlgorithmString*/  return new Property("versionAlgorithm[x]", "string", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
+        case 1373807809: /*versionAlgorithmCoding*/  return new Property("versionAlgorithm[x]", "Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
         case 3373707: /*name*/  return new Property("name", "string", "A natural language name identifying the structure map. This name should be usable as an identifier for the module by machine processing applications such as code generation.", 0, 1, name);
         case 110371416: /*title*/  return new Property("title", "string", "A short, descriptive, user-friendly title for the structure map.", 0, 1, title);
         case -892481550: /*status*/  return new Property("status", "code", "The status of this structure map. Enables tracking the life-cycle of the content.", 0, 1, status);
         case -404562712: /*experimental*/  return new Property("experimental", "boolean", "A Boolean value to indicate that this structure map is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.", 0, 1, experimental);
-        case 3076014: /*date*/  return new Property("date", "dateTime", "The date  (and optionally time) when the structure map was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.", 0, 1, date);
-        case 1447404028: /*publisher*/  return new Property("publisher", "string", "The name of the organization or individual that published the structure map.", 0, 1, publisher);
+        case 3076014: /*date*/  return new Property("date", "dateTime", "The date  (and optionally time) when the structure map was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the structure map changes.", 0, 1, date);
+        case 1447404028: /*publisher*/  return new Property("publisher", "string", "The name of the organization or individual responsible for the release and ongoing maintenance of the structure map.", 0, 1, publisher);
         case 951526432: /*contact*/  return new Property("contact", "ContactDetail", "Contact details to assist a user in finding and communicating with the publisher.", 0, java.lang.Integer.MAX_VALUE, contact);
         case -1724546052: /*description*/  return new Property("description", "markdown", "A free text natural language description of the structure map from a consumer's perspective.", 0, 1, description);
         case -669707736: /*useContext*/  return new Property("useContext", "UsageContext", "The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (insurance plans, studies, ...) and may be used to assist with indexing and searching for appropriate structure map instances.", 0, java.lang.Integer.MAX_VALUE, useContext);
         case -507075711: /*jurisdiction*/  return new Property("jurisdiction", "CodeableConcept", "A legal or geographic region in which the structure map is intended to be used.", 0, java.lang.Integer.MAX_VALUE, jurisdiction);
         case -220463842: /*purpose*/  return new Property("purpose", "markdown", "Explanation of why this structure map is needed and why it has been designed as it has.", 0, 1, purpose);
         case 1522889671: /*copyright*/  return new Property("copyright", "markdown", "A copyright statement relating to the structure map and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the structure map.", 0, 1, copyright);
+        case 765157229: /*copyrightLabel*/  return new Property("copyrightLabel", "string", "A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').", 0, 1, copyrightLabel);
         case 144518515: /*structure*/  return new Property("structure", "", "A structure definition used by this map. The structure definition may describe instances that are converted, or the instances that are produced.", 0, java.lang.Integer.MAX_VALUE, structure);
         case -1184795739: /*import*/  return new Property("import", "canonical(StructureMap)", "Other maps used by this map (canonical URLs).", 0, java.lang.Integer.MAX_VALUE, import_);
-        case 98629247: /*group*/  return new Property("group", "", "Organizes the mapping into manageable chunks for human review/ease of maintenance.", 0, java.lang.Integer.MAX_VALUE, group);
+        case 94844771: /*const*/  return new Property("const", "", "Definition of a constant value used in the map rules.", 0, java.lang.Integer.MAX_VALUE, const_);
+        case 98629247: /*group*/  return new Property("group", "", "Organizes the mapping into managable chunks for human review/ease of maintenance.", 0, java.lang.Integer.MAX_VALUE, group);
         default: return super.getNamedProperty(_hash, _name, _checkValid);
         }
 
@@ -7050,6 +6771,7 @@ public String toString() {
         case 116079: /*url*/ return this.url == null ? new Base[0] : new Base[] {this.url}; // UriType
         case -1618432855: /*identifier*/ return this.identifier == null ? new Base[0] : this.identifier.toArray(new Base[this.identifier.size()]); // Identifier
         case 351608024: /*version*/ return this.version == null ? new Base[0] : new Base[] {this.version}; // StringType
+        case 1508158071: /*versionAlgorithm*/ return this.versionAlgorithm == null ? new Base[0] : new Base[] {this.versionAlgorithm}; // DataType
         case 3373707: /*name*/ return this.name == null ? new Base[0] : new Base[] {this.name}; // StringType
         case 110371416: /*title*/ return this.title == null ? new Base[0] : new Base[] {this.title}; // StringType
         case -892481550: /*status*/ return this.status == null ? new Base[0] : new Base[] {this.status}; // Enumeration<PublicationStatus>
@@ -7062,8 +6784,10 @@ public String toString() {
         case -507075711: /*jurisdiction*/ return this.jurisdiction == null ? new Base[0] : this.jurisdiction.toArray(new Base[this.jurisdiction.size()]); // CodeableConcept
         case -220463842: /*purpose*/ return this.purpose == null ? new Base[0] : new Base[] {this.purpose}; // MarkdownType
         case 1522889671: /*copyright*/ return this.copyright == null ? new Base[0] : new Base[] {this.copyright}; // MarkdownType
+        case 765157229: /*copyrightLabel*/ return this.copyrightLabel == null ? new Base[0] : new Base[] {this.copyrightLabel}; // StringType
         case 144518515: /*structure*/ return this.structure == null ? new Base[0] : this.structure.toArray(new Base[this.structure.size()]); // StructureMapStructureComponent
         case -1184795739: /*import*/ return this.import_ == null ? new Base[0] : this.import_.toArray(new Base[this.import_.size()]); // CanonicalType
+        case 94844771: /*const*/ return this.const_ == null ? new Base[0] : this.const_.toArray(new Base[this.const_.size()]); // StructureMapConstComponent
         case 98629247: /*group*/ return this.group == null ? new Base[0] : this.group.toArray(new Base[this.group.size()]); // StructureMapGroupComponent
         default: return super.getProperty(hash, name, checkValid);
         }
@@ -7081,6 +6805,9 @@ public String toString() {
           return value;
         case 351608024: // version
           this.version = TypeConvertor.castToString(value); // StringType
+          return value;
+        case 1508158071: // versionAlgorithm
+          this.versionAlgorithm = TypeConvertor.castToType(value); // DataType
           return value;
         case 3373707: // name
           this.name = TypeConvertor.castToString(value); // StringType
@@ -7119,11 +6846,17 @@ public String toString() {
         case 1522889671: // copyright
           this.copyright = TypeConvertor.castToMarkdown(value); // MarkdownType
           return value;
+        case 765157229: // copyrightLabel
+          this.copyrightLabel = TypeConvertor.castToString(value); // StringType
+          return value;
         case 144518515: // structure
           this.getStructure().add((StructureMapStructureComponent) value); // StructureMapStructureComponent
           return value;
         case -1184795739: // import
           this.getImport().add(TypeConvertor.castToCanonical(value)); // CanonicalType
+          return value;
+        case 94844771: // const
+          this.getConst().add((StructureMapConstComponent) value); // StructureMapConstComponent
           return value;
         case 98629247: // group
           this.getGroup().add((StructureMapGroupComponent) value); // StructureMapGroupComponent
@@ -7141,6 +6874,8 @@ public String toString() {
           this.getIdentifier().add(TypeConvertor.castToIdentifier(value));
         } else if (name.equals("version")) {
           this.version = TypeConvertor.castToString(value); // StringType
+        } else if (name.equals("versionAlgorithm[x]")) {
+          this.versionAlgorithm = TypeConvertor.castToType(value); // DataType
         } else if (name.equals("name")) {
           this.name = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("title")) {
@@ -7166,15 +6901,69 @@ public String toString() {
           this.purpose = TypeConvertor.castToMarkdown(value); // MarkdownType
         } else if (name.equals("copyright")) {
           this.copyright = TypeConvertor.castToMarkdown(value); // MarkdownType
+        } else if (name.equals("copyrightLabel")) {
+          this.copyrightLabel = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("structure")) {
           this.getStructure().add((StructureMapStructureComponent) value);
         } else if (name.equals("import")) {
           this.getImport().add(TypeConvertor.castToCanonical(value));
+        } else if (name.equals("const")) {
+          this.getConst().add((StructureMapConstComponent) value);
         } else if (name.equals("group")) {
           this.getGroup().add((StructureMapGroupComponent) value);
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("url")) {
+          this.url = null;
+        } else if (name.equals("identifier")) {
+          this.getIdentifier().remove(value);
+        } else if (name.equals("version")) {
+          this.version = null;
+        } else if (name.equals("versionAlgorithm[x]")) {
+          this.versionAlgorithm = null;
+        } else if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("title")) {
+          this.title = null;
+        } else if (name.equals("status")) {
+          value = new PublicationStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<PublicationStatus>
+        } else if (name.equals("experimental")) {
+          this.experimental = null;
+        } else if (name.equals("date")) {
+          this.date = null;
+        } else if (name.equals("publisher")) {
+          this.publisher = null;
+        } else if (name.equals("contact")) {
+          this.getContact().remove(value);
+        } else if (name.equals("description")) {
+          this.description = null;
+        } else if (name.equals("useContext")) {
+          this.getUseContext().remove(value);
+        } else if (name.equals("jurisdiction")) {
+          this.getJurisdiction().remove(value);
+        } else if (name.equals("purpose")) {
+          this.purpose = null;
+        } else if (name.equals("copyright")) {
+          this.copyright = null;
+        } else if (name.equals("copyrightLabel")) {
+          this.copyrightLabel = null;
+        } else if (name.equals("structure")) {
+          this.getStructure().remove((StructureMapStructureComponent) value);
+        } else if (name.equals("import")) {
+          this.getImport().remove(value);
+        } else if (name.equals("const")) {
+          this.getConst().remove((StructureMapConstComponent) value);
+        } else if (name.equals("group")) {
+          this.getGroup().remove((StructureMapGroupComponent) value);
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -7183,6 +6972,8 @@ public String toString() {
         case 116079:  return getUrlElement();
         case -1618432855:  return addIdentifier(); 
         case 351608024:  return getVersionElement();
+        case -115699031:  return getVersionAlgorithm();
+        case 1508158071:  return getVersionAlgorithm();
         case 3373707:  return getNameElement();
         case 110371416:  return getTitleElement();
         case -892481550:  return getStatusElement();
@@ -7195,8 +6986,10 @@ public String toString() {
         case -507075711:  return addJurisdiction(); 
         case -220463842:  return getPurposeElement();
         case 1522889671:  return getCopyrightElement();
+        case 765157229:  return getCopyrightLabelElement();
         case 144518515:  return addStructure(); 
         case -1184795739:  return addImportElement();
+        case 94844771:  return addConst(); 
         case 98629247:  return addGroup(); 
         default: return super.makeProperty(hash, name);
         }
@@ -7209,6 +7002,7 @@ public String toString() {
         case 116079: /*url*/ return new String[] {"uri"};
         case -1618432855: /*identifier*/ return new String[] {"Identifier"};
         case 351608024: /*version*/ return new String[] {"string"};
+        case 1508158071: /*versionAlgorithm*/ return new String[] {"string", "Coding"};
         case 3373707: /*name*/ return new String[] {"string"};
         case 110371416: /*title*/ return new String[] {"string"};
         case -892481550: /*status*/ return new String[] {"code"};
@@ -7221,8 +7015,10 @@ public String toString() {
         case -507075711: /*jurisdiction*/ return new String[] {"CodeableConcept"};
         case -220463842: /*purpose*/ return new String[] {"markdown"};
         case 1522889671: /*copyright*/ return new String[] {"markdown"};
+        case 765157229: /*copyrightLabel*/ return new String[] {"string"};
         case 144518515: /*structure*/ return new String[] {};
         case -1184795739: /*import*/ return new String[] {"canonical"};
+        case 94844771: /*const*/ return new String[] {};
         case 98629247: /*group*/ return new String[] {};
         default: return super.getTypesForProperty(hash, name);
         }
@@ -7232,37 +7028,45 @@ public String toString() {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.url");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.url");
         }
         else if (name.equals("identifier")) {
           return addIdentifier();
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.version");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.version");
+        }
+        else if (name.equals("versionAlgorithmString")) {
+          this.versionAlgorithm = new StringType();
+          return this.versionAlgorithm;
+        }
+        else if (name.equals("versionAlgorithmCoding")) {
+          this.versionAlgorithm = new Coding();
+          return this.versionAlgorithm;
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.name");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.name");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.title");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.title");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.status");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.status");
         }
         else if (name.equals("experimental")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.experimental");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.experimental");
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.date");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.date");
         }
         else if (name.equals("publisher")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.publisher");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.publisher");
         }
         else if (name.equals("contact")) {
           return addContact();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.description");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.description");
         }
         else if (name.equals("useContext")) {
           return addUseContext();
@@ -7271,16 +7075,22 @@ public String toString() {
           return addJurisdiction();
         }
         else if (name.equals("purpose")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.purpose");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.purpose");
         }
         else if (name.equals("copyright")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.copyright");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.copyright");
+        }
+        else if (name.equals("copyrightLabel")) {
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.copyrightLabel");
         }
         else if (name.equals("structure")) {
           return addStructure();
         }
         else if (name.equals("import")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.import");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.import");
+        }
+        else if (name.equals("const")) {
+          return addConst();
         }
         else if (name.equals("group")) {
           return addGroup();
@@ -7300,6 +7110,10 @@ public String toString() {
         return dst;
       }
 
+      public void assignValues(Base dst) {
+        copyValues((StructureMap) dst);
+      }
+
       public void copyValues(StructureMap dst) {
         super.copyValues(dst);
         dst.url = url == null ? null : url.copy();
@@ -7309,6 +7123,7 @@ public String toString() {
             dst.identifier.add(i.copy());
         };
         dst.version = version == null ? null : version.copy();
+        dst.versionAlgorithm = versionAlgorithm == null ? null : versionAlgorithm.copy();
         dst.name = name == null ? null : name.copy();
         dst.title = title == null ? null : title.copy();
         dst.status = status == null ? null : status.copy();
@@ -7333,6 +7148,7 @@ public String toString() {
         };
         dst.purpose = purpose == null ? null : purpose.copy();
         dst.copyright = copyright == null ? null : copyright.copy();
+        dst.copyrightLabel = copyrightLabel == null ? null : copyrightLabel.copy();
         if (structure != null) {
           dst.structure = new ArrayList<StructureMapStructureComponent>();
           for (StructureMapStructureComponent i : structure)
@@ -7342,6 +7158,11 @@ public String toString() {
           dst.import_ = new ArrayList<CanonicalType>();
           for (CanonicalType i : import_)
             dst.import_.add(i.copy());
+        };
+        if (const_ != null) {
+          dst.const_ = new ArrayList<StructureMapConstComponent>();
+          for (StructureMapConstComponent i : const_)
+            dst.const_.add(i.copy());
         };
         if (group != null) {
           dst.group = new ArrayList<StructureMapGroupComponent>();
@@ -7362,12 +7183,13 @@ public String toString() {
           return false;
         StructureMap o = (StructureMap) other_;
         return compareDeep(url, o.url, true) && compareDeep(identifier, o.identifier, true) && compareDeep(version, o.version, true)
-           && compareDeep(name, o.name, true) && compareDeep(title, o.title, true) && compareDeep(status, o.status, true)
-           && compareDeep(experimental, o.experimental, true) && compareDeep(date, o.date, true) && compareDeep(publisher, o.publisher, true)
-           && compareDeep(contact, o.contact, true) && compareDeep(description, o.description, true) && compareDeep(useContext, o.useContext, true)
-           && compareDeep(jurisdiction, o.jurisdiction, true) && compareDeep(purpose, o.purpose, true) && compareDeep(copyright, o.copyright, true)
-           && compareDeep(structure, o.structure, true) && compareDeep(import_, o.import_, true) && compareDeep(group, o.group, true)
-          ;
+           && compareDeep(versionAlgorithm, o.versionAlgorithm, true) && compareDeep(name, o.name, true) && compareDeep(title, o.title, true)
+           && compareDeep(status, o.status, true) && compareDeep(experimental, o.experimental, true) && compareDeep(date, o.date, true)
+           && compareDeep(publisher, o.publisher, true) && compareDeep(contact, o.contact, true) && compareDeep(description, o.description, true)
+           && compareDeep(useContext, o.useContext, true) && compareDeep(jurisdiction, o.jurisdiction, true)
+           && compareDeep(purpose, o.purpose, true) && compareDeep(copyright, o.copyright, true) && compareDeep(copyrightLabel, o.copyrightLabel, true)
+           && compareDeep(structure, o.structure, true) && compareDeep(import_, o.import_, true) && compareDeep(const_, o.const_, true)
+           && compareDeep(group, o.group, true);
       }
 
       @Override
@@ -7380,14 +7202,15 @@ public String toString() {
         return compareValues(url, o.url, true) && compareValues(version, o.version, true) && compareValues(name, o.name, true)
            && compareValues(title, o.title, true) && compareValues(status, o.status, true) && compareValues(experimental, o.experimental, true)
            && compareValues(date, o.date, true) && compareValues(publisher, o.publisher, true) && compareValues(description, o.description, true)
-           && compareValues(purpose, o.purpose, true) && compareValues(copyright, o.copyright, true) && compareValues(import_, o.import_, true)
-          ;
+           && compareValues(purpose, o.purpose, true) && compareValues(copyright, o.copyright, true) && compareValues(copyrightLabel, o.copyrightLabel, true)
+           && compareValues(import_, o.import_, true);
       }
 
       public boolean isEmpty() {
         return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(url, identifier, version
-          , name, title, status, experimental, date, publisher, contact, description, useContext
-          , jurisdiction, purpose, copyright, structure, import_, group);
+          , versionAlgorithm, name, title, status, experimental, date, publisher, contact
+          , description, useContext, jurisdiction, purpose, copyright, copyrightLabel, structure
+          , import_, const_, group);
       }
 
   @Override
@@ -7396,667 +7219,169 @@ public String toString() {
    }
 
  /**
-   * Search parameter: <b>context</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): A use context assigned to the capability statement
-* [CodeSystem](codesystem.html): A use context assigned to the code system
-* [CompartmentDefinition](compartmentdefinition.html): A use context assigned to the compartment definition
-* [ConceptMap](conceptmap.html): A use context assigned to the concept map
-* [GraphDefinition](graphdefinition.html): A use context assigned to the graph definition
-* [ImplementationGuide](implementationguide.html): A use context assigned to the implementation guide
-* [MessageDefinition](messagedefinition.html): A use context assigned to the message definition
-* [NamingSystem](namingsystem.html): A use context assigned to the naming system
-* [OperationDefinition](operationdefinition.html): A use context assigned to the operation definition
-* [SearchParameter](searchparameter.html): A use context assigned to the search parameter
-* [StructureDefinition](structuredefinition.html): A use context assigned to the structure definition
-* [StructureMap](structuremap.html): A use context assigned to the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): A use context assigned to the terminology capabilities
-* [ValueSet](valueset.html): A use context assigned to the value set
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>(CapabilityStatement.useContext.value as CodeableConcept) | (CodeSystem.useContext.value as CodeableConcept) | (CompartmentDefinition.useContext.value as CodeableConcept) | (ConceptMap.useContext.value as CodeableConcept) | (GraphDefinition.useContext.value as CodeableConcept) | (ImplementationGuide.useContext.value as CodeableConcept) | (MessageDefinition.useContext.value as CodeableConcept) | (NamingSystem.useContext.value as CodeableConcept) | (OperationDefinition.useContext.value as CodeableConcept) | (SearchParameter.useContext.value as CodeableConcept) | (StructureDefinition.useContext.value as CodeableConcept) | (StructureMap.useContext.value as CodeableConcept) | (TerminologyCapabilities.useContext.value as CodeableConcept) | (ValueSet.useContext.value as CodeableConcept)</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="context", path="(CapabilityStatement.useContext.value as CodeableConcept) | (CodeSystem.useContext.value as CodeableConcept) | (CompartmentDefinition.useContext.value as CodeableConcept) | (ConceptMap.useContext.value as CodeableConcept) | (GraphDefinition.useContext.value as CodeableConcept) | (ImplementationGuide.useContext.value as CodeableConcept) | (MessageDefinition.useContext.value as CodeableConcept) | (NamingSystem.useContext.value as CodeableConcept) | (OperationDefinition.useContext.value as CodeableConcept) | (SearchParameter.useContext.value as CodeableConcept) | (StructureDefinition.useContext.value as CodeableConcept) | (StructureMap.useContext.value as CodeableConcept) | (TerminologyCapabilities.useContext.value as CodeableConcept) | (ValueSet.useContext.value as CodeableConcept)", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): A use context assigned to the capability statement\r\n* [CodeSystem](codesystem.html): A use context assigned to the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): A use context assigned to the compartment definition\r\n* [ConceptMap](conceptmap.html): A use context assigned to the concept map\r\n* [GraphDefinition](graphdefinition.html): A use context assigned to the graph definition\r\n* [ImplementationGuide](implementationguide.html): A use context assigned to the implementation guide\r\n* [MessageDefinition](messagedefinition.html): A use context assigned to the message definition\r\n* [NamingSystem](namingsystem.html): A use context assigned to the naming system\r\n* [OperationDefinition](operationdefinition.html): A use context assigned to the operation definition\r\n* [SearchParameter](searchparameter.html): A use context assigned to the search parameter\r\n* [StructureDefinition](structuredefinition.html): A use context assigned to the structure definition\r\n* [StructureMap](structuremap.html): A use context assigned to the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): A use context assigned to the terminology capabilities\r\n* [ValueSet](valueset.html): A use context assigned to the value set\r\n", type="token" )
-  public static final String SP_CONTEXT = "context";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>context</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): A use context assigned to the capability statement
-* [CodeSystem](codesystem.html): A use context assigned to the code system
-* [CompartmentDefinition](compartmentdefinition.html): A use context assigned to the compartment definition
-* [ConceptMap](conceptmap.html): A use context assigned to the concept map
-* [GraphDefinition](graphdefinition.html): A use context assigned to the graph definition
-* [ImplementationGuide](implementationguide.html): A use context assigned to the implementation guide
-* [MessageDefinition](messagedefinition.html): A use context assigned to the message definition
-* [NamingSystem](namingsystem.html): A use context assigned to the naming system
-* [OperationDefinition](operationdefinition.html): A use context assigned to the operation definition
-* [SearchParameter](searchparameter.html): A use context assigned to the search parameter
-* [StructureDefinition](structuredefinition.html): A use context assigned to the structure definition
-* [StructureMap](structuremap.html): A use context assigned to the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): A use context assigned to the terminology capabilities
-* [ValueSet](valueset.html): A use context assigned to the value set
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>(CapabilityStatement.useContext.value as CodeableConcept) | (CodeSystem.useContext.value as CodeableConcept) | (CompartmentDefinition.useContext.value as CodeableConcept) | (ConceptMap.useContext.value as CodeableConcept) | (GraphDefinition.useContext.value as CodeableConcept) | (ImplementationGuide.useContext.value as CodeableConcept) | (MessageDefinition.useContext.value as CodeableConcept) | (NamingSystem.useContext.value as CodeableConcept) | (OperationDefinition.useContext.value as CodeableConcept) | (SearchParameter.useContext.value as CodeableConcept) | (StructureDefinition.useContext.value as CodeableConcept) | (StructureMap.useContext.value as CodeableConcept) | (TerminologyCapabilities.useContext.value as CodeableConcept) | (ValueSet.useContext.value as CodeableConcept)</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam CONTEXT = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_CONTEXT);
-
- /**
    * Search parameter: <b>context-quantity</b>
    * <p>
    * Description: <b>Multiple Resources: 
 
+* [ActivityDefinition](activitydefinition.html): A quantity- or range-valued use context assigned to the activity definition
+* [ActorDefinition](actordefinition.html): A quantity- or range-valued use context assigned to the Actor Definition
 * [CapabilityStatement](capabilitystatement.html): A quantity- or range-valued use context assigned to the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): A quantity- or range-valued use context assigned to the charge item definition
+* [Citation](citation.html): A quantity- or range-valued use context assigned to the citation
 * [CodeSystem](codesystem.html): A quantity- or range-valued use context assigned to the code system
 * [CompartmentDefinition](compartmentdefinition.html): A quantity- or range-valued use context assigned to the compartment definition
 * [ConceptMap](conceptmap.html): A quantity- or range-valued use context assigned to the concept map
+* [ConditionDefinition](conditiondefinition.html): A quantity- or range-valued use context assigned to the condition definition
+* [EventDefinition](eventdefinition.html): A quantity- or range-valued use context assigned to the event definition
+* [Evidence](evidence.html): A quantity- or range-valued use context assigned to the evidence
+* [EvidenceReport](evidencereport.html): A quantity- or range-valued use context assigned to the evidence report
+* [EvidenceVariable](evidencevariable.html): A quantity- or range-valued use context assigned to the evidence variable
+* [ExampleScenario](examplescenario.html): A quantity- or range-valued use context assigned to the example scenario
 * [GraphDefinition](graphdefinition.html): A quantity- or range-valued use context assigned to the graph definition
 * [ImplementationGuide](implementationguide.html): A quantity- or range-valued use context assigned to the implementation guide
+* [Library](library.html): A quantity- or range-valued use context assigned to the library
+* [Measure](measure.html): A quantity- or range-valued use context assigned to the measure
 * [MessageDefinition](messagedefinition.html): A quantity- or range-valued use context assigned to the message definition
 * [NamingSystem](namingsystem.html): A quantity- or range-valued use context assigned to the naming system
 * [OperationDefinition](operationdefinition.html): A quantity- or range-valued use context assigned to the operation definition
+* [PlanDefinition](plandefinition.html): A quantity- or range-valued use context assigned to the plan definition
+* [Questionnaire](questionnaire.html): A quantity- or range-valued use context assigned to the questionnaire
+* [Requirements](requirements.html): A quantity- or range-valued use context assigned to the requirements
 * [SearchParameter](searchparameter.html): A quantity- or range-valued use context assigned to the search parameter
 * [StructureDefinition](structuredefinition.html): A quantity- or range-valued use context assigned to the structure definition
 * [StructureMap](structuremap.html): A quantity- or range-valued use context assigned to the structure map
 * [TerminologyCapabilities](terminologycapabilities.html): A quantity- or range-valued use context assigned to the terminology capabilities
+* [TestScript](testscript.html): A quantity- or range-valued use context assigned to the test script
 * [ValueSet](valueset.html): A quantity- or range-valued use context assigned to the value set
 </b><br>
    * Type: <b>quantity</b><br>
-   * Path: <b>(CapabilityStatement.useContext.value as Quantity) | (CapabilityStatement.useContext.value as Range) | (CodeSystem.useContext.value as Quantity) | (CodeSystem.useContext.value as Range) | (CompartmentDefinition.useContext.value as Quantity) | (CompartmentDefinition.useContext.value as Range) | (ConceptMap.useContext.value as Quantity) | (ConceptMap.useContext.value as Range) | (GraphDefinition.useContext.value as Quantity) | (GraphDefinition.useContext.value as Range) | (ImplementationGuide.useContext.value as Quantity) | (ImplementationGuide.useContext.value as Range) | (MessageDefinition.useContext.value as Quantity) | (MessageDefinition.useContext.value as Range) | (NamingSystem.useContext.value as Quantity) | (NamingSystem.useContext.value as Range) | (OperationDefinition.useContext.value as Quantity) | (OperationDefinition.useContext.value as Range) | (SearchParameter.useContext.value as Quantity) | (SearchParameter.useContext.value as Range) | (StructureDefinition.useContext.value as Quantity) | (StructureDefinition.useContext.value as Range) | (StructureMap.useContext.value as Quantity) | (StructureMap.useContext.value as Range) | (TerminologyCapabilities.useContext.value as Quantity) | (TerminologyCapabilities.useContext.value as Range) | (ValueSet.useContext.value as Quantity) | (ValueSet.useContext.value as Range)</b><br>
+   * Path: <b>(ActivityDefinition.useContext.value.ofType(Quantity)) | (ActivityDefinition.useContext.value.ofType(Range)) | (ActorDefinition.useContext.value.ofType(Quantity)) | (ActorDefinition.useContext.value.ofType(Range)) | (CapabilityStatement.useContext.value.ofType(Quantity)) | (CapabilityStatement.useContext.value.ofType(Range)) | (ChargeItemDefinition.useContext.value.ofType(Quantity)) | (ChargeItemDefinition.useContext.value.ofType(Range)) | (Citation.useContext.value.ofType(Quantity)) | (Citation.useContext.value.ofType(Range)) | (CodeSystem.useContext.value.ofType(Quantity)) | (CodeSystem.useContext.value.ofType(Range)) | (CompartmentDefinition.useContext.value.ofType(Quantity)) | (CompartmentDefinition.useContext.value.ofType(Range)) | (ConceptMap.useContext.value.ofType(Quantity)) | (ConceptMap.useContext.value.ofType(Range)) | (ConditionDefinition.useContext.value.ofType(Quantity)) | (ConditionDefinition.useContext.value.ofType(Range)) | (EventDefinition.useContext.value.ofType(Quantity)) | (EventDefinition.useContext.value.ofType(Range)) | (Evidence.useContext.value.ofType(Quantity)) | (Evidence.useContext.value.ofType(Range)) | (EvidenceReport.useContext.value.ofType(Quantity)) | (EvidenceReport.useContext.value.ofType(Range)) | (EvidenceVariable.useContext.value.ofType(Quantity)) | (EvidenceVariable.useContext.value.ofType(Range)) | (ExampleScenario.useContext.value.ofType(Quantity)) | (ExampleScenario.useContext.value.ofType(Range)) | (GraphDefinition.useContext.value.ofType(Quantity)) | (GraphDefinition.useContext.value.ofType(Range)) | (ImplementationGuide.useContext.value.ofType(Quantity)) | (ImplementationGuide.useContext.value.ofType(Range)) | (Library.useContext.value.ofType(Quantity)) | (Library.useContext.value.ofType(Range)) | (Measure.useContext.value.ofType(Quantity)) | (Measure.useContext.value.ofType(Range)) | (MessageDefinition.useContext.value.ofType(Quantity)) | (MessageDefinition.useContext.value.ofType(Range)) | (NamingSystem.useContext.value.ofType(Quantity)) | (NamingSystem.useContext.value.ofType(Range)) | (OperationDefinition.useContext.value.ofType(Quantity)) | (OperationDefinition.useContext.value.ofType(Range)) | (PlanDefinition.useContext.value.ofType(Quantity)) | (PlanDefinition.useContext.value.ofType(Range)) | (Questionnaire.useContext.value.ofType(Quantity)) | (Questionnaire.useContext.value.ofType(Range)) | (Requirements.useContext.value.ofType(Quantity)) | (Requirements.useContext.value.ofType(Range)) | (SearchParameter.useContext.value.ofType(Quantity)) | (SearchParameter.useContext.value.ofType(Range)) | (StructureDefinition.useContext.value.ofType(Quantity)) | (StructureDefinition.useContext.value.ofType(Range)) | (StructureMap.useContext.value.ofType(Quantity)) | (StructureMap.useContext.value.ofType(Range)) | (TerminologyCapabilities.useContext.value.ofType(Quantity)) | (TerminologyCapabilities.useContext.value.ofType(Range)) | (TestScript.useContext.value.ofType(Quantity)) | (TestScript.useContext.value.ofType(Range)) | (ValueSet.useContext.value.ofType(Quantity)) | (ValueSet.useContext.value.ofType(Range))</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="context-quantity", path="(CapabilityStatement.useContext.value as Quantity) | (CapabilityStatement.useContext.value as Range) | (CodeSystem.useContext.value as Quantity) | (CodeSystem.useContext.value as Range) | (CompartmentDefinition.useContext.value as Quantity) | (CompartmentDefinition.useContext.value as Range) | (ConceptMap.useContext.value as Quantity) | (ConceptMap.useContext.value as Range) | (GraphDefinition.useContext.value as Quantity) | (GraphDefinition.useContext.value as Range) | (ImplementationGuide.useContext.value as Quantity) | (ImplementationGuide.useContext.value as Range) | (MessageDefinition.useContext.value as Quantity) | (MessageDefinition.useContext.value as Range) | (NamingSystem.useContext.value as Quantity) | (NamingSystem.useContext.value as Range) | (OperationDefinition.useContext.value as Quantity) | (OperationDefinition.useContext.value as Range) | (SearchParameter.useContext.value as Quantity) | (SearchParameter.useContext.value as Range) | (StructureDefinition.useContext.value as Quantity) | (StructureDefinition.useContext.value as Range) | (StructureMap.useContext.value as Quantity) | (StructureMap.useContext.value as Range) | (TerminologyCapabilities.useContext.value as Quantity) | (TerminologyCapabilities.useContext.value as Range) | (ValueSet.useContext.value as Quantity) | (ValueSet.useContext.value as Range)", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): A quantity- or range-valued use context assigned to the capability statement\r\n* [CodeSystem](codesystem.html): A quantity- or range-valued use context assigned to the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): A quantity- or range-valued use context assigned to the compartment definition\r\n* [ConceptMap](conceptmap.html): A quantity- or range-valued use context assigned to the concept map\r\n* [GraphDefinition](graphdefinition.html): A quantity- or range-valued use context assigned to the graph definition\r\n* [ImplementationGuide](implementationguide.html): A quantity- or range-valued use context assigned to the implementation guide\r\n* [MessageDefinition](messagedefinition.html): A quantity- or range-valued use context assigned to the message definition\r\n* [NamingSystem](namingsystem.html): A quantity- or range-valued use context assigned to the naming system\r\n* [OperationDefinition](operationdefinition.html): A quantity- or range-valued use context assigned to the operation definition\r\n* [SearchParameter](searchparameter.html): A quantity- or range-valued use context assigned to the search parameter\r\n* [StructureDefinition](structuredefinition.html): A quantity- or range-valued use context assigned to the structure definition\r\n* [StructureMap](structuremap.html): A quantity- or range-valued use context assigned to the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): A quantity- or range-valued use context assigned to the terminology capabilities\r\n* [ValueSet](valueset.html): A quantity- or range-valued use context assigned to the value set\r\n", type="quantity" )
+  @SearchParamDefinition(name="context-quantity", path="(ActivityDefinition.useContext.value.ofType(Quantity)) | (ActivityDefinition.useContext.value.ofType(Range)) | (ActorDefinition.useContext.value.ofType(Quantity)) | (ActorDefinition.useContext.value.ofType(Range)) | (CapabilityStatement.useContext.value.ofType(Quantity)) | (CapabilityStatement.useContext.value.ofType(Range)) | (ChargeItemDefinition.useContext.value.ofType(Quantity)) | (ChargeItemDefinition.useContext.value.ofType(Range)) | (Citation.useContext.value.ofType(Quantity)) | (Citation.useContext.value.ofType(Range)) | (CodeSystem.useContext.value.ofType(Quantity)) | (CodeSystem.useContext.value.ofType(Range)) | (CompartmentDefinition.useContext.value.ofType(Quantity)) | (CompartmentDefinition.useContext.value.ofType(Range)) | (ConceptMap.useContext.value.ofType(Quantity)) | (ConceptMap.useContext.value.ofType(Range)) | (ConditionDefinition.useContext.value.ofType(Quantity)) | (ConditionDefinition.useContext.value.ofType(Range)) | (EventDefinition.useContext.value.ofType(Quantity)) | (EventDefinition.useContext.value.ofType(Range)) | (Evidence.useContext.value.ofType(Quantity)) | (Evidence.useContext.value.ofType(Range)) | (EvidenceReport.useContext.value.ofType(Quantity)) | (EvidenceReport.useContext.value.ofType(Range)) | (EvidenceVariable.useContext.value.ofType(Quantity)) | (EvidenceVariable.useContext.value.ofType(Range)) | (ExampleScenario.useContext.value.ofType(Quantity)) | (ExampleScenario.useContext.value.ofType(Range)) | (GraphDefinition.useContext.value.ofType(Quantity)) | (GraphDefinition.useContext.value.ofType(Range)) | (ImplementationGuide.useContext.value.ofType(Quantity)) | (ImplementationGuide.useContext.value.ofType(Range)) | (Library.useContext.value.ofType(Quantity)) | (Library.useContext.value.ofType(Range)) | (Measure.useContext.value.ofType(Quantity)) | (Measure.useContext.value.ofType(Range)) | (MessageDefinition.useContext.value.ofType(Quantity)) | (MessageDefinition.useContext.value.ofType(Range)) | (NamingSystem.useContext.value.ofType(Quantity)) | (NamingSystem.useContext.value.ofType(Range)) | (OperationDefinition.useContext.value.ofType(Quantity)) | (OperationDefinition.useContext.value.ofType(Range)) | (PlanDefinition.useContext.value.ofType(Quantity)) | (PlanDefinition.useContext.value.ofType(Range)) | (Questionnaire.useContext.value.ofType(Quantity)) | (Questionnaire.useContext.value.ofType(Range)) | (Requirements.useContext.value.ofType(Quantity)) | (Requirements.useContext.value.ofType(Range)) | (SearchParameter.useContext.value.ofType(Quantity)) | (SearchParameter.useContext.value.ofType(Range)) | (StructureDefinition.useContext.value.ofType(Quantity)) | (StructureDefinition.useContext.value.ofType(Range)) | (StructureMap.useContext.value.ofType(Quantity)) | (StructureMap.useContext.value.ofType(Range)) | (TerminologyCapabilities.useContext.value.ofType(Quantity)) | (TerminologyCapabilities.useContext.value.ofType(Range)) | (TestScript.useContext.value.ofType(Quantity)) | (TestScript.useContext.value.ofType(Range)) | (ValueSet.useContext.value.ofType(Quantity)) | (ValueSet.useContext.value.ofType(Range))", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): A quantity- or range-valued use context assigned to the activity definition\r\n* [ActorDefinition](actordefinition.html): A quantity- or range-valued use context assigned to the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): A quantity- or range-valued use context assigned to the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): A quantity- or range-valued use context assigned to the charge item definition\r\n* [Citation](citation.html): A quantity- or range-valued use context assigned to the citation\r\n* [CodeSystem](codesystem.html): A quantity- or range-valued use context assigned to the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): A quantity- or range-valued use context assigned to the compartment definition\r\n* [ConceptMap](conceptmap.html): A quantity- or range-valued use context assigned to the concept map\r\n* [ConditionDefinition](conditiondefinition.html): A quantity- or range-valued use context assigned to the condition definition\r\n* [EventDefinition](eventdefinition.html): A quantity- or range-valued use context assigned to the event definition\r\n* [Evidence](evidence.html): A quantity- or range-valued use context assigned to the evidence\r\n* [EvidenceReport](evidencereport.html): A quantity- or range-valued use context assigned to the evidence report\r\n* [EvidenceVariable](evidencevariable.html): A quantity- or range-valued use context assigned to the evidence variable\r\n* [ExampleScenario](examplescenario.html): A quantity- or range-valued use context assigned to the example scenario\r\n* [GraphDefinition](graphdefinition.html): A quantity- or range-valued use context assigned to the graph definition\r\n* [ImplementationGuide](implementationguide.html): A quantity- or range-valued use context assigned to the implementation guide\r\n* [Library](library.html): A quantity- or range-valued use context assigned to the library\r\n* [Measure](measure.html): A quantity- or range-valued use context assigned to the measure\r\n* [MessageDefinition](messagedefinition.html): A quantity- or range-valued use context assigned to the message definition\r\n* [NamingSystem](namingsystem.html): A quantity- or range-valued use context assigned to the naming system\r\n* [OperationDefinition](operationdefinition.html): A quantity- or range-valued use context assigned to the operation definition\r\n* [PlanDefinition](plandefinition.html): A quantity- or range-valued use context assigned to the plan definition\r\n* [Questionnaire](questionnaire.html): A quantity- or range-valued use context assigned to the questionnaire\r\n* [Requirements](requirements.html): A quantity- or range-valued use context assigned to the requirements\r\n* [SearchParameter](searchparameter.html): A quantity- or range-valued use context assigned to the search parameter\r\n* [StructureDefinition](structuredefinition.html): A quantity- or range-valued use context assigned to the structure definition\r\n* [StructureMap](structuremap.html): A quantity- or range-valued use context assigned to the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): A quantity- or range-valued use context assigned to the terminology capabilities\r\n* [TestScript](testscript.html): A quantity- or range-valued use context assigned to the test script\r\n* [ValueSet](valueset.html): A quantity- or range-valued use context assigned to the value set\r\n", type="quantity" )
   public static final String SP_CONTEXT_QUANTITY = "context-quantity";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>context-quantity</b>
    * <p>
    * Description: <b>Multiple Resources: 
 
+* [ActivityDefinition](activitydefinition.html): A quantity- or range-valued use context assigned to the activity definition
+* [ActorDefinition](actordefinition.html): A quantity- or range-valued use context assigned to the Actor Definition
 * [CapabilityStatement](capabilitystatement.html): A quantity- or range-valued use context assigned to the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): A quantity- or range-valued use context assigned to the charge item definition
+* [Citation](citation.html): A quantity- or range-valued use context assigned to the citation
 * [CodeSystem](codesystem.html): A quantity- or range-valued use context assigned to the code system
 * [CompartmentDefinition](compartmentdefinition.html): A quantity- or range-valued use context assigned to the compartment definition
 * [ConceptMap](conceptmap.html): A quantity- or range-valued use context assigned to the concept map
+* [ConditionDefinition](conditiondefinition.html): A quantity- or range-valued use context assigned to the condition definition
+* [EventDefinition](eventdefinition.html): A quantity- or range-valued use context assigned to the event definition
+* [Evidence](evidence.html): A quantity- or range-valued use context assigned to the evidence
+* [EvidenceReport](evidencereport.html): A quantity- or range-valued use context assigned to the evidence report
+* [EvidenceVariable](evidencevariable.html): A quantity- or range-valued use context assigned to the evidence variable
+* [ExampleScenario](examplescenario.html): A quantity- or range-valued use context assigned to the example scenario
 * [GraphDefinition](graphdefinition.html): A quantity- or range-valued use context assigned to the graph definition
 * [ImplementationGuide](implementationguide.html): A quantity- or range-valued use context assigned to the implementation guide
+* [Library](library.html): A quantity- or range-valued use context assigned to the library
+* [Measure](measure.html): A quantity- or range-valued use context assigned to the measure
 * [MessageDefinition](messagedefinition.html): A quantity- or range-valued use context assigned to the message definition
 * [NamingSystem](namingsystem.html): A quantity- or range-valued use context assigned to the naming system
 * [OperationDefinition](operationdefinition.html): A quantity- or range-valued use context assigned to the operation definition
+* [PlanDefinition](plandefinition.html): A quantity- or range-valued use context assigned to the plan definition
+* [Questionnaire](questionnaire.html): A quantity- or range-valued use context assigned to the questionnaire
+* [Requirements](requirements.html): A quantity- or range-valued use context assigned to the requirements
 * [SearchParameter](searchparameter.html): A quantity- or range-valued use context assigned to the search parameter
 * [StructureDefinition](structuredefinition.html): A quantity- or range-valued use context assigned to the structure definition
 * [StructureMap](structuremap.html): A quantity- or range-valued use context assigned to the structure map
 * [TerminologyCapabilities](terminologycapabilities.html): A quantity- or range-valued use context assigned to the terminology capabilities
+* [TestScript](testscript.html): A quantity- or range-valued use context assigned to the test script
 * [ValueSet](valueset.html): A quantity- or range-valued use context assigned to the value set
 </b><br>
    * Type: <b>quantity</b><br>
-   * Path: <b>(CapabilityStatement.useContext.value as Quantity) | (CapabilityStatement.useContext.value as Range) | (CodeSystem.useContext.value as Quantity) | (CodeSystem.useContext.value as Range) | (CompartmentDefinition.useContext.value as Quantity) | (CompartmentDefinition.useContext.value as Range) | (ConceptMap.useContext.value as Quantity) | (ConceptMap.useContext.value as Range) | (GraphDefinition.useContext.value as Quantity) | (GraphDefinition.useContext.value as Range) | (ImplementationGuide.useContext.value as Quantity) | (ImplementationGuide.useContext.value as Range) | (MessageDefinition.useContext.value as Quantity) | (MessageDefinition.useContext.value as Range) | (NamingSystem.useContext.value as Quantity) | (NamingSystem.useContext.value as Range) | (OperationDefinition.useContext.value as Quantity) | (OperationDefinition.useContext.value as Range) | (SearchParameter.useContext.value as Quantity) | (SearchParameter.useContext.value as Range) | (StructureDefinition.useContext.value as Quantity) | (StructureDefinition.useContext.value as Range) | (StructureMap.useContext.value as Quantity) | (StructureMap.useContext.value as Range) | (TerminologyCapabilities.useContext.value as Quantity) | (TerminologyCapabilities.useContext.value as Range) | (ValueSet.useContext.value as Quantity) | (ValueSet.useContext.value as Range)</b><br>
+   * Path: <b>(ActivityDefinition.useContext.value.ofType(Quantity)) | (ActivityDefinition.useContext.value.ofType(Range)) | (ActorDefinition.useContext.value.ofType(Quantity)) | (ActorDefinition.useContext.value.ofType(Range)) | (CapabilityStatement.useContext.value.ofType(Quantity)) | (CapabilityStatement.useContext.value.ofType(Range)) | (ChargeItemDefinition.useContext.value.ofType(Quantity)) | (ChargeItemDefinition.useContext.value.ofType(Range)) | (Citation.useContext.value.ofType(Quantity)) | (Citation.useContext.value.ofType(Range)) | (CodeSystem.useContext.value.ofType(Quantity)) | (CodeSystem.useContext.value.ofType(Range)) | (CompartmentDefinition.useContext.value.ofType(Quantity)) | (CompartmentDefinition.useContext.value.ofType(Range)) | (ConceptMap.useContext.value.ofType(Quantity)) | (ConceptMap.useContext.value.ofType(Range)) | (ConditionDefinition.useContext.value.ofType(Quantity)) | (ConditionDefinition.useContext.value.ofType(Range)) | (EventDefinition.useContext.value.ofType(Quantity)) | (EventDefinition.useContext.value.ofType(Range)) | (Evidence.useContext.value.ofType(Quantity)) | (Evidence.useContext.value.ofType(Range)) | (EvidenceReport.useContext.value.ofType(Quantity)) | (EvidenceReport.useContext.value.ofType(Range)) | (EvidenceVariable.useContext.value.ofType(Quantity)) | (EvidenceVariable.useContext.value.ofType(Range)) | (ExampleScenario.useContext.value.ofType(Quantity)) | (ExampleScenario.useContext.value.ofType(Range)) | (GraphDefinition.useContext.value.ofType(Quantity)) | (GraphDefinition.useContext.value.ofType(Range)) | (ImplementationGuide.useContext.value.ofType(Quantity)) | (ImplementationGuide.useContext.value.ofType(Range)) | (Library.useContext.value.ofType(Quantity)) | (Library.useContext.value.ofType(Range)) | (Measure.useContext.value.ofType(Quantity)) | (Measure.useContext.value.ofType(Range)) | (MessageDefinition.useContext.value.ofType(Quantity)) | (MessageDefinition.useContext.value.ofType(Range)) | (NamingSystem.useContext.value.ofType(Quantity)) | (NamingSystem.useContext.value.ofType(Range)) | (OperationDefinition.useContext.value.ofType(Quantity)) | (OperationDefinition.useContext.value.ofType(Range)) | (PlanDefinition.useContext.value.ofType(Quantity)) | (PlanDefinition.useContext.value.ofType(Range)) | (Questionnaire.useContext.value.ofType(Quantity)) | (Questionnaire.useContext.value.ofType(Range)) | (Requirements.useContext.value.ofType(Quantity)) | (Requirements.useContext.value.ofType(Range)) | (SearchParameter.useContext.value.ofType(Quantity)) | (SearchParameter.useContext.value.ofType(Range)) | (StructureDefinition.useContext.value.ofType(Quantity)) | (StructureDefinition.useContext.value.ofType(Range)) | (StructureMap.useContext.value.ofType(Quantity)) | (StructureMap.useContext.value.ofType(Range)) | (TerminologyCapabilities.useContext.value.ofType(Quantity)) | (TerminologyCapabilities.useContext.value.ofType(Range)) | (TestScript.useContext.value.ofType(Quantity)) | (TestScript.useContext.value.ofType(Range)) | (ValueSet.useContext.value.ofType(Quantity)) | (ValueSet.useContext.value.ofType(Range))</b><br>
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.QuantityClientParam CONTEXT_QUANTITY = new ca.uhn.fhir.rest.gclient.QuantityClientParam(SP_CONTEXT_QUANTITY);
-
- /**
-   * Search parameter: <b>context-type</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): A type of use context assigned to the capability statement
-* [CodeSystem](codesystem.html): A type of use context assigned to the code system
-* [CompartmentDefinition](compartmentdefinition.html): A type of use context assigned to the compartment definition
-* [ConceptMap](conceptmap.html): A type of use context assigned to the concept map
-* [GraphDefinition](graphdefinition.html): A type of use context assigned to the graph definition
-* [ImplementationGuide](implementationguide.html): A type of use context assigned to the implementation guide
-* [MessageDefinition](messagedefinition.html): A type of use context assigned to the message definition
-* [NamingSystem](namingsystem.html): A type of use context assigned to the naming system
-* [OperationDefinition](operationdefinition.html): A type of use context assigned to the operation definition
-* [SearchParameter](searchparameter.html): A type of use context assigned to the search parameter
-* [StructureDefinition](structuredefinition.html): A type of use context assigned to the structure definition
-* [StructureMap](structuremap.html): A type of use context assigned to the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): A type of use context assigned to the terminology capabilities
-* [ValueSet](valueset.html): A type of use context assigned to the value set
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>CapabilityStatement.useContext.code | CodeSystem.useContext.code | CompartmentDefinition.useContext.code | ConceptMap.useContext.code | GraphDefinition.useContext.code | ImplementationGuide.useContext.code | MessageDefinition.useContext.code | NamingSystem.useContext.code | OperationDefinition.useContext.code | SearchParameter.useContext.code | StructureDefinition.useContext.code | StructureMap.useContext.code | TerminologyCapabilities.useContext.code | ValueSet.useContext.code</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="context-type", path="CapabilityStatement.useContext.code | CodeSystem.useContext.code | CompartmentDefinition.useContext.code | ConceptMap.useContext.code | GraphDefinition.useContext.code | ImplementationGuide.useContext.code | MessageDefinition.useContext.code | NamingSystem.useContext.code | OperationDefinition.useContext.code | SearchParameter.useContext.code | StructureDefinition.useContext.code | StructureMap.useContext.code | TerminologyCapabilities.useContext.code | ValueSet.useContext.code", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): A type of use context assigned to the capability statement\r\n* [CodeSystem](codesystem.html): A type of use context assigned to the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): A type of use context assigned to the compartment definition\r\n* [ConceptMap](conceptmap.html): A type of use context assigned to the concept map\r\n* [GraphDefinition](graphdefinition.html): A type of use context assigned to the graph definition\r\n* [ImplementationGuide](implementationguide.html): A type of use context assigned to the implementation guide\r\n* [MessageDefinition](messagedefinition.html): A type of use context assigned to the message definition\r\n* [NamingSystem](namingsystem.html): A type of use context assigned to the naming system\r\n* [OperationDefinition](operationdefinition.html): A type of use context assigned to the operation definition\r\n* [SearchParameter](searchparameter.html): A type of use context assigned to the search parameter\r\n* [StructureDefinition](structuredefinition.html): A type of use context assigned to the structure definition\r\n* [StructureMap](structuremap.html): A type of use context assigned to the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): A type of use context assigned to the terminology capabilities\r\n* [ValueSet](valueset.html): A type of use context assigned to the value set\r\n", type="token" )
-  public static final String SP_CONTEXT_TYPE = "context-type";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>context-type</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): A type of use context assigned to the capability statement
-* [CodeSystem](codesystem.html): A type of use context assigned to the code system
-* [CompartmentDefinition](compartmentdefinition.html): A type of use context assigned to the compartment definition
-* [ConceptMap](conceptmap.html): A type of use context assigned to the concept map
-* [GraphDefinition](graphdefinition.html): A type of use context assigned to the graph definition
-* [ImplementationGuide](implementationguide.html): A type of use context assigned to the implementation guide
-* [MessageDefinition](messagedefinition.html): A type of use context assigned to the message definition
-* [NamingSystem](namingsystem.html): A type of use context assigned to the naming system
-* [OperationDefinition](operationdefinition.html): A type of use context assigned to the operation definition
-* [SearchParameter](searchparameter.html): A type of use context assigned to the search parameter
-* [StructureDefinition](structuredefinition.html): A type of use context assigned to the structure definition
-* [StructureMap](structuremap.html): A type of use context assigned to the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): A type of use context assigned to the terminology capabilities
-* [ValueSet](valueset.html): A type of use context assigned to the value set
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>CapabilityStatement.useContext.code | CodeSystem.useContext.code | CompartmentDefinition.useContext.code | ConceptMap.useContext.code | GraphDefinition.useContext.code | ImplementationGuide.useContext.code | MessageDefinition.useContext.code | NamingSystem.useContext.code | OperationDefinition.useContext.code | SearchParameter.useContext.code | StructureDefinition.useContext.code | StructureMap.useContext.code | TerminologyCapabilities.useContext.code | ValueSet.useContext.code</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam CONTEXT_TYPE = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_CONTEXT_TYPE);
-
- /**
-   * Search parameter: <b>date</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The capability statement publication date
-* [CodeSystem](codesystem.html): The code system publication date
-* [CompartmentDefinition](compartmentdefinition.html): The compartment definition publication date
-* [ConceptMap](conceptmap.html): The concept map publication date
-* [GraphDefinition](graphdefinition.html): The graph definition publication date
-* [ImplementationGuide](implementationguide.html): The implementation guide publication date
-* [MessageDefinition](messagedefinition.html): The message definition publication date
-* [NamingSystem](namingsystem.html): The naming system publication date
-* [OperationDefinition](operationdefinition.html): The operation definition publication date
-* [SearchParameter](searchparameter.html): The search parameter publication date
-* [StructureDefinition](structuredefinition.html): The structure definition publication date
-* [StructureMap](structuremap.html): The structure map publication date
-* [TerminologyCapabilities](terminologycapabilities.html): The terminology capabilities publication date
-* [ValueSet](valueset.html): The value set publication date
-</b><br>
-   * Type: <b>date</b><br>
-   * Path: <b>CapabilityStatement.date | CodeSystem.date | CompartmentDefinition.date | ConceptMap.date | GraphDefinition.date | ImplementationGuide.date | MessageDefinition.date | NamingSystem.date | OperationDefinition.date | SearchParameter.date | StructureDefinition.date | StructureMap.date | TerminologyCapabilities.date | ValueSet.date</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="date", path="CapabilityStatement.date | CodeSystem.date | CompartmentDefinition.date | ConceptMap.date | GraphDefinition.date | ImplementationGuide.date | MessageDefinition.date | NamingSystem.date | OperationDefinition.date | SearchParameter.date | StructureDefinition.date | StructureMap.date | TerminologyCapabilities.date | ValueSet.date", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): The capability statement publication date\r\n* [CodeSystem](codesystem.html): The code system publication date\r\n* [CompartmentDefinition](compartmentdefinition.html): The compartment definition publication date\r\n* [ConceptMap](conceptmap.html): The concept map publication date\r\n* [GraphDefinition](graphdefinition.html): The graph definition publication date\r\n* [ImplementationGuide](implementationguide.html): The implementation guide publication date\r\n* [MessageDefinition](messagedefinition.html): The message definition publication date\r\n* [NamingSystem](namingsystem.html): The naming system publication date\r\n* [OperationDefinition](operationdefinition.html): The operation definition publication date\r\n* [SearchParameter](searchparameter.html): The search parameter publication date\r\n* [StructureDefinition](structuredefinition.html): The structure definition publication date\r\n* [StructureMap](structuremap.html): The structure map publication date\r\n* [TerminologyCapabilities](terminologycapabilities.html): The terminology capabilities publication date\r\n* [ValueSet](valueset.html): The value set publication date\r\n", type="date" )
-  public static final String SP_DATE = "date";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>date</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The capability statement publication date
-* [CodeSystem](codesystem.html): The code system publication date
-* [CompartmentDefinition](compartmentdefinition.html): The compartment definition publication date
-* [ConceptMap](conceptmap.html): The concept map publication date
-* [GraphDefinition](graphdefinition.html): The graph definition publication date
-* [ImplementationGuide](implementationguide.html): The implementation guide publication date
-* [MessageDefinition](messagedefinition.html): The message definition publication date
-* [NamingSystem](namingsystem.html): The naming system publication date
-* [OperationDefinition](operationdefinition.html): The operation definition publication date
-* [SearchParameter](searchparameter.html): The search parameter publication date
-* [StructureDefinition](structuredefinition.html): The structure definition publication date
-* [StructureMap](structuremap.html): The structure map publication date
-* [TerminologyCapabilities](terminologycapabilities.html): The terminology capabilities publication date
-* [ValueSet](valueset.html): The value set publication date
-</b><br>
-   * Type: <b>date</b><br>
-   * Path: <b>CapabilityStatement.date | CodeSystem.date | CompartmentDefinition.date | ConceptMap.date | GraphDefinition.date | ImplementationGuide.date | MessageDefinition.date | NamingSystem.date | OperationDefinition.date | SearchParameter.date | StructureDefinition.date | StructureMap.date | TerminologyCapabilities.date | ValueSet.date</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.DateClientParam DATE = new ca.uhn.fhir.rest.gclient.DateClientParam(SP_DATE);
-
- /**
-   * Search parameter: <b>description</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The description of the capability statement
-* [CodeSystem](codesystem.html): The description of the code system
-* [CompartmentDefinition](compartmentdefinition.html): The description of the compartment definition
-* [ConceptMap](conceptmap.html): The description of the concept map
-* [GraphDefinition](graphdefinition.html): The description of the graph definition
-* [ImplementationGuide](implementationguide.html): The description of the implementation guide
-* [MessageDefinition](messagedefinition.html): The description of the message definition
-* [NamingSystem](namingsystem.html): The description of the naming system
-* [OperationDefinition](operationdefinition.html): The description of the operation definition
-* [SearchParameter](searchparameter.html): The description of the search parameter
-* [StructureDefinition](structuredefinition.html): The description of the structure definition
-* [StructureMap](structuremap.html): The description of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): The description of the terminology capabilities
-* [ValueSet](valueset.html): The description of the value set
-</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>CapabilityStatement.description | CodeSystem.description | CompartmentDefinition.description | ConceptMap.description | GraphDefinition.description | ImplementationGuide.description | MessageDefinition.description | NamingSystem.description | OperationDefinition.description | SearchParameter.description | StructureDefinition.description | StructureMap.description | TerminologyCapabilities.description | ValueSet.description</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="description", path="CapabilityStatement.description | CodeSystem.description | CompartmentDefinition.description | ConceptMap.description | GraphDefinition.description | ImplementationGuide.description | MessageDefinition.description | NamingSystem.description | OperationDefinition.description | SearchParameter.description | StructureDefinition.description | StructureMap.description | TerminologyCapabilities.description | ValueSet.description", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): The description of the capability statement\r\n* [CodeSystem](codesystem.html): The description of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The description of the compartment definition\r\n* [ConceptMap](conceptmap.html): The description of the concept map\r\n* [GraphDefinition](graphdefinition.html): The description of the graph definition\r\n* [ImplementationGuide](implementationguide.html): The description of the implementation guide\r\n* [MessageDefinition](messagedefinition.html): The description of the message definition\r\n* [NamingSystem](namingsystem.html): The description of the naming system\r\n* [OperationDefinition](operationdefinition.html): The description of the operation definition\r\n* [SearchParameter](searchparameter.html): The description of the search parameter\r\n* [StructureDefinition](structuredefinition.html): The description of the structure definition\r\n* [StructureMap](structuremap.html): The description of the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): The description of the terminology capabilities\r\n* [ValueSet](valueset.html): The description of the value set\r\n", type="string" )
-  public static final String SP_DESCRIPTION = "description";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>description</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The description of the capability statement
-* [CodeSystem](codesystem.html): The description of the code system
-* [CompartmentDefinition](compartmentdefinition.html): The description of the compartment definition
-* [ConceptMap](conceptmap.html): The description of the concept map
-* [GraphDefinition](graphdefinition.html): The description of the graph definition
-* [ImplementationGuide](implementationguide.html): The description of the implementation guide
-* [MessageDefinition](messagedefinition.html): The description of the message definition
-* [NamingSystem](namingsystem.html): The description of the naming system
-* [OperationDefinition](operationdefinition.html): The description of the operation definition
-* [SearchParameter](searchparameter.html): The description of the search parameter
-* [StructureDefinition](structuredefinition.html): The description of the structure definition
-* [StructureMap](structuremap.html): The description of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): The description of the terminology capabilities
-* [ValueSet](valueset.html): The description of the value set
-</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>CapabilityStatement.description | CodeSystem.description | CompartmentDefinition.description | ConceptMap.description | GraphDefinition.description | ImplementationGuide.description | MessageDefinition.description | NamingSystem.description | OperationDefinition.description | SearchParameter.description | StructureDefinition.description | StructureMap.description | TerminologyCapabilities.description | ValueSet.description</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.StringClientParam DESCRIPTION = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_DESCRIPTION);
-
- /**
-   * Search parameter: <b>jurisdiction</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): Intended jurisdiction for the capability statement
-* [CodeSystem](codesystem.html): Intended jurisdiction for the code system
-* [ConceptMap](conceptmap.html): Intended jurisdiction for the concept map
-* [GraphDefinition](graphdefinition.html): Intended jurisdiction for the graph definition
-* [ImplementationGuide](implementationguide.html): Intended jurisdiction for the implementation guide
-* [MessageDefinition](messagedefinition.html): Intended jurisdiction for the message definition
-* [NamingSystem](namingsystem.html): Intended jurisdiction for the naming system
-* [OperationDefinition](operationdefinition.html): Intended jurisdiction for the operation definition
-* [SearchParameter](searchparameter.html): Intended jurisdiction for the search parameter
-* [StructureDefinition](structuredefinition.html): Intended jurisdiction for the structure definition
-* [StructureMap](structuremap.html): Intended jurisdiction for the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): Intended jurisdiction for the terminology capabilities
-* [ValueSet](valueset.html): Intended jurisdiction for the value set
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>CapabilityStatement.jurisdiction | CodeSystem.jurisdiction | ConceptMap.jurisdiction | GraphDefinition.jurisdiction | ImplementationGuide.jurisdiction | MessageDefinition.jurisdiction | NamingSystem.jurisdiction | OperationDefinition.jurisdiction | SearchParameter.jurisdiction | StructureDefinition.jurisdiction | StructureMap.jurisdiction | TerminologyCapabilities.jurisdiction | ValueSet.jurisdiction</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="jurisdiction", path="CapabilityStatement.jurisdiction | CodeSystem.jurisdiction | ConceptMap.jurisdiction | GraphDefinition.jurisdiction | ImplementationGuide.jurisdiction | MessageDefinition.jurisdiction | NamingSystem.jurisdiction | OperationDefinition.jurisdiction | SearchParameter.jurisdiction | StructureDefinition.jurisdiction | StructureMap.jurisdiction | TerminologyCapabilities.jurisdiction | ValueSet.jurisdiction", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): Intended jurisdiction for the capability statement\r\n* [CodeSystem](codesystem.html): Intended jurisdiction for the code system\r\n* [ConceptMap](conceptmap.html): Intended jurisdiction for the concept map\r\n* [GraphDefinition](graphdefinition.html): Intended jurisdiction for the graph definition\r\n* [ImplementationGuide](implementationguide.html): Intended jurisdiction for the implementation guide\r\n* [MessageDefinition](messagedefinition.html): Intended jurisdiction for the message definition\r\n* [NamingSystem](namingsystem.html): Intended jurisdiction for the naming system\r\n* [OperationDefinition](operationdefinition.html): Intended jurisdiction for the operation definition\r\n* [SearchParameter](searchparameter.html): Intended jurisdiction for the search parameter\r\n* [StructureDefinition](structuredefinition.html): Intended jurisdiction for the structure definition\r\n* [StructureMap](structuremap.html): Intended jurisdiction for the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): Intended jurisdiction for the terminology capabilities\r\n* [ValueSet](valueset.html): Intended jurisdiction for the value set\r\n", type="token" )
-  public static final String SP_JURISDICTION = "jurisdiction";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>jurisdiction</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): Intended jurisdiction for the capability statement
-* [CodeSystem](codesystem.html): Intended jurisdiction for the code system
-* [ConceptMap](conceptmap.html): Intended jurisdiction for the concept map
-* [GraphDefinition](graphdefinition.html): Intended jurisdiction for the graph definition
-* [ImplementationGuide](implementationguide.html): Intended jurisdiction for the implementation guide
-* [MessageDefinition](messagedefinition.html): Intended jurisdiction for the message definition
-* [NamingSystem](namingsystem.html): Intended jurisdiction for the naming system
-* [OperationDefinition](operationdefinition.html): Intended jurisdiction for the operation definition
-* [SearchParameter](searchparameter.html): Intended jurisdiction for the search parameter
-* [StructureDefinition](structuredefinition.html): Intended jurisdiction for the structure definition
-* [StructureMap](structuremap.html): Intended jurisdiction for the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): Intended jurisdiction for the terminology capabilities
-* [ValueSet](valueset.html): Intended jurisdiction for the value set
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>CapabilityStatement.jurisdiction | CodeSystem.jurisdiction | ConceptMap.jurisdiction | GraphDefinition.jurisdiction | ImplementationGuide.jurisdiction | MessageDefinition.jurisdiction | NamingSystem.jurisdiction | OperationDefinition.jurisdiction | SearchParameter.jurisdiction | StructureDefinition.jurisdiction | StructureMap.jurisdiction | TerminologyCapabilities.jurisdiction | ValueSet.jurisdiction</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam JURISDICTION = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_JURISDICTION);
-
- /**
-   * Search parameter: <b>name</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): Computationally friendly name of the capability statement
-* [CodeSystem](codesystem.html): Computationally friendly name of the code system
-* [CompartmentDefinition](compartmentdefinition.html): Computationally friendly name of the compartment definition
-* [ConceptMap](conceptmap.html): Computationally friendly name of the concept map
-* [GraphDefinition](graphdefinition.html): Computationally friendly name of the graph definition
-* [ImplementationGuide](implementationguide.html): Computationally friendly name of the implementation guide
-* [MessageDefinition](messagedefinition.html): Computationally friendly name of the message definition
-* [NamingSystem](namingsystem.html): Computationally friendly name of the naming system
-* [OperationDefinition](operationdefinition.html): Computationally friendly name of the operation definition
-* [SearchParameter](searchparameter.html): Computationally friendly name of the search parameter
-* [StructureDefinition](structuredefinition.html): Computationally friendly name of the structure definition
-* [StructureMap](structuremap.html): Computationally friendly name of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): Computationally friendly name of the terminology capabilities
-* [ValueSet](valueset.html): Computationally friendly name of the value set
-</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>CapabilityStatement.name | CodeSystem.name | CompartmentDefinition.name | ConceptMap.name | GraphDefinition.name | ImplementationGuide.name | MessageDefinition.name | NamingSystem.name | OperationDefinition.name | SearchParameter.name | StructureDefinition.name | StructureMap.name | TerminologyCapabilities.name | ValueSet.name</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="name", path="CapabilityStatement.name | CodeSystem.name | CompartmentDefinition.name | ConceptMap.name | GraphDefinition.name | ImplementationGuide.name | MessageDefinition.name | NamingSystem.name | OperationDefinition.name | SearchParameter.name | StructureDefinition.name | StructureMap.name | TerminologyCapabilities.name | ValueSet.name", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): Computationally friendly name of the capability statement\r\n* [CodeSystem](codesystem.html): Computationally friendly name of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): Computationally friendly name of the compartment definition\r\n* [ConceptMap](conceptmap.html): Computationally friendly name of the concept map\r\n* [GraphDefinition](graphdefinition.html): Computationally friendly name of the graph definition\r\n* [ImplementationGuide](implementationguide.html): Computationally friendly name of the implementation guide\r\n* [MessageDefinition](messagedefinition.html): Computationally friendly name of the message definition\r\n* [NamingSystem](namingsystem.html): Computationally friendly name of the naming system\r\n* [OperationDefinition](operationdefinition.html): Computationally friendly name of the operation definition\r\n* [SearchParameter](searchparameter.html): Computationally friendly name of the search parameter\r\n* [StructureDefinition](structuredefinition.html): Computationally friendly name of the structure definition\r\n* [StructureMap](structuremap.html): Computationally friendly name of the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): Computationally friendly name of the terminology capabilities\r\n* [ValueSet](valueset.html): Computationally friendly name of the value set\r\n", type="string" )
-  public static final String SP_NAME = "name";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>name</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): Computationally friendly name of the capability statement
-* [CodeSystem](codesystem.html): Computationally friendly name of the code system
-* [CompartmentDefinition](compartmentdefinition.html): Computationally friendly name of the compartment definition
-* [ConceptMap](conceptmap.html): Computationally friendly name of the concept map
-* [GraphDefinition](graphdefinition.html): Computationally friendly name of the graph definition
-* [ImplementationGuide](implementationguide.html): Computationally friendly name of the implementation guide
-* [MessageDefinition](messagedefinition.html): Computationally friendly name of the message definition
-* [NamingSystem](namingsystem.html): Computationally friendly name of the naming system
-* [OperationDefinition](operationdefinition.html): Computationally friendly name of the operation definition
-* [SearchParameter](searchparameter.html): Computationally friendly name of the search parameter
-* [StructureDefinition](structuredefinition.html): Computationally friendly name of the structure definition
-* [StructureMap](structuremap.html): Computationally friendly name of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): Computationally friendly name of the terminology capabilities
-* [ValueSet](valueset.html): Computationally friendly name of the value set
-</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>CapabilityStatement.name | CodeSystem.name | CompartmentDefinition.name | ConceptMap.name | GraphDefinition.name | ImplementationGuide.name | MessageDefinition.name | NamingSystem.name | OperationDefinition.name | SearchParameter.name | StructureDefinition.name | StructureMap.name | TerminologyCapabilities.name | ValueSet.name</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.StringClientParam NAME = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_NAME);
-
- /**
-   * Search parameter: <b>publisher</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): Name of the publisher of the capability statement
-* [CodeSystem](codesystem.html): Name of the publisher of the code system
-* [CompartmentDefinition](compartmentdefinition.html): Name of the publisher of the compartment definition
-* [ConceptMap](conceptmap.html): Name of the publisher of the concept map
-* [GraphDefinition](graphdefinition.html): Name of the publisher of the graph definition
-* [ImplementationGuide](implementationguide.html): Name of the publisher of the implementation guide
-* [MessageDefinition](messagedefinition.html): Name of the publisher of the message definition
-* [NamingSystem](namingsystem.html): Name of the publisher of the naming system
-* [OperationDefinition](operationdefinition.html): Name of the publisher of the operation definition
-* [SearchParameter](searchparameter.html): Name of the publisher of the search parameter
-* [StructureDefinition](structuredefinition.html): Name of the publisher of the structure definition
-* [StructureMap](structuremap.html): Name of the publisher of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): Name of the publisher of the terminology capabilities
-* [ValueSet](valueset.html): Name of the publisher of the value set
-</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>CapabilityStatement.publisher | CodeSystem.publisher | CompartmentDefinition.publisher | ConceptMap.publisher | GraphDefinition.publisher | ImplementationGuide.publisher | MessageDefinition.publisher | NamingSystem.publisher | OperationDefinition.publisher | SearchParameter.publisher | StructureDefinition.publisher | StructureMap.publisher | TerminologyCapabilities.publisher | ValueSet.publisher</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="publisher", path="CapabilityStatement.publisher | CodeSystem.publisher | CompartmentDefinition.publisher | ConceptMap.publisher | GraphDefinition.publisher | ImplementationGuide.publisher | MessageDefinition.publisher | NamingSystem.publisher | OperationDefinition.publisher | SearchParameter.publisher | StructureDefinition.publisher | StructureMap.publisher | TerminologyCapabilities.publisher | ValueSet.publisher", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): Name of the publisher of the capability statement\r\n* [CodeSystem](codesystem.html): Name of the publisher of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): Name of the publisher of the compartment definition\r\n* [ConceptMap](conceptmap.html): Name of the publisher of the concept map\r\n* [GraphDefinition](graphdefinition.html): Name of the publisher of the graph definition\r\n* [ImplementationGuide](implementationguide.html): Name of the publisher of the implementation guide\r\n* [MessageDefinition](messagedefinition.html): Name of the publisher of the message definition\r\n* [NamingSystem](namingsystem.html): Name of the publisher of the naming system\r\n* [OperationDefinition](operationdefinition.html): Name of the publisher of the operation definition\r\n* [SearchParameter](searchparameter.html): Name of the publisher of the search parameter\r\n* [StructureDefinition](structuredefinition.html): Name of the publisher of the structure definition\r\n* [StructureMap](structuremap.html): Name of the publisher of the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): Name of the publisher of the terminology capabilities\r\n* [ValueSet](valueset.html): Name of the publisher of the value set\r\n", type="string" )
-  public static final String SP_PUBLISHER = "publisher";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>publisher</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): Name of the publisher of the capability statement
-* [CodeSystem](codesystem.html): Name of the publisher of the code system
-* [CompartmentDefinition](compartmentdefinition.html): Name of the publisher of the compartment definition
-* [ConceptMap](conceptmap.html): Name of the publisher of the concept map
-* [GraphDefinition](graphdefinition.html): Name of the publisher of the graph definition
-* [ImplementationGuide](implementationguide.html): Name of the publisher of the implementation guide
-* [MessageDefinition](messagedefinition.html): Name of the publisher of the message definition
-* [NamingSystem](namingsystem.html): Name of the publisher of the naming system
-* [OperationDefinition](operationdefinition.html): Name of the publisher of the operation definition
-* [SearchParameter](searchparameter.html): Name of the publisher of the search parameter
-* [StructureDefinition](structuredefinition.html): Name of the publisher of the structure definition
-* [StructureMap](structuremap.html): Name of the publisher of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): Name of the publisher of the terminology capabilities
-* [ValueSet](valueset.html): Name of the publisher of the value set
-</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>CapabilityStatement.publisher | CodeSystem.publisher | CompartmentDefinition.publisher | ConceptMap.publisher | GraphDefinition.publisher | ImplementationGuide.publisher | MessageDefinition.publisher | NamingSystem.publisher | OperationDefinition.publisher | SearchParameter.publisher | StructureDefinition.publisher | StructureMap.publisher | TerminologyCapabilities.publisher | ValueSet.publisher</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.StringClientParam PUBLISHER = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_PUBLISHER);
-
- /**
-   * Search parameter: <b>status</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement
-* [CodeSystem](codesystem.html): The current status of the code system
-* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition
-* [ConceptMap](conceptmap.html): The current status of the concept map
-* [GraphDefinition](graphdefinition.html): The current status of the graph definition
-* [ImplementationGuide](implementationguide.html): The current status of the implementation guide
-* [MessageDefinition](messagedefinition.html): The current status of the message definition
-* [NamingSystem](namingsystem.html): The current status of the naming system
-* [OperationDefinition](operationdefinition.html): The current status of the operation definition
-* [SearchParameter](searchparameter.html): The current status of the search parameter
-* [StructureDefinition](structuredefinition.html): The current status of the structure definition
-* [StructureMap](structuremap.html): The current status of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities
-* [ValueSet](valueset.html): The current status of the value set
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>CapabilityStatement.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | GraphDefinition.status | ImplementationGuide.status | MessageDefinition.status | NamingSystem.status | OperationDefinition.status | SearchParameter.status | StructureDefinition.status | StructureMap.status | TerminologyCapabilities.status | ValueSet.status</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="status", path="CapabilityStatement.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | GraphDefinition.status | ImplementationGuide.status | MessageDefinition.status | NamingSystem.status | OperationDefinition.status | SearchParameter.status | StructureDefinition.status | StructureMap.status | TerminologyCapabilities.status | ValueSet.status", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement\r\n* [CodeSystem](codesystem.html): The current status of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition\r\n* [ConceptMap](conceptmap.html): The current status of the concept map\r\n* [GraphDefinition](graphdefinition.html): The current status of the graph definition\r\n* [ImplementationGuide](implementationguide.html): The current status of the implementation guide\r\n* [MessageDefinition](messagedefinition.html): The current status of the message definition\r\n* [NamingSystem](namingsystem.html): The current status of the naming system\r\n* [OperationDefinition](operationdefinition.html): The current status of the operation definition\r\n* [SearchParameter](searchparameter.html): The current status of the search parameter\r\n* [StructureDefinition](structuredefinition.html): The current status of the structure definition\r\n* [StructureMap](structuremap.html): The current status of the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities\r\n* [ValueSet](valueset.html): The current status of the value set\r\n", type="token" )
-  public static final String SP_STATUS = "status";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>status</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement
-* [CodeSystem](codesystem.html): The current status of the code system
-* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition
-* [ConceptMap](conceptmap.html): The current status of the concept map
-* [GraphDefinition](graphdefinition.html): The current status of the graph definition
-* [ImplementationGuide](implementationguide.html): The current status of the implementation guide
-* [MessageDefinition](messagedefinition.html): The current status of the message definition
-* [NamingSystem](namingsystem.html): The current status of the naming system
-* [OperationDefinition](operationdefinition.html): The current status of the operation definition
-* [SearchParameter](searchparameter.html): The current status of the search parameter
-* [StructureDefinition](structuredefinition.html): The current status of the structure definition
-* [StructureMap](structuremap.html): The current status of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities
-* [ValueSet](valueset.html): The current status of the value set
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>CapabilityStatement.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | GraphDefinition.status | ImplementationGuide.status | MessageDefinition.status | NamingSystem.status | OperationDefinition.status | SearchParameter.status | StructureDefinition.status | StructureMap.status | TerminologyCapabilities.status | ValueSet.status</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
-
- /**
-   * Search parameter: <b>title</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement
-* [CodeSystem](codesystem.html): The human-friendly name of the code system
-* [ConceptMap](conceptmap.html): The human-friendly name of the concept map
-* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide
-* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition
-* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition
-* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition
-* [StructureMap](structuremap.html): The human-friendly name of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities
-* [ValueSet](valueset.html): The human-friendly name of the value set
-</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>CapabilityStatement.title | CodeSystem.title | ConceptMap.title | ImplementationGuide.title | MessageDefinition.title | OperationDefinition.title | StructureDefinition.title | StructureMap.title | TerminologyCapabilities.title | ValueSet.title</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="title", path="CapabilityStatement.title | CodeSystem.title | ConceptMap.title | ImplementationGuide.title | MessageDefinition.title | OperationDefinition.title | StructureDefinition.title | StructureMap.title | TerminologyCapabilities.title | ValueSet.title", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement\r\n* [CodeSystem](codesystem.html): The human-friendly name of the code system\r\n* [ConceptMap](conceptmap.html): The human-friendly name of the concept map\r\n* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide\r\n* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition\r\n* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition\r\n* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition\r\n* [StructureMap](structuremap.html): The human-friendly name of the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities\r\n* [ValueSet](valueset.html): The human-friendly name of the value set\r\n", type="string" )
-  public static final String SP_TITLE = "title";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>title</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement
-* [CodeSystem](codesystem.html): The human-friendly name of the code system
-* [ConceptMap](conceptmap.html): The human-friendly name of the concept map
-* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide
-* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition
-* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition
-* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition
-* [StructureMap](structuremap.html): The human-friendly name of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities
-* [ValueSet](valueset.html): The human-friendly name of the value set
-</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>CapabilityStatement.title | CodeSystem.title | ConceptMap.title | ImplementationGuide.title | MessageDefinition.title | OperationDefinition.title | StructureDefinition.title | StructureMap.title | TerminologyCapabilities.title | ValueSet.title</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.StringClientParam TITLE = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_TITLE);
-
- /**
-   * Search parameter: <b>url</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement
-* [CodeSystem](codesystem.html): The uri that identifies the code system
-* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition
-* [ConceptMap](conceptmap.html): The uri that identifies the concept map
-* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition
-* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide
-* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition
-* [NamingSystem](namingsystem.html): The uri that identifies the naming system
-* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition
-* [SearchParameter](searchparameter.html): The uri that identifies the search parameter
-* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition
-* [StructureMap](structuremap.html): The uri that identifies the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities
-* [ValueSet](valueset.html): The uri that identifies the value set
-</b><br>
-   * Type: <b>uri</b><br>
-   * Path: <b>CapabilityStatement.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | GraphDefinition.url | ImplementationGuide.url | MessageDefinition.url | NamingSystem.url | OperationDefinition.url | SearchParameter.url | StructureDefinition.url | StructureMap.url | TerminologyCapabilities.url | ValueSet.url</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="url", path="CapabilityStatement.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | GraphDefinition.url | ImplementationGuide.url | MessageDefinition.url | NamingSystem.url | OperationDefinition.url | SearchParameter.url | StructureDefinition.url | StructureMap.url | TerminologyCapabilities.url | ValueSet.url", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement\r\n* [CodeSystem](codesystem.html): The uri that identifies the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition\r\n* [ConceptMap](conceptmap.html): The uri that identifies the concept map\r\n* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition\r\n* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide\r\n* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition\r\n* [NamingSystem](namingsystem.html): The uri that identifies the naming system\r\n* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition\r\n* [SearchParameter](searchparameter.html): The uri that identifies the search parameter\r\n* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition\r\n* [StructureMap](structuremap.html): The uri that identifies the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities\r\n* [ValueSet](valueset.html): The uri that identifies the value set\r\n", type="uri" )
-  public static final String SP_URL = "url";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>url</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement
-* [CodeSystem](codesystem.html): The uri that identifies the code system
-* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition
-* [ConceptMap](conceptmap.html): The uri that identifies the concept map
-* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition
-* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide
-* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition
-* [NamingSystem](namingsystem.html): The uri that identifies the naming system
-* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition
-* [SearchParameter](searchparameter.html): The uri that identifies the search parameter
-* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition
-* [StructureMap](structuremap.html): The uri that identifies the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities
-* [ValueSet](valueset.html): The uri that identifies the value set
-</b><br>
-   * Type: <b>uri</b><br>
-   * Path: <b>CapabilityStatement.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | GraphDefinition.url | ImplementationGuide.url | MessageDefinition.url | NamingSystem.url | OperationDefinition.url | SearchParameter.url | StructureDefinition.url | StructureMap.url | TerminologyCapabilities.url | ValueSet.url</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.UriClientParam URL = new ca.uhn.fhir.rest.gclient.UriClientParam(SP_URL);
-
- /**
-   * Search parameter: <b>version</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The business version of the capability statement
-* [CodeSystem](codesystem.html): The business version of the code system
-* [CompartmentDefinition](compartmentdefinition.html): The business version of the compartment definition
-* [ConceptMap](conceptmap.html): The business version of the concept map
-* [GraphDefinition](graphdefinition.html): The business version of the graph definition
-* [ImplementationGuide](implementationguide.html): The business version of the implementation guide
-* [MessageDefinition](messagedefinition.html): The business version of the message definition
-* [NamingSystem](namingsystem.html): The business version of the naming system
-* [OperationDefinition](operationdefinition.html): The business version of the operation definition
-* [SearchParameter](searchparameter.html): The business version of the search parameter
-* [StructureDefinition](structuredefinition.html): The business version of the structure definition
-* [StructureMap](structuremap.html): The business version of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): The business version of the terminology capabilities
-* [ValueSet](valueset.html): The business version of the value set
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>CapabilityStatement.version | CodeSystem.version | CompartmentDefinition.version | ConceptMap.version | GraphDefinition.version | ImplementationGuide.version | MessageDefinition.version | NamingSystem.version | OperationDefinition.version | SearchParameter.version | StructureDefinition.version | StructureMap.version | TerminologyCapabilities.version | ValueSet.version</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="version", path="CapabilityStatement.version | CodeSystem.version | CompartmentDefinition.version | ConceptMap.version | GraphDefinition.version | ImplementationGuide.version | MessageDefinition.version | NamingSystem.version | OperationDefinition.version | SearchParameter.version | StructureDefinition.version | StructureMap.version | TerminologyCapabilities.version | ValueSet.version", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): The business version of the capability statement\r\n* [CodeSystem](codesystem.html): The business version of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The business version of the compartment definition\r\n* [ConceptMap](conceptmap.html): The business version of the concept map\r\n* [GraphDefinition](graphdefinition.html): The business version of the graph definition\r\n* [ImplementationGuide](implementationguide.html): The business version of the implementation guide\r\n* [MessageDefinition](messagedefinition.html): The business version of the message definition\r\n* [NamingSystem](namingsystem.html): The business version of the naming system\r\n* [OperationDefinition](operationdefinition.html): The business version of the operation definition\r\n* [SearchParameter](searchparameter.html): The business version of the search parameter\r\n* [StructureDefinition](structuredefinition.html): The business version of the structure definition\r\n* [StructureMap](structuremap.html): The business version of the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): The business version of the terminology capabilities\r\n* [ValueSet](valueset.html): The business version of the value set\r\n", type="token" )
-  public static final String SP_VERSION = "version";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>version</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [CapabilityStatement](capabilitystatement.html): The business version of the capability statement
-* [CodeSystem](codesystem.html): The business version of the code system
-* [CompartmentDefinition](compartmentdefinition.html): The business version of the compartment definition
-* [ConceptMap](conceptmap.html): The business version of the concept map
-* [GraphDefinition](graphdefinition.html): The business version of the graph definition
-* [ImplementationGuide](implementationguide.html): The business version of the implementation guide
-* [MessageDefinition](messagedefinition.html): The business version of the message definition
-* [NamingSystem](namingsystem.html): The business version of the naming system
-* [OperationDefinition](operationdefinition.html): The business version of the operation definition
-* [SearchParameter](searchparameter.html): The business version of the search parameter
-* [StructureDefinition](structuredefinition.html): The business version of the structure definition
-* [StructureMap](structuremap.html): The business version of the structure map
-* [TerminologyCapabilities](terminologycapabilities.html): The business version of the terminology capabilities
-* [ValueSet](valueset.html): The business version of the value set
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>CapabilityStatement.version | CodeSystem.version | CompartmentDefinition.version | ConceptMap.version | GraphDefinition.version | ImplementationGuide.version | MessageDefinition.version | NamingSystem.version | OperationDefinition.version | SearchParameter.version | StructureDefinition.version | StructureMap.version | TerminologyCapabilities.version | ValueSet.version</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam VERSION = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_VERSION);
 
  /**
    * Search parameter: <b>context-type-quantity</b>
    * <p>
    * Description: <b>Multiple Resources: 
 
+* [ActivityDefinition](activitydefinition.html): A use context type and quantity- or range-based value assigned to the activity definition
+* [ActorDefinition](actordefinition.html): A use context type and quantity- or range-based value assigned to the Actor Definition
 * [CapabilityStatement](capabilitystatement.html): A use context type and quantity- or range-based value assigned to the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): A use context type and quantity- or range-based value assigned to the charge item definition
+* [Citation](citation.html): A use context type and quantity- or range-based value assigned to the citation
 * [CodeSystem](codesystem.html): A use context type and quantity- or range-based value assigned to the code system
 * [CompartmentDefinition](compartmentdefinition.html): A use context type and quantity- or range-based value assigned to the compartment definition
 * [ConceptMap](conceptmap.html): A use context type and quantity- or range-based value assigned to the concept map
+* [ConditionDefinition](conditiondefinition.html): A use context type and quantity- or range-based value assigned to the condition definition
+* [EventDefinition](eventdefinition.html): A use context type and quantity- or range-based value assigned to the event definition
+* [Evidence](evidence.html): A use context type and quantity- or range-based value assigned to the evidence
+* [EvidenceReport](evidencereport.html): A use context type and quantity- or range-based value assigned to the evidence report
+* [EvidenceVariable](evidencevariable.html): A use context type and quantity- or range-based value assigned to the evidence variable
+* [ExampleScenario](examplescenario.html): A use context type and quantity- or range-based value assigned to the example scenario
 * [GraphDefinition](graphdefinition.html): A use context type and quantity- or range-based value assigned to the graph definition
 * [ImplementationGuide](implementationguide.html): A use context type and quantity- or range-based value assigned to the implementation guide
+* [Library](library.html): A use context type and quantity- or range-based value assigned to the library
+* [Measure](measure.html): A use context type and quantity- or range-based value assigned to the measure
 * [MessageDefinition](messagedefinition.html): A use context type and quantity- or range-based value assigned to the message definition
 * [NamingSystem](namingsystem.html): A use context type and quantity- or range-based value assigned to the naming system
 * [OperationDefinition](operationdefinition.html): A use context type and quantity- or range-based value assigned to the operation definition
+* [PlanDefinition](plandefinition.html): A use context type and quantity- or range-based value assigned to the plan definition
+* [Questionnaire](questionnaire.html): A use context type and quantity- or range-based value assigned to the questionnaire
+* [Requirements](requirements.html): A use context type and quantity- or range-based value assigned to the requirements
 * [SearchParameter](searchparameter.html): A use context type and quantity- or range-based value assigned to the search parameter
 * [StructureDefinition](structuredefinition.html): A use context type and quantity- or range-based value assigned to the structure definition
 * [StructureMap](structuremap.html): A use context type and quantity- or range-based value assigned to the structure map
 * [TerminologyCapabilities](terminologycapabilities.html): A use context type and quantity- or range-based value assigned to the terminology capabilities
+* [TestScript](testscript.html): A use context type and quantity- or range-based value assigned to the test script
 * [ValueSet](valueset.html): A use context type and quantity- or range-based value assigned to the value set
 </b><br>
    * Type: <b>composite</b><br>
-   * Path: <b>CapabilityStatement.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | ValueSet.useContext</b><br>
+   * Path: <b>ActivityDefinition.useContext | ActorDefinition.useContext | CapabilityStatement.useContext | ChargeItemDefinition.useContext | Citation.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | ConditionDefinition.useContext | EventDefinition.useContext | Evidence.useContext | EvidenceReport.useContext | EvidenceVariable.useContext | ExampleScenario.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | Library.useContext | Measure.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | PlanDefinition.useContext | Questionnaire.useContext | Requirements.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | TestScript.useContext | ValueSet.useContext</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="context-type-quantity", path="CapabilityStatement.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | ValueSet.useContext", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): A use context type and quantity- or range-based value assigned to the capability statement\r\n* [CodeSystem](codesystem.html): A use context type and quantity- or range-based value assigned to the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): A use context type and quantity- or range-based value assigned to the compartment definition\r\n* [ConceptMap](conceptmap.html): A use context type and quantity- or range-based value assigned to the concept map\r\n* [GraphDefinition](graphdefinition.html): A use context type and quantity- or range-based value assigned to the graph definition\r\n* [ImplementationGuide](implementationguide.html): A use context type and quantity- or range-based value assigned to the implementation guide\r\n* [MessageDefinition](messagedefinition.html): A use context type and quantity- or range-based value assigned to the message definition\r\n* [NamingSystem](namingsystem.html): A use context type and quantity- or range-based value assigned to the naming system\r\n* [OperationDefinition](operationdefinition.html): A use context type and quantity- or range-based value assigned to the operation definition\r\n* [SearchParameter](searchparameter.html): A use context type and quantity- or range-based value assigned to the search parameter\r\n* [StructureDefinition](structuredefinition.html): A use context type and quantity- or range-based value assigned to the structure definition\r\n* [StructureMap](structuremap.html): A use context type and quantity- or range-based value assigned to the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): A use context type and quantity- or range-based value assigned to the terminology capabilities\r\n* [ValueSet](valueset.html): A use context type and quantity- or range-based value assigned to the value set\r\n", type="composite", compositeOf={"context-type", "context-quantity"} )
+  @SearchParamDefinition(name="context-type-quantity", path="ActivityDefinition.useContext | ActorDefinition.useContext | CapabilityStatement.useContext | ChargeItemDefinition.useContext | Citation.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | ConditionDefinition.useContext | EventDefinition.useContext | Evidence.useContext | EvidenceReport.useContext | EvidenceVariable.useContext | ExampleScenario.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | Library.useContext | Measure.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | PlanDefinition.useContext | Questionnaire.useContext | Requirements.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | TestScript.useContext | ValueSet.useContext", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): A use context type and quantity- or range-based value assigned to the activity definition\r\n* [ActorDefinition](actordefinition.html): A use context type and quantity- or range-based value assigned to the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): A use context type and quantity- or range-based value assigned to the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): A use context type and quantity- or range-based value assigned to the charge item definition\r\n* [Citation](citation.html): A use context type and quantity- or range-based value assigned to the citation\r\n* [CodeSystem](codesystem.html): A use context type and quantity- or range-based value assigned to the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): A use context type and quantity- or range-based value assigned to the compartment definition\r\n* [ConceptMap](conceptmap.html): A use context type and quantity- or range-based value assigned to the concept map\r\n* [ConditionDefinition](conditiondefinition.html): A use context type and quantity- or range-based value assigned to the condition definition\r\n* [EventDefinition](eventdefinition.html): A use context type and quantity- or range-based value assigned to the event definition\r\n* [Evidence](evidence.html): A use context type and quantity- or range-based value assigned to the evidence\r\n* [EvidenceReport](evidencereport.html): A use context type and quantity- or range-based value assigned to the evidence report\r\n* [EvidenceVariable](evidencevariable.html): A use context type and quantity- or range-based value assigned to the evidence variable\r\n* [ExampleScenario](examplescenario.html): A use context type and quantity- or range-based value assigned to the example scenario\r\n* [GraphDefinition](graphdefinition.html): A use context type and quantity- or range-based value assigned to the graph definition\r\n* [ImplementationGuide](implementationguide.html): A use context type and quantity- or range-based value assigned to the implementation guide\r\n* [Library](library.html): A use context type and quantity- or range-based value assigned to the library\r\n* [Measure](measure.html): A use context type and quantity- or range-based value assigned to the measure\r\n* [MessageDefinition](messagedefinition.html): A use context type and quantity- or range-based value assigned to the message definition\r\n* [NamingSystem](namingsystem.html): A use context type and quantity- or range-based value assigned to the naming system\r\n* [OperationDefinition](operationdefinition.html): A use context type and quantity- or range-based value assigned to the operation definition\r\n* [PlanDefinition](plandefinition.html): A use context type and quantity- or range-based value assigned to the plan definition\r\n* [Questionnaire](questionnaire.html): A use context type and quantity- or range-based value assigned to the questionnaire\r\n* [Requirements](requirements.html): A use context type and quantity- or range-based value assigned to the requirements\r\n* [SearchParameter](searchparameter.html): A use context type and quantity- or range-based value assigned to the search parameter\r\n* [StructureDefinition](structuredefinition.html): A use context type and quantity- or range-based value assigned to the structure definition\r\n* [StructureMap](structuremap.html): A use context type and quantity- or range-based value assigned to the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): A use context type and quantity- or range-based value assigned to the terminology capabilities\r\n* [TestScript](testscript.html): A use context type and quantity- or range-based value assigned to the test script\r\n* [ValueSet](valueset.html): A use context type and quantity- or range-based value assigned to the value set\r\n", type="composite", compositeOf={"context-type", "context-quantity"} )
   public static final String SP_CONTEXT_TYPE_QUANTITY = "context-type-quantity";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>context-type-quantity</b>
    * <p>
    * Description: <b>Multiple Resources: 
 
+* [ActivityDefinition](activitydefinition.html): A use context type and quantity- or range-based value assigned to the activity definition
+* [ActorDefinition](actordefinition.html): A use context type and quantity- or range-based value assigned to the Actor Definition
 * [CapabilityStatement](capabilitystatement.html): A use context type and quantity- or range-based value assigned to the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): A use context type and quantity- or range-based value assigned to the charge item definition
+* [Citation](citation.html): A use context type and quantity- or range-based value assigned to the citation
 * [CodeSystem](codesystem.html): A use context type and quantity- or range-based value assigned to the code system
 * [CompartmentDefinition](compartmentdefinition.html): A use context type and quantity- or range-based value assigned to the compartment definition
 * [ConceptMap](conceptmap.html): A use context type and quantity- or range-based value assigned to the concept map
+* [ConditionDefinition](conditiondefinition.html): A use context type and quantity- or range-based value assigned to the condition definition
+* [EventDefinition](eventdefinition.html): A use context type and quantity- or range-based value assigned to the event definition
+* [Evidence](evidence.html): A use context type and quantity- or range-based value assigned to the evidence
+* [EvidenceReport](evidencereport.html): A use context type and quantity- or range-based value assigned to the evidence report
+* [EvidenceVariable](evidencevariable.html): A use context type and quantity- or range-based value assigned to the evidence variable
+* [ExampleScenario](examplescenario.html): A use context type and quantity- or range-based value assigned to the example scenario
 * [GraphDefinition](graphdefinition.html): A use context type and quantity- or range-based value assigned to the graph definition
 * [ImplementationGuide](implementationguide.html): A use context type and quantity- or range-based value assigned to the implementation guide
+* [Library](library.html): A use context type and quantity- or range-based value assigned to the library
+* [Measure](measure.html): A use context type and quantity- or range-based value assigned to the measure
 * [MessageDefinition](messagedefinition.html): A use context type and quantity- or range-based value assigned to the message definition
 * [NamingSystem](namingsystem.html): A use context type and quantity- or range-based value assigned to the naming system
 * [OperationDefinition](operationdefinition.html): A use context type and quantity- or range-based value assigned to the operation definition
+* [PlanDefinition](plandefinition.html): A use context type and quantity- or range-based value assigned to the plan definition
+* [Questionnaire](questionnaire.html): A use context type and quantity- or range-based value assigned to the questionnaire
+* [Requirements](requirements.html): A use context type and quantity- or range-based value assigned to the requirements
 * [SearchParameter](searchparameter.html): A use context type and quantity- or range-based value assigned to the search parameter
 * [StructureDefinition](structuredefinition.html): A use context type and quantity- or range-based value assigned to the structure definition
 * [StructureMap](structuremap.html): A use context type and quantity- or range-based value assigned to the structure map
 * [TerminologyCapabilities](terminologycapabilities.html): A use context type and quantity- or range-based value assigned to the terminology capabilities
+* [TestScript](testscript.html): A use context type and quantity- or range-based value assigned to the test script
 * [ValueSet](valueset.html): A use context type and quantity- or range-based value assigned to the value set
 </b><br>
    * Type: <b>composite</b><br>
-   * Path: <b>CapabilityStatement.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | ValueSet.useContext</b><br>
+   * Path: <b>ActivityDefinition.useContext | ActorDefinition.useContext | CapabilityStatement.useContext | ChargeItemDefinition.useContext | Citation.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | ConditionDefinition.useContext | EventDefinition.useContext | Evidence.useContext | EvidenceReport.useContext | EvidenceVariable.useContext | ExampleScenario.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | Library.useContext | Measure.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | PlanDefinition.useContext | Questionnaire.useContext | Requirements.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | TestScript.useContext | ValueSet.useContext</b><br>
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.CompositeClientParam<ca.uhn.fhir.rest.gclient.TokenClientParam, ca.uhn.fhir.rest.gclient.QuantityClientParam> CONTEXT_TYPE_QUANTITY = new ca.uhn.fhir.rest.gclient.CompositeClientParam<ca.uhn.fhir.rest.gclient.TokenClientParam, ca.uhn.fhir.rest.gclient.QuantityClientParam>(SP_CONTEXT_TYPE_QUANTITY);
@@ -8066,90 +7391,1092 @@ public String toString() {
    * <p>
    * Description: <b>Multiple Resources: 
 
+* [ActivityDefinition](activitydefinition.html): A use context type and value assigned to the activity definition
+* [ActorDefinition](actordefinition.html): A use context type and value assigned to the Actor Definition
 * [CapabilityStatement](capabilitystatement.html): A use context type and value assigned to the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): A use context type and value assigned to the charge item definition
+* [Citation](citation.html): A use context type and value assigned to the citation
 * [CodeSystem](codesystem.html): A use context type and value assigned to the code system
 * [CompartmentDefinition](compartmentdefinition.html): A use context type and value assigned to the compartment definition
 * [ConceptMap](conceptmap.html): A use context type and value assigned to the concept map
+* [ConditionDefinition](conditiondefinition.html): A use context type and value assigned to the condition definition
+* [EventDefinition](eventdefinition.html): A use context type and value assigned to the event definition
+* [Evidence](evidence.html): A use context type and value assigned to the evidence
+* [EvidenceReport](evidencereport.html): A use context type and value assigned to the evidence report
+* [EvidenceVariable](evidencevariable.html): A use context type and value assigned to the evidence variable
+* [ExampleScenario](examplescenario.html): A use context type and value assigned to the example scenario
 * [GraphDefinition](graphdefinition.html): A use context type and value assigned to the graph definition
 * [ImplementationGuide](implementationguide.html): A use context type and value assigned to the implementation guide
+* [Library](library.html): A use context type and value assigned to the library
+* [Measure](measure.html): A use context type and value assigned to the measure
 * [MessageDefinition](messagedefinition.html): A use context type and value assigned to the message definition
 * [NamingSystem](namingsystem.html): A use context type and value assigned to the naming system
 * [OperationDefinition](operationdefinition.html): A use context type and value assigned to the operation definition
+* [PlanDefinition](plandefinition.html): A use context type and value assigned to the plan definition
+* [Questionnaire](questionnaire.html): A use context type and value assigned to the questionnaire
+* [Requirements](requirements.html): A use context type and value assigned to the requirements
 * [SearchParameter](searchparameter.html): A use context type and value assigned to the search parameter
 * [StructureDefinition](structuredefinition.html): A use context type and value assigned to the structure definition
 * [StructureMap](structuremap.html): A use context type and value assigned to the structure map
 * [TerminologyCapabilities](terminologycapabilities.html): A use context type and value assigned to the terminology capabilities
+* [TestScript](testscript.html): A use context type and value assigned to the test script
 * [ValueSet](valueset.html): A use context type and value assigned to the value set
 </b><br>
    * Type: <b>composite</b><br>
-   * Path: <b>CapabilityStatement.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | ValueSet.useContext</b><br>
+   * Path: <b>ActivityDefinition.useContext | ActorDefinition.useContext | CapabilityStatement.useContext | ChargeItemDefinition.useContext | Citation.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | ConditionDefinition.useContext | EventDefinition.useContext | Evidence.useContext | EvidenceReport.useContext | EvidenceVariable.useContext | ExampleScenario.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | Library.useContext | Measure.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | PlanDefinition.useContext | Questionnaire.useContext | Requirements.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | TestScript.useContext | ValueSet.useContext</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="context-type-value", path="CapabilityStatement.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | ValueSet.useContext", description="Multiple Resources: \r\n\r\n* [CapabilityStatement](capabilitystatement.html): A use context type and value assigned to the capability statement\r\n* [CodeSystem](codesystem.html): A use context type and value assigned to the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): A use context type and value assigned to the compartment definition\r\n* [ConceptMap](conceptmap.html): A use context type and value assigned to the concept map\r\n* [GraphDefinition](graphdefinition.html): A use context type and value assigned to the graph definition\r\n* [ImplementationGuide](implementationguide.html): A use context type and value assigned to the implementation guide\r\n* [MessageDefinition](messagedefinition.html): A use context type and value assigned to the message definition\r\n* [NamingSystem](namingsystem.html): A use context type and value assigned to the naming system\r\n* [OperationDefinition](operationdefinition.html): A use context type and value assigned to the operation definition\r\n* [SearchParameter](searchparameter.html): A use context type and value assigned to the search parameter\r\n* [StructureDefinition](structuredefinition.html): A use context type and value assigned to the structure definition\r\n* [StructureMap](structuremap.html): A use context type and value assigned to the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): A use context type and value assigned to the terminology capabilities\r\n* [ValueSet](valueset.html): A use context type and value assigned to the value set\r\n", type="composite", compositeOf={"context-type", "context"} )
+  @SearchParamDefinition(name="context-type-value", path="ActivityDefinition.useContext | ActorDefinition.useContext | CapabilityStatement.useContext | ChargeItemDefinition.useContext | Citation.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | ConditionDefinition.useContext | EventDefinition.useContext | Evidence.useContext | EvidenceReport.useContext | EvidenceVariable.useContext | ExampleScenario.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | Library.useContext | Measure.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | PlanDefinition.useContext | Questionnaire.useContext | Requirements.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | TestScript.useContext | ValueSet.useContext", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): A use context type and value assigned to the activity definition\r\n* [ActorDefinition](actordefinition.html): A use context type and value assigned to the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): A use context type and value assigned to the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): A use context type and value assigned to the charge item definition\r\n* [Citation](citation.html): A use context type and value assigned to the citation\r\n* [CodeSystem](codesystem.html): A use context type and value assigned to the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): A use context type and value assigned to the compartment definition\r\n* [ConceptMap](conceptmap.html): A use context type and value assigned to the concept map\r\n* [ConditionDefinition](conditiondefinition.html): A use context type and value assigned to the condition definition\r\n* [EventDefinition](eventdefinition.html): A use context type and value assigned to the event definition\r\n* [Evidence](evidence.html): A use context type and value assigned to the evidence\r\n* [EvidenceReport](evidencereport.html): A use context type and value assigned to the evidence report\r\n* [EvidenceVariable](evidencevariable.html): A use context type and value assigned to the evidence variable\r\n* [ExampleScenario](examplescenario.html): A use context type and value assigned to the example scenario\r\n* [GraphDefinition](graphdefinition.html): A use context type and value assigned to the graph definition\r\n* [ImplementationGuide](implementationguide.html): A use context type and value assigned to the implementation guide\r\n* [Library](library.html): A use context type and value assigned to the library\r\n* [Measure](measure.html): A use context type and value assigned to the measure\r\n* [MessageDefinition](messagedefinition.html): A use context type and value assigned to the message definition\r\n* [NamingSystem](namingsystem.html): A use context type and value assigned to the naming system\r\n* [OperationDefinition](operationdefinition.html): A use context type and value assigned to the operation definition\r\n* [PlanDefinition](plandefinition.html): A use context type and value assigned to the plan definition\r\n* [Questionnaire](questionnaire.html): A use context type and value assigned to the questionnaire\r\n* [Requirements](requirements.html): A use context type and value assigned to the requirements\r\n* [SearchParameter](searchparameter.html): A use context type and value assigned to the search parameter\r\n* [StructureDefinition](structuredefinition.html): A use context type and value assigned to the structure definition\r\n* [StructureMap](structuremap.html): A use context type and value assigned to the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): A use context type and value assigned to the terminology capabilities\r\n* [TestScript](testscript.html): A use context type and value assigned to the test script\r\n* [ValueSet](valueset.html): A use context type and value assigned to the value set\r\n", type="composite", compositeOf={"context-type", "context"} )
   public static final String SP_CONTEXT_TYPE_VALUE = "context-type-value";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>context-type-value</b>
    * <p>
    * Description: <b>Multiple Resources: 
 
+* [ActivityDefinition](activitydefinition.html): A use context type and value assigned to the activity definition
+* [ActorDefinition](actordefinition.html): A use context type and value assigned to the Actor Definition
 * [CapabilityStatement](capabilitystatement.html): A use context type and value assigned to the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): A use context type and value assigned to the charge item definition
+* [Citation](citation.html): A use context type and value assigned to the citation
 * [CodeSystem](codesystem.html): A use context type and value assigned to the code system
 * [CompartmentDefinition](compartmentdefinition.html): A use context type and value assigned to the compartment definition
 * [ConceptMap](conceptmap.html): A use context type and value assigned to the concept map
+* [ConditionDefinition](conditiondefinition.html): A use context type and value assigned to the condition definition
+* [EventDefinition](eventdefinition.html): A use context type and value assigned to the event definition
+* [Evidence](evidence.html): A use context type and value assigned to the evidence
+* [EvidenceReport](evidencereport.html): A use context type and value assigned to the evidence report
+* [EvidenceVariable](evidencevariable.html): A use context type and value assigned to the evidence variable
+* [ExampleScenario](examplescenario.html): A use context type and value assigned to the example scenario
 * [GraphDefinition](graphdefinition.html): A use context type and value assigned to the graph definition
 * [ImplementationGuide](implementationguide.html): A use context type and value assigned to the implementation guide
+* [Library](library.html): A use context type and value assigned to the library
+* [Measure](measure.html): A use context type and value assigned to the measure
 * [MessageDefinition](messagedefinition.html): A use context type and value assigned to the message definition
 * [NamingSystem](namingsystem.html): A use context type and value assigned to the naming system
 * [OperationDefinition](operationdefinition.html): A use context type and value assigned to the operation definition
+* [PlanDefinition](plandefinition.html): A use context type and value assigned to the plan definition
+* [Questionnaire](questionnaire.html): A use context type and value assigned to the questionnaire
+* [Requirements](requirements.html): A use context type and value assigned to the requirements
 * [SearchParameter](searchparameter.html): A use context type and value assigned to the search parameter
 * [StructureDefinition](structuredefinition.html): A use context type and value assigned to the structure definition
 * [StructureMap](structuremap.html): A use context type and value assigned to the structure map
 * [TerminologyCapabilities](terminologycapabilities.html): A use context type and value assigned to the terminology capabilities
+* [TestScript](testscript.html): A use context type and value assigned to the test script
 * [ValueSet](valueset.html): A use context type and value assigned to the value set
 </b><br>
    * Type: <b>composite</b><br>
-   * Path: <b>CapabilityStatement.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | ValueSet.useContext</b><br>
+   * Path: <b>ActivityDefinition.useContext | ActorDefinition.useContext | CapabilityStatement.useContext | ChargeItemDefinition.useContext | Citation.useContext | CodeSystem.useContext | CompartmentDefinition.useContext | ConceptMap.useContext | ConditionDefinition.useContext | EventDefinition.useContext | Evidence.useContext | EvidenceReport.useContext | EvidenceVariable.useContext | ExampleScenario.useContext | GraphDefinition.useContext | ImplementationGuide.useContext | Library.useContext | Measure.useContext | MessageDefinition.useContext | NamingSystem.useContext | OperationDefinition.useContext | PlanDefinition.useContext | Questionnaire.useContext | Requirements.useContext | SearchParameter.useContext | StructureDefinition.useContext | StructureMap.useContext | TerminologyCapabilities.useContext | TestScript.useContext | ValueSet.useContext</b><br>
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.CompositeClientParam<ca.uhn.fhir.rest.gclient.TokenClientParam, ca.uhn.fhir.rest.gclient.TokenClientParam> CONTEXT_TYPE_VALUE = new ca.uhn.fhir.rest.gclient.CompositeClientParam<ca.uhn.fhir.rest.gclient.TokenClientParam, ca.uhn.fhir.rest.gclient.TokenClientParam>(SP_CONTEXT_TYPE_VALUE);
+
+ /**
+   * Search parameter: <b>context-type</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): A type of use context assigned to the activity definition
+* [ActorDefinition](actordefinition.html): A type of use context assigned to the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): A type of use context assigned to the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): A type of use context assigned to the charge item definition
+* [Citation](citation.html): A type of use context assigned to the citation
+* [CodeSystem](codesystem.html): A type of use context assigned to the code system
+* [CompartmentDefinition](compartmentdefinition.html): A type of use context assigned to the compartment definition
+* [ConceptMap](conceptmap.html): A type of use context assigned to the concept map
+* [ConditionDefinition](conditiondefinition.html): A type of use context assigned to the condition definition
+* [EventDefinition](eventdefinition.html): A type of use context assigned to the event definition
+* [Evidence](evidence.html): A type of use context assigned to the evidence
+* [EvidenceReport](evidencereport.html): A type of use context assigned to the evidence report
+* [EvidenceVariable](evidencevariable.html): A type of use context assigned to the evidence variable
+* [ExampleScenario](examplescenario.html): A type of use context assigned to the example scenario
+* [GraphDefinition](graphdefinition.html): A type of use context assigned to the graph definition
+* [ImplementationGuide](implementationguide.html): A type of use context assigned to the implementation guide
+* [Library](library.html): A type of use context assigned to the library
+* [Measure](measure.html): A type of use context assigned to the measure
+* [MessageDefinition](messagedefinition.html): A type of use context assigned to the message definition
+* [NamingSystem](namingsystem.html): A type of use context assigned to the naming system
+* [OperationDefinition](operationdefinition.html): A type of use context assigned to the operation definition
+* [PlanDefinition](plandefinition.html): A type of use context assigned to the plan definition
+* [Questionnaire](questionnaire.html): A type of use context assigned to the questionnaire
+* [Requirements](requirements.html): A type of use context assigned to the requirements
+* [SearchParameter](searchparameter.html): A type of use context assigned to the search parameter
+* [StructureDefinition](structuredefinition.html): A type of use context assigned to the structure definition
+* [StructureMap](structuremap.html): A type of use context assigned to the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): A type of use context assigned to the terminology capabilities
+* [TestScript](testscript.html): A type of use context assigned to the test script
+* [ValueSet](valueset.html): A type of use context assigned to the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.useContext.code | ActorDefinition.useContext.code | CapabilityStatement.useContext.code | ChargeItemDefinition.useContext.code | Citation.useContext.code | CodeSystem.useContext.code | CompartmentDefinition.useContext.code | ConceptMap.useContext.code | ConditionDefinition.useContext.code | EventDefinition.useContext.code | Evidence.useContext.code | EvidenceReport.useContext.code | EvidenceVariable.useContext.code | ExampleScenario.useContext.code | GraphDefinition.useContext.code | ImplementationGuide.useContext.code | Library.useContext.code | Measure.useContext.code | MessageDefinition.useContext.code | NamingSystem.useContext.code | OperationDefinition.useContext.code | PlanDefinition.useContext.code | Questionnaire.useContext.code | Requirements.useContext.code | SearchParameter.useContext.code | StructureDefinition.useContext.code | StructureMap.useContext.code | TerminologyCapabilities.useContext.code | TestScript.useContext.code | ValueSet.useContext.code</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="context-type", path="ActivityDefinition.useContext.code | ActorDefinition.useContext.code | CapabilityStatement.useContext.code | ChargeItemDefinition.useContext.code | Citation.useContext.code | CodeSystem.useContext.code | CompartmentDefinition.useContext.code | ConceptMap.useContext.code | ConditionDefinition.useContext.code | EventDefinition.useContext.code | Evidence.useContext.code | EvidenceReport.useContext.code | EvidenceVariable.useContext.code | ExampleScenario.useContext.code | GraphDefinition.useContext.code | ImplementationGuide.useContext.code | Library.useContext.code | Measure.useContext.code | MessageDefinition.useContext.code | NamingSystem.useContext.code | OperationDefinition.useContext.code | PlanDefinition.useContext.code | Questionnaire.useContext.code | Requirements.useContext.code | SearchParameter.useContext.code | StructureDefinition.useContext.code | StructureMap.useContext.code | TerminologyCapabilities.useContext.code | TestScript.useContext.code | ValueSet.useContext.code", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): A type of use context assigned to the activity definition\r\n* [ActorDefinition](actordefinition.html): A type of use context assigned to the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): A type of use context assigned to the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): A type of use context assigned to the charge item definition\r\n* [Citation](citation.html): A type of use context assigned to the citation\r\n* [CodeSystem](codesystem.html): A type of use context assigned to the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): A type of use context assigned to the compartment definition\r\n* [ConceptMap](conceptmap.html): A type of use context assigned to the concept map\r\n* [ConditionDefinition](conditiondefinition.html): A type of use context assigned to the condition definition\r\n* [EventDefinition](eventdefinition.html): A type of use context assigned to the event definition\r\n* [Evidence](evidence.html): A type of use context assigned to the evidence\r\n* [EvidenceReport](evidencereport.html): A type of use context assigned to the evidence report\r\n* [EvidenceVariable](evidencevariable.html): A type of use context assigned to the evidence variable\r\n* [ExampleScenario](examplescenario.html): A type of use context assigned to the example scenario\r\n* [GraphDefinition](graphdefinition.html): A type of use context assigned to the graph definition\r\n* [ImplementationGuide](implementationguide.html): A type of use context assigned to the implementation guide\r\n* [Library](library.html): A type of use context assigned to the library\r\n* [Measure](measure.html): A type of use context assigned to the measure\r\n* [MessageDefinition](messagedefinition.html): A type of use context assigned to the message definition\r\n* [NamingSystem](namingsystem.html): A type of use context assigned to the naming system\r\n* [OperationDefinition](operationdefinition.html): A type of use context assigned to the operation definition\r\n* [PlanDefinition](plandefinition.html): A type of use context assigned to the plan definition\r\n* [Questionnaire](questionnaire.html): A type of use context assigned to the questionnaire\r\n* [Requirements](requirements.html): A type of use context assigned to the requirements\r\n* [SearchParameter](searchparameter.html): A type of use context assigned to the search parameter\r\n* [StructureDefinition](structuredefinition.html): A type of use context assigned to the structure definition\r\n* [StructureMap](structuremap.html): A type of use context assigned to the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): A type of use context assigned to the terminology capabilities\r\n* [TestScript](testscript.html): A type of use context assigned to the test script\r\n* [ValueSet](valueset.html): A type of use context assigned to the value set\r\n", type="token" )
+  public static final String SP_CONTEXT_TYPE = "context-type";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>context-type</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): A type of use context assigned to the activity definition
+* [ActorDefinition](actordefinition.html): A type of use context assigned to the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): A type of use context assigned to the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): A type of use context assigned to the charge item definition
+* [Citation](citation.html): A type of use context assigned to the citation
+* [CodeSystem](codesystem.html): A type of use context assigned to the code system
+* [CompartmentDefinition](compartmentdefinition.html): A type of use context assigned to the compartment definition
+* [ConceptMap](conceptmap.html): A type of use context assigned to the concept map
+* [ConditionDefinition](conditiondefinition.html): A type of use context assigned to the condition definition
+* [EventDefinition](eventdefinition.html): A type of use context assigned to the event definition
+* [Evidence](evidence.html): A type of use context assigned to the evidence
+* [EvidenceReport](evidencereport.html): A type of use context assigned to the evidence report
+* [EvidenceVariable](evidencevariable.html): A type of use context assigned to the evidence variable
+* [ExampleScenario](examplescenario.html): A type of use context assigned to the example scenario
+* [GraphDefinition](graphdefinition.html): A type of use context assigned to the graph definition
+* [ImplementationGuide](implementationguide.html): A type of use context assigned to the implementation guide
+* [Library](library.html): A type of use context assigned to the library
+* [Measure](measure.html): A type of use context assigned to the measure
+* [MessageDefinition](messagedefinition.html): A type of use context assigned to the message definition
+* [NamingSystem](namingsystem.html): A type of use context assigned to the naming system
+* [OperationDefinition](operationdefinition.html): A type of use context assigned to the operation definition
+* [PlanDefinition](plandefinition.html): A type of use context assigned to the plan definition
+* [Questionnaire](questionnaire.html): A type of use context assigned to the questionnaire
+* [Requirements](requirements.html): A type of use context assigned to the requirements
+* [SearchParameter](searchparameter.html): A type of use context assigned to the search parameter
+* [StructureDefinition](structuredefinition.html): A type of use context assigned to the structure definition
+* [StructureMap](structuremap.html): A type of use context assigned to the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): A type of use context assigned to the terminology capabilities
+* [TestScript](testscript.html): A type of use context assigned to the test script
+* [ValueSet](valueset.html): A type of use context assigned to the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.useContext.code | ActorDefinition.useContext.code | CapabilityStatement.useContext.code | ChargeItemDefinition.useContext.code | Citation.useContext.code | CodeSystem.useContext.code | CompartmentDefinition.useContext.code | ConceptMap.useContext.code | ConditionDefinition.useContext.code | EventDefinition.useContext.code | Evidence.useContext.code | EvidenceReport.useContext.code | EvidenceVariable.useContext.code | ExampleScenario.useContext.code | GraphDefinition.useContext.code | ImplementationGuide.useContext.code | Library.useContext.code | Measure.useContext.code | MessageDefinition.useContext.code | NamingSystem.useContext.code | OperationDefinition.useContext.code | PlanDefinition.useContext.code | Questionnaire.useContext.code | Requirements.useContext.code | SearchParameter.useContext.code | StructureDefinition.useContext.code | StructureMap.useContext.code | TerminologyCapabilities.useContext.code | TestScript.useContext.code | ValueSet.useContext.code</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam CONTEXT_TYPE = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_CONTEXT_TYPE);
+
+ /**
+   * Search parameter: <b>context</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): A use context assigned to the activity definition
+* [ActorDefinition](actordefinition.html): A use context assigned to the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): A use context assigned to the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): A use context assigned to the charge item definition
+* [Citation](citation.html): A use context assigned to the citation
+* [CodeSystem](codesystem.html): A use context assigned to the code system
+* [CompartmentDefinition](compartmentdefinition.html): A use context assigned to the compartment definition
+* [ConceptMap](conceptmap.html): A use context assigned to the concept map
+* [ConditionDefinition](conditiondefinition.html): A use context assigned to the condition definition
+* [EventDefinition](eventdefinition.html): A use context assigned to the event definition
+* [Evidence](evidence.html): A use context assigned to the evidence
+* [EvidenceReport](evidencereport.html): A use context assigned to the evidence report
+* [EvidenceVariable](evidencevariable.html): A use context assigned to the evidence variable
+* [ExampleScenario](examplescenario.html): A use context assigned to the example scenario
+* [GraphDefinition](graphdefinition.html): A use context assigned to the graph definition
+* [ImplementationGuide](implementationguide.html): A use context assigned to the implementation guide
+* [Library](library.html): A use context assigned to the library
+* [Measure](measure.html): A use context assigned to the measure
+* [MessageDefinition](messagedefinition.html): A use context assigned to the message definition
+* [NamingSystem](namingsystem.html): A use context assigned to the naming system
+* [OperationDefinition](operationdefinition.html): A use context assigned to the operation definition
+* [PlanDefinition](plandefinition.html): A use context assigned to the plan definition
+* [Questionnaire](questionnaire.html): A use context assigned to the questionnaire
+* [Requirements](requirements.html): A use context assigned to the requirements
+* [SearchParameter](searchparameter.html): A use context assigned to the search parameter
+* [StructureDefinition](structuredefinition.html): A use context assigned to the structure definition
+* [StructureMap](structuremap.html): A use context assigned to the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): A use context assigned to the terminology capabilities
+* [TestScript](testscript.html): A use context assigned to the test script
+* [ValueSet](valueset.html): A use context assigned to the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>(ActivityDefinition.useContext.value.ofType(CodeableConcept)) | (ActorDefinition.useContext.value.ofType(CodeableConcept)) | (CapabilityStatement.useContext.value.ofType(CodeableConcept)) | (ChargeItemDefinition.useContext.value.ofType(CodeableConcept)) | (Citation.useContext.value.ofType(CodeableConcept)) | (CodeSystem.useContext.value.ofType(CodeableConcept)) | (CompartmentDefinition.useContext.value.ofType(CodeableConcept)) | (ConceptMap.useContext.value.ofType(CodeableConcept)) | (ConditionDefinition.useContext.value.ofType(CodeableConcept)) | (EventDefinition.useContext.value.ofType(CodeableConcept)) | (Evidence.useContext.value.ofType(CodeableConcept)) | (EvidenceReport.useContext.value.ofType(CodeableConcept)) | (EvidenceVariable.useContext.value.ofType(CodeableConcept)) | (ExampleScenario.useContext.value.ofType(CodeableConcept)) | (GraphDefinition.useContext.value.ofType(CodeableConcept)) | (ImplementationGuide.useContext.value.ofType(CodeableConcept)) | (Library.useContext.value.ofType(CodeableConcept)) | (Measure.useContext.value.ofType(CodeableConcept)) | (MessageDefinition.useContext.value.ofType(CodeableConcept)) | (NamingSystem.useContext.value.ofType(CodeableConcept)) | (OperationDefinition.useContext.value.ofType(CodeableConcept)) | (PlanDefinition.useContext.value.ofType(CodeableConcept)) | (Questionnaire.useContext.value.ofType(CodeableConcept)) | (Requirements.useContext.value.ofType(CodeableConcept)) | (SearchParameter.useContext.value.ofType(CodeableConcept)) | (StructureDefinition.useContext.value.ofType(CodeableConcept)) | (StructureMap.useContext.value.ofType(CodeableConcept)) | (TerminologyCapabilities.useContext.value.ofType(CodeableConcept)) | (TestScript.useContext.value.ofType(CodeableConcept)) | (ValueSet.useContext.value.ofType(CodeableConcept))</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="context", path="(ActivityDefinition.useContext.value.ofType(CodeableConcept)) | (ActorDefinition.useContext.value.ofType(CodeableConcept)) | (CapabilityStatement.useContext.value.ofType(CodeableConcept)) | (ChargeItemDefinition.useContext.value.ofType(CodeableConcept)) | (Citation.useContext.value.ofType(CodeableConcept)) | (CodeSystem.useContext.value.ofType(CodeableConcept)) | (CompartmentDefinition.useContext.value.ofType(CodeableConcept)) | (ConceptMap.useContext.value.ofType(CodeableConcept)) | (ConditionDefinition.useContext.value.ofType(CodeableConcept)) | (EventDefinition.useContext.value.ofType(CodeableConcept)) | (Evidence.useContext.value.ofType(CodeableConcept)) | (EvidenceReport.useContext.value.ofType(CodeableConcept)) | (EvidenceVariable.useContext.value.ofType(CodeableConcept)) | (ExampleScenario.useContext.value.ofType(CodeableConcept)) | (GraphDefinition.useContext.value.ofType(CodeableConcept)) | (ImplementationGuide.useContext.value.ofType(CodeableConcept)) | (Library.useContext.value.ofType(CodeableConcept)) | (Measure.useContext.value.ofType(CodeableConcept)) | (MessageDefinition.useContext.value.ofType(CodeableConcept)) | (NamingSystem.useContext.value.ofType(CodeableConcept)) | (OperationDefinition.useContext.value.ofType(CodeableConcept)) | (PlanDefinition.useContext.value.ofType(CodeableConcept)) | (Questionnaire.useContext.value.ofType(CodeableConcept)) | (Requirements.useContext.value.ofType(CodeableConcept)) | (SearchParameter.useContext.value.ofType(CodeableConcept)) | (StructureDefinition.useContext.value.ofType(CodeableConcept)) | (StructureMap.useContext.value.ofType(CodeableConcept)) | (TerminologyCapabilities.useContext.value.ofType(CodeableConcept)) | (TestScript.useContext.value.ofType(CodeableConcept)) | (ValueSet.useContext.value.ofType(CodeableConcept))", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): A use context assigned to the activity definition\r\n* [ActorDefinition](actordefinition.html): A use context assigned to the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): A use context assigned to the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): A use context assigned to the charge item definition\r\n* [Citation](citation.html): A use context assigned to the citation\r\n* [CodeSystem](codesystem.html): A use context assigned to the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): A use context assigned to the compartment definition\r\n* [ConceptMap](conceptmap.html): A use context assigned to the concept map\r\n* [ConditionDefinition](conditiondefinition.html): A use context assigned to the condition definition\r\n* [EventDefinition](eventdefinition.html): A use context assigned to the event definition\r\n* [Evidence](evidence.html): A use context assigned to the evidence\r\n* [EvidenceReport](evidencereport.html): A use context assigned to the evidence report\r\n* [EvidenceVariable](evidencevariable.html): A use context assigned to the evidence variable\r\n* [ExampleScenario](examplescenario.html): A use context assigned to the example scenario\r\n* [GraphDefinition](graphdefinition.html): A use context assigned to the graph definition\r\n* [ImplementationGuide](implementationguide.html): A use context assigned to the implementation guide\r\n* [Library](library.html): A use context assigned to the library\r\n* [Measure](measure.html): A use context assigned to the measure\r\n* [MessageDefinition](messagedefinition.html): A use context assigned to the message definition\r\n* [NamingSystem](namingsystem.html): A use context assigned to the naming system\r\n* [OperationDefinition](operationdefinition.html): A use context assigned to the operation definition\r\n* [PlanDefinition](plandefinition.html): A use context assigned to the plan definition\r\n* [Questionnaire](questionnaire.html): A use context assigned to the questionnaire\r\n* [Requirements](requirements.html): A use context assigned to the requirements\r\n* [SearchParameter](searchparameter.html): A use context assigned to the search parameter\r\n* [StructureDefinition](structuredefinition.html): A use context assigned to the structure definition\r\n* [StructureMap](structuremap.html): A use context assigned to the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): A use context assigned to the terminology capabilities\r\n* [TestScript](testscript.html): A use context assigned to the test script\r\n* [ValueSet](valueset.html): A use context assigned to the value set\r\n", type="token" )
+  public static final String SP_CONTEXT = "context";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>context</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): A use context assigned to the activity definition
+* [ActorDefinition](actordefinition.html): A use context assigned to the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): A use context assigned to the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): A use context assigned to the charge item definition
+* [Citation](citation.html): A use context assigned to the citation
+* [CodeSystem](codesystem.html): A use context assigned to the code system
+* [CompartmentDefinition](compartmentdefinition.html): A use context assigned to the compartment definition
+* [ConceptMap](conceptmap.html): A use context assigned to the concept map
+* [ConditionDefinition](conditiondefinition.html): A use context assigned to the condition definition
+* [EventDefinition](eventdefinition.html): A use context assigned to the event definition
+* [Evidence](evidence.html): A use context assigned to the evidence
+* [EvidenceReport](evidencereport.html): A use context assigned to the evidence report
+* [EvidenceVariable](evidencevariable.html): A use context assigned to the evidence variable
+* [ExampleScenario](examplescenario.html): A use context assigned to the example scenario
+* [GraphDefinition](graphdefinition.html): A use context assigned to the graph definition
+* [ImplementationGuide](implementationguide.html): A use context assigned to the implementation guide
+* [Library](library.html): A use context assigned to the library
+* [Measure](measure.html): A use context assigned to the measure
+* [MessageDefinition](messagedefinition.html): A use context assigned to the message definition
+* [NamingSystem](namingsystem.html): A use context assigned to the naming system
+* [OperationDefinition](operationdefinition.html): A use context assigned to the operation definition
+* [PlanDefinition](plandefinition.html): A use context assigned to the plan definition
+* [Questionnaire](questionnaire.html): A use context assigned to the questionnaire
+* [Requirements](requirements.html): A use context assigned to the requirements
+* [SearchParameter](searchparameter.html): A use context assigned to the search parameter
+* [StructureDefinition](structuredefinition.html): A use context assigned to the structure definition
+* [StructureMap](structuremap.html): A use context assigned to the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): A use context assigned to the terminology capabilities
+* [TestScript](testscript.html): A use context assigned to the test script
+* [ValueSet](valueset.html): A use context assigned to the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>(ActivityDefinition.useContext.value.ofType(CodeableConcept)) | (ActorDefinition.useContext.value.ofType(CodeableConcept)) | (CapabilityStatement.useContext.value.ofType(CodeableConcept)) | (ChargeItemDefinition.useContext.value.ofType(CodeableConcept)) | (Citation.useContext.value.ofType(CodeableConcept)) | (CodeSystem.useContext.value.ofType(CodeableConcept)) | (CompartmentDefinition.useContext.value.ofType(CodeableConcept)) | (ConceptMap.useContext.value.ofType(CodeableConcept)) | (ConditionDefinition.useContext.value.ofType(CodeableConcept)) | (EventDefinition.useContext.value.ofType(CodeableConcept)) | (Evidence.useContext.value.ofType(CodeableConcept)) | (EvidenceReport.useContext.value.ofType(CodeableConcept)) | (EvidenceVariable.useContext.value.ofType(CodeableConcept)) | (ExampleScenario.useContext.value.ofType(CodeableConcept)) | (GraphDefinition.useContext.value.ofType(CodeableConcept)) | (ImplementationGuide.useContext.value.ofType(CodeableConcept)) | (Library.useContext.value.ofType(CodeableConcept)) | (Measure.useContext.value.ofType(CodeableConcept)) | (MessageDefinition.useContext.value.ofType(CodeableConcept)) | (NamingSystem.useContext.value.ofType(CodeableConcept)) | (OperationDefinition.useContext.value.ofType(CodeableConcept)) | (PlanDefinition.useContext.value.ofType(CodeableConcept)) | (Questionnaire.useContext.value.ofType(CodeableConcept)) | (Requirements.useContext.value.ofType(CodeableConcept)) | (SearchParameter.useContext.value.ofType(CodeableConcept)) | (StructureDefinition.useContext.value.ofType(CodeableConcept)) | (StructureMap.useContext.value.ofType(CodeableConcept)) | (TerminologyCapabilities.useContext.value.ofType(CodeableConcept)) | (TestScript.useContext.value.ofType(CodeableConcept)) | (ValueSet.useContext.value.ofType(CodeableConcept))</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam CONTEXT = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_CONTEXT);
+
+ /**
+   * Search parameter: <b>date</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The activity definition publication date
+* [ActorDefinition](actordefinition.html): The Actor Definition publication date
+* [CapabilityStatement](capabilitystatement.html): The capability statement publication date
+* [ChargeItemDefinition](chargeitemdefinition.html): The charge item definition publication date
+* [Citation](citation.html): The citation publication date
+* [CodeSystem](codesystem.html): The code system publication date
+* [CompartmentDefinition](compartmentdefinition.html): The compartment definition publication date
+* [ConceptMap](conceptmap.html): The concept map publication date
+* [ConditionDefinition](conditiondefinition.html): The condition definition publication date
+* [EventDefinition](eventdefinition.html): The event definition publication date
+* [Evidence](evidence.html): The evidence publication date
+* [EvidenceVariable](evidencevariable.html): The evidence variable publication date
+* [ExampleScenario](examplescenario.html): The example scenario publication date
+* [GraphDefinition](graphdefinition.html): The graph definition publication date
+* [ImplementationGuide](implementationguide.html): The implementation guide publication date
+* [Library](library.html): The library publication date
+* [Measure](measure.html): The measure publication date
+* [MessageDefinition](messagedefinition.html): The message definition publication date
+* [NamingSystem](namingsystem.html): The naming system publication date
+* [OperationDefinition](operationdefinition.html): The operation definition publication date
+* [PlanDefinition](plandefinition.html): The plan definition publication date
+* [Questionnaire](questionnaire.html): The questionnaire publication date
+* [Requirements](requirements.html): The requirements publication date
+* [SearchParameter](searchparameter.html): The search parameter publication date
+* [StructureDefinition](structuredefinition.html): The structure definition publication date
+* [StructureMap](structuremap.html): The structure map publication date
+* [SubscriptionTopic](subscriptiontopic.html): Date status first applied
+* [TerminologyCapabilities](terminologycapabilities.html): The terminology capabilities publication date
+* [TestScript](testscript.html): The test script publication date
+* [ValueSet](valueset.html): The value set publication date
+</b><br>
+   * Type: <b>date</b><br>
+   * Path: <b>ActivityDefinition.date | ActorDefinition.date | CapabilityStatement.date | ChargeItemDefinition.date | Citation.date | CodeSystem.date | CompartmentDefinition.date | ConceptMap.date | ConditionDefinition.date | EventDefinition.date | Evidence.date | EvidenceVariable.date | ExampleScenario.date | GraphDefinition.date | ImplementationGuide.date | Library.date | Measure.date | MessageDefinition.date | NamingSystem.date | OperationDefinition.date | PlanDefinition.date | Questionnaire.date | Requirements.date | SearchParameter.date | StructureDefinition.date | StructureMap.date | SubscriptionTopic.date | TerminologyCapabilities.date | TestScript.date | ValueSet.date</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="date", path="ActivityDefinition.date | ActorDefinition.date | CapabilityStatement.date | ChargeItemDefinition.date | Citation.date | CodeSystem.date | CompartmentDefinition.date | ConceptMap.date | ConditionDefinition.date | EventDefinition.date | Evidence.date | EvidenceVariable.date | ExampleScenario.date | GraphDefinition.date | ImplementationGuide.date | Library.date | Measure.date | MessageDefinition.date | NamingSystem.date | OperationDefinition.date | PlanDefinition.date | Questionnaire.date | Requirements.date | SearchParameter.date | StructureDefinition.date | StructureMap.date | SubscriptionTopic.date | TerminologyCapabilities.date | TestScript.date | ValueSet.date", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The activity definition publication date\r\n* [ActorDefinition](actordefinition.html): The Actor Definition publication date\r\n* [CapabilityStatement](capabilitystatement.html): The capability statement publication date\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The charge item definition publication date\r\n* [Citation](citation.html): The citation publication date\r\n* [CodeSystem](codesystem.html): The code system publication date\r\n* [CompartmentDefinition](compartmentdefinition.html): The compartment definition publication date\r\n* [ConceptMap](conceptmap.html): The concept map publication date\r\n* [ConditionDefinition](conditiondefinition.html): The condition definition publication date\r\n* [EventDefinition](eventdefinition.html): The event definition publication date\r\n* [Evidence](evidence.html): The evidence publication date\r\n* [EvidenceVariable](evidencevariable.html): The evidence variable publication date\r\n* [ExampleScenario](examplescenario.html): The example scenario publication date\r\n* [GraphDefinition](graphdefinition.html): The graph definition publication date\r\n* [ImplementationGuide](implementationguide.html): The implementation guide publication date\r\n* [Library](library.html): The library publication date\r\n* [Measure](measure.html): The measure publication date\r\n* [MessageDefinition](messagedefinition.html): The message definition publication date\r\n* [NamingSystem](namingsystem.html): The naming system publication date\r\n* [OperationDefinition](operationdefinition.html): The operation definition publication date\r\n* [PlanDefinition](plandefinition.html): The plan definition publication date\r\n* [Questionnaire](questionnaire.html): The questionnaire publication date\r\n* [Requirements](requirements.html): The requirements publication date\r\n* [SearchParameter](searchparameter.html): The search parameter publication date\r\n* [StructureDefinition](structuredefinition.html): The structure definition publication date\r\n* [StructureMap](structuremap.html): The structure map publication date\r\n* [SubscriptionTopic](subscriptiontopic.html): Date status first applied\r\n* [TerminologyCapabilities](terminologycapabilities.html): The terminology capabilities publication date\r\n* [TestScript](testscript.html): The test script publication date\r\n* [ValueSet](valueset.html): The value set publication date\r\n", type="date" )
+  public static final String SP_DATE = "date";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>date</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The activity definition publication date
+* [ActorDefinition](actordefinition.html): The Actor Definition publication date
+* [CapabilityStatement](capabilitystatement.html): The capability statement publication date
+* [ChargeItemDefinition](chargeitemdefinition.html): The charge item definition publication date
+* [Citation](citation.html): The citation publication date
+* [CodeSystem](codesystem.html): The code system publication date
+* [CompartmentDefinition](compartmentdefinition.html): The compartment definition publication date
+* [ConceptMap](conceptmap.html): The concept map publication date
+* [ConditionDefinition](conditiondefinition.html): The condition definition publication date
+* [EventDefinition](eventdefinition.html): The event definition publication date
+* [Evidence](evidence.html): The evidence publication date
+* [EvidenceVariable](evidencevariable.html): The evidence variable publication date
+* [ExampleScenario](examplescenario.html): The example scenario publication date
+* [GraphDefinition](graphdefinition.html): The graph definition publication date
+* [ImplementationGuide](implementationguide.html): The implementation guide publication date
+* [Library](library.html): The library publication date
+* [Measure](measure.html): The measure publication date
+* [MessageDefinition](messagedefinition.html): The message definition publication date
+* [NamingSystem](namingsystem.html): The naming system publication date
+* [OperationDefinition](operationdefinition.html): The operation definition publication date
+* [PlanDefinition](plandefinition.html): The plan definition publication date
+* [Questionnaire](questionnaire.html): The questionnaire publication date
+* [Requirements](requirements.html): The requirements publication date
+* [SearchParameter](searchparameter.html): The search parameter publication date
+* [StructureDefinition](structuredefinition.html): The structure definition publication date
+* [StructureMap](structuremap.html): The structure map publication date
+* [SubscriptionTopic](subscriptiontopic.html): Date status first applied
+* [TerminologyCapabilities](terminologycapabilities.html): The terminology capabilities publication date
+* [TestScript](testscript.html): The test script publication date
+* [ValueSet](valueset.html): The value set publication date
+</b><br>
+   * Type: <b>date</b><br>
+   * Path: <b>ActivityDefinition.date | ActorDefinition.date | CapabilityStatement.date | ChargeItemDefinition.date | Citation.date | CodeSystem.date | CompartmentDefinition.date | ConceptMap.date | ConditionDefinition.date | EventDefinition.date | Evidence.date | EvidenceVariable.date | ExampleScenario.date | GraphDefinition.date | ImplementationGuide.date | Library.date | Measure.date | MessageDefinition.date | NamingSystem.date | OperationDefinition.date | PlanDefinition.date | Questionnaire.date | Requirements.date | SearchParameter.date | StructureDefinition.date | StructureMap.date | SubscriptionTopic.date | TerminologyCapabilities.date | TestScript.date | ValueSet.date</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.DateClientParam DATE = new ca.uhn.fhir.rest.gclient.DateClientParam(SP_DATE);
+
+ /**
+   * Search parameter: <b>description</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The description of the activity definition
+* [ActorDefinition](actordefinition.html): The description of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The description of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The description of the charge item definition
+* [Citation](citation.html): The description of the citation
+* [CodeSystem](codesystem.html): The description of the code system
+* [CompartmentDefinition](compartmentdefinition.html): The description of the compartment definition
+* [ConceptMap](conceptmap.html): The description of the concept map
+* [ConditionDefinition](conditiondefinition.html): The description of the condition definition
+* [EventDefinition](eventdefinition.html): The description of the event definition
+* [Evidence](evidence.html): The description of the evidence
+* [EvidenceVariable](evidencevariable.html): The description of the evidence variable
+* [GraphDefinition](graphdefinition.html): The description of the graph definition
+* [ImplementationGuide](implementationguide.html): The description of the implementation guide
+* [Library](library.html): The description of the library
+* [Measure](measure.html): The description of the measure
+* [MessageDefinition](messagedefinition.html): The description of the message definition
+* [NamingSystem](namingsystem.html): The description of the naming system
+* [OperationDefinition](operationdefinition.html): The description of the operation definition
+* [PlanDefinition](plandefinition.html): The description of the plan definition
+* [Questionnaire](questionnaire.html): The description of the questionnaire
+* [Requirements](requirements.html): The description of the requirements
+* [SearchParameter](searchparameter.html): The description of the search parameter
+* [StructureDefinition](structuredefinition.html): The description of the structure definition
+* [StructureMap](structuremap.html): The description of the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): The description of the terminology capabilities
+* [TestScript](testscript.html): The description of the test script
+* [ValueSet](valueset.html): The description of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.description | ActorDefinition.description | CapabilityStatement.description | ChargeItemDefinition.description | Citation.description | CodeSystem.description | CompartmentDefinition.description | ConceptMap.description | ConditionDefinition.description | EventDefinition.description | Evidence.description | EvidenceVariable.description | GraphDefinition.description | ImplementationGuide.description | Library.description | Measure.description | MessageDefinition.description | NamingSystem.description | OperationDefinition.description | PlanDefinition.description | Questionnaire.description | Requirements.description | SearchParameter.description | StructureDefinition.description | StructureMap.description | TerminologyCapabilities.description | TestScript.description | ValueSet.description</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="description", path="ActivityDefinition.description | ActorDefinition.description | CapabilityStatement.description | ChargeItemDefinition.description | Citation.description | CodeSystem.description | CompartmentDefinition.description | ConceptMap.description | ConditionDefinition.description | EventDefinition.description | Evidence.description | EvidenceVariable.description | GraphDefinition.description | ImplementationGuide.description | Library.description | Measure.description | MessageDefinition.description | NamingSystem.description | OperationDefinition.description | PlanDefinition.description | Questionnaire.description | Requirements.description | SearchParameter.description | StructureDefinition.description | StructureMap.description | TerminologyCapabilities.description | TestScript.description | ValueSet.description", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The description of the activity definition\r\n* [ActorDefinition](actordefinition.html): The description of the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): The description of the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The description of the charge item definition\r\n* [Citation](citation.html): The description of the citation\r\n* [CodeSystem](codesystem.html): The description of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The description of the compartment definition\r\n* [ConceptMap](conceptmap.html): The description of the concept map\r\n* [ConditionDefinition](conditiondefinition.html): The description of the condition definition\r\n* [EventDefinition](eventdefinition.html): The description of the event definition\r\n* [Evidence](evidence.html): The description of the evidence\r\n* [EvidenceVariable](evidencevariable.html): The description of the evidence variable\r\n* [GraphDefinition](graphdefinition.html): The description of the graph definition\r\n* [ImplementationGuide](implementationguide.html): The description of the implementation guide\r\n* [Library](library.html): The description of the library\r\n* [Measure](measure.html): The description of the measure\r\n* [MessageDefinition](messagedefinition.html): The description of the message definition\r\n* [NamingSystem](namingsystem.html): The description of the naming system\r\n* [OperationDefinition](operationdefinition.html): The description of the operation definition\r\n* [PlanDefinition](plandefinition.html): The description of the plan definition\r\n* [Questionnaire](questionnaire.html): The description of the questionnaire\r\n* [Requirements](requirements.html): The description of the requirements\r\n* [SearchParameter](searchparameter.html): The description of the search parameter\r\n* [StructureDefinition](structuredefinition.html): The description of the structure definition\r\n* [StructureMap](structuremap.html): The description of the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): The description of the terminology capabilities\r\n* [TestScript](testscript.html): The description of the test script\r\n* [ValueSet](valueset.html): The description of the value set\r\n", type="string" )
+  public static final String SP_DESCRIPTION = "description";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>description</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The description of the activity definition
+* [ActorDefinition](actordefinition.html): The description of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The description of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The description of the charge item definition
+* [Citation](citation.html): The description of the citation
+* [CodeSystem](codesystem.html): The description of the code system
+* [CompartmentDefinition](compartmentdefinition.html): The description of the compartment definition
+* [ConceptMap](conceptmap.html): The description of the concept map
+* [ConditionDefinition](conditiondefinition.html): The description of the condition definition
+* [EventDefinition](eventdefinition.html): The description of the event definition
+* [Evidence](evidence.html): The description of the evidence
+* [EvidenceVariable](evidencevariable.html): The description of the evidence variable
+* [GraphDefinition](graphdefinition.html): The description of the graph definition
+* [ImplementationGuide](implementationguide.html): The description of the implementation guide
+* [Library](library.html): The description of the library
+* [Measure](measure.html): The description of the measure
+* [MessageDefinition](messagedefinition.html): The description of the message definition
+* [NamingSystem](namingsystem.html): The description of the naming system
+* [OperationDefinition](operationdefinition.html): The description of the operation definition
+* [PlanDefinition](plandefinition.html): The description of the plan definition
+* [Questionnaire](questionnaire.html): The description of the questionnaire
+* [Requirements](requirements.html): The description of the requirements
+* [SearchParameter](searchparameter.html): The description of the search parameter
+* [StructureDefinition](structuredefinition.html): The description of the structure definition
+* [StructureMap](structuremap.html): The description of the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): The description of the terminology capabilities
+* [TestScript](testscript.html): The description of the test script
+* [ValueSet](valueset.html): The description of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.description | ActorDefinition.description | CapabilityStatement.description | ChargeItemDefinition.description | Citation.description | CodeSystem.description | CompartmentDefinition.description | ConceptMap.description | ConditionDefinition.description | EventDefinition.description | Evidence.description | EvidenceVariable.description | GraphDefinition.description | ImplementationGuide.description | Library.description | Measure.description | MessageDefinition.description | NamingSystem.description | OperationDefinition.description | PlanDefinition.description | Questionnaire.description | Requirements.description | SearchParameter.description | StructureDefinition.description | StructureMap.description | TerminologyCapabilities.description | TestScript.description | ValueSet.description</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.StringClientParam DESCRIPTION = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_DESCRIPTION);
 
  /**
    * Search parameter: <b>identifier</b>
    * <p>
    * Description: <b>Multiple Resources: 
 
+* [ActivityDefinition](activitydefinition.html): External identifier for the activity definition
+* [ActorDefinition](actordefinition.html): External identifier for the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): External identifier for the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): External identifier for the charge item definition
+* [Citation](citation.html): External identifier for the citation
 * [CodeSystem](codesystem.html): External identifier for the code system
 * [ConceptMap](conceptmap.html): External identifier for the concept map
+* [ConditionDefinition](conditiondefinition.html): External identifier for the condition definition
+* [EventDefinition](eventdefinition.html): External identifier for the event definition
+* [Evidence](evidence.html): External identifier for the evidence
+* [EvidenceReport](evidencereport.html): External identifier for the evidence report
+* [EvidenceVariable](evidencevariable.html): External identifier for the evidence variable
+* [ExampleScenario](examplescenario.html): External identifier for the example scenario
+* [GraphDefinition](graphdefinition.html): External identifier for the graph definition
+* [ImplementationGuide](implementationguide.html): External identifier for the implementation guide
+* [Library](library.html): External identifier for the library
+* [Measure](measure.html): External identifier for the measure
+* [MedicationKnowledge](medicationknowledge.html): Business identifier for this medication
 * [MessageDefinition](messagedefinition.html): External identifier for the message definition
+* [NamingSystem](namingsystem.html): External identifier for the naming system
+* [ObservationDefinition](observationdefinition.html): The unique identifier associated with the specimen definition
+* [OperationDefinition](operationdefinition.html): External identifier for the search parameter
+* [PlanDefinition](plandefinition.html): External identifier for the plan definition
+* [Questionnaire](questionnaire.html): External identifier for the questionnaire
+* [Requirements](requirements.html): External identifier for the requirements
+* [SearchParameter](searchparameter.html): External identifier for the search parameter
+* [SpecimenDefinition](specimendefinition.html): The unique identifier associated with the SpecimenDefinition
 * [StructureDefinition](structuredefinition.html): External identifier for the structure definition
 * [StructureMap](structuremap.html): External identifier for the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Business Identifier for SubscriptionTopic
 * [TerminologyCapabilities](terminologycapabilities.html): External identifier for the terminology capabilities
+* [TestPlan](testplan.html): An identifier for the test plan
+* [TestScript](testscript.html): External identifier for the test script
 * [ValueSet](valueset.html): External identifier for the value set
 </b><br>
    * Type: <b>token</b><br>
-   * Path: <b>CodeSystem.identifier | ConceptMap.identifier | MessageDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | TerminologyCapabilities.identifier | ValueSet.identifier</b><br>
+   * Path: <b>ActivityDefinition.identifier | ActorDefinition.identifier | CapabilityStatement.identifier | ChargeItemDefinition.identifier | Citation.identifier | CodeSystem.identifier | ConceptMap.identifier | ConditionDefinition.identifier | EventDefinition.identifier | Evidence.identifier | EvidenceReport.identifier | EvidenceVariable.identifier | ExampleScenario.identifier | GraphDefinition.identifier | ImplementationGuide.identifier | Library.identifier | Measure.identifier | MedicationKnowledge.identifier | MessageDefinition.identifier | NamingSystem.identifier | ObservationDefinition.identifier | OperationDefinition.identifier | PlanDefinition.identifier | Questionnaire.identifier | Requirements.identifier | SearchParameter.identifier | SpecimenDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | SubscriptionTopic.identifier | TerminologyCapabilities.identifier | TestPlan.identifier | TestScript.identifier | ValueSet.identifier</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="identifier", path="CodeSystem.identifier | ConceptMap.identifier | MessageDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | TerminologyCapabilities.identifier | ValueSet.identifier", description="Multiple Resources: \r\n\r\n* [CodeSystem](codesystem.html): External identifier for the code system\r\n* [ConceptMap](conceptmap.html): External identifier for the concept map\r\n* [MessageDefinition](messagedefinition.html): External identifier for the message definition\r\n* [StructureDefinition](structuredefinition.html): External identifier for the structure definition\r\n* [StructureMap](structuremap.html): External identifier for the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): External identifier for the terminology capabilities\r\n* [ValueSet](valueset.html): External identifier for the value set\r\n", type="token" )
+  @SearchParamDefinition(name="identifier", path="ActivityDefinition.identifier | ActorDefinition.identifier | CapabilityStatement.identifier | ChargeItemDefinition.identifier | Citation.identifier | CodeSystem.identifier | ConceptMap.identifier | ConditionDefinition.identifier | EventDefinition.identifier | Evidence.identifier | EvidenceReport.identifier | EvidenceVariable.identifier | ExampleScenario.identifier | GraphDefinition.identifier | ImplementationGuide.identifier | Library.identifier | Measure.identifier | MedicationKnowledge.identifier | MessageDefinition.identifier | NamingSystem.identifier | ObservationDefinition.identifier | OperationDefinition.identifier | PlanDefinition.identifier | Questionnaire.identifier | Requirements.identifier | SearchParameter.identifier | SpecimenDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | SubscriptionTopic.identifier | TerminologyCapabilities.identifier | TestPlan.identifier | TestScript.identifier | ValueSet.identifier", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): External identifier for the activity definition\r\n* [ActorDefinition](actordefinition.html): External identifier for the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): External identifier for the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): External identifier for the charge item definition\r\n* [Citation](citation.html): External identifier for the citation\r\n* [CodeSystem](codesystem.html): External identifier for the code system\r\n* [ConceptMap](conceptmap.html): External identifier for the concept map\r\n* [ConditionDefinition](conditiondefinition.html): External identifier for the condition definition\r\n* [EventDefinition](eventdefinition.html): External identifier for the event definition\r\n* [Evidence](evidence.html): External identifier for the evidence\r\n* [EvidenceReport](evidencereport.html): External identifier for the evidence report\r\n* [EvidenceVariable](evidencevariable.html): External identifier for the evidence variable\r\n* [ExampleScenario](examplescenario.html): External identifier for the example scenario\r\n* [GraphDefinition](graphdefinition.html): External identifier for the graph definition\r\n* [ImplementationGuide](implementationguide.html): External identifier for the implementation guide\r\n* [Library](library.html): External identifier for the library\r\n* [Measure](measure.html): External identifier for the measure\r\n* [MedicationKnowledge](medicationknowledge.html): Business identifier for this medication\r\n* [MessageDefinition](messagedefinition.html): External identifier for the message definition\r\n* [NamingSystem](namingsystem.html): External identifier for the naming system\r\n* [ObservationDefinition](observationdefinition.html): The unique identifier associated with the specimen definition\r\n* [OperationDefinition](operationdefinition.html): External identifier for the search parameter\r\n* [PlanDefinition](plandefinition.html): External identifier for the plan definition\r\n* [Questionnaire](questionnaire.html): External identifier for the questionnaire\r\n* [Requirements](requirements.html): External identifier for the requirements\r\n* [SearchParameter](searchparameter.html): External identifier for the search parameter\r\n* [SpecimenDefinition](specimendefinition.html): The unique identifier associated with the SpecimenDefinition\r\n* [StructureDefinition](structuredefinition.html): External identifier for the structure definition\r\n* [StructureMap](structuremap.html): External identifier for the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): Business Identifier for SubscriptionTopic\r\n* [TerminologyCapabilities](terminologycapabilities.html): External identifier for the terminology capabilities\r\n* [TestPlan](testplan.html): An identifier for the test plan\r\n* [TestScript](testscript.html): External identifier for the test script\r\n* [ValueSet](valueset.html): External identifier for the value set\r\n", type="token" )
   public static final String SP_IDENTIFIER = "identifier";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>identifier</b>
    * <p>
    * Description: <b>Multiple Resources: 
 
+* [ActivityDefinition](activitydefinition.html): External identifier for the activity definition
+* [ActorDefinition](actordefinition.html): External identifier for the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): External identifier for the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): External identifier for the charge item definition
+* [Citation](citation.html): External identifier for the citation
 * [CodeSystem](codesystem.html): External identifier for the code system
 * [ConceptMap](conceptmap.html): External identifier for the concept map
+* [ConditionDefinition](conditiondefinition.html): External identifier for the condition definition
+* [EventDefinition](eventdefinition.html): External identifier for the event definition
+* [Evidence](evidence.html): External identifier for the evidence
+* [EvidenceReport](evidencereport.html): External identifier for the evidence report
+* [EvidenceVariable](evidencevariable.html): External identifier for the evidence variable
+* [ExampleScenario](examplescenario.html): External identifier for the example scenario
+* [GraphDefinition](graphdefinition.html): External identifier for the graph definition
+* [ImplementationGuide](implementationguide.html): External identifier for the implementation guide
+* [Library](library.html): External identifier for the library
+* [Measure](measure.html): External identifier for the measure
+* [MedicationKnowledge](medicationknowledge.html): Business identifier for this medication
 * [MessageDefinition](messagedefinition.html): External identifier for the message definition
+* [NamingSystem](namingsystem.html): External identifier for the naming system
+* [ObservationDefinition](observationdefinition.html): The unique identifier associated with the specimen definition
+* [OperationDefinition](operationdefinition.html): External identifier for the search parameter
+* [PlanDefinition](plandefinition.html): External identifier for the plan definition
+* [Questionnaire](questionnaire.html): External identifier for the questionnaire
+* [Requirements](requirements.html): External identifier for the requirements
+* [SearchParameter](searchparameter.html): External identifier for the search parameter
+* [SpecimenDefinition](specimendefinition.html): The unique identifier associated with the SpecimenDefinition
 * [StructureDefinition](structuredefinition.html): External identifier for the structure definition
 * [StructureMap](structuremap.html): External identifier for the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Business Identifier for SubscriptionTopic
 * [TerminologyCapabilities](terminologycapabilities.html): External identifier for the terminology capabilities
+* [TestPlan](testplan.html): An identifier for the test plan
+* [TestScript](testscript.html): External identifier for the test script
 * [ValueSet](valueset.html): External identifier for the value set
 </b><br>
    * Type: <b>token</b><br>
-   * Path: <b>CodeSystem.identifier | ConceptMap.identifier | MessageDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | TerminologyCapabilities.identifier | ValueSet.identifier</b><br>
+   * Path: <b>ActivityDefinition.identifier | ActorDefinition.identifier | CapabilityStatement.identifier | ChargeItemDefinition.identifier | Citation.identifier | CodeSystem.identifier | ConceptMap.identifier | ConditionDefinition.identifier | EventDefinition.identifier | Evidence.identifier | EvidenceReport.identifier | EvidenceVariable.identifier | ExampleScenario.identifier | GraphDefinition.identifier | ImplementationGuide.identifier | Library.identifier | Measure.identifier | MedicationKnowledge.identifier | MessageDefinition.identifier | NamingSystem.identifier | ObservationDefinition.identifier | OperationDefinition.identifier | PlanDefinition.identifier | Questionnaire.identifier | Requirements.identifier | SearchParameter.identifier | SpecimenDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | SubscriptionTopic.identifier | TerminologyCapabilities.identifier | TestPlan.identifier | TestScript.identifier | ValueSet.identifier</b><br>
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
+
+ /**
+   * Search parameter: <b>jurisdiction</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): Intended jurisdiction for the activity definition
+* [ActorDefinition](actordefinition.html): Intended jurisdiction for the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): Intended jurisdiction for the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): Intended jurisdiction for the charge item definition
+* [Citation](citation.html): Intended jurisdiction for the citation
+* [CodeSystem](codesystem.html): Intended jurisdiction for the code system
+* [ConceptMap](conceptmap.html): Intended jurisdiction for the concept map
+* [ConditionDefinition](conditiondefinition.html): Intended jurisdiction for the condition definition
+* [EventDefinition](eventdefinition.html): Intended jurisdiction for the event definition
+* [ExampleScenario](examplescenario.html): Intended jurisdiction for the example scenario
+* [GraphDefinition](graphdefinition.html): Intended jurisdiction for the graph definition
+* [ImplementationGuide](implementationguide.html): Intended jurisdiction for the implementation guide
+* [Library](library.html): Intended jurisdiction for the library
+* [Measure](measure.html): Intended jurisdiction for the measure
+* [MessageDefinition](messagedefinition.html): Intended jurisdiction for the message definition
+* [NamingSystem](namingsystem.html): Intended jurisdiction for the naming system
+* [OperationDefinition](operationdefinition.html): Intended jurisdiction for the operation definition
+* [PlanDefinition](plandefinition.html): Intended jurisdiction for the plan definition
+* [Questionnaire](questionnaire.html): Intended jurisdiction for the questionnaire
+* [Requirements](requirements.html): Intended jurisdiction for the requirements
+* [SearchParameter](searchparameter.html): Intended jurisdiction for the search parameter
+* [StructureDefinition](structuredefinition.html): Intended jurisdiction for the structure definition
+* [StructureMap](structuremap.html): Intended jurisdiction for the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): Intended jurisdiction for the terminology capabilities
+* [TestScript](testscript.html): Intended jurisdiction for the test script
+* [ValueSet](valueset.html): Intended jurisdiction for the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.jurisdiction | ActorDefinition.jurisdiction | CapabilityStatement.jurisdiction | ChargeItemDefinition.jurisdiction | Citation.jurisdiction | CodeSystem.jurisdiction | ConceptMap.jurisdiction | ConditionDefinition.jurisdiction | EventDefinition.jurisdiction | ExampleScenario.jurisdiction | GraphDefinition.jurisdiction | ImplementationGuide.jurisdiction | Library.jurisdiction | Measure.jurisdiction | MessageDefinition.jurisdiction | NamingSystem.jurisdiction | OperationDefinition.jurisdiction | PlanDefinition.jurisdiction | Questionnaire.jurisdiction | Requirements.jurisdiction | SearchParameter.jurisdiction | StructureDefinition.jurisdiction | StructureMap.jurisdiction | TerminologyCapabilities.jurisdiction | TestScript.jurisdiction | ValueSet.jurisdiction</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="jurisdiction", path="ActivityDefinition.jurisdiction | ActorDefinition.jurisdiction | CapabilityStatement.jurisdiction | ChargeItemDefinition.jurisdiction | Citation.jurisdiction | CodeSystem.jurisdiction | ConceptMap.jurisdiction | ConditionDefinition.jurisdiction | EventDefinition.jurisdiction | ExampleScenario.jurisdiction | GraphDefinition.jurisdiction | ImplementationGuide.jurisdiction | Library.jurisdiction | Measure.jurisdiction | MessageDefinition.jurisdiction | NamingSystem.jurisdiction | OperationDefinition.jurisdiction | PlanDefinition.jurisdiction | Questionnaire.jurisdiction | Requirements.jurisdiction | SearchParameter.jurisdiction | StructureDefinition.jurisdiction | StructureMap.jurisdiction | TerminologyCapabilities.jurisdiction | TestScript.jurisdiction | ValueSet.jurisdiction", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): Intended jurisdiction for the activity definition\r\n* [ActorDefinition](actordefinition.html): Intended jurisdiction for the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): Intended jurisdiction for the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): Intended jurisdiction for the charge item definition\r\n* [Citation](citation.html): Intended jurisdiction for the citation\r\n* [CodeSystem](codesystem.html): Intended jurisdiction for the code system\r\n* [ConceptMap](conceptmap.html): Intended jurisdiction for the concept map\r\n* [ConditionDefinition](conditiondefinition.html): Intended jurisdiction for the condition definition\r\n* [EventDefinition](eventdefinition.html): Intended jurisdiction for the event definition\r\n* [ExampleScenario](examplescenario.html): Intended jurisdiction for the example scenario\r\n* [GraphDefinition](graphdefinition.html): Intended jurisdiction for the graph definition\r\n* [ImplementationGuide](implementationguide.html): Intended jurisdiction for the implementation guide\r\n* [Library](library.html): Intended jurisdiction for the library\r\n* [Measure](measure.html): Intended jurisdiction for the measure\r\n* [MessageDefinition](messagedefinition.html): Intended jurisdiction for the message definition\r\n* [NamingSystem](namingsystem.html): Intended jurisdiction for the naming system\r\n* [OperationDefinition](operationdefinition.html): Intended jurisdiction for the operation definition\r\n* [PlanDefinition](plandefinition.html): Intended jurisdiction for the plan definition\r\n* [Questionnaire](questionnaire.html): Intended jurisdiction for the questionnaire\r\n* [Requirements](requirements.html): Intended jurisdiction for the requirements\r\n* [SearchParameter](searchparameter.html): Intended jurisdiction for the search parameter\r\n* [StructureDefinition](structuredefinition.html): Intended jurisdiction for the structure definition\r\n* [StructureMap](structuremap.html): Intended jurisdiction for the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): Intended jurisdiction for the terminology capabilities\r\n* [TestScript](testscript.html): Intended jurisdiction for the test script\r\n* [ValueSet](valueset.html): Intended jurisdiction for the value set\r\n", type="token" )
+  public static final String SP_JURISDICTION = "jurisdiction";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>jurisdiction</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): Intended jurisdiction for the activity definition
+* [ActorDefinition](actordefinition.html): Intended jurisdiction for the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): Intended jurisdiction for the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): Intended jurisdiction for the charge item definition
+* [Citation](citation.html): Intended jurisdiction for the citation
+* [CodeSystem](codesystem.html): Intended jurisdiction for the code system
+* [ConceptMap](conceptmap.html): Intended jurisdiction for the concept map
+* [ConditionDefinition](conditiondefinition.html): Intended jurisdiction for the condition definition
+* [EventDefinition](eventdefinition.html): Intended jurisdiction for the event definition
+* [ExampleScenario](examplescenario.html): Intended jurisdiction for the example scenario
+* [GraphDefinition](graphdefinition.html): Intended jurisdiction for the graph definition
+* [ImplementationGuide](implementationguide.html): Intended jurisdiction for the implementation guide
+* [Library](library.html): Intended jurisdiction for the library
+* [Measure](measure.html): Intended jurisdiction for the measure
+* [MessageDefinition](messagedefinition.html): Intended jurisdiction for the message definition
+* [NamingSystem](namingsystem.html): Intended jurisdiction for the naming system
+* [OperationDefinition](operationdefinition.html): Intended jurisdiction for the operation definition
+* [PlanDefinition](plandefinition.html): Intended jurisdiction for the plan definition
+* [Questionnaire](questionnaire.html): Intended jurisdiction for the questionnaire
+* [Requirements](requirements.html): Intended jurisdiction for the requirements
+* [SearchParameter](searchparameter.html): Intended jurisdiction for the search parameter
+* [StructureDefinition](structuredefinition.html): Intended jurisdiction for the structure definition
+* [StructureMap](structuremap.html): Intended jurisdiction for the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): Intended jurisdiction for the terminology capabilities
+* [TestScript](testscript.html): Intended jurisdiction for the test script
+* [ValueSet](valueset.html): Intended jurisdiction for the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.jurisdiction | ActorDefinition.jurisdiction | CapabilityStatement.jurisdiction | ChargeItemDefinition.jurisdiction | Citation.jurisdiction | CodeSystem.jurisdiction | ConceptMap.jurisdiction | ConditionDefinition.jurisdiction | EventDefinition.jurisdiction | ExampleScenario.jurisdiction | GraphDefinition.jurisdiction | ImplementationGuide.jurisdiction | Library.jurisdiction | Measure.jurisdiction | MessageDefinition.jurisdiction | NamingSystem.jurisdiction | OperationDefinition.jurisdiction | PlanDefinition.jurisdiction | Questionnaire.jurisdiction | Requirements.jurisdiction | SearchParameter.jurisdiction | StructureDefinition.jurisdiction | StructureMap.jurisdiction | TerminologyCapabilities.jurisdiction | TestScript.jurisdiction | ValueSet.jurisdiction</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam JURISDICTION = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_JURISDICTION);
+
+ /**
+   * Search parameter: <b>name</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): Computationally friendly name of the activity definition
+* [CapabilityStatement](capabilitystatement.html): Computationally friendly name of the capability statement
+* [Citation](citation.html): Computationally friendly name of the citation
+* [CodeSystem](codesystem.html): Computationally friendly name of the code system
+* [CompartmentDefinition](compartmentdefinition.html): Computationally friendly name of the compartment definition
+* [ConceptMap](conceptmap.html): Computationally friendly name of the concept map
+* [ConditionDefinition](conditiondefinition.html): Computationally friendly name of the condition definition
+* [EventDefinition](eventdefinition.html): Computationally friendly name of the event definition
+* [EvidenceVariable](evidencevariable.html): Computationally friendly name of the evidence variable
+* [ExampleScenario](examplescenario.html): Computationally friendly name of the example scenario
+* [GraphDefinition](graphdefinition.html): Computationally friendly name of the graph definition
+* [ImplementationGuide](implementationguide.html): Computationally friendly name of the implementation guide
+* [Library](library.html): Computationally friendly name of the library
+* [Measure](measure.html): Computationally friendly name of the measure
+* [MessageDefinition](messagedefinition.html): Computationally friendly name of the message definition
+* [NamingSystem](namingsystem.html): Computationally friendly name of the naming system
+* [OperationDefinition](operationdefinition.html): Computationally friendly name of the operation definition
+* [PlanDefinition](plandefinition.html): Computationally friendly name of the plan definition
+* [Questionnaire](questionnaire.html): Computationally friendly name of the questionnaire
+* [Requirements](requirements.html): Computationally friendly name of the requirements
+* [SearchParameter](searchparameter.html): Computationally friendly name of the search parameter
+* [StructureDefinition](structuredefinition.html): Computationally friendly name of the structure definition
+* [StructureMap](structuremap.html): Computationally friendly name of the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): Computationally friendly name of the terminology capabilities
+* [TestScript](testscript.html): Computationally friendly name of the test script
+* [ValueSet](valueset.html): Computationally friendly name of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.name | CapabilityStatement.name | Citation.name | CodeSystem.name | CompartmentDefinition.name | ConceptMap.name | ConditionDefinition.name | EventDefinition.name | EvidenceVariable.name | ExampleScenario.name | GraphDefinition.name | ImplementationGuide.name | Library.name | Measure.name | MessageDefinition.name | NamingSystem.name | OperationDefinition.name | PlanDefinition.name | Questionnaire.name | Requirements.name | SearchParameter.name | StructureDefinition.name | StructureMap.name | TerminologyCapabilities.name | TestScript.name | ValueSet.name</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="name", path="ActivityDefinition.name | CapabilityStatement.name | Citation.name | CodeSystem.name | CompartmentDefinition.name | ConceptMap.name | ConditionDefinition.name | EventDefinition.name | EvidenceVariable.name | ExampleScenario.name | GraphDefinition.name | ImplementationGuide.name | Library.name | Measure.name | MessageDefinition.name | NamingSystem.name | OperationDefinition.name | PlanDefinition.name | Questionnaire.name | Requirements.name | SearchParameter.name | StructureDefinition.name | StructureMap.name | TerminologyCapabilities.name | TestScript.name | ValueSet.name", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): Computationally friendly name of the activity definition\r\n* [CapabilityStatement](capabilitystatement.html): Computationally friendly name of the capability statement\r\n* [Citation](citation.html): Computationally friendly name of the citation\r\n* [CodeSystem](codesystem.html): Computationally friendly name of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): Computationally friendly name of the compartment definition\r\n* [ConceptMap](conceptmap.html): Computationally friendly name of the concept map\r\n* [ConditionDefinition](conditiondefinition.html): Computationally friendly name of the condition definition\r\n* [EventDefinition](eventdefinition.html): Computationally friendly name of the event definition\r\n* [EvidenceVariable](evidencevariable.html): Computationally friendly name of the evidence variable\r\n* [ExampleScenario](examplescenario.html): Computationally friendly name of the example scenario\r\n* [GraphDefinition](graphdefinition.html): Computationally friendly name of the graph definition\r\n* [ImplementationGuide](implementationguide.html): Computationally friendly name of the implementation guide\r\n* [Library](library.html): Computationally friendly name of the library\r\n* [Measure](measure.html): Computationally friendly name of the measure\r\n* [MessageDefinition](messagedefinition.html): Computationally friendly name of the message definition\r\n* [NamingSystem](namingsystem.html): Computationally friendly name of the naming system\r\n* [OperationDefinition](operationdefinition.html): Computationally friendly name of the operation definition\r\n* [PlanDefinition](plandefinition.html): Computationally friendly name of the plan definition\r\n* [Questionnaire](questionnaire.html): Computationally friendly name of the questionnaire\r\n* [Requirements](requirements.html): Computationally friendly name of the requirements\r\n* [SearchParameter](searchparameter.html): Computationally friendly name of the search parameter\r\n* [StructureDefinition](structuredefinition.html): Computationally friendly name of the structure definition\r\n* [StructureMap](structuremap.html): Computationally friendly name of the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): Computationally friendly name of the terminology capabilities\r\n* [TestScript](testscript.html): Computationally friendly name of the test script\r\n* [ValueSet](valueset.html): Computationally friendly name of the value set\r\n", type="string" )
+  public static final String SP_NAME = "name";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>name</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): Computationally friendly name of the activity definition
+* [CapabilityStatement](capabilitystatement.html): Computationally friendly name of the capability statement
+* [Citation](citation.html): Computationally friendly name of the citation
+* [CodeSystem](codesystem.html): Computationally friendly name of the code system
+* [CompartmentDefinition](compartmentdefinition.html): Computationally friendly name of the compartment definition
+* [ConceptMap](conceptmap.html): Computationally friendly name of the concept map
+* [ConditionDefinition](conditiondefinition.html): Computationally friendly name of the condition definition
+* [EventDefinition](eventdefinition.html): Computationally friendly name of the event definition
+* [EvidenceVariable](evidencevariable.html): Computationally friendly name of the evidence variable
+* [ExampleScenario](examplescenario.html): Computationally friendly name of the example scenario
+* [GraphDefinition](graphdefinition.html): Computationally friendly name of the graph definition
+* [ImplementationGuide](implementationguide.html): Computationally friendly name of the implementation guide
+* [Library](library.html): Computationally friendly name of the library
+* [Measure](measure.html): Computationally friendly name of the measure
+* [MessageDefinition](messagedefinition.html): Computationally friendly name of the message definition
+* [NamingSystem](namingsystem.html): Computationally friendly name of the naming system
+* [OperationDefinition](operationdefinition.html): Computationally friendly name of the operation definition
+* [PlanDefinition](plandefinition.html): Computationally friendly name of the plan definition
+* [Questionnaire](questionnaire.html): Computationally friendly name of the questionnaire
+* [Requirements](requirements.html): Computationally friendly name of the requirements
+* [SearchParameter](searchparameter.html): Computationally friendly name of the search parameter
+* [StructureDefinition](structuredefinition.html): Computationally friendly name of the structure definition
+* [StructureMap](structuremap.html): Computationally friendly name of the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): Computationally friendly name of the terminology capabilities
+* [TestScript](testscript.html): Computationally friendly name of the test script
+* [ValueSet](valueset.html): Computationally friendly name of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.name | CapabilityStatement.name | Citation.name | CodeSystem.name | CompartmentDefinition.name | ConceptMap.name | ConditionDefinition.name | EventDefinition.name | EvidenceVariable.name | ExampleScenario.name | GraphDefinition.name | ImplementationGuide.name | Library.name | Measure.name | MessageDefinition.name | NamingSystem.name | OperationDefinition.name | PlanDefinition.name | Questionnaire.name | Requirements.name | SearchParameter.name | StructureDefinition.name | StructureMap.name | TerminologyCapabilities.name | TestScript.name | ValueSet.name</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.StringClientParam NAME = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_NAME);
+
+ /**
+   * Search parameter: <b>publisher</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): Name of the publisher of the activity definition
+* [ActorDefinition](actordefinition.html): Name of the publisher of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): Name of the publisher of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): Name of the publisher of the charge item definition
+* [Citation](citation.html): Name of the publisher of the citation
+* [CodeSystem](codesystem.html): Name of the publisher of the code system
+* [CompartmentDefinition](compartmentdefinition.html): Name of the publisher of the compartment definition
+* [ConceptMap](conceptmap.html): Name of the publisher of the concept map
+* [ConditionDefinition](conditiondefinition.html): Name of the publisher of the condition definition
+* [EventDefinition](eventdefinition.html): Name of the publisher of the event definition
+* [Evidence](evidence.html): Name of the publisher of the evidence
+* [EvidenceReport](evidencereport.html): Name of the publisher of the evidence report
+* [EvidenceVariable](evidencevariable.html): Name of the publisher of the evidence variable
+* [ExampleScenario](examplescenario.html): Name of the publisher of the example scenario
+* [GraphDefinition](graphdefinition.html): Name of the publisher of the graph definition
+* [ImplementationGuide](implementationguide.html): Name of the publisher of the implementation guide
+* [Library](library.html): Name of the publisher of the library
+* [Measure](measure.html): Name of the publisher of the measure
+* [MessageDefinition](messagedefinition.html): Name of the publisher of the message definition
+* [NamingSystem](namingsystem.html): Name of the publisher of the naming system
+* [OperationDefinition](operationdefinition.html): Name of the publisher of the operation definition
+* [PlanDefinition](plandefinition.html): Name of the publisher of the plan definition
+* [Questionnaire](questionnaire.html): Name of the publisher of the questionnaire
+* [Requirements](requirements.html): Name of the publisher of the requirements
+* [SearchParameter](searchparameter.html): Name of the publisher of the search parameter
+* [StructureDefinition](structuredefinition.html): Name of the publisher of the structure definition
+* [StructureMap](structuremap.html): Name of the publisher of the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): Name of the publisher of the terminology capabilities
+* [TestScript](testscript.html): Name of the publisher of the test script
+* [ValueSet](valueset.html): Name of the publisher of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.publisher | ActorDefinition.publisher | CapabilityStatement.publisher | ChargeItemDefinition.publisher | Citation.publisher | CodeSystem.publisher | CompartmentDefinition.publisher | ConceptMap.publisher | ConditionDefinition.publisher | EventDefinition.publisher | Evidence.publisher | EvidenceReport.publisher | EvidenceVariable.publisher | ExampleScenario.publisher | GraphDefinition.publisher | ImplementationGuide.publisher | Library.publisher | Measure.publisher | MessageDefinition.publisher | NamingSystem.publisher | OperationDefinition.publisher | PlanDefinition.publisher | Questionnaire.publisher | Requirements.publisher | SearchParameter.publisher | StructureDefinition.publisher | StructureMap.publisher | TerminologyCapabilities.publisher | TestScript.publisher | ValueSet.publisher</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="publisher", path="ActivityDefinition.publisher | ActorDefinition.publisher | CapabilityStatement.publisher | ChargeItemDefinition.publisher | Citation.publisher | CodeSystem.publisher | CompartmentDefinition.publisher | ConceptMap.publisher | ConditionDefinition.publisher | EventDefinition.publisher | Evidence.publisher | EvidenceReport.publisher | EvidenceVariable.publisher | ExampleScenario.publisher | GraphDefinition.publisher | ImplementationGuide.publisher | Library.publisher | Measure.publisher | MessageDefinition.publisher | NamingSystem.publisher | OperationDefinition.publisher | PlanDefinition.publisher | Questionnaire.publisher | Requirements.publisher | SearchParameter.publisher | StructureDefinition.publisher | StructureMap.publisher | TerminologyCapabilities.publisher | TestScript.publisher | ValueSet.publisher", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): Name of the publisher of the activity definition\r\n* [ActorDefinition](actordefinition.html): Name of the publisher of the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): Name of the publisher of the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): Name of the publisher of the charge item definition\r\n* [Citation](citation.html): Name of the publisher of the citation\r\n* [CodeSystem](codesystem.html): Name of the publisher of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): Name of the publisher of the compartment definition\r\n* [ConceptMap](conceptmap.html): Name of the publisher of the concept map\r\n* [ConditionDefinition](conditiondefinition.html): Name of the publisher of the condition definition\r\n* [EventDefinition](eventdefinition.html): Name of the publisher of the event definition\r\n* [Evidence](evidence.html): Name of the publisher of the evidence\r\n* [EvidenceReport](evidencereport.html): Name of the publisher of the evidence report\r\n* [EvidenceVariable](evidencevariable.html): Name of the publisher of the evidence variable\r\n* [ExampleScenario](examplescenario.html): Name of the publisher of the example scenario\r\n* [GraphDefinition](graphdefinition.html): Name of the publisher of the graph definition\r\n* [ImplementationGuide](implementationguide.html): Name of the publisher of the implementation guide\r\n* [Library](library.html): Name of the publisher of the library\r\n* [Measure](measure.html): Name of the publisher of the measure\r\n* [MessageDefinition](messagedefinition.html): Name of the publisher of the message definition\r\n* [NamingSystem](namingsystem.html): Name of the publisher of the naming system\r\n* [OperationDefinition](operationdefinition.html): Name of the publisher of the operation definition\r\n* [PlanDefinition](plandefinition.html): Name of the publisher of the plan definition\r\n* [Questionnaire](questionnaire.html): Name of the publisher of the questionnaire\r\n* [Requirements](requirements.html): Name of the publisher of the requirements\r\n* [SearchParameter](searchparameter.html): Name of the publisher of the search parameter\r\n* [StructureDefinition](structuredefinition.html): Name of the publisher of the structure definition\r\n* [StructureMap](structuremap.html): Name of the publisher of the structure map\r\n* [TerminologyCapabilities](terminologycapabilities.html): Name of the publisher of the terminology capabilities\r\n* [TestScript](testscript.html): Name of the publisher of the test script\r\n* [ValueSet](valueset.html): Name of the publisher of the value set\r\n", type="string" )
+  public static final String SP_PUBLISHER = "publisher";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>publisher</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): Name of the publisher of the activity definition
+* [ActorDefinition](actordefinition.html): Name of the publisher of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): Name of the publisher of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): Name of the publisher of the charge item definition
+* [Citation](citation.html): Name of the publisher of the citation
+* [CodeSystem](codesystem.html): Name of the publisher of the code system
+* [CompartmentDefinition](compartmentdefinition.html): Name of the publisher of the compartment definition
+* [ConceptMap](conceptmap.html): Name of the publisher of the concept map
+* [ConditionDefinition](conditiondefinition.html): Name of the publisher of the condition definition
+* [EventDefinition](eventdefinition.html): Name of the publisher of the event definition
+* [Evidence](evidence.html): Name of the publisher of the evidence
+* [EvidenceReport](evidencereport.html): Name of the publisher of the evidence report
+* [EvidenceVariable](evidencevariable.html): Name of the publisher of the evidence variable
+* [ExampleScenario](examplescenario.html): Name of the publisher of the example scenario
+* [GraphDefinition](graphdefinition.html): Name of the publisher of the graph definition
+* [ImplementationGuide](implementationguide.html): Name of the publisher of the implementation guide
+* [Library](library.html): Name of the publisher of the library
+* [Measure](measure.html): Name of the publisher of the measure
+* [MessageDefinition](messagedefinition.html): Name of the publisher of the message definition
+* [NamingSystem](namingsystem.html): Name of the publisher of the naming system
+* [OperationDefinition](operationdefinition.html): Name of the publisher of the operation definition
+* [PlanDefinition](plandefinition.html): Name of the publisher of the plan definition
+* [Questionnaire](questionnaire.html): Name of the publisher of the questionnaire
+* [Requirements](requirements.html): Name of the publisher of the requirements
+* [SearchParameter](searchparameter.html): Name of the publisher of the search parameter
+* [StructureDefinition](structuredefinition.html): Name of the publisher of the structure definition
+* [StructureMap](structuremap.html): Name of the publisher of the structure map
+* [TerminologyCapabilities](terminologycapabilities.html): Name of the publisher of the terminology capabilities
+* [TestScript](testscript.html): Name of the publisher of the test script
+* [ValueSet](valueset.html): Name of the publisher of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.publisher | ActorDefinition.publisher | CapabilityStatement.publisher | ChargeItemDefinition.publisher | Citation.publisher | CodeSystem.publisher | CompartmentDefinition.publisher | ConceptMap.publisher | ConditionDefinition.publisher | EventDefinition.publisher | Evidence.publisher | EvidenceReport.publisher | EvidenceVariable.publisher | ExampleScenario.publisher | GraphDefinition.publisher | ImplementationGuide.publisher | Library.publisher | Measure.publisher | MessageDefinition.publisher | NamingSystem.publisher | OperationDefinition.publisher | PlanDefinition.publisher | Questionnaire.publisher | Requirements.publisher | SearchParameter.publisher | StructureDefinition.publisher | StructureMap.publisher | TerminologyCapabilities.publisher | TestScript.publisher | ValueSet.publisher</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.StringClientParam PUBLISHER = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_PUBLISHER);
+
+ /**
+   * Search parameter: <b>status</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The current status of the activity definition
+* [ActorDefinition](actordefinition.html): The current status of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The current status of the charge item definition
+* [Citation](citation.html): The current status of the citation
+* [CodeSystem](codesystem.html): The current status of the code system
+* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition
+* [ConceptMap](conceptmap.html): The current status of the concept map
+* [ConditionDefinition](conditiondefinition.html): The current status of the condition definition
+* [EventDefinition](eventdefinition.html): The current status of the event definition
+* [Evidence](evidence.html): The current status of the evidence
+* [EvidenceReport](evidencereport.html): The current status of the evidence report
+* [EvidenceVariable](evidencevariable.html): The current status of the evidence variable
+* [ExampleScenario](examplescenario.html): The current status of the example scenario
+* [GraphDefinition](graphdefinition.html): The current status of the graph definition
+* [ImplementationGuide](implementationguide.html): The current status of the implementation guide
+* [Library](library.html): The current status of the library
+* [Measure](measure.html): The current status of the measure
+* [MedicationKnowledge](medicationknowledge.html): active | inactive | entered-in-error
+* [MessageDefinition](messagedefinition.html): The current status of the message definition
+* [NamingSystem](namingsystem.html): The current status of the naming system
+* [ObservationDefinition](observationdefinition.html): Publication status of the ObservationDefinition: draft, active, retired, unknown
+* [OperationDefinition](operationdefinition.html): The current status of the operation definition
+* [PlanDefinition](plandefinition.html): The current status of the plan definition
+* [Questionnaire](questionnaire.html): The current status of the questionnaire
+* [Requirements](requirements.html): The current status of the requirements
+* [SearchParameter](searchparameter.html): The current status of the search parameter
+* [SpecimenDefinition](specimendefinition.html): Publication status of the SpecimenDefinition: draft, active, retired, unknown
+* [StructureDefinition](structuredefinition.html): The current status of the structure definition
+* [StructureMap](structuremap.html): The current status of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): draft | active | retired | unknown
+* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities
+* [TestPlan](testplan.html): The current status of the test plan
+* [TestScript](testscript.html): The current status of the test script
+* [ValueSet](valueset.html): The current status of the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.status | ActorDefinition.status | CapabilityStatement.status | ChargeItemDefinition.status | Citation.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | ConditionDefinition.status | EventDefinition.status | Evidence.status | EvidenceReport.status | EvidenceVariable.status | ExampleScenario.status | GraphDefinition.status | ImplementationGuide.status | Library.status | Measure.status | MedicationKnowledge.status | MessageDefinition.status | NamingSystem.status | ObservationDefinition.status | OperationDefinition.status | PlanDefinition.status | Questionnaire.status | Requirements.status | SearchParameter.status | SpecimenDefinition.status | StructureDefinition.status | StructureMap.status | SubscriptionTopic.status | TerminologyCapabilities.status | TestPlan.status | TestScript.status | ValueSet.status</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="status", path="ActivityDefinition.status | ActorDefinition.status | CapabilityStatement.status | ChargeItemDefinition.status | Citation.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | ConditionDefinition.status | EventDefinition.status | Evidence.status | EvidenceReport.status | EvidenceVariable.status | ExampleScenario.status | GraphDefinition.status | ImplementationGuide.status | Library.status | Measure.status | MedicationKnowledge.status | MessageDefinition.status | NamingSystem.status | ObservationDefinition.status | OperationDefinition.status | PlanDefinition.status | Questionnaire.status | Requirements.status | SearchParameter.status | SpecimenDefinition.status | StructureDefinition.status | StructureMap.status | SubscriptionTopic.status | TerminologyCapabilities.status | TestPlan.status | TestScript.status | ValueSet.status", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The current status of the activity definition\r\n* [ActorDefinition](actordefinition.html): The current status of the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The current status of the charge item definition\r\n* [Citation](citation.html): The current status of the citation\r\n* [CodeSystem](codesystem.html): The current status of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition\r\n* [ConceptMap](conceptmap.html): The current status of the concept map\r\n* [ConditionDefinition](conditiondefinition.html): The current status of the condition definition\r\n* [EventDefinition](eventdefinition.html): The current status of the event definition\r\n* [Evidence](evidence.html): The current status of the evidence\r\n* [EvidenceReport](evidencereport.html): The current status of the evidence report\r\n* [EvidenceVariable](evidencevariable.html): The current status of the evidence variable\r\n* [ExampleScenario](examplescenario.html): The current status of the example scenario\r\n* [GraphDefinition](graphdefinition.html): The current status of the graph definition\r\n* [ImplementationGuide](implementationguide.html): The current status of the implementation guide\r\n* [Library](library.html): The current status of the library\r\n* [Measure](measure.html): The current status of the measure\r\n* [MedicationKnowledge](medicationknowledge.html): active | inactive | entered-in-error\r\n* [MessageDefinition](messagedefinition.html): The current status of the message definition\r\n* [NamingSystem](namingsystem.html): The current status of the naming system\r\n* [ObservationDefinition](observationdefinition.html): Publication status of the ObservationDefinition: draft, active, retired, unknown\r\n* [OperationDefinition](operationdefinition.html): The current status of the operation definition\r\n* [PlanDefinition](plandefinition.html): The current status of the plan definition\r\n* [Questionnaire](questionnaire.html): The current status of the questionnaire\r\n* [Requirements](requirements.html): The current status of the requirements\r\n* [SearchParameter](searchparameter.html): The current status of the search parameter\r\n* [SpecimenDefinition](specimendefinition.html): Publication status of the SpecimenDefinition: draft, active, retired, unknown\r\n* [StructureDefinition](structuredefinition.html): The current status of the structure definition\r\n* [StructureMap](structuremap.html): The current status of the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): draft | active | retired | unknown\r\n* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities\r\n* [TestPlan](testplan.html): The current status of the test plan\r\n* [TestScript](testscript.html): The current status of the test script\r\n* [ValueSet](valueset.html): The current status of the value set\r\n", type="token" )
+  public static final String SP_STATUS = "status";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>status</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The current status of the activity definition
+* [ActorDefinition](actordefinition.html): The current status of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The current status of the charge item definition
+* [Citation](citation.html): The current status of the citation
+* [CodeSystem](codesystem.html): The current status of the code system
+* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition
+* [ConceptMap](conceptmap.html): The current status of the concept map
+* [ConditionDefinition](conditiondefinition.html): The current status of the condition definition
+* [EventDefinition](eventdefinition.html): The current status of the event definition
+* [Evidence](evidence.html): The current status of the evidence
+* [EvidenceReport](evidencereport.html): The current status of the evidence report
+* [EvidenceVariable](evidencevariable.html): The current status of the evidence variable
+* [ExampleScenario](examplescenario.html): The current status of the example scenario
+* [GraphDefinition](graphdefinition.html): The current status of the graph definition
+* [ImplementationGuide](implementationguide.html): The current status of the implementation guide
+* [Library](library.html): The current status of the library
+* [Measure](measure.html): The current status of the measure
+* [MedicationKnowledge](medicationknowledge.html): active | inactive | entered-in-error
+* [MessageDefinition](messagedefinition.html): The current status of the message definition
+* [NamingSystem](namingsystem.html): The current status of the naming system
+* [ObservationDefinition](observationdefinition.html): Publication status of the ObservationDefinition: draft, active, retired, unknown
+* [OperationDefinition](operationdefinition.html): The current status of the operation definition
+* [PlanDefinition](plandefinition.html): The current status of the plan definition
+* [Questionnaire](questionnaire.html): The current status of the questionnaire
+* [Requirements](requirements.html): The current status of the requirements
+* [SearchParameter](searchparameter.html): The current status of the search parameter
+* [SpecimenDefinition](specimendefinition.html): Publication status of the SpecimenDefinition: draft, active, retired, unknown
+* [StructureDefinition](structuredefinition.html): The current status of the structure definition
+* [StructureMap](structuremap.html): The current status of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): draft | active | retired | unknown
+* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities
+* [TestPlan](testplan.html): The current status of the test plan
+* [TestScript](testscript.html): The current status of the test script
+* [ValueSet](valueset.html): The current status of the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.status | ActorDefinition.status | CapabilityStatement.status | ChargeItemDefinition.status | Citation.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | ConditionDefinition.status | EventDefinition.status | Evidence.status | EvidenceReport.status | EvidenceVariable.status | ExampleScenario.status | GraphDefinition.status | ImplementationGuide.status | Library.status | Measure.status | MedicationKnowledge.status | MessageDefinition.status | NamingSystem.status | ObservationDefinition.status | OperationDefinition.status | PlanDefinition.status | Questionnaire.status | Requirements.status | SearchParameter.status | SpecimenDefinition.status | StructureDefinition.status | StructureMap.status | SubscriptionTopic.status | TerminologyCapabilities.status | TestPlan.status | TestScript.status | ValueSet.status</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
+
+ /**
+   * Search parameter: <b>title</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The human-friendly name of the activity definition
+* [ActorDefinition](actordefinition.html): The human-friendly name of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The human-friendly name of the charge item definition
+* [Citation](citation.html): The human-friendly name of the citation
+* [CodeSystem](codesystem.html): The human-friendly name of the code system
+* [ConceptMap](conceptmap.html): The human-friendly name of the concept map
+* [ConditionDefinition](conditiondefinition.html): The human-friendly name of the condition definition
+* [EventDefinition](eventdefinition.html): The human-friendly name of the event definition
+* [Evidence](evidence.html): The human-friendly name of the evidence
+* [EvidenceVariable](evidencevariable.html): The human-friendly name of the evidence variable
+* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide
+* [Library](library.html): The human-friendly name of the library
+* [Measure](measure.html): The human-friendly name of the measure
+* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition
+* [ObservationDefinition](observationdefinition.html): Human-friendly name of the ObservationDefinition
+* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition
+* [PlanDefinition](plandefinition.html): The human-friendly name of the plan definition
+* [Questionnaire](questionnaire.html): The human-friendly name of the questionnaire
+* [Requirements](requirements.html): The human-friendly name of the requirements
+* [SpecimenDefinition](specimendefinition.html): Human-friendly name of the SpecimenDefinition
+* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition
+* [StructureMap](structuremap.html): The human-friendly name of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Name for this SubscriptionTopic (Human friendly)
+* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities
+* [TestScript](testscript.html): The human-friendly name of the test script
+* [ValueSet](valueset.html): The human-friendly name of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.title | ActorDefinition.title | CapabilityStatement.title | ChargeItemDefinition.title | Citation.title | CodeSystem.title | ConceptMap.title | ConditionDefinition.title | EventDefinition.title | Evidence.title | EvidenceVariable.title | ImplementationGuide.title | Library.title | Measure.title | MessageDefinition.title | ObservationDefinition.title | OperationDefinition.title | PlanDefinition.title | Questionnaire.title | Requirements.title | SpecimenDefinition.title | StructureDefinition.title | StructureMap.title | SubscriptionTopic.title | TerminologyCapabilities.title | TestScript.title | ValueSet.title</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="title", path="ActivityDefinition.title | ActorDefinition.title | CapabilityStatement.title | ChargeItemDefinition.title | Citation.title | CodeSystem.title | ConceptMap.title | ConditionDefinition.title | EventDefinition.title | Evidence.title | EvidenceVariable.title | ImplementationGuide.title | Library.title | Measure.title | MessageDefinition.title | ObservationDefinition.title | OperationDefinition.title | PlanDefinition.title | Questionnaire.title | Requirements.title | SpecimenDefinition.title | StructureDefinition.title | StructureMap.title | SubscriptionTopic.title | TerminologyCapabilities.title | TestScript.title | ValueSet.title", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The human-friendly name of the activity definition\r\n* [ActorDefinition](actordefinition.html): The human-friendly name of the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The human-friendly name of the charge item definition\r\n* [Citation](citation.html): The human-friendly name of the citation\r\n* [CodeSystem](codesystem.html): The human-friendly name of the code system\r\n* [ConceptMap](conceptmap.html): The human-friendly name of the concept map\r\n* [ConditionDefinition](conditiondefinition.html): The human-friendly name of the condition definition\r\n* [EventDefinition](eventdefinition.html): The human-friendly name of the event definition\r\n* [Evidence](evidence.html): The human-friendly name of the evidence\r\n* [EvidenceVariable](evidencevariable.html): The human-friendly name of the evidence variable\r\n* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide\r\n* [Library](library.html): The human-friendly name of the library\r\n* [Measure](measure.html): The human-friendly name of the measure\r\n* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition\r\n* [ObservationDefinition](observationdefinition.html): Human-friendly name of the ObservationDefinition\r\n* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition\r\n* [PlanDefinition](plandefinition.html): The human-friendly name of the plan definition\r\n* [Questionnaire](questionnaire.html): The human-friendly name of the questionnaire\r\n* [Requirements](requirements.html): The human-friendly name of the requirements\r\n* [SpecimenDefinition](specimendefinition.html): Human-friendly name of the SpecimenDefinition\r\n* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition\r\n* [StructureMap](structuremap.html): The human-friendly name of the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): Name for this SubscriptionTopic (Human friendly)\r\n* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities\r\n* [TestScript](testscript.html): The human-friendly name of the test script\r\n* [ValueSet](valueset.html): The human-friendly name of the value set\r\n", type="string" )
+  public static final String SP_TITLE = "title";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>title</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The human-friendly name of the activity definition
+* [ActorDefinition](actordefinition.html): The human-friendly name of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The human-friendly name of the charge item definition
+* [Citation](citation.html): The human-friendly name of the citation
+* [CodeSystem](codesystem.html): The human-friendly name of the code system
+* [ConceptMap](conceptmap.html): The human-friendly name of the concept map
+* [ConditionDefinition](conditiondefinition.html): The human-friendly name of the condition definition
+* [EventDefinition](eventdefinition.html): The human-friendly name of the event definition
+* [Evidence](evidence.html): The human-friendly name of the evidence
+* [EvidenceVariable](evidencevariable.html): The human-friendly name of the evidence variable
+* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide
+* [Library](library.html): The human-friendly name of the library
+* [Measure](measure.html): The human-friendly name of the measure
+* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition
+* [ObservationDefinition](observationdefinition.html): Human-friendly name of the ObservationDefinition
+* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition
+* [PlanDefinition](plandefinition.html): The human-friendly name of the plan definition
+* [Questionnaire](questionnaire.html): The human-friendly name of the questionnaire
+* [Requirements](requirements.html): The human-friendly name of the requirements
+* [SpecimenDefinition](specimendefinition.html): Human-friendly name of the SpecimenDefinition
+* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition
+* [StructureMap](structuremap.html): The human-friendly name of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Name for this SubscriptionTopic (Human friendly)
+* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities
+* [TestScript](testscript.html): The human-friendly name of the test script
+* [ValueSet](valueset.html): The human-friendly name of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.title | ActorDefinition.title | CapabilityStatement.title | ChargeItemDefinition.title | Citation.title | CodeSystem.title | ConceptMap.title | ConditionDefinition.title | EventDefinition.title | Evidence.title | EvidenceVariable.title | ImplementationGuide.title | Library.title | Measure.title | MessageDefinition.title | ObservationDefinition.title | OperationDefinition.title | PlanDefinition.title | Questionnaire.title | Requirements.title | SpecimenDefinition.title | StructureDefinition.title | StructureMap.title | SubscriptionTopic.title | TerminologyCapabilities.title | TestScript.title | ValueSet.title</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.StringClientParam TITLE = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_TITLE);
+
+ /**
+   * Search parameter: <b>url</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The uri that identifies the activity definition
+* [ActorDefinition](actordefinition.html): The uri that identifies the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The uri that identifies the charge item definition
+* [Citation](citation.html): The uri that identifies the citation
+* [CodeSystem](codesystem.html): The uri that identifies the code system
+* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition
+* [ConceptMap](conceptmap.html): The URI that identifies the concept map
+* [ConditionDefinition](conditiondefinition.html): The uri that identifies the condition definition
+* [EventDefinition](eventdefinition.html): The uri that identifies the event definition
+* [Evidence](evidence.html): The uri that identifies the evidence
+* [EvidenceReport](evidencereport.html): The uri that identifies the evidence report
+* [EvidenceVariable](evidencevariable.html): The uri that identifies the evidence variable
+* [ExampleScenario](examplescenario.html): The uri that identifies the example scenario
+* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition
+* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide
+* [Library](library.html): The uri that identifies the library
+* [Measure](measure.html): The uri that identifies the measure
+* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition
+* [NamingSystem](namingsystem.html): The uri that identifies the naming system
+* [ObservationDefinition](observationdefinition.html): The uri that identifies the observation definition
+* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition
+* [PlanDefinition](plandefinition.html): The uri that identifies the plan definition
+* [Questionnaire](questionnaire.html): The uri that identifies the questionnaire
+* [Requirements](requirements.html): The uri that identifies the requirements
+* [SearchParameter](searchparameter.html): The uri that identifies the search parameter
+* [SpecimenDefinition](specimendefinition.html): The uri that identifies the specimen definition
+* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition
+* [StructureMap](structuremap.html): The uri that identifies the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Logical canonical URL to reference this SubscriptionTopic (globally unique)
+* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities
+* [TestPlan](testplan.html): The uri that identifies the test plan
+* [TestScript](testscript.html): The uri that identifies the test script
+* [ValueSet](valueset.html): The uri that identifies the value set
+</b><br>
+   * Type: <b>uri</b><br>
+   * Path: <b>ActivityDefinition.url | ActorDefinition.url | CapabilityStatement.url | ChargeItemDefinition.url | Citation.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | ConditionDefinition.url | EventDefinition.url | Evidence.url | EvidenceReport.url | EvidenceVariable.url | ExampleScenario.url | GraphDefinition.url | ImplementationGuide.url | Library.url | Measure.url | MessageDefinition.url | NamingSystem.url | ObservationDefinition.url | OperationDefinition.url | PlanDefinition.url | Questionnaire.url | Requirements.url | SearchParameter.url | SpecimenDefinition.url | StructureDefinition.url | StructureMap.url | SubscriptionTopic.url | TerminologyCapabilities.url | TestPlan.url | TestScript.url | ValueSet.url</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="url", path="ActivityDefinition.url | ActorDefinition.url | CapabilityStatement.url | ChargeItemDefinition.url | Citation.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | ConditionDefinition.url | EventDefinition.url | Evidence.url | EvidenceReport.url | EvidenceVariable.url | ExampleScenario.url | GraphDefinition.url | ImplementationGuide.url | Library.url | Measure.url | MessageDefinition.url | NamingSystem.url | ObservationDefinition.url | OperationDefinition.url | PlanDefinition.url | Questionnaire.url | Requirements.url | SearchParameter.url | SpecimenDefinition.url | StructureDefinition.url | StructureMap.url | SubscriptionTopic.url | TerminologyCapabilities.url | TestPlan.url | TestScript.url | ValueSet.url", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The uri that identifies the activity definition\r\n* [ActorDefinition](actordefinition.html): The uri that identifies the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The uri that identifies the charge item definition\r\n* [Citation](citation.html): The uri that identifies the citation\r\n* [CodeSystem](codesystem.html): The uri that identifies the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition\r\n* [ConceptMap](conceptmap.html): The URI that identifies the concept map\r\n* [ConditionDefinition](conditiondefinition.html): The uri that identifies the condition definition\r\n* [EventDefinition](eventdefinition.html): The uri that identifies the event definition\r\n* [Evidence](evidence.html): The uri that identifies the evidence\r\n* [EvidenceReport](evidencereport.html): The uri that identifies the evidence report\r\n* [EvidenceVariable](evidencevariable.html): The uri that identifies the evidence variable\r\n* [ExampleScenario](examplescenario.html): The uri that identifies the example scenario\r\n* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition\r\n* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide\r\n* [Library](library.html): The uri that identifies the library\r\n* [Measure](measure.html): The uri that identifies the measure\r\n* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition\r\n* [NamingSystem](namingsystem.html): The uri that identifies the naming system\r\n* [ObservationDefinition](observationdefinition.html): The uri that identifies the observation definition\r\n* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition\r\n* [PlanDefinition](plandefinition.html): The uri that identifies the plan definition\r\n* [Questionnaire](questionnaire.html): The uri that identifies the questionnaire\r\n* [Requirements](requirements.html): The uri that identifies the requirements\r\n* [SearchParameter](searchparameter.html): The uri that identifies the search parameter\r\n* [SpecimenDefinition](specimendefinition.html): The uri that identifies the specimen definition\r\n* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition\r\n* [StructureMap](structuremap.html): The uri that identifies the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): Logical canonical URL to reference this SubscriptionTopic (globally unique)\r\n* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities\r\n* [TestPlan](testplan.html): The uri that identifies the test plan\r\n* [TestScript](testscript.html): The uri that identifies the test script\r\n* [ValueSet](valueset.html): The uri that identifies the value set\r\n", type="uri" )
+  public static final String SP_URL = "url";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>url</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The uri that identifies the activity definition
+* [ActorDefinition](actordefinition.html): The uri that identifies the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The uri that identifies the charge item definition
+* [Citation](citation.html): The uri that identifies the citation
+* [CodeSystem](codesystem.html): The uri that identifies the code system
+* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition
+* [ConceptMap](conceptmap.html): The URI that identifies the concept map
+* [ConditionDefinition](conditiondefinition.html): The uri that identifies the condition definition
+* [EventDefinition](eventdefinition.html): The uri that identifies the event definition
+* [Evidence](evidence.html): The uri that identifies the evidence
+* [EvidenceReport](evidencereport.html): The uri that identifies the evidence report
+* [EvidenceVariable](evidencevariable.html): The uri that identifies the evidence variable
+* [ExampleScenario](examplescenario.html): The uri that identifies the example scenario
+* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition
+* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide
+* [Library](library.html): The uri that identifies the library
+* [Measure](measure.html): The uri that identifies the measure
+* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition
+* [NamingSystem](namingsystem.html): The uri that identifies the naming system
+* [ObservationDefinition](observationdefinition.html): The uri that identifies the observation definition
+* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition
+* [PlanDefinition](plandefinition.html): The uri that identifies the plan definition
+* [Questionnaire](questionnaire.html): The uri that identifies the questionnaire
+* [Requirements](requirements.html): The uri that identifies the requirements
+* [SearchParameter](searchparameter.html): The uri that identifies the search parameter
+* [SpecimenDefinition](specimendefinition.html): The uri that identifies the specimen definition
+* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition
+* [StructureMap](structuremap.html): The uri that identifies the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Logical canonical URL to reference this SubscriptionTopic (globally unique)
+* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities
+* [TestPlan](testplan.html): The uri that identifies the test plan
+* [TestScript](testscript.html): The uri that identifies the test script
+* [ValueSet](valueset.html): The uri that identifies the value set
+</b><br>
+   * Type: <b>uri</b><br>
+   * Path: <b>ActivityDefinition.url | ActorDefinition.url | CapabilityStatement.url | ChargeItemDefinition.url | Citation.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | ConditionDefinition.url | EventDefinition.url | Evidence.url | EvidenceReport.url | EvidenceVariable.url | ExampleScenario.url | GraphDefinition.url | ImplementationGuide.url | Library.url | Measure.url | MessageDefinition.url | NamingSystem.url | ObservationDefinition.url | OperationDefinition.url | PlanDefinition.url | Questionnaire.url | Requirements.url | SearchParameter.url | SpecimenDefinition.url | StructureDefinition.url | StructureMap.url | SubscriptionTopic.url | TerminologyCapabilities.url | TestPlan.url | TestScript.url | ValueSet.url</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.UriClientParam URL = new ca.uhn.fhir.rest.gclient.UriClientParam(SP_URL);
+
+ /**
+   * Search parameter: <b>version</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The business version of the activity definition
+* [ActorDefinition](actordefinition.html): The business version of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The business version of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The business version of the charge item definition
+* [Citation](citation.html): The business version of the citation
+* [CodeSystem](codesystem.html): The business version of the code system
+* [CompartmentDefinition](compartmentdefinition.html): The business version of the compartment definition
+* [ConceptMap](conceptmap.html): The business version of the concept map
+* [ConditionDefinition](conditiondefinition.html): The business version of the condition definition
+* [EventDefinition](eventdefinition.html): The business version of the event definition
+* [Evidence](evidence.html): The business version of the evidence
+* [EvidenceVariable](evidencevariable.html): The business version of the evidence variable
+* [ExampleScenario](examplescenario.html): The business version of the example scenario
+* [GraphDefinition](graphdefinition.html): The business version of the graph definition
+* [ImplementationGuide](implementationguide.html): The business version of the implementation guide
+* [Library](library.html): The business version of the library
+* [Measure](measure.html): The business version of the measure
+* [MessageDefinition](messagedefinition.html): The business version of the message definition
+* [NamingSystem](namingsystem.html): The business version of the naming system
+* [OperationDefinition](operationdefinition.html): The business version of the operation definition
+* [PlanDefinition](plandefinition.html): The business version of the plan definition
+* [Questionnaire](questionnaire.html): The business version of the questionnaire
+* [Requirements](requirements.html): The business version of the requirements
+* [SearchParameter](searchparameter.html): The business version of the search parameter
+* [StructureDefinition](structuredefinition.html): The business version of the structure definition
+* [StructureMap](structuremap.html): The business version of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Business version of the SubscriptionTopic
+* [TerminologyCapabilities](terminologycapabilities.html): The business version of the terminology capabilities
+* [TestScript](testscript.html): The business version of the test script
+* [ValueSet](valueset.html): The business version of the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.version | ActorDefinition.version | CapabilityStatement.version | ChargeItemDefinition.version | Citation.version | CodeSystem.version | CompartmentDefinition.version | ConceptMap.version | ConditionDefinition.version | EventDefinition.version | Evidence.version | EvidenceVariable.version | ExampleScenario.version | GraphDefinition.version | ImplementationGuide.version | Library.version | Measure.version | MessageDefinition.version | NamingSystem.version | OperationDefinition.version | PlanDefinition.version | Questionnaire.version | Requirements.version | SearchParameter.version | StructureDefinition.version | StructureMap.version | SubscriptionTopic.version | TerminologyCapabilities.version | TestScript.version | ValueSet.version</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="version", path="ActivityDefinition.version | ActorDefinition.version | CapabilityStatement.version | ChargeItemDefinition.version | Citation.version | CodeSystem.version | CompartmentDefinition.version | ConceptMap.version | ConditionDefinition.version | EventDefinition.version | Evidence.version | EvidenceVariable.version | ExampleScenario.version | GraphDefinition.version | ImplementationGuide.version | Library.version | Measure.version | MessageDefinition.version | NamingSystem.version | OperationDefinition.version | PlanDefinition.version | Questionnaire.version | Requirements.version | SearchParameter.version | StructureDefinition.version | StructureMap.version | SubscriptionTopic.version | TerminologyCapabilities.version | TestScript.version | ValueSet.version", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The business version of the activity definition\r\n* [ActorDefinition](actordefinition.html): The business version of the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): The business version of the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The business version of the charge item definition\r\n* [Citation](citation.html): The business version of the citation\r\n* [CodeSystem](codesystem.html): The business version of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The business version of the compartment definition\r\n* [ConceptMap](conceptmap.html): The business version of the concept map\r\n* [ConditionDefinition](conditiondefinition.html): The business version of the condition definition\r\n* [EventDefinition](eventdefinition.html): The business version of the event definition\r\n* [Evidence](evidence.html): The business version of the evidence\r\n* [EvidenceVariable](evidencevariable.html): The business version of the evidence variable\r\n* [ExampleScenario](examplescenario.html): The business version of the example scenario\r\n* [GraphDefinition](graphdefinition.html): The business version of the graph definition\r\n* [ImplementationGuide](implementationguide.html): The business version of the implementation guide\r\n* [Library](library.html): The business version of the library\r\n* [Measure](measure.html): The business version of the measure\r\n* [MessageDefinition](messagedefinition.html): The business version of the message definition\r\n* [NamingSystem](namingsystem.html): The business version of the naming system\r\n* [OperationDefinition](operationdefinition.html): The business version of the operation definition\r\n* [PlanDefinition](plandefinition.html): The business version of the plan definition\r\n* [Questionnaire](questionnaire.html): The business version of the questionnaire\r\n* [Requirements](requirements.html): The business version of the requirements\r\n* [SearchParameter](searchparameter.html): The business version of the search parameter\r\n* [StructureDefinition](structuredefinition.html): The business version of the structure definition\r\n* [StructureMap](structuremap.html): The business version of the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): Business version of the SubscriptionTopic\r\n* [TerminologyCapabilities](terminologycapabilities.html): The business version of the terminology capabilities\r\n* [TestScript](testscript.html): The business version of the test script\r\n* [ValueSet](valueset.html): The business version of the value set\r\n", type="token" )
+  public static final String SP_VERSION = "version";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>version</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The business version of the activity definition
+* [ActorDefinition](actordefinition.html): The business version of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The business version of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The business version of the charge item definition
+* [Citation](citation.html): The business version of the citation
+* [CodeSystem](codesystem.html): The business version of the code system
+* [CompartmentDefinition](compartmentdefinition.html): The business version of the compartment definition
+* [ConceptMap](conceptmap.html): The business version of the concept map
+* [ConditionDefinition](conditiondefinition.html): The business version of the condition definition
+* [EventDefinition](eventdefinition.html): The business version of the event definition
+* [Evidence](evidence.html): The business version of the evidence
+* [EvidenceVariable](evidencevariable.html): The business version of the evidence variable
+* [ExampleScenario](examplescenario.html): The business version of the example scenario
+* [GraphDefinition](graphdefinition.html): The business version of the graph definition
+* [ImplementationGuide](implementationguide.html): The business version of the implementation guide
+* [Library](library.html): The business version of the library
+* [Measure](measure.html): The business version of the measure
+* [MessageDefinition](messagedefinition.html): The business version of the message definition
+* [NamingSystem](namingsystem.html): The business version of the naming system
+* [OperationDefinition](operationdefinition.html): The business version of the operation definition
+* [PlanDefinition](plandefinition.html): The business version of the plan definition
+* [Questionnaire](questionnaire.html): The business version of the questionnaire
+* [Requirements](requirements.html): The business version of the requirements
+* [SearchParameter](searchparameter.html): The business version of the search parameter
+* [StructureDefinition](structuredefinition.html): The business version of the structure definition
+* [StructureMap](structuremap.html): The business version of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Business version of the SubscriptionTopic
+* [TerminologyCapabilities](terminologycapabilities.html): The business version of the terminology capabilities
+* [TestScript](testscript.html): The business version of the test script
+* [ValueSet](valueset.html): The business version of the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.version | ActorDefinition.version | CapabilityStatement.version | ChargeItemDefinition.version | Citation.version | CodeSystem.version | CompartmentDefinition.version | ConceptMap.version | ConditionDefinition.version | EventDefinition.version | Evidence.version | EvidenceVariable.version | ExampleScenario.version | GraphDefinition.version | ImplementationGuide.version | Library.version | Measure.version | MessageDefinition.version | NamingSystem.version | OperationDefinition.version | PlanDefinition.version | Questionnaire.version | Requirements.version | SearchParameter.version | StructureDefinition.version | StructureMap.version | SubscriptionTopic.version | TerminologyCapabilities.version | TestScript.version | ValueSet.version</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam VERSION = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_VERSION);
 
 // Manual code (from Configuration.txt):
 public String toString() {

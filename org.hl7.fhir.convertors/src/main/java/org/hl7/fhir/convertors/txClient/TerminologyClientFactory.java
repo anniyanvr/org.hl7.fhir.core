@@ -1,93 +1,100 @@
 package org.hl7.fhir.convertors.txClient;
 
-/*
-  Copyright (c) 2011+, HL7, Inc.
-  All rights reserved.
-  
-  Redistribution and use in source and binary forms, with or without modification, 
-  are permitted provided that the following conditions are met:
-    
-   * Redistributions of source code must retain the above copyright notice, this 
-     list of conditions and the following disclaimer.
-   * Redistributions in binary form must reproduce the above copyright notice, 
-     this list of conditions and the following disclaimer in the documentation 
-     and/or other materials provided with the distribution.
-   * Neither the name of HL7 nor the names of its contributors may be used to 
-     endorse or promote products derived from this software without specific 
-     prior written permission.
-  
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
-  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
-  POSSIBILITY OF SUCH DAMAGE.
-  
- */
+import java.net.URISyntaxException;
 
-
-import org.hl7.fhir.r5.model.FhirPublication;
-import org.hl7.fhir.r5.terminologies.TerminologyClient;
+import org.hl7.fhir.model.IModelContext;
+import org.hl7.fhir.services.client.ITerminologyClientFactoryN;
+import org.hl7.fhir.services.client.ITerminologyClientN;
+import org.hl7.fhir.services.client.TerminologyClientR6;
+import org.hl7.fhir.r5.terminologies.client.ITerminologyClient5;
+import org.hl7.fhir.r5.terminologies.client.ITerminologyClientFactory5;
+import org.hl7.fhir.r5.terminologies.client.TerminologyClient5R5;
+import org.hl7.fhir.utilities.FhirPublication;
+import org.hl7.fhir.utilities.ToolingClientLogger;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.VersionUtilities;
 
-import java.net.URISyntaxException;
+public class TerminologyClientFactory implements ITerminologyClientFactory5, ITerminologyClientFactoryN {
 
-public class TerminologyClientFactory {
+  private String v;  
 
-  public static TerminologyClient makeClient(String url, String userAgent, FhirPublication v) throws URISyntaxException {
-    if (v == null)
-      return new TerminologyClientR5(checkEndsWith("/r4", url), userAgent);
-    switch (v) {
-      case DSTU2016May:
-        return new TerminologyClientR3(checkEndsWith("/r3", url), userAgent); // r3 is the least worst match
-      case DSTU1:
-        throw new Error("The version " + v + " is not currently supported");
-      case DSTU2:
-        return new TerminologyClientR2(checkEndsWith("/r2", url), userAgent);
-      case R4:
-        return new TerminologyClientR5(checkEndsWith("/r4", url), userAgent);
-      case R5:
-        return new TerminologyClientR5(checkEndsWith("/r4", url), userAgent); // r4 for now, since the terminology is currently the same
-      case STU3:
-        return new TerminologyClientR3(checkEndsWith("/r3", url), userAgent);
-      default:
-        throw new Error("The version " + v + " is not currently supported");
-    }
+  public TerminologyClientFactory(FhirPublication v) {
+    super();
+    this.v = v == null ? null : v.toCode();
+  }
+  
+  public TerminologyClientFactory(String version) {
+    super();
+    this.v = version;
   }
 
-  public static TerminologyClient makeClient(String url, String userAgent, String v) throws URISyntaxException {
+  @Override
+  public ITerminologyClient5 makeClientR5(String id, String url, String userAgent, ToolingClientLogger logger) throws URISyntaxException {
     if (v == null)
-      return new TerminologyClientR5(checkEndsWith("/r4", url), userAgent);
+      return new TerminologyClient5R5(id, checkEndsWith("/r4", url), userAgent).setLogger(logger);
     v = VersionUtilities.getMajMin(v);
-    switch (v) {
-      case "1.0":
-        return new TerminologyClientR2(checkEndsWith("/r2", url), userAgent);
-      case "1.4":
-        return new TerminologyClientR3(checkEndsWith("/r3", url), userAgent); // r3 is the least worst match
-      case "3.0":
-        return new TerminologyClientR3(checkEndsWith("/r3", url), userAgent);
-      case "4.0":
-        return new TerminologyClientR4(checkEndsWith("/r4", url), userAgent);
-      case "4.5":
-        return new TerminologyClientR5(checkEndsWith("/r4", url), userAgent); // r4 for now, since the terminology is currently the same
-      default:
-        throw new Error("The version " + v + " is not currently supported");
+    if (VersionUtilities.isR2Ver(v)) {
+      return new TerminologyClient5R3(id, checkEndsWith("/r3", url), userAgent).setLogger(logger); // r3 is the least worst match
     }
+    if (VersionUtilities.isR2BVer(v)) {
+      return new TerminologyClient5R3(id, checkEndsWith("/r3", url), userAgent).setLogger(logger); // r3 is the least worst match
+    }
+    if (VersionUtilities.isR3Ver(v)) {
+      return new TerminologyClient5R3(id, checkEndsWith("/r3", url), userAgent).setLogger(logger); // r3 is the least worst match
+    }
+    if (VersionUtilities.isR4Ver(v)) {
+      return new TerminologyClient5R4(id, checkEndsWith("/r4", url), userAgent).setLogger(logger);
+    }
+    if (VersionUtilities.isR4BVer(v)) {
+      return new TerminologyClient5R4(id, checkEndsWith("/r4", url), userAgent).setLogger(logger);
+    }
+    if (VersionUtilities.isR5Plus(v)) {
+      return new TerminologyClient5R5(id, checkEndsWith("/r5", url), userAgent).setLogger(logger); // r4 for now, since the terminology is currently the same
+    }
+    throw new Error("The version " + v + " is not currently supported");
   }
 
-  private static String checkEndsWith(String term, String url) {
+  public ITerminologyClientN makeClientN(IModelContext context, String id, String url, String userAgent, ToolingClientLogger logger) throws URISyntaxException {
+    if (v == null)
+      return new TerminologyClientR6(context, id, checkEndsWith("/r4", url), userAgent).setLogger(logger);
+    v = VersionUtilities.getMajMin(v);
+    if (VersionUtilities.isR2Ver(v)) {
+      return new TerminologyClientNR3(context, id, checkEndsWith("/r3", url), userAgent).setLogger(logger); // r3 is the least worst match
+    }
+    if (VersionUtilities.isR2BVer(v)) {
+      return new TerminologyClientNR3(context, id, checkEndsWith("/r3", url), userAgent).setLogger(logger); // r3 is the least worst match
+    }
+    if (VersionUtilities.isR3Ver(v)) {
+      return new TerminologyClientNR3(context, id, checkEndsWith("/r3", url), userAgent).setLogger(logger); // r3 is the least worst match
+    }
+    if (VersionUtilities.isR4Ver(v)) {
+      return new TerminologyClientNR4(context, id, checkEndsWith("/r4", url), userAgent).setLogger(logger);
+    }
+    if (VersionUtilities.isR4BVer(v)) {
+      return new TerminologyClientNR4(context, id, checkEndsWith("/r4", url), userAgent).setLogger(logger);
+    }
+    if (VersionUtilities.isR5Ver(v)) {
+      return new TerminologyClientNR5(id, checkEndsWith("/r5", url), userAgent, context).setLogger(logger); // r4 for now, since the terminology is currently the same
+    }
+    if (VersionUtilities.isR6Plus(v)) {
+      // note that this is still R5 for now, until we get an R6 terminology endpoint
+      return new TerminologyClientNR5(id, checkEndsWith("/r5", url), userAgent, context).setLogger(logger); // r4 for now, since the terminology is currently the same
+    }
+    throw new Error("The version " + v + " is not currently supported");
+  }
+
+  private String checkEndsWith(String term, String url) {
     if (url.endsWith(term))
       return url;
-    if (url.startsWith("http://tx.fhir.org"))
+    if (Utilities.isTxFhirOrgServer(url)) {
       return Utilities.pathURL(url, term);
-    if (url.equals("http://local.fhir.org:960"))
-      return Utilities.pathURL(url, term);
+    }
     return url;
+  }
+
+  @Override
+  public String getVersion() {
+    return v;
   }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ClaimCareteamroleEnumFactory implements EnumFactory<ClaimCareteamrole> {
@@ -50,11 +46,13 @@ public class ClaimCareteamroleEnumFactory implements EnumFactory<ClaimCareteamro
       return ClaimCareteamrole.SUPERVISOR;
     if ("other".equals(codeString))
       return ClaimCareteamrole.OTHER;
-    throw new IllegalArgumentException("Unknown ClaimCareteamrole code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ClaimCareteamrole code '" + codeString + "'");
   }
 
   public String toCode(ClaimCareteamrole code) {
-    if (code == ClaimCareteamrole.PRIMARY)
+       if (code == ClaimCareteamrole.NULL)
+           return null;
+       if (code == ClaimCareteamrole.PRIMARY)
       return "primary";
     if (code == ClaimCareteamrole.ASSIST)
       return "assist";
@@ -63,10 +61,10 @@ public class ClaimCareteamroleEnumFactory implements EnumFactory<ClaimCareteamro
     if (code == ClaimCareteamrole.OTHER)
       return "other";
     return "?";
-  }
+   }
 
-    public String toSystem(ClaimCareteamrole code) {
-      return code.getSystem();
-      }
+  public String toSystem(ClaimCareteamrole code) {
+    return code.getSystem();
+  }
 
 }

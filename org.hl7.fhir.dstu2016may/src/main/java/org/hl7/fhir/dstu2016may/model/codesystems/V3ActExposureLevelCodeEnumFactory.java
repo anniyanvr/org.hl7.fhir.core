@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3ActExposureLevelCodeEnumFactory implements EnumFactory<V3ActExposureLevelCode> {
@@ -50,11 +46,13 @@ public class V3ActExposureLevelCodeEnumFactory implements EnumFactory<V3ActExpos
       return V3ActExposureLevelCode.LOW;
     if ("MEDIUM".equals(codeString))
       return V3ActExposureLevelCode.MEDIUM;
-    throw new IllegalArgumentException("Unknown V3ActExposureLevelCode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ActExposureLevelCode code '" + codeString + "'");
   }
 
   public String toCode(V3ActExposureLevelCode code) {
-    if (code == V3ActExposureLevelCode._ACTEXPOSURELEVELCODE)
+       if (code == V3ActExposureLevelCode.NULL)
+           return null;
+       if (code == V3ActExposureLevelCode._ACTEXPOSURELEVELCODE)
       return "_ActExposureLevelCode";
     if (code == V3ActExposureLevelCode.HIGH)
       return "HIGH";
@@ -63,10 +61,10 @@ public class V3ActExposureLevelCodeEnumFactory implements EnumFactory<V3ActExpos
     if (code == V3ActExposureLevelCode.MEDIUM)
       return "MEDIUM";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ActExposureLevelCode code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ActExposureLevelCode code) {
+    return code.getSystem();
+  }
 
 }

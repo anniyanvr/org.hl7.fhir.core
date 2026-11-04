@@ -1,5 +1,14 @@
 package org.hl7.fhir.dstu3.model;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.apache.commons.codec.binary.Base64;
+import org.hl7.fhir.instance.model.api.IBaseHasExtensions;
+import org.hl7.fhir.instance.model.api.IPrimitiveType;
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,14 +43,6 @@ package org.hl7.fhir.dstu3.model;
 import ca.uhn.fhir.model.api.IElement;
 import ca.uhn.fhir.model.api.annotation.DatatypeDef;
 import ca.uhn.fhir.parser.DataFormatException;
-import org.apache.commons.codec.binary.Base64;
-import org.hl7.fhir.instance.model.api.IBaseHasExtensions;
-import org.hl7.fhir.instance.model.api.IPrimitiveType;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 /**
  * Primitive type "base64Binary" in FHIR: a sequence of bytes represented in base64
@@ -67,7 +68,6 @@ public class Base64BinaryType extends PrimitiveType<byte[]> implements IPrimitiv
   public Base64BinaryType(String theValue) {
     super();
     // Null values still result in non-null instance being created
-    if (theValue != null) checkValidBase64(theValue);
     setValueAsString(theValue);
   }
 
@@ -117,6 +117,8 @@ public class Base64BinaryType extends PrimitiveType<byte[]> implements IPrimitiv
 
   @Override
   public void setValueAsString(String theValue) throws IllegalArgumentException {
+    // Null values still result in non-null instance being created
+    if (theValue != null) checkValidBase64(theValue);
     fromStringValue(theValue);
     setValue(parse(theValue));
   }
@@ -129,7 +131,7 @@ public class Base64BinaryType extends PrimitiveType<byte[]> implements IPrimitiv
   @Override
   public Base64BinaryType setValue(byte[] theValue) throws IllegalArgumentException {
     myValue = theValue;
-    return this;
+    return (Base64BinaryType) super.setValue(theValue);
   }
 
   @Override
@@ -151,7 +153,7 @@ public class Base64BinaryType extends PrimitiveType<byte[]> implements IPrimitiv
    * @throws DataFormatException
    */
   public void checkValidBase64(String toCheck) throws DataFormatException {
-    if (!Base64.isBase64(toCheck.getBytes())) {
+    if (!org.hl7.fhir.utilities.Base64.isBase64(toCheck.getBytes())) {
       throw new DataFormatException("");
     }
   }

@@ -1,5 +1,7 @@
 package org.hl7.fhir.utilities.xhtml;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,27 +36,20 @@ package org.hl7.fhir.utilities.xhtml;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.hl7.fhir.exceptions.DefinitionException;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.exceptions.FHIRFormatError;
 import org.hl7.fhir.instance.model.api.IBaseXhtml;
-import org.hl7.fhir.utilities.MarkDownProcessor;
 import org.hl7.fhir.utilities.Utilities;
-import org.hl7.fhir.utilities.MarkDownProcessor.Dialect;
-import org.hl7.fhir.utilities.i18n.I18nConstants;
-import org.hl7.fhir.utilities.validation.ValidationMessage.IssueType;
 
-import ca.uhn.fhir.model.api.annotation.ChildOrder;
 import ca.uhn.fhir.model.primitive.XhtmlDt;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 @ca.uhn.fhir.model.api.annotation.DatatypeDef(name="xhtml")
-public class XhtmlNode implements IBaseXhtml {
+public class XhtmlNode extends XhtmlFluent implements IBaseXhtml {
   private static final long serialVersionUID = -4362547161441436492L;
 
 
@@ -79,23 +74,30 @@ public class XhtmlNode implements IBaseXhtml {
     }
   }
 
+  private static boolean checkParaGeneral = false;
+  private boolean checkParaTree = false;
+  
   public static final String NBSP = Character.toString((char)0xa0);
   public static final String XMLNS = "http://www.w3.org/1999/xhtml";
   private static final String DECL_XMLNS = " xmlns=\""+XMLNS+"\"";
+  private static final String NS_SVG = "http://www.w3.org/2000/svg";
+  private static final String NS_XLINK = "http://www.w3.org/1999/xlink";
 
   private Location location;
   private NodeType nodeType;
   private String name;
-  private Map<String, String> attributes = new HashMap<String, String>();
-  private List<XhtmlNode> childNodes = new ArrayList<XhtmlNode>();
+  protected Map<String, String> attributes;
+  protected XhtmlNodeList childNodes;
   private String content;
   private boolean notPretty;
-  private boolean inPara;
-  private boolean inLink;
   private boolean seperated;  
+  private Boolean emptyExpanded;
+  private Map<String, XhtmlNode> namedParams;
+  private Map<String, String> namedParamValues;
 
   public XhtmlNode() {
     super();
+    checkParaTree = checkParaGeneral;
   }
 
 
@@ -124,15 +126,33 @@ public class XhtmlNode implements IBaseXhtml {
 
   public XhtmlNode setName(String name) {
     assert name.contains(":") == false : "Name should not contain any : but was " + name;
+    if (checkParaTree && "p".equals(name)) {
+      isInPara = true;
+    }
     this.name = name;
     return this;
   }
 
+  public boolean hasAttributes() {
+    return attributes != null && !attributes.isEmpty();
+  }
+  
   public Map<String, String> getAttributes() {
+    if (attributes == null) {
+      attributes = new HashMap<String, String>();
+    }
     return attributes;
   }
 
-  public List<XhtmlNode> getChildNodes() {
+  public boolean hasChildren() {
+    return childNodes != null && !childNodes.isEmpty();
+  }
+
+
+  public XhtmlNodeList getChildNodes() {
+    if (childNodes == null) {
+      childNodes = new XhtmlNodeList();
+    }
     return childNodes;
   }
 
@@ -157,19 +177,21 @@ public class XhtmlNode implements IBaseXhtml {
             "code", "samp", "img", "map", "area")) {
           errors.add("Error at "+path+": Found "+name+" in a resource");          
         }      
-        for (String an : attributes.keySet()) {
-          boolean ok = an.startsWith("xmlns") || Utilities.existsInList(an,
-              "title", "style", "class", "ID", "lang", "xml:lang", "dir", "accesskey", "tabindex",
-              // tables
-              "span", "width", "align", "valign", "char", "charoff", "abbr", "axis", "headers", "scope", "rowspan", "colspan") ||
-              Utilities.existsInList(name + "." + an, "a.href", "a.name", "img.src", "img.border", "div.xmlns", "blockquote.cite", "q.cite",
-                  "a.charset", "a.type", "a.name", "a.href", "a.hreflang", "a.rel", "a.rev", "a.shape", "a.coords", "img.src",
-                  "img.alt", "img.longdesc", "img.height", "img.width", "img.usemap", "img.ismap", "map.name", "area.shape",
-                  "area.coords", "area.href", "area.nohref", "area.alt", "table.summary", "table.width", "table.border",
-                  "table.frame", "table.rules", "table.cellspacing", "table.cellpadding", "pre.space", "td.nowrap"
-                  );
-          if (!ok)
-            errors.add("Error at "+path+": Found attribute "+name+"."+an+" in a resource");          
+        if (hasAttributes()) {
+          for (String an : attributes.keySet()) {
+            boolean ok = an.startsWith("xmlns") || Utilities.existsInList(an,
+                "title", "style", "class", "ID", "lang", "xml:lang", "dir", "accesskey", "tabindex",
+                // tables
+                "span", "width", "align", "valign", "char", "charoff", "abbr", "axis", "headers", "scope", "rowspan", "colspan") ||
+                Utilities.existsInList(name + "." + an, "a.href", "a.name", "img.src", "img.border", "div.xmlns", "blockquote.cite", "q.cite",
+                    "a.charset", "a.type", "a.name", "a.href", "a.hreflang", "a.rel", "a.rev", "a.shape", "a.coords", "img.src",
+                    "img.alt", "img.longdesc", "img.height", "img.width", "img.usemap", "img.ismap", "map.name", "area.shape",
+                    "area.coords", "area.href", "area.nohref", "area.alt", "table.summary", "table.width", "table.border",
+                    "table.frame", "table.rules", "table.cellspacing", "table.cellpadding", "pre.space", "td.nowrap"
+                    );
+            if (!ok)
+              errors.add("Error at "+path+": Found attribute "+name+"."+an+" in a resource");          
+          }
         }
       }
       if (inPara && Utilities.existsInList(name, "div",  "blockquote", "table", "ol", "ul", "p")) {
@@ -179,7 +201,7 @@ public class XhtmlNode implements IBaseXhtml {
         errors.add("Error at "+path+": Found an <a> inside an <a> paragraph");
       }
 
-      if (childNodes != null) {
+      if (hasChildren()) {
         if ("p".equals(name)) {
           inPara = true;
         }
@@ -193,92 +215,130 @@ public class XhtmlNode implements IBaseXhtml {
     }
   }
   
-  public XhtmlNode addTag(String name)
-  {
-
+  private XhtmlNode makeTag(String name) {
     if (!(nodeType == NodeType.Element || nodeType == NodeType.Document))  {
       throw new Error("Wrong node type - node is "+nodeType.toString()+" ('"+getName()+"/"+getContent()+"')");
     }
-    
-//    if (inPara && name.equals("p")) {
-//      throw new FHIRException("nested Para");
-//    }
-//    if (inLink && name.equals("a")) {
-//      throw new FHIRException("Nested Link");
-//    }
+//  if (inPara && name.equals("p")) {
+//  throw new FHIRException("nested Para");
+//}
+//if (inLink && name.equals("a")) {
+//  throw new FHIRException("Nested Link");
+//}
     XhtmlNode node = new XhtmlNode(NodeType.Element);
     node.setName(name);
-    if (inPara || name.equals("p")) {
-      node.inPara = true;
+    if (getChildNodes().isInPara() || name.equals("p")) {
+      node.getChildNodes().setInPara(true);
     }
-    if (inLink || name.equals("a")) {
-      node.inLink = true;
+    if (getChildNodes().isInLink() || name.equals("a")) {
+      node.getChildNodes().setInLink(true);
     }
-    childNodes.add(node);
+    if (Utilities.existsInList(name, "b", "big", "i", "small", "tt", "abbr", "acronym", "cite", "code", "dfn", "em", "kbd", "strong", "samp", "var", "a", "bdo", "br", "img", "map", "object", "q", "script", "span", "sub", "sup", " button", "input", "label", "select", "textarea", "style", "script")) {
+      node.notPretty();
+    }        
+    return node;
+  }
+  
+  public XhtmlNode addTag(String name) {
+    XhtmlNode node = makeTag(name);
+    addChildNode(node);
+    return node;
+  }
+  
+  public XhtmlNode addTag(String name, XhtmlNode insertionPoint) {
+    XhtmlNode node = makeTag(name);
+    if (insertionPoint != null) {
+      addChildNode(getChildNodes().indexOf(insertionPoint), node);
+    } else {
+      addChildNode(node);
+    }
+    return node;
+  }
+  
+  
+
+  public XhtmlNode addTag(int index, String name) {
+    XhtmlNode node = makeTag(name);
+    addChildNode(index, node);
     return node;
   }
 
-  public XhtmlNode addTag(int index, String name)
-  {
 
-    if (!(nodeType == NodeType.Element || nodeType == NodeType.Document)) 
-      throw new Error("Wrong node type. is "+nodeType.toString());
-    XhtmlNode node = new XhtmlNode(NodeType.Element);
-    if (inPara || name.equals("p")) {
-      node.inPara = true;
-    }
-    if (inLink || name.equals("a")) {
-      node.inLink = true;
-    }
-    node.setName(name);
-    childNodes.add(index, node);
-    return node;
-  }
-
-  public XhtmlNode addComment(String content)
-  {
-    if (!(nodeType == NodeType.Element || nodeType == NodeType.Document)) 
+  public XhtmlNode addComment(String content) {
+    if (!(nodeType == NodeType.Element || nodeType == NodeType.Document))
       throw new Error("Wrong node type");
     XhtmlNode node = new XhtmlNode(NodeType.Comment);
     node.setContent(content);
-    childNodes.add(node);
+    addChildNode(node);
     return node;
   }
 
-  public XhtmlNode addDocType(String content)
-  {
+  public XhtmlNode addCData(String content) {
+    if (!(nodeType == NodeType.Element || nodeType == NodeType.Document))
+      throw new Error("Wrong node type");
+    XhtmlNode node = new XhtmlNode(NodeType.CData);
+    node.setContent(content);
+    addChildNode(node);
+    return node;
+  }
+
+  public XhtmlNode addDocType(String content) {
     if (!(nodeType == NodeType.Document)) 
       throw new Error("Wrong node type");
     XhtmlNode node = new XhtmlNode(NodeType.DocType);
     node.setContent(content);
-    childNodes.add(node);
+    addChildNode(node);
     return node;
   }
 
-  public XhtmlNode addInstruction(String content)
-  {
+  public XhtmlNode addInstruction(String content) {
     if (!(nodeType == NodeType.Document)) 
       throw new Error("Wrong node type");
     XhtmlNode node = new XhtmlNode(NodeType.Instruction);
     node.setContent(content);
-    childNodes.add(node);
+    addChildNode(node);
     return node;
   }
-  public XhtmlNode addText(String content)
-  {
-    if (!(nodeType == NodeType.Element || nodeType == NodeType.Document)) 
+
+  public XhtmlNode addText(String content) {
+    if (!(nodeType == NodeType.Element || nodeType == NodeType.Document))
       throw new Error("Wrong node type");
     if (content != null) {
       XhtmlNode node = new XhtmlNode(NodeType.Text);
       node.setContent(content);
-      childNodes.add(node);
+      addChildNode(node);
       return node;
-    } else 
+    } else {
       return null;
+    }
   }
 
-  public XhtmlNode addText(int index, String content)
-  {
+  public XhtmlNode addTextWithWhitespace(String content) {
+    String s = allText();
+    if (s != null && !Character.isWhitespace(s.charAt(s.length()-1))) {
+      addText(" ");
+    }
+    return addText(content);
+  }
+
+  public void addTextWithLineBreaks(String content) {
+    if (content != null) {
+      boolean first = true;
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //simple character class split; safe
+      String[] contentLines = content.split("\\r?\\n");
+      for (String line : contentLines) {
+        if (first) {
+          first = false;
+        } else {
+          br();
+        }
+        tx(line);
+      }
+    }
+  }
+
+  public XhtmlNode addText(int index, String content) {
     if (!(nodeType == NodeType.Element || nodeType == NodeType.Document)) 
       throw new Error("Wrong node type");
     if (content == null)
@@ -286,42 +346,107 @@ public class XhtmlNode implements IBaseXhtml {
 
     XhtmlNode node = new XhtmlNode(NodeType.Text);
     node.setContent(content);
-    childNodes.add(index, node);
+    addChildNode(index, node);
     return node;
   }
 
-  public boolean allChildrenAreText()
-  {
+  public boolean allChildrenAreText() {
     boolean res = true;
-    for (XhtmlNode n : childNodes)
-      res = res && n.getNodeType() == NodeType.Text;
+    if (hasChildren()) {
+      for (XhtmlNode n : childNodes) {
+        res = res && n.getNodeType() == NodeType.Text;
+      }
+    }
     return res;
   }
 
   public XhtmlNode getElement(String name) {
-    for (XhtmlNode n : childNodes)
-      if (n.getNodeType() == NodeType.Element && name.equals(n.getName())) 
-        return n;
+    if (hasChildren()) {
+      for (XhtmlNode n : childNodes)
+        if (n.getNodeType() == NodeType.Element && name.equals(n.getName())) 
+          return n;
+    }
     return null;
   }
 
   public XhtmlNode getFirstElement() {
-    for (XhtmlNode n : childNodes)
-      if (n.getNodeType() == NodeType.Element) 
-        return n;
+    if (hasChildren()) {
+      for (XhtmlNode n : childNodes)
+        if (n.getNodeType() == NodeType.Element) 
+          return n;
+    }
     return null;
   }
 
   public String allText() {
-    if (childNodes == null || childNodes.isEmpty())
-      return getContent();
+    if (!hasChildren()) {
+      if (getContent() == null) {
+        return "";
+      } else {
+        return getContent();
+      }
+    }
     
     StringBuilder b = new StringBuilder();
-    for (XhtmlNode n : childNodes)
-      if (n.getNodeType() == NodeType.Text)
-        b.append(n.getContent());
-      else if (n.getNodeType() == NodeType.Element)
-        b.append(n.allText());
+    appendAllText(b);
+    return b.toString();
+  }
+
+  // appends what allText() returns to b. The whole subtree is written into the one builder: building a string for each
+  // child and then appending it made allText() cost O(size x depth), and some callers ask for it at every level
+  private void appendAllText(StringBuilder b) {
+    if (!hasChildren()) {
+      if (getContent() != null) {
+        b.append(getContent());
+      }
+      return;
+    }
+    for (XhtmlNode n : childNodes) {
+      if (n.getNodeType() == NodeType.Element && Utilities.existsInList(n.getName(), "li")) {
+        b.append("* ");
+      }
+      if (n.getNodeType() == NodeType.Text) {
+        if (n.getContent() != null) {
+          b.append(n.getContent());
+        }
+      } 
+      if (n.getNodeType() == NodeType.Element) {
+        if (!Utilities.existsInList(n.getName(), "img")) {
+          n.appendAllText(b);
+        } else if (n.hasAttribute("alt")) {
+          b.append(n.getAttribute("alt"));
+        } else {
+          b.append("[image]");
+        }
+        if (Utilities.existsInList(n.getName(), "p", "div", "tr", "th", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6")) {
+          b.append("\r\n");
+        } else if (Utilities.existsInList(n.getName(), "th", "td")) {
+          b.append(" ");
+        }
+      }
+    }
+  }
+
+  public String toLiteralText() {
+    if (!hasChildren()) {
+      if (getContent() == null) {
+        return "";
+      } else {
+        return getContent();
+      }
+    }
+
+    StringBuilder b = new StringBuilder();
+    for (XhtmlNode n : childNodes) {
+      if (n.getNodeType() == NodeType.Text) {
+        if (n.getContent() != null) {
+          b.append(n.getContent());
+        }
+      }
+      if (n.getNodeType() == NodeType.Element) {
+        b.append(n.toLiteralText());
+      }
+    }
     return b.toString();
   }
 
@@ -332,16 +457,31 @@ public class XhtmlNode implements IBaseXhtml {
       throw new Error("name is null");
     if (value == null)
       throw new Error("value is null");
-    attributes.put(name, value);
+    getAttributes().put(name, value);
+    return this;
+  }
+
+  public XhtmlNode attributeNN(String name, String value) {
+    if (!(nodeType == NodeType.Element || nodeType == NodeType.Document)) 
+      throw new Error("Wrong node type");
+    if (name == null)
+      throw new Error("name is null");
+    if (value != null) {
+      getAttributes().put(name, value);
+    }
     return this;
   }
 
   public boolean hasAttribute(String name) {
-    return getAttributes().containsKey(name);
+    return hasAttributes() && getAttributes().containsKey(name);
+  }
+
+  public boolean hasAttribute(String name, String value) {
+    return hasAttributes() && getAttributes().containsKey(name) && value.equals(getAttributes().get(name));
   }
 
   public String getAttribute(String name) {
-    return getAttributes().get(name);
+    return hasAttributes() ? getAttributes().get(name) : null;
   }
 
   public XhtmlNode setAttribute(String name, String value) {
@@ -352,21 +492,101 @@ public class XhtmlNode implements IBaseXhtml {
     return this;    
   }
 
+  /**
+   * Shift every heading in this tree so that the highest one (the h1..h6 with the smallest number)
+   * ends up at {@code level}, keeping the relative structure intact. h1/h2/h2 shifted to 3 becomes
+   * h3/h4/h4; h4/h5 shifted to 3 becomes h3/h4.
+   * <p>
+   * This is for content that is about to be composed into a page as a fragment. Whoever wrote the
+   * content cannot know how deep in the including page it will land - the same narrative can be
+   * included under headings at different levels - so the including code has to say what depth it is
+   * putting the fragment at, and the heading levels are made to match.
+   * <p>
+   * The shift is calculated from the highest heading rather than the first one, so that afterwards
+   * nothing in the tree sits above {@code level}. That is the property the caller actually needs:
+   * the fragment must not compete with the heading of the page including it.
+   * <p>
+   * Headings inside an svg are left alone - that is markup inside a picture, not document structure.
+   * <p>
+   * NOTE: this MUTATES the tree. Narrative read off a resource shares its nodes with the resource,
+   * so copy() first unless you intend to change the resource's own narrative as well.
+   *
+   * @param level the level the highest heading should end up at, 1-6
+   * @throws FHIRException if level is out of range, or the shift would push a heading past h6
+   */
+  public void ensureTopHeadingIs(int level) {
+    if (level < 1 || level > 6) {
+      throw new FHIRException("Illegal Header level "+level);
+    }
+    List<XhtmlNode> headings = new ArrayList<XhtmlNode>();
+    listHeadings(this, headings);
+    if (headings.isEmpty()) {
+      return;
+    }
+    int min = 7;
+    int max = 0;
+    for (XhtmlNode h : headings) {
+      int l = headingLevel(h);
+      min = Math.min(min, l);
+      max = Math.max(max, l);
+    }
+    int delta = level - min;
+    if (delta == 0) {
+      return;
+    }
+    if (max + delta > 6) {
+      throw new FHIRException("Unable to make the top heading in this content h"+level+": the deepest heading in it is h"+max+
+          ", which would have to become h"+(max + delta)+", and HTML has no heading below h6");
+    }
+    for (XhtmlNode h : headings) {
+      h.setName("h"+Integer.toString(headingLevel(h) + delta));
+    }
+  }
+
+  private static void listHeadings(XhtmlNode focus, List<XhtmlNode> headings) {
+    if ("svg".equals(focus.getName())) {
+      return;
+    }
+    if (headingLevel(focus) > 0) {
+      headings.add(focus);
+    }
+    if (focus.hasChildren()) {
+      for (XhtmlNode c : focus.getChildNodes()) {
+        listHeadings(c, headings);
+      }
+    }
+  }
+
+  /**
+   * @return 1-6 for h1..h6, or 0 for any other node
+   */
+  private static int headingLevel(XhtmlNode focus) {
+    String n = focus.getName();
+    if (n != null && n.length() == 2 && (n.charAt(0) == 'h' || n.charAt(0) == 'H') && n.charAt(1) >= '1' && n.charAt(1) <= '6') {
+      return n.charAt(1) - '0';
+    }
+    return 0;
+  }
+
   public XhtmlNode copy() {
     XhtmlNode dst = new XhtmlNode(nodeType);
     dst.name = name;
-    for (String n : attributes.keySet()) {
-      dst.attributes.put(n, attributes.get(n));
+    if (hasAttributes()) {
+      for (String n : attributes.keySet()) {
+        dst.getAttributes().put(n, attributes.get(n));
+      }
     }
-    for (XhtmlNode n : childNodes)
-      dst.childNodes.add(n.copy());
+    if (hasChildren()) {
+      for (XhtmlNode n : childNodes)
+        dst.addChildNode(n.copy());
+    }
     dst.content = content;
     return dst;
   }
 
   @Override
   public boolean isEmpty() {
-    return (childNodes == null || childNodes.isEmpty()) && content == null;
+    return !hasChildren() && content == null;
   }
 
   public boolean equalsDeep(XhtmlNode other) {
@@ -376,16 +596,26 @@ public class XhtmlNode implements IBaseXhtml {
 
     if (!(nodeType == other.nodeType) || !compare(name, other.name) || !compare(content, other.content))
       return false;
-    if (attributes.size() != other.attributes.size())
+    if (hasAttributes() != other.hasAttributes()) {
       return false;
-    for (String an : attributes.keySet())
-      if (!attributes.get(an).equals(other.attributes.get(an)))
+    }
+    if (hasAttributes()) {
+      if (attributes.size() != other.attributes.size())
         return false;
-    if (childNodes.size() != other.childNodes.size())
+      for (String an : attributes.keySet())
+        if (!attributes.get(an).equals(other.attributes.get(an)))
+          return false;
+    }
+    if (hasChildren() != other.hasChildren()) {
       return false;
-    for (int i = 0; i < childNodes.size(); i++) {
-      if (!compareDeep(childNodes.get(i), other.childNodes.get(i)))
+    }
+    if (hasChildren()) {
+      if (childNodes.size() != other.childNodes.size())
         return false;
+      for (int i = 0; i < childNodes.size(); i++) {
+        if (!compareDeep(childNodes.get(i), other.childNodes.get(i)))
+          return false;
+      }
     }
     return true;
   }
@@ -407,12 +637,27 @@ public class XhtmlNode implements IBaseXhtml {
   }
 
   public String getNsDecl() {
-    for (String an : attributes.keySet()) {
-      if (an.equals("xmlns")) {
-        return attributes.get(an);
+    if (hasAttributes()) {
+      for (String an : attributes.keySet()) {
+        if (an.equals("xmlns")) {
+          return attributes.get(an);
+        }
       }
     }
     return null;
+  }
+
+
+  public Boolean getEmptyExpanded() {
+    return emptyExpanded;
+  }
+
+  public boolean hasEmptyExpanded() {
+    return emptyExpanded != null;
+  }
+
+  public void setEmptyExpanded(Boolean emptyExpanded) {
+    this.emptyExpanded = emptyExpanded;
   }
 
 
@@ -455,20 +700,18 @@ public class XhtmlNode implements IBaseXhtml {
 
     try {
       XhtmlDocument fragment = new XhtmlParser().parse(val, "div");
-      this.attributes = fragment.getAttributes();
-      this.childNodes = fragment.getChildNodes();
-      // Strip the <? .. ?> declaration if one was present
-      if (childNodes.size() > 0 && childNodes.get(0) != null && childNodes.get(0).getNodeType() == NodeType.Instruction) {
-        childNodes.remove(0);
-      }
-      this.content = fragment.getContent();
-      this.name = fragment.getName();
-      this.nodeType= fragment.getNodeType();
+      // Skip the <? .. ?> declaration if one was present
+      XhtmlNodeList nodes = fragment.getChildNodes();
+      XhtmlNode root = nodes.get((nodes.size() > 0 && nodes.get(0) != null && nodes.get(0).getNodeType() == NodeType.Instruction)  ? 1 : 0);
+      this.attributes = root.attributes;
+      this.childNodes = root.childNodes;
+      this.content = root.getContent();
+      this.name = root.getName();
+      this.nodeType= root.getNodeType();
     } catch (Exception e) {
       // TODO: composer shouldn't throw exception like this
       throw new RuntimeException(e);
     }
-
   }
 
   public XhtmlNode getElementByIndex(int i) {
@@ -519,18 +762,26 @@ public class XhtmlNode implements IBaseXhtml {
     throw new UnsupportedOperationException();
   }
 
-  /**
-   * NOT SUPPORTED - Throws {@link UnsupportedOperationException}
-   */
+  private Map<String, Object> userData;
+  private boolean isInPara;
+  
   public Object getUserData(String theName) {
-    throw new UnsupportedOperationException();
+    if (hasUserData(theName)) {
+      return userData.get(theName);
+    } else {
+      return null;
+    }
   }
 
-  /**
-   * NOT SUPPORTED - Throws {@link UnsupportedOperationException}
-   */
+  public boolean hasUserData(String theName) {
+    return userData != null && userData.containsKey(theName);
+  }
+
   public void setUserData(String theName, Object theValue) {
-    throw new UnsupportedOperationException();
+    if (userData == null) {
+      userData = new HashMap<>();
+    }
+    userData.put(theName, theValue);
   }
 
 
@@ -544,170 +795,17 @@ public class XhtmlNode implements IBaseXhtml {
   }
 
   // xhtml easy adders -----------------------------------------------
-  public XhtmlNode h1() {
-    return addTag("h1");
-  }
   
-  public XhtmlNode h2() {
-    return addTag("h2");
-  }
-  
-  public XhtmlNode h(int level) {
-    if (level < 1 || level > 6) {
-      throw new FHIRException("Illegal Header level "+level);
-    }
-    return addTag("h"+Integer.toString(level));
-  }
-  
-  public XhtmlNode h3() {
-    return addTag("h3");
-  }
-  
-  public XhtmlNode h4() {
-    return addTag("h4");
-  }
-  
-  public XhtmlNode table(String clss) {
-    XhtmlNode res = addTag("table");
-    if (!Utilities.noString(clss))
-      res.setAttribute("class", clss);
-    return res;
-  }
-  
-  public XhtmlNode tr() {
-    return addTag("tr");
-  }
-  
-  public XhtmlNode th() {
-    return addTag("th");
-  }
-  
-  public XhtmlNode td() {
-    return addTag("td");
-  }
-  
-  public XhtmlNode td(String clss) {
-    return addTag("td").attribute("class", clss);
-  }
-  
-  public XhtmlNode colspan(String n) {
-    return setAttribute("colspan", n);
-  }
-  
-  public XhtmlNode div() {
-    return addTag("div");
-  }
-
-  public XhtmlNode para() {
-    return addTag("p");
-  }
-
-  public XhtmlNode pre() {
-    return addTag("pre");
-  }
-
-  public XhtmlNode pre(String clss) {
-    return addTag("pre").setAttribute("class", clss);
-  }
-
-  public void br() {
-    addTag("br");
-  }
-
-  public void hr() {
-    addTag("hr");
-  }
-
-  public XhtmlNode ul() {
-    return addTag("ul");
-  }
-
-  public XhtmlNode li() {
-    return addTag("li");
-  }
-
-  public XhtmlNode b() {
-    return addTag("b");
-  }
-
-  public XhtmlNode i() {
-    return addTag("i");
-  }
-  
-  public XhtmlNode tx(String cnt) {
-    return addText(cnt);
-  }
-
-  // differs from tx because it returns the owner node, not the created text
-  public XhtmlNode txN(String cnt) {
-    addText(cnt);
-    return this;
-  }
-
-  public XhtmlNode tx(int cnt) {
-    return addText(Integer.toString(cnt));
-  }
-
-  public XhtmlNode ah(String href) {
-    return addTag("a").attribute("href", href);
-  }
-
-  public XhtmlNode ah(String href, String title) {
-    return addTag("a").attribute("href", href).attribute("title", title);
-  }
-
-  public XhtmlNode img(String src) {
-    return addTag("img").attribute("src", src);    
-  }
-
-  public XhtmlNode img(String src, String title) {
-    return addTag("img").attribute("src", src).attribute("title", title);    
-  }
-
-  public XhtmlNode an(String href) {
-    return an(href, " ");
-  }
-  
-  public XhtmlNode an(String href, String tx) {
-    XhtmlNode a = addTag("a").attribute("name", href);
-    a.tx(tx);
-    return a;
-  }
-
-  public XhtmlNode span(String style, String title) {
-    XhtmlNode res = addTag("span");
-    if (!Utilities.noString(style))
-      res.attribute("style", style);
-    if (!Utilities.noString(title))
-      res.attribute("title", title);
-    return res;
-  }
-
-
-  public XhtmlNode code(String text) {
-    return addTag("code").tx(text);
-  }
-
-  public XhtmlNode code() {
-    return addTag("code");
-  }
-
-
-  public XhtmlNode blockquote() {
-    return addTag("blockquote");
-  }
-
 
   @Override
   public String toString() {
+    if (nodeType == null) {
+      return super.toString();
+    }
     switch (nodeType) {
     case Document: 
     case Element:
-      try {
-        return new XhtmlComposer(XhtmlComposer.HTML).compose(this);
-      } catch (IOException e) {
-        return super.toString();
-      }
+      return new XhtmlComposer(XhtmlComposer.HTML).compose(this);
     case Text:
       return this.content;
     case Comment:
@@ -768,39 +866,51 @@ public class XhtmlNode implements IBaseXhtml {
   }
 
   public XhtmlNode add(XhtmlNode n) {
-    getChildNodes().add(n);
+    addChildNode(n);
     return this;
   }
 
 
   public XhtmlNode addChildren(List<XhtmlNode> children) {
-    getChildNodes().addAll(children);
+    addChildNodes(children);
     return this;
   }
 
   public XhtmlNode addChildren(XhtmlNode x) {
     if (x != null) {
-      getChildNodes().addAll(x.getChildNodes());
+      addChildNodes(x.getChildNodes());
     }
     return this;
   }
 
 
-  public XhtmlNode input(String name, String type, String placeholder, int size) {
+  public XhtmlNode input(String name, String label, String type, String placeholder, int size) {
     XhtmlNode p = new XhtmlNode(NodeType.Element, "input");
-    p.attribute("name", name);
+    if (name != null) {
+      p.attribute("name", name);
+    }
+    if (label != null) {
+      p.attribute("aria-label", label);
+    }
     p.attribute("type", type);
-    p.attribute("placeholder", placeholder);
-    p.attribute("size", Integer.toString(size));
-    getChildNodes().add(p);
+    if (placeholder != null) {
+      p.attribute("placeholder", placeholder);
+    }
+    if (size > 0) {
+        p.attribute("size", Integer.toString(size));
+    }
+    addChildNode(p);
     return p;
   }
 
-  public XhtmlNode select(String name) {
+  public XhtmlNode select(String name, String label) {
     XhtmlNode p = new XhtmlNode(NodeType.Element, "select");
     p.attribute("name", name);
     p.attribute("size", "1");
-    getChildNodes().add(p);
+    if (label != null) {
+      p.attribute("aria-label", label);
+    }
+    addChildNode(p);
     return p;
   }
   
@@ -809,7 +919,7 @@ public class XhtmlNode implements IBaseXhtml {
     p.attribute("value", value);
     p.attribute("selected", Boolean.toString(selected));
     p.tx(text);
-    getChildNodes().add(p);
+    addChildNode(p);
     return p;
   }
 
@@ -837,22 +947,6 @@ public class XhtmlNode implements IBaseXhtml {
     return "p".equals(name);
   }
 
-
-  public void markdown(String md, String source) throws IOException {
-   if (md != null) {
-      String s = new MarkDownProcessor(Dialect.COMMON_MARK).process(md, source);
-      XhtmlParser p = new XhtmlParser();
-      XhtmlNode m;
-      try {
-        m = p.parse("<div>"+s+"</div>", "div");
-      } catch (org.hl7.fhir.exceptions.FHIRFormatError e) {
-        throw new FHIRFormatError(e.getMessage(), e);
-      }
-      getChildNodes().addAll(m.getChildNodes());
-   }        
-  }
-
-
   public XhtmlNode sep(String separator) {
     // if there's already text, add the separator. otherwise, we'll add it next time
     if (!seperated) {
@@ -863,9 +957,664 @@ public class XhtmlNode implements IBaseXhtml {
   }
 
 
+  public XhtmlNode sepBr() {
+    // if there's already text, add the separator. otherwise, we'll add it next time
+    if (!seperated) {
+      seperated = true;
+      return this;
+    }
+    br();
+    return this;
+  }
 
-  
 
+  // more fluent
   
+  public XhtmlNode colspan(String n) {
+    return setAttribute("colspan", n);
+  }
+
+  public XhtmlNode colspan(int n) {
+    return setAttribute("colspan", Integer.toString(n));
+  }
+
+  public XhtmlNode rowspan(int n) {
+    if (n > 1) {
+      return setAttribute("rowspan", Integer.toString(n));      
+    } else {
+      return this;
+    }
+  }
+
+  @Override
+  protected void addChildren(XhtmlNodeList childNodes) {
+    this.addChildNodes(childNodes);    
+  }
+
+
+  public XhtmlNode color(String color) {
+    return span("color: "+color, null);
+  }
   
+  public void startScript(String name) {
+    if (namedParams != null) {
+      throw new Error("Sequence Error - script is already open @ "+name);
+    }
+    namedParams = new HashMap<>();    
+    namedParamValues = new HashMap<>();
+  }
+  
+  public XhtmlNode param(String name) {
+    if (namedParams == null) {
+      throw new Error("Sequence Error - script is not already open");
+    }
+    XhtmlNode node = new XhtmlNode(NodeType.Element, "p"); // this node is dead will never appear anywhere, but we are in paragraph mode
+    namedParams.put(name, node);
+    return node;
+  }
+
+
+  public void paramValue(String name, String value) {
+    if (namedParamValues == null) {
+      throw new Error("Sequence Error - script is not already open");
+    }
+    namedParamValues.put(name, value); 
+  }
+
+  public void paramValue(String name, int value) {
+    if (namedParamValues == null) {
+      throw new Error("Sequence Error - script is not already open");
+    }
+    namedParamValues.put(name, Integer.toString(value)); 
+  }
+
+  /**
+   * To set up a script, you do the following:
+   * 
+   * * call startScript - setting up the parameter infrastructure 
+   * * define a set of parameters. Parameter values can be provided as string or integer, or:
+   * * you can use param(name) to render an arbitrarily complicated html fragment that will be inserted by the script
+   * * you can redefine parameters with the same name 
+   * * call execScript() to execute the script. You can call this any number of times
+   * * call closeScript
+   * 
+   * The script format is an xhtml fragment that can have any html in it, and also the following tags:
+   *   param: <param name="{name}"/> - replace this tag with the named parameter (or delete it if no value)
+   *   if: <if test="{condition}"/> - condition is param op value, where value is a string, and op is =, != <, >
+   *   
+   * @param structure
+   * @throws FHIRException
+   * @throws IOException
+   */
+  public void execScript(String structure) throws FHIRException, IOException {
+    XhtmlNode script = new XhtmlParser().parseFragment("<div>"+structure+"</div>");
+    parseNodes(script.getChildNodes(), this.getChildNodes());
+  }
+
+  private void parseNodes(XhtmlNodeList source, XhtmlNodeList dest) {
+    for (XhtmlNode n : source) {
+      if ("param".equals(n.getName())) {
+        XhtmlNode node = namedParams.get(n.getAttribute("name"));
+        if (node != null) {
+          parseNodes(node.getChildNodes(), dest);
+        }
+      } else if ("if".equals(n.getName())) {
+        String test = n.getAttribute("test");
+        if (passesTest(test)) {
+          parseNodes(n.getChildNodes(), dest);
+        }
+      } else {
+        dest.add(n);
+      }
+    }
+
+  }
+
+
+  public void closeScript() {
+    if (namedParams == null) {
+      throw new Error("Sequence Error - script is not already open");
+    }
+    namedParams = null;    
+    namedParamValues = null;
+  }
+
+  private boolean passesTest(String test) {
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //simple character class split; safe
+    String[] p = test.split("\\s+");
+    if (p.length != 3) {
+      return false;
+    }
+    if (!namedParamValues.containsKey(p[0])) {
+      return false;
+    }
+    String pv = namedParamValues.get(p[0]);
+    switch (p[1]) {
+    case "=": return p[2].equalsIgnoreCase(pv);
+    case "!=": return !p[2].equalsIgnoreCase(pv);
+    case "<": return Utilities.isInteger(p[2]) && Utilities.isInteger(pv) && Integer.parseInt(pv) < Integer.parseInt(p[2]);
+    case "<=": return Utilities.isInteger(p[2]) && Utilities.isInteger(pv) && Integer.parseInt(pv) <= Integer.parseInt(p[2]);
+    case ">": return Utilities.isInteger(p[2]) && Utilities.isInteger(pv) && Integer.parseInt(pv) > Integer.parseInt(p[2]);
+    case ">=": return Utilities.isInteger(p[2]) && Utilities.isInteger(pv) && Integer.parseInt(pv) >= Integer.parseInt(p[2]);
+    }
+    return false;
+  }
+
+
+  public XhtmlNode getElementById(String id) {
+    if (id.equals(getAttribute("id"))) {
+      return this;
+    }
+    if (childNodes != null) {
+      for (XhtmlNode x : childNodes) {
+        XhtmlNode r = x.getElementById(id);
+        if (r != null) {
+          return r;
+        }   
+      }
+    }
+    return null;
+  }
+
+
+  public List<XhtmlNode> getChildren(String name) {
+    List<XhtmlNode> res = new ArrayList<>();
+    XhtmlNode x = getFirstElement();
+    while (x != null) {
+      if (name.equals(x.getName())) {
+        res.add(x);
+      }
+      x = getNextElement(x);
+    }
+    return res;
+  }
+
+
+  public XhtmlNode strikethrough() {
+    return addTag("s");
+  }
+
+
+  public XhtmlNode svg() {
+    XhtmlNode svg = addTag("svg");
+    svg.setAttribute("xmlns", NS_SVG);
+    svg.setAttribute("xmlns:xlink", NS_XLINK);
+    return svg;
+  }
+
+
+  public XhtmlNode path(String value) {
+    return addTag("path").attribute("d", value);
+    
+  }
+
+
+  public void copyAllContent(XhtmlNode other) {
+    addChildNodes(other.getChildNodes());
+    getAttributes().putAll(other.getAttributes());
+    if (!Utilities.noString(other.getContent())) {
+      tx(other.getContent());
+    }    
+  }
+
+  public boolean isClass(String name) {
+    return hasAttribute("class", name);
+  }
+
+  public boolean hasClass(String name) {
+    if (!hasAttribute("class"))
+      return false;
+    String classValue = getAttribute("class");
+
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //single literal character split
+    String[] classNames = classValue.split(" ");
+    return Arrays.asList(classNames).contains(name);
+  }
+
+  public XhtmlNode clss(String name) {
+    if (hasAttribute("class")) {
+      setAttribute("class", getAttribute("class")+" "+name);      
+    } else {
+      setAttribute("class", name);
+    }
+    return this;
+  }
+
+  public XhtmlNode clssList(String... names) {
+    for (String name : names) {
+      if (name != null) {
+        clss(name);
+      }
+    }
+    return this;
+  }
+
+
+  public void styleCells(XhtmlNode x) {
+    setUserData("cells", x);    
+  }
+
+
+  public XhtmlNode td(int index) {
+    XhtmlNode x = addTag(index, "td");
+    XhtmlNode t = (XhtmlNode) getUserData("cells");
+    if (t != null) {
+      x.copyAllContent(t);
+    }
+    return x;    
+  }
+  
+  public XhtmlNode td() {
+    XhtmlNode x = addTag("td");
+    XhtmlNode t = (XhtmlNode) getUserData("cells");
+    if (t != null) {
+      x.copyAllContent(t);
+    }
+    return x;
+  }
+
+  public XhtmlNode td(int index, String width) {
+    XhtmlNode x = addTag(index, "td");
+    x.attribute("width", width);
+    XhtmlNode t = (XhtmlNode) getUserData("cells");
+    if (t != null) {
+      x.copyAllContent(t);
+    }
+    return x;    
+  }
+  
+  public XhtmlNode tdW(int width) {
+    XhtmlNode x = addTag("td");
+    x.attribute("width", Integer.toString(width));
+    XhtmlNode t = (XhtmlNode) getUserData("cells");
+    if (t != null) {
+      x.copyAllContent(t);
+    }
+    return x;
+  }
+
+
+
+  // differs from tx because it returns the owner node, not the created text
+  public XhtmlNode txN(String cnt) {
+    addText(cnt);
+    return this;
+  }
+  
+  public XhtmlNode txOrCode(boolean code, String cnt) {
+    if (code) {
+      XhtmlNode c = code();
+      boolean first = true;
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //simple character class split; safe
+      String[] cntLines = cnt.split("\\r?\\n");
+      for (String line : cntLines) {
+        if (first) first = false; else c.br();
+        c.tx(line.replace(" ", Character.toString(0xA0)));
+      }
+    } else {
+      addText(cnt);
+    }
+    return this;
+  }
+
+
+  public XhtmlNode iff(boolean test) {
+    if (test) {
+      return this;
+    } else {
+      return new XhtmlNode(NodeType.Element, "span"); // which will never be connected
+    }
+  }
+
+
+  public XhtmlNode button(String class_, String alt, String title) {
+    XhtmlNode btn = addTag("button");
+    if (class_ != null) {
+      btn.attribute("class", class_);
+    }
+    if (title != null) {
+      btn.attribute("title", title);
+    }
+    if (alt != null) {
+      btn.attribute("aria-label", alt);
+    }
+    return btn;
+  }
+
+
+  public XhtmlNode head() {
+    return addTag("head");
+  }
+  
+  public XhtmlNode body() {
+    return addTag("body");
+  }
+  public XhtmlNode title(String title) {
+    return addTag("title").tx(title);
+  }
+  
+  public XhtmlNode link(String rel, String href) {
+    return addTag("link").attribute("rel", rel).attribute("href", href);
+  }
+
+  public XhtmlNode ahOrNot(String href) {
+    if (href == null) {
+      return this;
+    }
+    XhtmlNode x = addTag("a").attribute("href", href);
+    return x;
+  }
+
+  public XhtmlNode ahOrNot(String href, String title) {
+    if (href == null) {
+      return addTag("span").attributeNN("title", title);
+    } else {
+      return addTag("a").attribute("href", href).attributeNN("title", title);
+    }
+  }
+
+
+  public void wbr() {
+    addTag("wbr");
+    
+  }
+  
+  protected int indexOfNode(XhtmlNode node) {
+    return getChildNodes().indexOf(node);
+  }
+  
+  public int compareTo(XhtmlNode other) {
+    return compare(this, other);
+  }
+
+  private static int compare(XhtmlNode base, XhtmlNode other) {
+    if (base == null || other == null) {
+      return 0;
+    } else if (base.getNodeType() != other.getNodeType()) {
+      return base.getNodeType().ordinal() - other.getNodeType().ordinal();
+    } else switch (base.getNodeType()) {
+    case Comment: return base.getContent().compareTo(other.getContent());
+    case DocType: return 0;
+    case Element:
+      int r = base.getName().compareTo(other.getName());
+      if (r != 0) {
+        return r;
+      }
+    case Document:
+      if (base.getAttributes().size() != other.getAttributes().size()) {
+        return base.getAttributes().size() - other.getAttributes().size();
+      } else {
+        for (String n : base.getAttributes().keySet()) {
+          String vb = base.getAttributes().get(n);
+          String vo = other.getAttributes().get(n);
+          r = vo == null ? -1 : vb.compareTo(vo);
+          if (r != 0) {
+            return r;
+          }
+        }
+      }
+      if (base.getChildNodes().size() != other.getChildNodes().size()) {
+        return base.getChildNodes().size() - other.getChildNodes().size();
+      } else {
+        for (int i = 0; i < base.getChildNodes().size(); i++) {
+          r = compare(base, other);
+          if (r != 0) {
+            return r;
+          }
+        }
+       }
+      return 0;
+    case Instruction: return 0;
+    case Text: return base.getContent().compareTo(other.getContent());
+    default: return 0;
+    } 
+  }
+
+
+  public void stripAnchorsByName(Set<String> anchors) {
+    if (hasChildren()) {
+      childNodes.removeIf(n -> "a".equals(n.getName()) && anchors.contains(n.getAttribute("name")));
+      for (XhtmlNode c : childNodes) {
+        c.stripAnchorsByName(anchors);
+      }
+    }
+  }
+
+  public void addChildNodes(List<XhtmlNode> nodes) {
+    for (XhtmlNode node : nodes) {
+      addChildNode(node);
+    }
+  }
+
+  public void addChildNode(XhtmlNode node) {
+    checkWhenAddingNode(node);
+    getChildNodes().add(node);
+  }
+
+  @Override
+  public void addChild(XhtmlNode node) {
+    checkWhenAddingNode(node);
+    getChildNodes().add(node);
+  }
+
+
+  private void checkWhenAddingNode(XhtmlNode node) {
+    node.checkParaTree = checkParaTree;
+    if (checkParaTree) {
+      if (isInPara) {
+        if (Utilities.existsInList(node.name, "div",  "blockquote", "table", "ol", "ul", "p")) {
+          throw new Error("Error: attempt to add "+node.name+" inside an html paragraph");
+        }
+        node.isInPara = true;
+      } 
+    }
+  }
+
+  public void addChildNode(int index, XhtmlNode node) {
+    checkWhenAddingNode(node);
+    getChildNodes().add(index, node);
+  }
+
+
+  public static boolean isCheckParaGeneral() {
+    return checkParaGeneral;
+  }
+
+
+  public static void setCheckParaGeneral(boolean checkParaGeneral) {
+    XhtmlNode.checkParaGeneral = checkParaGeneral;
+  }
+
+
+  public boolean isCheckParaTree() {
+    return checkParaTree;
+  }
+
+
+  public void setCheckParaTree(boolean checkParaTree) {
+    this.checkParaTree = checkParaTree;
+  }
+
+
+  public XhtmlNode id(String id) {
+    attribute("id", id);
+    return this;
+  }
+
+
+  public XhtmlNode supr(String tx) {
+    addTag("sup").tx(tx);
+    return this;
+  }
+
+  // -- SVG functions ------------
+
+  public XhtmlNode svgG(XhtmlNode insertionPoint) {
+    return addTag("g", insertionPoint);
+  }
+
+
+  public XhtmlNode svgRect(XhtmlNode insertionPoint) {
+    return addTag("rect", insertionPoint);
+  }
+
+
+  public XhtmlNode svgLine(XhtmlNode insertionPoint) {
+    return addTag("line", insertionPoint);
+  }
+
+
+  public XhtmlNode svgText(XhtmlNode insertionPoint) {
+    return addTag("text", insertionPoint).attribute("text-anchor", "middle"); // cause browsers just do that, but Inkscape doesn't
+  }
+
+
+  public XhtmlNode svgAx(String link) {
+    if (link == null) {
+      return this;
+    }
+    var a = addTag("a");
+    a.attribute("xlink:href", link);
+    return a;
+  }
+
+
+  public XhtmlNode svgTspan() {
+    return addTag("tspan");
+  }
+
+
+  public XhtmlNode svgPolygon(XhtmlNode insertionPoint) {
+    return addTag("polygon", insertionPoint);
+  }
+
+
+  public XhtmlNode htmlObject(double left, double top, double width, double height) {
+    var x = addTag("foreignObject");
+    x.attribute("x", Double.toString(left));
+    x.attribute("y", Double.toString(top));
+    x.attribute("width", Double.toString(width));
+    x.attribute("height", Double.toString(height));
+    return x;
+  }
+
+
+  public XhtmlNode svgPath(XhtmlNode insertionPoint) {
+    var x = addTag("path", insertionPoint);
+    return x;
+  }
+
+
+  public boolean hasContent() {
+    if (nodeType == NodeType.Text) {
+      return content != null && content.trim().length() > 0;
+    }
+    if (nodeType == NodeType.Element) {
+      for (XhtmlNode n : getChildNodes()) {
+        if (n.hasContent()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public String getPathName() {
+    if (getName() == null) {
+      return getNodeType().toCode();      
+    } else {
+      return getName();
+    }
+  }
+
+
+  public int countByPathName(XhtmlNode node) {
+    int count = 0;
+    for (XhtmlNode t : getChildNodes()) {
+      if (t.getPathName().equals(node.getPathName())) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  public int indexByPathName(XhtmlNode node) {
+    int count = 0;
+    for (XhtmlNode t : getChildNodes()) {
+      if (t == node) {
+        return count;        
+      }
+      if (t.getPathName().equals(node.getPathName())) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  public void js(String s) {
+    XhtmlNode x = addTag("script");
+    x.tx("\r\n"+s+"\r\n");
+  }
+  public void jsSrc(String s) {
+    XhtmlNode x = addTag("script");
+    x.setAttribute("src", s);
+    x.tx(" ");
+  }
+  public void styles(String s) {
+    XhtmlNode x = addTag("style");
+    x.tx("\r\n"+s+"\r\n");
+  }
+
+  public void styleChildren(String style) {
+    for (XhtmlNode t : getChildNodes()) {
+      t.style(style);
+    }
+  }
+
+  /**
+   * we only want to actually mark something as generated in some modes,
+   * but it's more fluent to handle the actual implementation here
+   *
+   * @param actuallyMark
+   * @return
+   */
+  public XhtmlNode markGenerated(boolean actuallyMark) {
+    if (actuallyMark) {
+      this.attribute("data-fhir", "generated");
+    }
+    return this;
+  }
+
+  public XhtmlNode firstNamedDescendent(String name) {
+    for (XhtmlNode t : getChildNodes()) {
+      if (name.equals(t.getName())) {
+        return t;
+      }
+      XhtmlNode r = t.firstNamedDescendent(name);
+      if (r != null) {
+        return r;
+      }
+    }
+    return null;
+  }
+
+  public int countChildrenByName(String p) {
+    int count = 0;
+    for (XhtmlNode t : getChildNodes()) {
+      if (p.equals(t.getName())) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  public XhtmlNode unchangedStyle(boolean isUnchanged) {
+    if (isUnchanged) {
+      this.clss("unchangedStyle");
+    }
+    return this;
+  }
 }

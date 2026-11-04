@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ReferralstatusEnumFactory implements EnumFactory<Referralstatus> {
@@ -52,11 +48,13 @@ public class ReferralstatusEnumFactory implements EnumFactory<Referralstatus> {
       return Referralstatus.COMPLETED;
     if ("entered-in-error".equals(codeString))
       return Referralstatus.ENTEREDINERROR;
-    throw new IllegalArgumentException("Unknown Referralstatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown Referralstatus code '" + codeString + "'");
   }
 
   public String toCode(Referralstatus code) {
-    if (code == Referralstatus.DRAFT)
+       if (code == Referralstatus.NULL)
+           return null;
+       if (code == Referralstatus.DRAFT)
       return "draft";
     if (code == Referralstatus.ACTIVE)
       return "active";
@@ -67,10 +65,10 @@ public class ReferralstatusEnumFactory implements EnumFactory<Referralstatus> {
     if (code == Referralstatus.ENTEREDINERROR)
       return "entered-in-error";
     return "?";
-  }
+   }
 
-    public String toSystem(Referralstatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(Referralstatus code) {
+    return code.getSystem();
+  }
 
 }

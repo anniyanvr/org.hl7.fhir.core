@@ -44,11 +44,17 @@ public class MimeType {
 
   public MimeType(String s) {
     source = s;
-    for (String p : s.split("\\;"))
+
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //single literal character split
+    String[] split = s.split("\\;");
+    for (String ss : split) {
+      String p = ss.trim();
       if (base == null)
         base = p;
       else
         params.put(p.substring(0, p.indexOf("=")), p.substring(p.indexOf("=")+1));
+    }
     if ("xml".equals(base))
       base = "application/fhir+xml";
     if ("json".equals(base))
@@ -71,6 +77,18 @@ public class MimeType {
       return null;
   }
 
+  public String getSource() {
+    return source;
+  }
+
+  public String getBase() {
+    return base;
+  }
+
+  public Map<String, String> getParams() {
+    return params;
+  }
+
   public boolean hasParam(String name) {
     return params.containsKey(name);
   }
@@ -79,10 +97,14 @@ public class MimeType {
     return (Utilities.existsInList(main(), "application", "audio", "font", "example", "image", "message", "model", "multipart", "text", "video") || main().startsWith("x-")) && !Utilities.noString(sub());
   }
 
-  public static List<MimeType> parseList(String s) {
+  public static List<MimeType> parseList(String listString) {
     List<MimeType> result = new ArrayList<MimeType>();
-    for (String e : s.split("\\,"))
-        result.add(new MimeType(e));
+
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //single literal character split
+    String[] mimeTypes = listString.split("\\,");
+    for (String mimeType : mimeTypes)
+        result.add(new MimeType(mimeType));
     return result;
   }
 
@@ -134,5 +156,6 @@ public class MimeType {
     }
     return null;
   }
+
 
 }

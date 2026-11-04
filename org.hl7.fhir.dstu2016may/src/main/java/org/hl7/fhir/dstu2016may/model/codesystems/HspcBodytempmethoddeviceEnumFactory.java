@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class HspcBodytempmethoddeviceEnumFactory implements EnumFactory<HspcBodytempmethoddevice> {
@@ -50,11 +46,13 @@ public class HspcBodytempmethoddeviceEnumFactory implements EnumFactory<HspcBody
       return HspcBodytempmethoddevice._82735;
     if ("84301".equals(codeString))
       return HspcBodytempmethoddevice._84301;
-    throw new IllegalArgumentException("Unknown HspcBodytempmethoddevice code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown HspcBodytempmethoddevice code '" + codeString + "'");
   }
 
   public String toCode(HspcBodytempmethoddevice code) {
-    if (code == HspcBodytempmethoddevice._30277)
+       if (code == HspcBodytempmethoddevice.NULL)
+           return null;
+       if (code == HspcBodytempmethoddevice._30277)
       return "30277";
     if (code == HspcBodytempmethoddevice._30522)
       return "30522";
@@ -63,10 +61,10 @@ public class HspcBodytempmethoddeviceEnumFactory implements EnumFactory<HspcBody
     if (code == HspcBodytempmethoddevice._84301)
       return "84301";
     return "?";
-  }
+   }
 
-    public String toSystem(HspcBodytempmethoddevice code) {
-      return code.getSystem();
-      }
+  public String toSystem(HspcBodytempmethoddevice code) {
+    return code.getSystem();
+  }
 
 }

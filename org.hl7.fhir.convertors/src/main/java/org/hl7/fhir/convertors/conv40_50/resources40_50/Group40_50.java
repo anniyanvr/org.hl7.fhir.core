@@ -9,6 +9,9 @@ import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.UnsignedInt40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.model.Enumeration;
+import org.hl7.fhir.r5.model.Group;
+import org.hl7.fhir.r5.model.Group.GroupMembershipBasis;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -53,7 +56,7 @@ public class Group40_50 {
     if (src.hasType())
       tgt.setTypeElement(convertGroupType(src.getTypeElement()));
     if (src.hasActual())
-      tgt.setActualElement(Boolean40_50.convertBoolean(src.getActualElement()));
+      tgt.setMembership(src.getActual() ? GroupMembershipBasis.ENUMERATED : GroupMembershipBasis.DEFINITIONAL);
     if (src.hasCode())
       tgt.setCode(CodeableConcept40_50.convertCodeableConcept(src.getCode()));
     if (src.hasName())
@@ -80,8 +83,8 @@ public class Group40_50 {
       tgt.setActiveElement(Boolean40_50.convertBoolean(src.getActiveElement()));
     if (src.hasType())
       tgt.setTypeElement(convertGroupType(src.getTypeElement()));
-    if (src.hasActual())
-      tgt.setActualElement(Boolean40_50.convertBoolean(src.getActualElement()));
+    if (src.hasMembership())
+      tgt.setActual(src.getMembership() == GroupMembershipBasis.ENUMERATED);
     if (src.hasCode())
       tgt.setCode(CodeableConcept40_50.convertCodeableConcept(src.getCode()));
     if (src.hasName())
@@ -98,72 +101,68 @@ public class Group40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Group.GroupType> convertGroupType(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Group.GroupType> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Group.GroupType> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Group.GroupTypeEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case PERSON:
-        tgt.setValue(org.hl7.fhir.r5.model.Group.GroupType.PERSON);
-        break;
-      case ANIMAL:
-        tgt.setValue(org.hl7.fhir.r5.model.Group.GroupType.ANIMAL);
-        break;
-      case PRACTITIONER:
-        tgt.setValue(org.hl7.fhir.r5.model.Group.GroupType.PRACTITIONER);
-        break;
-      case DEVICE:
-        tgt.setValue(org.hl7.fhir.r5.model.Group.GroupType.DEVICE);
-        break;
-      case MEDICATION:
-        tgt.setValue(org.hl7.fhir.r5.model.Group.GroupType.MEDICATION);
-        break;
-      case SUBSTANCE:
-        tgt.setValue(org.hl7.fhir.r5.model.Group.GroupType.SUBSTANCE);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Group.GroupType.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Group.GroupType> tgt = new Enumeration<>(new Group.GroupTypeEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case PERSON:
+                  tgt.setValue(Group.GroupType.PERSON);
+                  break;
+              case ANIMAL:
+                  tgt.setValue(Group.GroupType.ANIMAL);
+                  break;
+              case PRACTITIONER:
+                  tgt.setValue(Group.GroupType.PRACTITIONER);
+                  break;
+              case DEVICE:
+                  tgt.setValue(Group.GroupType.DEVICE);
+                  break;
+              default:
+                  tgt.setValue(Group.GroupType.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Group.GroupType> convertGroupType(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Group.GroupType> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Group.GroupType> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Group.GroupTypeEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case PERSON:
-        tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.PERSON);
-        break;
-      case ANIMAL:
-        tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.ANIMAL);
-        break;
-      case PRACTITIONER:
-        tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.PRACTITIONER);
-        break;
-      case DEVICE:
-        tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.DEVICE);
-        break;
-      case MEDICATION:
-        tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.MEDICATION);
-        break;
-      case SUBSTANCE:
-        tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.SUBSTANCE);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Group.GroupType> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Group.GroupTypeEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case PERSON:
+                  tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.PERSON);
+                  break;
+              case ANIMAL:
+                  tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.ANIMAL);
+                  break;
+              case PRACTITIONER:
+                  tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.PRACTITIONER);
+                  break;
+              case DEVICE:
+                  tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.DEVICE);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.Group.GroupType.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r5.model.Group.GroupCharacteristicComponent convertGroupCharacteristicComponent(org.hl7.fhir.r4.model.Group.GroupCharacteristicComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Group.GroupCharacteristicComponent tgt = new org.hl7.fhir.r5.model.Group.GroupCharacteristicComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCode())
       tgt.setCode(CodeableConcept40_50.convertCodeableConcept(src.getCode()));
     if (src.hasValue())
@@ -179,7 +178,7 @@ public class Group40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Group.GroupCharacteristicComponent tgt = new org.hl7.fhir.r4.model.Group.GroupCharacteristicComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCode())
       tgt.setCode(CodeableConcept40_50.convertCodeableConcept(src.getCode()));
     if (src.hasValue())
@@ -195,7 +194,7 @@ public class Group40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Group.GroupMemberComponent tgt = new org.hl7.fhir.r5.model.Group.GroupMemberComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasEntity())
       tgt.setEntity(Reference40_50.convertReference(src.getEntity()));
     if (src.hasPeriod())
@@ -209,7 +208,7 @@ public class Group40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Group.GroupMemberComponent tgt = new org.hl7.fhir.r4.model.Group.GroupMemberComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasEntity())
       tgt.setEntity(Reference40_50.convertReference(src.getEntity()));
     if (src.hasPeriod())

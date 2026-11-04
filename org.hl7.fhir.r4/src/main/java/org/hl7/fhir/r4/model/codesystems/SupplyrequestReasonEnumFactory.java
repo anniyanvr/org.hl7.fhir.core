@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class SupplyrequestReasonEnumFactory implements EnumFactory<SupplyrequestReason> {
@@ -46,19 +42,21 @@ public class SupplyrequestReasonEnumFactory implements EnumFactory<Supplyrequest
       return SupplyrequestReason.PATIENTCARE;
     if ("ward-stock".equals(codeString))
       return SupplyrequestReason.WARDSTOCK;
-    throw new IllegalArgumentException("Unknown SupplyrequestReason code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown SupplyrequestReason code '" + codeString + "'");
   }
 
   public String toCode(SupplyrequestReason code) {
-    if (code == SupplyrequestReason.PATIENTCARE)
+       if (code == SupplyrequestReason.NULL)
+           return null;
+       if (code == SupplyrequestReason.PATIENTCARE)
       return "patient-care";
     if (code == SupplyrequestReason.WARDSTOCK)
       return "ward-stock";
     return "?";
-  }
+   }
 
-    public String toSystem(SupplyrequestReason code) {
-      return code.getSystem();
-      }
+  public String toSystem(SupplyrequestReason code) {
+    return code.getSystem();
+  }
 
 }

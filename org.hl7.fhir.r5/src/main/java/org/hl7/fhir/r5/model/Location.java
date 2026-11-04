@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +49,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Details and position information for a physical place where services are provided and resources and participants may be stored, found, contained, or accommodated.
+ * Details and position information for a place where services are provided and resources and participants may be stored, found, contained, or accommodated.
  */
 @ResourceDef(name="Location", profile="http://hl7.org/fhir/StructureDefinition/Location")
 public class Location extends DomainResource {
@@ -83,6 +83,7 @@ public class Location extends DomainResource {
           switch (this) {
             case INSTANCE: return "instance";
             case KIND: return "kind";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -90,6 +91,7 @@ public class Location extends DomainResource {
           switch (this) {
             case INSTANCE: return "http://hl7.org/fhir/location-mode";
             case KIND: return "http://hl7.org/fhir/location-mode";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -97,6 +99,7 @@ public class Location extends DomainResource {
           switch (this) {
             case INSTANCE: return "The Location resource represents a specific instance of a location (e.g. Operating Theatre 1A).";
             case KIND: return "The Location represents a class of locations (e.g. Any Operating Theatre) although this class of locations could be constrained within a specific boundary (such as organization, or parent location, address etc.).";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -104,6 +107,7 @@ public class Location extends DomainResource {
           switch (this) {
             case INSTANCE: return "Instance";
             case KIND: return "Kind";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -120,27 +124,29 @@ public class Location extends DomainResource {
           return LocationMode.KIND;
         throw new IllegalArgumentException("Unknown LocationMode code '"+codeString+"'");
         }
-        public Enumeration<LocationMode> fromType(Base code) throws FHIRException {
+        public Enumeration<LocationMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<LocationMode>(this);
+            return new Enumeration<LocationMode>(this, LocationMode.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<LocationMode>(this, LocationMode.NULL, code);
         if ("instance".equals(codeString))
-          return new Enumeration<LocationMode>(this, LocationMode.INSTANCE);
+          return new Enumeration<LocationMode>(this, LocationMode.INSTANCE, code);
         if ("kind".equals(codeString))
-          return new Enumeration<LocationMode>(this, LocationMode.KIND);
+          return new Enumeration<LocationMode>(this, LocationMode.KIND, code);
         throw new FHIRException("Unknown LocationMode code '"+codeString+"'");
         }
     public String toCode(LocationMode code) {
-      if (code == LocationMode.INSTANCE)
+       if (code == LocationMode.NULL)
+           return null;
+       if (code == LocationMode.INSTANCE)
         return "instance";
       if (code == LocationMode.KIND)
         return "kind";
       return "?";
-      }
+   }
     public String toSystem(LocationMode code) {
       return code.getSystem();
       }
@@ -182,6 +188,7 @@ public class Location extends DomainResource {
             case ACTIVE: return "active";
             case SUSPENDED: return "suspended";
             case INACTIVE: return "inactive";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -190,6 +197,7 @@ public class Location extends DomainResource {
             case ACTIVE: return "http://hl7.org/fhir/location-status";
             case SUSPENDED: return "http://hl7.org/fhir/location-status";
             case INACTIVE: return "http://hl7.org/fhir/location-status";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -198,6 +206,7 @@ public class Location extends DomainResource {
             case ACTIVE: return "The location is operational.";
             case SUSPENDED: return "The location is temporarily closed.";
             case INACTIVE: return "The location is no longer used.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -206,6 +215,7 @@ public class Location extends DomainResource {
             case ACTIVE: return "Active";
             case SUSPENDED: return "Suspended";
             case INACTIVE: return "Inactive";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -224,31 +234,33 @@ public class Location extends DomainResource {
           return LocationStatus.INACTIVE;
         throw new IllegalArgumentException("Unknown LocationStatus code '"+codeString+"'");
         }
-        public Enumeration<LocationStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<LocationStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<LocationStatus>(this);
+            return new Enumeration<LocationStatus>(this, LocationStatus.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<LocationStatus>(this, LocationStatus.NULL, code);
         if ("active".equals(codeString))
-          return new Enumeration<LocationStatus>(this, LocationStatus.ACTIVE);
+          return new Enumeration<LocationStatus>(this, LocationStatus.ACTIVE, code);
         if ("suspended".equals(codeString))
-          return new Enumeration<LocationStatus>(this, LocationStatus.SUSPENDED);
+          return new Enumeration<LocationStatus>(this, LocationStatus.SUSPENDED, code);
         if ("inactive".equals(codeString))
-          return new Enumeration<LocationStatus>(this, LocationStatus.INACTIVE);
+          return new Enumeration<LocationStatus>(this, LocationStatus.INACTIVE, code);
         throw new FHIRException("Unknown LocationStatus code '"+codeString+"'");
         }
     public String toCode(LocationStatus code) {
-      if (code == LocationStatus.ACTIVE)
+       if (code == LocationStatus.NULL)
+           return null;
+       if (code == LocationStatus.ACTIVE)
         return "active";
       if (code == LocationStatus.SUSPENDED)
         return "suspended";
       if (code == LocationStatus.INACTIVE)
         return "inactive";
       return "?";
-      }
+   }
     public String toSystem(LocationStatus code) {
       return code.getSystem();
       }
@@ -257,24 +269,24 @@ public class Location extends DomainResource {
     @Block()
     public static class LocationPositionComponent extends BackboneElement implements IBaseBackboneElement {
         /**
-         * Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below).
+         * Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes on Location main page).
          */
         @Child(name = "longitude", type = {DecimalType.class}, order=1, min=1, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Longitude with WGS84 datum", formalDefinition="Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below)." )
+        @Description(shortDefinition="Longitude with WGS84 datum", formalDefinition="Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes on Location main page)." )
         protected DecimalType longitude;
 
         /**
-         * Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes below).
+         * Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes on Location main page).
          */
         @Child(name = "latitude", type = {DecimalType.class}, order=2, min=1, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Latitude with WGS84 datum", formalDefinition="Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes below)." )
+        @Description(shortDefinition="Latitude with WGS84 datum", formalDefinition="Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes on Location main page)." )
         protected DecimalType latitude;
 
         /**
-         * Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes below).
+         * Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes on Location main page).
          */
         @Child(name = "altitude", type = {DecimalType.class}, order=3, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Altitude with WGS84 datum", formalDefinition="Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes below)." )
+        @Description(shortDefinition="Altitude with WGS84 datum", formalDefinition="Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes on Location main page)." )
         protected DecimalType altitude;
 
         private static final long serialVersionUID = -74276134L;
@@ -296,7 +308,7 @@ public class Location extends DomainResource {
       }
 
         /**
-         * @return {@link #longitude} (Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below).). This is the underlying object with id, value and extensions. The accessor "getLongitude" gives direct access to the value
+         * @return {@link #longitude} (Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes on Location main page).). This is the underlying object with id, value and extensions. The accessor "getLongitude" gives direct access to the value
          */
         public DecimalType getLongitudeElement() { 
           if (this.longitude == null)
@@ -316,7 +328,7 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @param value {@link #longitude} (Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below).). This is the underlying object with id, value and extensions. The accessor "getLongitude" gives direct access to the value
+         * @param value {@link #longitude} (Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes on Location main page).). This is the underlying object with id, value and extensions. The accessor "getLongitude" gives direct access to the value
          */
         public LocationPositionComponent setLongitudeElement(DecimalType value) { 
           this.longitude = value;
@@ -324,14 +336,14 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @return Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below).
+         * @return Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes on Location main page).
          */
         public BigDecimal getLongitude() { 
           return this.longitude == null ? null : this.longitude.getValue();
         }
 
         /**
-         * @param value Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below).
+         * @param value Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes on Location main page).
          */
         public LocationPositionComponent setLongitude(BigDecimal value) { 
             if (this.longitude == null)
@@ -341,7 +353,7 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @param value Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below).
+         * @param value Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes on Location main page).
          */
         public LocationPositionComponent setLongitude(long value) { 
               this.longitude = new DecimalType();
@@ -350,7 +362,7 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @param value Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below).
+         * @param value Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes on Location main page).
          */
         public LocationPositionComponent setLongitude(double value) { 
               this.longitude = new DecimalType();
@@ -359,7 +371,7 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @return {@link #latitude} (Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes below).). This is the underlying object with id, value and extensions. The accessor "getLatitude" gives direct access to the value
+         * @return {@link #latitude} (Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes on Location main page).). This is the underlying object with id, value and extensions. The accessor "getLatitude" gives direct access to the value
          */
         public DecimalType getLatitudeElement() { 
           if (this.latitude == null)
@@ -379,7 +391,7 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @param value {@link #latitude} (Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes below).). This is the underlying object with id, value and extensions. The accessor "getLatitude" gives direct access to the value
+         * @param value {@link #latitude} (Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes on Location main page).). This is the underlying object with id, value and extensions. The accessor "getLatitude" gives direct access to the value
          */
         public LocationPositionComponent setLatitudeElement(DecimalType value) { 
           this.latitude = value;
@@ -387,14 +399,14 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @return Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes below).
+         * @return Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes on Location main page).
          */
         public BigDecimal getLatitude() { 
           return this.latitude == null ? null : this.latitude.getValue();
         }
 
         /**
-         * @param value Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes below).
+         * @param value Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes on Location main page).
          */
         public LocationPositionComponent setLatitude(BigDecimal value) { 
             if (this.latitude == null)
@@ -404,7 +416,7 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @param value Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes below).
+         * @param value Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes on Location main page).
          */
         public LocationPositionComponent setLatitude(long value) { 
               this.latitude = new DecimalType();
@@ -413,7 +425,7 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @param value Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes below).
+         * @param value Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes on Location main page).
          */
         public LocationPositionComponent setLatitude(double value) { 
               this.latitude = new DecimalType();
@@ -422,7 +434,7 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @return {@link #altitude} (Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes below).). This is the underlying object with id, value and extensions. The accessor "getAltitude" gives direct access to the value
+         * @return {@link #altitude} (Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes on Location main page).). This is the underlying object with id, value and extensions. The accessor "getAltitude" gives direct access to the value
          */
         public DecimalType getAltitudeElement() { 
           if (this.altitude == null)
@@ -442,7 +454,7 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @param value {@link #altitude} (Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes below).). This is the underlying object with id, value and extensions. The accessor "getAltitude" gives direct access to the value
+         * @param value {@link #altitude} (Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes on Location main page).). This is the underlying object with id, value and extensions. The accessor "getAltitude" gives direct access to the value
          */
         public LocationPositionComponent setAltitudeElement(DecimalType value) { 
           this.altitude = value;
@@ -450,14 +462,14 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @return Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes below).
+         * @return Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes on Location main page).
          */
         public BigDecimal getAltitude() { 
           return this.altitude == null ? null : this.altitude.getValue();
         }
 
         /**
-         * @param value Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes below).
+         * @param value Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes on Location main page).
          */
         public LocationPositionComponent setAltitude(BigDecimal value) { 
           if (value == null)
@@ -471,7 +483,7 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @param value Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes below).
+         * @param value Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes on Location main page).
          */
         public LocationPositionComponent setAltitude(long value) { 
               this.altitude = new DecimalType();
@@ -480,7 +492,7 @@ public class Location extends DomainResource {
         }
 
         /**
-         * @param value Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes below).
+         * @param value Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes on Location main page).
          */
         public LocationPositionComponent setAltitude(double value) { 
               this.altitude = new DecimalType();
@@ -490,17 +502,17 @@ public class Location extends DomainResource {
 
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
-          children.add(new Property("longitude", "decimal", "Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below).", 0, 1, longitude));
-          children.add(new Property("latitude", "decimal", "Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes below).", 0, 1, latitude));
-          children.add(new Property("altitude", "decimal", "Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes below).", 0, 1, altitude));
+          children.add(new Property("longitude", "decimal", "Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes on Location main page).", 0, 1, longitude));
+          children.add(new Property("latitude", "decimal", "Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes on Location main page).", 0, 1, latitude));
+          children.add(new Property("altitude", "decimal", "Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes on Location main page).", 0, 1, altitude));
         }
 
         @Override
         public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
           switch (_hash) {
-          case 137365935: /*longitude*/  return new Property("longitude", "decimal", "Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below).", 0, 1, longitude);
-          case -1439978388: /*latitude*/  return new Property("latitude", "decimal", "Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes below).", 0, 1, latitude);
-          case 2036550306: /*altitude*/  return new Property("altitude", "decimal", "Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes below).", 0, 1, altitude);
+          case 137365935: /*longitude*/  return new Property("longitude", "decimal", "Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes on Location main page).", 0, 1, longitude);
+          case -1439978388: /*latitude*/  return new Property("latitude", "decimal", "Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes on Location main page).", 0, 1, latitude);
+          case 2036550306: /*altitude*/  return new Property("altitude", "decimal", "Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes on Location main page).", 0, 1, altitude);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
           }
 
@@ -547,6 +559,19 @@ public class Location extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("longitude")) {
+          this.longitude = null;
+        } else if (name.equals("latitude")) {
+          this.latitude = null;
+        } else if (name.equals("altitude")) {
+          this.altitude = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -572,13 +597,13 @@ public class Location extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("longitude")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.position.longitude");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.position.longitude");
         }
         else if (name.equals("latitude")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.position.latitude");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.position.latitude");
         }
         else if (name.equals("altitude")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.position.altitude");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.position.altitude");
         }
         else
           return super.addChild(name);
@@ -588,6 +613,10 @@ public class Location extends DomainResource {
         LocationPositionComponent dst = new LocationPositionComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((LocationPositionComponent) dst);
       }
 
       public void copyValues(LocationPositionComponent dst) {
@@ -626,413 +655,6 @@ public class Location extends DomainResource {
 
   public String fhirType() {
     return "Location.position";
-
-  }
-
-  }
-
-    @Block()
-    public static class LocationHoursOfOperationComponent extends BackboneElement implements IBaseBackboneElement {
-        /**
-         * Indicates which days of the week are available between the start and end Times.
-         */
-        @Child(name = "daysOfWeek", type = {CodeType.class}, order=1, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-        @Description(shortDefinition="mon | tue | wed | thu | fri | sat | sun", formalDefinition="Indicates which days of the week are available between the start and end Times." )
-        @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/days-of-week")
-        protected List<Enumeration<DaysOfWeek>> daysOfWeek;
-
-        /**
-         * The Location is open all day.
-         */
-        @Child(name = "allDay", type = {BooleanType.class}, order=2, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="The Location is open all day", formalDefinition="The Location is open all day." )
-        protected BooleanType allDay;
-
-        /**
-         * Time that the Location opens.
-         */
-        @Child(name = "openingTime", type = {TimeType.class}, order=3, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Time that the Location opens", formalDefinition="Time that the Location opens." )
-        protected TimeType openingTime;
-
-        /**
-         * Time that the Location closes.
-         */
-        @Child(name = "closingTime", type = {TimeType.class}, order=4, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Time that the Location closes", formalDefinition="Time that the Location closes." )
-        protected TimeType closingTime;
-
-        private static final long serialVersionUID = -932551849L;
-
-    /**
-     * Constructor
-     */
-      public LocationHoursOfOperationComponent() {
-        super();
-      }
-
-        /**
-         * @return {@link #daysOfWeek} (Indicates which days of the week are available between the start and end Times.)
-         */
-        public List<Enumeration<DaysOfWeek>> getDaysOfWeek() { 
-          if (this.daysOfWeek == null)
-            this.daysOfWeek = new ArrayList<Enumeration<DaysOfWeek>>();
-          return this.daysOfWeek;
-        }
-
-        /**
-         * @return Returns a reference to <code>this</code> for easy method chaining
-         */
-        public LocationHoursOfOperationComponent setDaysOfWeek(List<Enumeration<DaysOfWeek>> theDaysOfWeek) { 
-          this.daysOfWeek = theDaysOfWeek;
-          return this;
-        }
-
-        public boolean hasDaysOfWeek() { 
-          if (this.daysOfWeek == null)
-            return false;
-          for (Enumeration<DaysOfWeek> item : this.daysOfWeek)
-            if (!item.isEmpty())
-              return true;
-          return false;
-        }
-
-        /**
-         * @return {@link #daysOfWeek} (Indicates which days of the week are available between the start and end Times.)
-         */
-        public Enumeration<DaysOfWeek> addDaysOfWeekElement() {//2 
-          Enumeration<DaysOfWeek> t = new Enumeration<DaysOfWeek>(new DaysOfWeekEnumFactory());
-          if (this.daysOfWeek == null)
-            this.daysOfWeek = new ArrayList<Enumeration<DaysOfWeek>>();
-          this.daysOfWeek.add(t);
-          return t;
-        }
-
-        /**
-         * @param value {@link #daysOfWeek} (Indicates which days of the week are available between the start and end Times.)
-         */
-        public LocationHoursOfOperationComponent addDaysOfWeek(DaysOfWeek value) { //1
-          Enumeration<DaysOfWeek> t = new Enumeration<DaysOfWeek>(new DaysOfWeekEnumFactory());
-          t.setValue(value);
-          if (this.daysOfWeek == null)
-            this.daysOfWeek = new ArrayList<Enumeration<DaysOfWeek>>();
-          this.daysOfWeek.add(t);
-          return this;
-        }
-
-        /**
-         * @param value {@link #daysOfWeek} (Indicates which days of the week are available between the start and end Times.)
-         */
-        public boolean hasDaysOfWeek(DaysOfWeek value) { 
-          if (this.daysOfWeek == null)
-            return false;
-          for (Enumeration<DaysOfWeek> v : this.daysOfWeek)
-            if (v.getValue().equals(value)) // code
-              return true;
-          return false;
-        }
-
-        /**
-         * @return {@link #allDay} (The Location is open all day.). This is the underlying object with id, value and extensions. The accessor "getAllDay" gives direct access to the value
-         */
-        public BooleanType getAllDayElement() { 
-          if (this.allDay == null)
-            if (Configuration.errorOnAutoCreate())
-              throw new Error("Attempt to auto-create LocationHoursOfOperationComponent.allDay");
-            else if (Configuration.doAutoCreate())
-              this.allDay = new BooleanType(); // bb
-          return this.allDay;
-        }
-
-        public boolean hasAllDayElement() { 
-          return this.allDay != null && !this.allDay.isEmpty();
-        }
-
-        public boolean hasAllDay() { 
-          return this.allDay != null && !this.allDay.isEmpty();
-        }
-
-        /**
-         * @param value {@link #allDay} (The Location is open all day.). This is the underlying object with id, value and extensions. The accessor "getAllDay" gives direct access to the value
-         */
-        public LocationHoursOfOperationComponent setAllDayElement(BooleanType value) { 
-          this.allDay = value;
-          return this;
-        }
-
-        /**
-         * @return The Location is open all day.
-         */
-        public boolean getAllDay() { 
-          return this.allDay == null || this.allDay.isEmpty() ? false : this.allDay.getValue();
-        }
-
-        /**
-         * @param value The Location is open all day.
-         */
-        public LocationHoursOfOperationComponent setAllDay(boolean value) { 
-            if (this.allDay == null)
-              this.allDay = new BooleanType();
-            this.allDay.setValue(value);
-          return this;
-        }
-
-        /**
-         * @return {@link #openingTime} (Time that the Location opens.). This is the underlying object with id, value and extensions. The accessor "getOpeningTime" gives direct access to the value
-         */
-        public TimeType getOpeningTimeElement() { 
-          if (this.openingTime == null)
-            if (Configuration.errorOnAutoCreate())
-              throw new Error("Attempt to auto-create LocationHoursOfOperationComponent.openingTime");
-            else if (Configuration.doAutoCreate())
-              this.openingTime = new TimeType(); // bb
-          return this.openingTime;
-        }
-
-        public boolean hasOpeningTimeElement() { 
-          return this.openingTime != null && !this.openingTime.isEmpty();
-        }
-
-        public boolean hasOpeningTime() { 
-          return this.openingTime != null && !this.openingTime.isEmpty();
-        }
-
-        /**
-         * @param value {@link #openingTime} (Time that the Location opens.). This is the underlying object with id, value and extensions. The accessor "getOpeningTime" gives direct access to the value
-         */
-        public LocationHoursOfOperationComponent setOpeningTimeElement(TimeType value) { 
-          this.openingTime = value;
-          return this;
-        }
-
-        /**
-         * @return Time that the Location opens.
-         */
-        public String getOpeningTime() { 
-          return this.openingTime == null ? null : this.openingTime.getValue();
-        }
-
-        /**
-         * @param value Time that the Location opens.
-         */
-        public LocationHoursOfOperationComponent setOpeningTime(String value) { 
-          if (value == null)
-            this.openingTime = null;
-          else {
-            if (this.openingTime == null)
-              this.openingTime = new TimeType();
-            this.openingTime.setValue(value);
-          }
-          return this;
-        }
-
-        /**
-         * @return {@link #closingTime} (Time that the Location closes.). This is the underlying object with id, value and extensions. The accessor "getClosingTime" gives direct access to the value
-         */
-        public TimeType getClosingTimeElement() { 
-          if (this.closingTime == null)
-            if (Configuration.errorOnAutoCreate())
-              throw new Error("Attempt to auto-create LocationHoursOfOperationComponent.closingTime");
-            else if (Configuration.doAutoCreate())
-              this.closingTime = new TimeType(); // bb
-          return this.closingTime;
-        }
-
-        public boolean hasClosingTimeElement() { 
-          return this.closingTime != null && !this.closingTime.isEmpty();
-        }
-
-        public boolean hasClosingTime() { 
-          return this.closingTime != null && !this.closingTime.isEmpty();
-        }
-
-        /**
-         * @param value {@link #closingTime} (Time that the Location closes.). This is the underlying object with id, value and extensions. The accessor "getClosingTime" gives direct access to the value
-         */
-        public LocationHoursOfOperationComponent setClosingTimeElement(TimeType value) { 
-          this.closingTime = value;
-          return this;
-        }
-
-        /**
-         * @return Time that the Location closes.
-         */
-        public String getClosingTime() { 
-          return this.closingTime == null ? null : this.closingTime.getValue();
-        }
-
-        /**
-         * @param value Time that the Location closes.
-         */
-        public LocationHoursOfOperationComponent setClosingTime(String value) { 
-          if (value == null)
-            this.closingTime = null;
-          else {
-            if (this.closingTime == null)
-              this.closingTime = new TimeType();
-            this.closingTime.setValue(value);
-          }
-          return this;
-        }
-
-        protected void listChildren(List<Property> children) {
-          super.listChildren(children);
-          children.add(new Property("daysOfWeek", "code", "Indicates which days of the week are available between the start and end Times.", 0, java.lang.Integer.MAX_VALUE, daysOfWeek));
-          children.add(new Property("allDay", "boolean", "The Location is open all day.", 0, 1, allDay));
-          children.add(new Property("openingTime", "time", "Time that the Location opens.", 0, 1, openingTime));
-          children.add(new Property("closingTime", "time", "Time that the Location closes.", 0, 1, closingTime));
-        }
-
-        @Override
-        public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
-          switch (_hash) {
-          case 68050338: /*daysOfWeek*/  return new Property("daysOfWeek", "code", "Indicates which days of the week are available between the start and end Times.", 0, java.lang.Integer.MAX_VALUE, daysOfWeek);
-          case -1414913477: /*allDay*/  return new Property("allDay", "boolean", "The Location is open all day.", 0, 1, allDay);
-          case 84062277: /*openingTime*/  return new Property("openingTime", "time", "Time that the Location opens.", 0, 1, openingTime);
-          case 188137762: /*closingTime*/  return new Property("closingTime", "time", "Time that the Location closes.", 0, 1, closingTime);
-          default: return super.getNamedProperty(_hash, _name, _checkValid);
-          }
-
-        }
-
-      @Override
-      public Base[] getProperty(int hash, String name, boolean checkValid) throws FHIRException {
-        switch (hash) {
-        case 68050338: /*daysOfWeek*/ return this.daysOfWeek == null ? new Base[0] : this.daysOfWeek.toArray(new Base[this.daysOfWeek.size()]); // Enumeration<DaysOfWeek>
-        case -1414913477: /*allDay*/ return this.allDay == null ? new Base[0] : new Base[] {this.allDay}; // BooleanType
-        case 84062277: /*openingTime*/ return this.openingTime == null ? new Base[0] : new Base[] {this.openingTime}; // TimeType
-        case 188137762: /*closingTime*/ return this.closingTime == null ? new Base[0] : new Base[] {this.closingTime}; // TimeType
-        default: return super.getProperty(hash, name, checkValid);
-        }
-
-      }
-
-      @Override
-      public Base setProperty(int hash, String name, Base value) throws FHIRException {
-        switch (hash) {
-        case 68050338: // daysOfWeek
-          value = new DaysOfWeekEnumFactory().fromType(TypeConvertor.castToCode(value));
-          this.getDaysOfWeek().add((Enumeration) value); // Enumeration<DaysOfWeek>
-          return value;
-        case -1414913477: // allDay
-          this.allDay = TypeConvertor.castToBoolean(value); // BooleanType
-          return value;
-        case 84062277: // openingTime
-          this.openingTime = TypeConvertor.castToTime(value); // TimeType
-          return value;
-        case 188137762: // closingTime
-          this.closingTime = TypeConvertor.castToTime(value); // TimeType
-          return value;
-        default: return super.setProperty(hash, name, value);
-        }
-
-      }
-
-      @Override
-      public Base setProperty(String name, Base value) throws FHIRException {
-        if (name.equals("daysOfWeek")) {
-          value = new DaysOfWeekEnumFactory().fromType(TypeConvertor.castToCode(value));
-          this.getDaysOfWeek().add((Enumeration) value);
-        } else if (name.equals("allDay")) {
-          this.allDay = TypeConvertor.castToBoolean(value); // BooleanType
-        } else if (name.equals("openingTime")) {
-          this.openingTime = TypeConvertor.castToTime(value); // TimeType
-        } else if (name.equals("closingTime")) {
-          this.closingTime = TypeConvertor.castToTime(value); // TimeType
-        } else
-          return super.setProperty(name, value);
-        return value;
-      }
-
-      @Override
-      public Base makeProperty(int hash, String name) throws FHIRException {
-        switch (hash) {
-        case 68050338:  return addDaysOfWeekElement();
-        case -1414913477:  return getAllDayElement();
-        case 84062277:  return getOpeningTimeElement();
-        case 188137762:  return getClosingTimeElement();
-        default: return super.makeProperty(hash, name);
-        }
-
-      }
-
-      @Override
-      public String[] getTypesForProperty(int hash, String name) throws FHIRException {
-        switch (hash) {
-        case 68050338: /*daysOfWeek*/ return new String[] {"code"};
-        case -1414913477: /*allDay*/ return new String[] {"boolean"};
-        case 84062277: /*openingTime*/ return new String[] {"time"};
-        case 188137762: /*closingTime*/ return new String[] {"time"};
-        default: return super.getTypesForProperty(hash, name);
-        }
-
-      }
-
-      @Override
-      public Base addChild(String name) throws FHIRException {
-        if (name.equals("daysOfWeek")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.hoursOfOperation.daysOfWeek");
-        }
-        else if (name.equals("allDay")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.hoursOfOperation.allDay");
-        }
-        else if (name.equals("openingTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.hoursOfOperation.openingTime");
-        }
-        else if (name.equals("closingTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.hoursOfOperation.closingTime");
-        }
-        else
-          return super.addChild(name);
-      }
-
-      public LocationHoursOfOperationComponent copy() {
-        LocationHoursOfOperationComponent dst = new LocationHoursOfOperationComponent();
-        copyValues(dst);
-        return dst;
-      }
-
-      public void copyValues(LocationHoursOfOperationComponent dst) {
-        super.copyValues(dst);
-        if (daysOfWeek != null) {
-          dst.daysOfWeek = new ArrayList<Enumeration<DaysOfWeek>>();
-          for (Enumeration<DaysOfWeek> i : daysOfWeek)
-            dst.daysOfWeek.add(i.copy());
-        };
-        dst.allDay = allDay == null ? null : allDay.copy();
-        dst.openingTime = openingTime == null ? null : openingTime.copy();
-        dst.closingTime = closingTime == null ? null : closingTime.copy();
-      }
-
-      @Override
-      public boolean equalsDeep(Base other_) {
-        if (!super.equalsDeep(other_))
-          return false;
-        if (!(other_ instanceof LocationHoursOfOperationComponent))
-          return false;
-        LocationHoursOfOperationComponent o = (LocationHoursOfOperationComponent) other_;
-        return compareDeep(daysOfWeek, o.daysOfWeek, true) && compareDeep(allDay, o.allDay, true) && compareDeep(openingTime, o.openingTime, true)
-           && compareDeep(closingTime, o.closingTime, true);
-      }
-
-      @Override
-      public boolean equalsShallow(Base other_) {
-        if (!super.equalsShallow(other_))
-          return false;
-        if (!(other_ instanceof LocationHoursOfOperationComponent))
-          return false;
-        LocationHoursOfOperationComponent o = (LocationHoursOfOperationComponent) other_;
-        return compareValues(daysOfWeek, o.daysOfWeek, true) && compareValues(allDay, o.allDay, true) && compareValues(openingTime, o.openingTime, true)
-           && compareValues(closingTime, o.closingTime, true);
-      }
-
-      public boolean isEmpty() {
-        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(daysOfWeek, allDay, openingTime
-          , closingTime);
-      }
-
-  public String fhirType() {
-    return "Location.hoursOfOperation";
 
   }
 
@@ -1078,9 +700,9 @@ public class Location extends DomainResource {
     /**
      * Description of the Location, which helps in finding or referencing the place.
      */
-    @Child(name = "description", type = {StringType.class}, order=5, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "description", type = {MarkdownType.class}, order=5, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Additional details about the location that could be displayed as further information to identify the location beyond its name", formalDefinition="Description of the Location, which helps in finding or referencing the place." )
-    protected StringType description;
+    protected MarkdownType description;
 
     /**
      * Indicates whether a resource instance represents a specific location or a class of locations.
@@ -1099,11 +721,11 @@ public class Location extends DomainResource {
     protected List<CodeableConcept> type;
 
     /**
-     * The contact details of communication devices available at the location. This can include phone numbers, fax numbers, mobile numbers, email addresses and web sites.
+     * The contact details of communication devices available at the location. This can include addresses, phone numbers, fax numbers, mobile numbers, email addresses and web sites.
      */
-    @Child(name = "telecom", type = {ContactPoint.class}, order=8, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-    @Description(shortDefinition="Contact details of the location", formalDefinition="The contact details of communication devices available at the location. This can include phone numbers, fax numbers, mobile numbers, email addresses and web sites." )
-    protected List<ContactPoint> telecom;
+    @Child(name = "contact", type = {ExtendedContactDetail.class}, order=8, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Description(shortDefinition="Official contact details for the location", formalDefinition="The contact details of communication devices available at the location. This can include addresses, phone numbers, fax numbers, mobile numbers, email addresses and web sites." )
+    protected List<ExtendedContactDetail> contact;
 
     /**
      * Physical location.
@@ -1113,12 +735,12 @@ public class Location extends DomainResource {
     protected Address address;
 
     /**
-     * Physical form of the location, e.g. building, room, vehicle, road.
+     * Physical form of the location, e.g. building, room, vehicle, road, virtual.
      */
-    @Child(name = "physicalType", type = {CodeableConcept.class}, order=10, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Physical form of the location", formalDefinition="Physical form of the location, e.g. building, room, vehicle, road." )
-    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/location-physical-type")
-    protected CodeableConcept physicalType;
+    @Child(name = "form", type = {CodeableConcept.class}, order=10, min=0, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="Physical form of the location", formalDefinition="Physical form of the location, e.g. building, room, vehicle, road, virtual." )
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/location-form")
+    protected CodeableConcept form;
 
     /**
      * The absolute geographic location of the Location, expressed using the WGS84 datum (This is the same co-ordinate system used in KML).
@@ -1142,27 +764,35 @@ public class Location extends DomainResource {
     protected Reference partOf;
 
     /**
-     * What days/times during a week is this location usually open.
+     * Collection of characteristics (attributes).
      */
-    @Child(name = "hoursOfOperation", type = {}, order=14, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-    @Description(shortDefinition="What days/times during a week is this location usually open", formalDefinition="What days/times during a week is this location usually open." )
-    protected List<LocationHoursOfOperationComponent> hoursOfOperation;
+    @Child(name = "characteristic", type = {CodeableConcept.class}, order=14, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Description(shortDefinition="Collection of characteristics (attributes)", formalDefinition="Collection of characteristics (attributes)." )
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/location-characteristic")
+    protected List<CodeableConcept> characteristic;
 
     /**
-     * A description of when the locations opening ours are different to normal, e.g. public holiday availability. Succinctly describing all possible exceptions to normal site availability as detailed in the opening hours Times.
+     * What days/times during a week is this location usually open, and any exceptions where the location is not available.
      */
-    @Child(name = "availabilityExceptions", type = {StringType.class}, order=15, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="Description of availability exceptions", formalDefinition="A description of when the locations opening ours are different to normal, e.g. public holiday availability. Succinctly describing all possible exceptions to normal site availability as detailed in the opening hours Times." )
-    protected StringType availabilityExceptions;
+    @Child(name = "hoursOfOperation", type = {Availability.class}, order=15, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Description(shortDefinition="What days/times during a week is this location usually open (including exceptions)", formalDefinition="What days/times during a week is this location usually open, and any exceptions where the location is not available." )
+    protected List<Availability> hoursOfOperation;
+
+    /**
+     * Connection details of a virtual service (e.g. shared conference call facility with dedicated number/details).
+     */
+    @Child(name = "virtualService", type = {VirtualServiceDetail.class}, order=16, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Description(shortDefinition="Connection details of a virtual service (e.g. conference call)", formalDefinition="Connection details of a virtual service (e.g. shared conference call facility with dedicated number/details)." )
+    protected List<VirtualServiceDetail> virtualService;
 
     /**
      * Technical endpoints providing access to services operated for the location.
      */
-    @Child(name = "endpoint", type = {Endpoint.class}, order=16, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "endpoint", type = {Endpoint.class}, order=17, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Technical endpoints providing access to services operated for the location", formalDefinition="Technical endpoints providing access to services operated for the location." )
     protected List<Reference> endpoint;
 
-    private static final long serialVersionUID = -1479198769L;
+    private static final long serialVersionUID = 1238993068L;
 
   /**
    * Constructor
@@ -1410,12 +1040,12 @@ public class Location extends DomainResource {
     /**
      * @return {@link #description} (Description of the Location, which helps in finding or referencing the place.). This is the underlying object with id, value and extensions. The accessor "getDescription" gives direct access to the value
      */
-    public StringType getDescriptionElement() { 
+    public MarkdownType getDescriptionElement() { 
       if (this.description == null)
         if (Configuration.errorOnAutoCreate())
           throw new Error("Attempt to auto-create Location.description");
         else if (Configuration.doAutoCreate())
-          this.description = new StringType(); // bb
+          this.description = new MarkdownType(); // bb
       return this.description;
     }
 
@@ -1430,7 +1060,7 @@ public class Location extends DomainResource {
     /**
      * @param value {@link #description} (Description of the Location, which helps in finding or referencing the place.). This is the underlying object with id, value and extensions. The accessor "getDescription" gives direct access to the value
      */
-    public Location setDescriptionElement(StringType value) { 
+    public Location setDescriptionElement(MarkdownType value) { 
       this.description = value;
       return this;
     }
@@ -1450,7 +1080,7 @@ public class Location extends DomainResource {
         this.description = null;
       else {
         if (this.description == null)
-          this.description = new StringType();
+          this.description = new MarkdownType();
         this.description.setValue(value);
       }
       return this;
@@ -1559,56 +1189,56 @@ public class Location extends DomainResource {
     }
 
     /**
-     * @return {@link #telecom} (The contact details of communication devices available at the location. This can include phone numbers, fax numbers, mobile numbers, email addresses and web sites.)
+     * @return {@link #contact} (The contact details of communication devices available at the location. This can include addresses, phone numbers, fax numbers, mobile numbers, email addresses and web sites.)
      */
-    public List<ContactPoint> getTelecom() { 
-      if (this.telecom == null)
-        this.telecom = new ArrayList<ContactPoint>();
-      return this.telecom;
+    public List<ExtendedContactDetail> getContact() { 
+      if (this.contact == null)
+        this.contact = new ArrayList<ExtendedContactDetail>();
+      return this.contact;
     }
 
     /**
      * @return Returns a reference to <code>this</code> for easy method chaining
      */
-    public Location setTelecom(List<ContactPoint> theTelecom) { 
-      this.telecom = theTelecom;
+    public Location setContact(List<ExtendedContactDetail> theContact) { 
+      this.contact = theContact;
       return this;
     }
 
-    public boolean hasTelecom() { 
-      if (this.telecom == null)
+    public boolean hasContact() { 
+      if (this.contact == null)
         return false;
-      for (ContactPoint item : this.telecom)
+      for (ExtendedContactDetail item : this.contact)
         if (!item.isEmpty())
           return true;
       return false;
     }
 
-    public ContactPoint addTelecom() { //3
-      ContactPoint t = new ContactPoint();
-      if (this.telecom == null)
-        this.telecom = new ArrayList<ContactPoint>();
-      this.telecom.add(t);
+    public ExtendedContactDetail addContact() { //3
+      ExtendedContactDetail t = new ExtendedContactDetail();
+      if (this.contact == null)
+        this.contact = new ArrayList<ExtendedContactDetail>();
+      this.contact.add(t);
       return t;
     }
 
-    public Location addTelecom(ContactPoint t) { //3
+    public Location addContact(ExtendedContactDetail t) { //3
       if (t == null)
         return this;
-      if (this.telecom == null)
-        this.telecom = new ArrayList<ContactPoint>();
-      this.telecom.add(t);
+      if (this.contact == null)
+        this.contact = new ArrayList<ExtendedContactDetail>();
+      this.contact.add(t);
       return this;
     }
 
     /**
-     * @return The first repetition of repeating field {@link #telecom}, creating it if it does not already exist {3}
+     * @return The first repetition of repeating field {@link #contact}, creating it if it does not already exist {3}
      */
-    public ContactPoint getTelecomFirstRep() { 
-      if (getTelecom().isEmpty()) {
-        addTelecom();
+    public ExtendedContactDetail getContactFirstRep() { 
+      if (getContact().isEmpty()) {
+        addContact();
       }
-      return getTelecom().get(0);
+      return getContact().get(0);
     }
 
     /**
@@ -1636,26 +1266,26 @@ public class Location extends DomainResource {
     }
 
     /**
-     * @return {@link #physicalType} (Physical form of the location, e.g. building, room, vehicle, road.)
+     * @return {@link #form} (Physical form of the location, e.g. building, room, vehicle, road, virtual.)
      */
-    public CodeableConcept getPhysicalType() { 
-      if (this.physicalType == null)
+    public CodeableConcept getForm() { 
+      if (this.form == null)
         if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create Location.physicalType");
+          throw new Error("Attempt to auto-create Location.form");
         else if (Configuration.doAutoCreate())
-          this.physicalType = new CodeableConcept(); // cc
-      return this.physicalType;
+          this.form = new CodeableConcept(); // cc
+      return this.form;
     }
 
-    public boolean hasPhysicalType() { 
-      return this.physicalType != null && !this.physicalType.isEmpty();
+    public boolean hasForm() { 
+      return this.form != null && !this.form.isEmpty();
     }
 
     /**
-     * @param value {@link #physicalType} (Physical form of the location, e.g. building, room, vehicle, road.)
+     * @param value {@link #form} (Physical form of the location, e.g. building, room, vehicle, road, virtual.)
      */
-    public Location setPhysicalType(CodeableConcept value) { 
-      this.physicalType = value;
+    public Location setForm(CodeableConcept value) { 
+      this.form = value;
       return this;
     }
 
@@ -1732,18 +1362,71 @@ public class Location extends DomainResource {
     }
 
     /**
-     * @return {@link #hoursOfOperation} (What days/times during a week is this location usually open.)
+     * @return {@link #characteristic} (Collection of characteristics (attributes).)
      */
-    public List<LocationHoursOfOperationComponent> getHoursOfOperation() { 
+    public List<CodeableConcept> getCharacteristic() { 
+      if (this.characteristic == null)
+        this.characteristic = new ArrayList<CodeableConcept>();
+      return this.characteristic;
+    }
+
+    /**
+     * @return Returns a reference to <code>this</code> for easy method chaining
+     */
+    public Location setCharacteristic(List<CodeableConcept> theCharacteristic) { 
+      this.characteristic = theCharacteristic;
+      return this;
+    }
+
+    public boolean hasCharacteristic() { 
+      if (this.characteristic == null)
+        return false;
+      for (CodeableConcept item : this.characteristic)
+        if (!item.isEmpty())
+          return true;
+      return false;
+    }
+
+    public CodeableConcept addCharacteristic() { //3
+      CodeableConcept t = new CodeableConcept();
+      if (this.characteristic == null)
+        this.characteristic = new ArrayList<CodeableConcept>();
+      this.characteristic.add(t);
+      return t;
+    }
+
+    public Location addCharacteristic(CodeableConcept t) { //3
+      if (t == null)
+        return this;
+      if (this.characteristic == null)
+        this.characteristic = new ArrayList<CodeableConcept>();
+      this.characteristic.add(t);
+      return this;
+    }
+
+    /**
+     * @return The first repetition of repeating field {@link #characteristic}, creating it if it does not already exist {3}
+     */
+    public CodeableConcept getCharacteristicFirstRep() { 
+      if (getCharacteristic().isEmpty()) {
+        addCharacteristic();
+      }
+      return getCharacteristic().get(0);
+    }
+
+    /**
+     * @return {@link #hoursOfOperation} (What days/times during a week is this location usually open, and any exceptions where the location is not available.)
+     */
+    public List<Availability> getHoursOfOperation() { 
       if (this.hoursOfOperation == null)
-        this.hoursOfOperation = new ArrayList<LocationHoursOfOperationComponent>();
+        this.hoursOfOperation = new ArrayList<Availability>();
       return this.hoursOfOperation;
     }
 
     /**
      * @return Returns a reference to <code>this</code> for easy method chaining
      */
-    public Location setHoursOfOperation(List<LocationHoursOfOperationComponent> theHoursOfOperation) { 
+    public Location setHoursOfOperation(List<Availability> theHoursOfOperation) { 
       this.hoursOfOperation = theHoursOfOperation;
       return this;
     }
@@ -1751,25 +1434,25 @@ public class Location extends DomainResource {
     public boolean hasHoursOfOperation() { 
       if (this.hoursOfOperation == null)
         return false;
-      for (LocationHoursOfOperationComponent item : this.hoursOfOperation)
+      for (Availability item : this.hoursOfOperation)
         if (!item.isEmpty())
           return true;
       return false;
     }
 
-    public LocationHoursOfOperationComponent addHoursOfOperation() { //3
-      LocationHoursOfOperationComponent t = new LocationHoursOfOperationComponent();
+    public Availability addHoursOfOperation() { //3
+      Availability t = new Availability();
       if (this.hoursOfOperation == null)
-        this.hoursOfOperation = new ArrayList<LocationHoursOfOperationComponent>();
+        this.hoursOfOperation = new ArrayList<Availability>();
       this.hoursOfOperation.add(t);
       return t;
     }
 
-    public Location addHoursOfOperation(LocationHoursOfOperationComponent t) { //3
+    public Location addHoursOfOperation(Availability t) { //3
       if (t == null)
         return this;
       if (this.hoursOfOperation == null)
-        this.hoursOfOperation = new ArrayList<LocationHoursOfOperationComponent>();
+        this.hoursOfOperation = new ArrayList<Availability>();
       this.hoursOfOperation.add(t);
       return this;
     }
@@ -1777,7 +1460,7 @@ public class Location extends DomainResource {
     /**
      * @return The first repetition of repeating field {@link #hoursOfOperation}, creating it if it does not already exist {3}
      */
-    public LocationHoursOfOperationComponent getHoursOfOperationFirstRep() { 
+    public Availability getHoursOfOperationFirstRep() { 
       if (getHoursOfOperation().isEmpty()) {
         addHoursOfOperation();
       }
@@ -1785,52 +1468,56 @@ public class Location extends DomainResource {
     }
 
     /**
-     * @return {@link #availabilityExceptions} (A description of when the locations opening ours are different to normal, e.g. public holiday availability. Succinctly describing all possible exceptions to normal site availability as detailed in the opening hours Times.). This is the underlying object with id, value and extensions. The accessor "getAvailabilityExceptions" gives direct access to the value
+     * @return {@link #virtualService} (Connection details of a virtual service (e.g. shared conference call facility with dedicated number/details).)
      */
-    public StringType getAvailabilityExceptionsElement() { 
-      if (this.availabilityExceptions == null)
-        if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create Location.availabilityExceptions");
-        else if (Configuration.doAutoCreate())
-          this.availabilityExceptions = new StringType(); // bb
-      return this.availabilityExceptions;
-    }
-
-    public boolean hasAvailabilityExceptionsElement() { 
-      return this.availabilityExceptions != null && !this.availabilityExceptions.isEmpty();
-    }
-
-    public boolean hasAvailabilityExceptions() { 
-      return this.availabilityExceptions != null && !this.availabilityExceptions.isEmpty();
+    public List<VirtualServiceDetail> getVirtualService() { 
+      if (this.virtualService == null)
+        this.virtualService = new ArrayList<VirtualServiceDetail>();
+      return this.virtualService;
     }
 
     /**
-     * @param value {@link #availabilityExceptions} (A description of when the locations opening ours are different to normal, e.g. public holiday availability. Succinctly describing all possible exceptions to normal site availability as detailed in the opening hours Times.). This is the underlying object with id, value and extensions. The accessor "getAvailabilityExceptions" gives direct access to the value
+     * @return Returns a reference to <code>this</code> for easy method chaining
      */
-    public Location setAvailabilityExceptionsElement(StringType value) { 
-      this.availabilityExceptions = value;
+    public Location setVirtualService(List<VirtualServiceDetail> theVirtualService) { 
+      this.virtualService = theVirtualService;
+      return this;
+    }
+
+    public boolean hasVirtualService() { 
+      if (this.virtualService == null)
+        return false;
+      for (VirtualServiceDetail item : this.virtualService)
+        if (!item.isEmpty())
+          return true;
+      return false;
+    }
+
+    public VirtualServiceDetail addVirtualService() { //3
+      VirtualServiceDetail t = new VirtualServiceDetail();
+      if (this.virtualService == null)
+        this.virtualService = new ArrayList<VirtualServiceDetail>();
+      this.virtualService.add(t);
+      return t;
+    }
+
+    public Location addVirtualService(VirtualServiceDetail t) { //3
+      if (t == null)
+        return this;
+      if (this.virtualService == null)
+        this.virtualService = new ArrayList<VirtualServiceDetail>();
+      this.virtualService.add(t);
       return this;
     }
 
     /**
-     * @return A description of when the locations opening ours are different to normal, e.g. public holiday availability. Succinctly describing all possible exceptions to normal site availability as detailed in the opening hours Times.
+     * @return The first repetition of repeating field {@link #virtualService}, creating it if it does not already exist {3}
      */
-    public String getAvailabilityExceptions() { 
-      return this.availabilityExceptions == null ? null : this.availabilityExceptions.getValue();
-    }
-
-    /**
-     * @param value A description of when the locations opening ours are different to normal, e.g. public holiday availability. Succinctly describing all possible exceptions to normal site availability as detailed in the opening hours Times.
-     */
-    public Location setAvailabilityExceptions(String value) { 
-      if (Utilities.noString(value))
-        this.availabilityExceptions = null;
-      else {
-        if (this.availabilityExceptions == null)
-          this.availabilityExceptions = new StringType();
-        this.availabilityExceptions.setValue(value);
+    public VirtualServiceDetail getVirtualServiceFirstRep() { 
+      if (getVirtualService().isEmpty()) {
+        addVirtualService();
       }
-      return this;
+      return getVirtualService().get(0);
     }
 
     /**
@@ -1893,17 +1580,18 @@ public class Location extends DomainResource {
         children.add(new Property("operationalStatus", "Coding", "The operational status covers operation values most relevant to beds (but can also apply to rooms/units/chairs/etc. such as an isolation unit/dialysis chair). This typically covers concepts such as contamination, housekeeping, and other activities like maintenance.", 0, 1, operationalStatus));
         children.add(new Property("name", "string", "Name of the location as used by humans. Does not need to be unique.", 0, 1, name));
         children.add(new Property("alias", "string", "A list of alternate names that the location is known as, or was known as, in the past.", 0, java.lang.Integer.MAX_VALUE, alias));
-        children.add(new Property("description", "string", "Description of the Location, which helps in finding or referencing the place.", 0, 1, description));
+        children.add(new Property("description", "markdown", "Description of the Location, which helps in finding or referencing the place.", 0, 1, description));
         children.add(new Property("mode", "code", "Indicates whether a resource instance represents a specific location or a class of locations.", 0, 1, mode));
         children.add(new Property("type", "CodeableConcept", "Indicates the type of function performed at the location.", 0, java.lang.Integer.MAX_VALUE, type));
-        children.add(new Property("telecom", "ContactPoint", "The contact details of communication devices available at the location. This can include phone numbers, fax numbers, mobile numbers, email addresses and web sites.", 0, java.lang.Integer.MAX_VALUE, telecom));
+        children.add(new Property("contact", "ExtendedContactDetail", "The contact details of communication devices available at the location. This can include addresses, phone numbers, fax numbers, mobile numbers, email addresses and web sites.", 0, java.lang.Integer.MAX_VALUE, contact));
         children.add(new Property("address", "Address", "Physical location.", 0, 1, address));
-        children.add(new Property("physicalType", "CodeableConcept", "Physical form of the location, e.g. building, room, vehicle, road.", 0, 1, physicalType));
+        children.add(new Property("form", "CodeableConcept", "Physical form of the location, e.g. building, room, vehicle, road, virtual.", 0, 1, form));
         children.add(new Property("position", "", "The absolute geographic location of the Location, expressed using the WGS84 datum (This is the same co-ordinate system used in KML).", 0, 1, position));
         children.add(new Property("managingOrganization", "Reference(Organization)", "The organization responsible for the provisioning and upkeep of the location.", 0, 1, managingOrganization));
         children.add(new Property("partOf", "Reference(Location)", "Another Location of which this Location is physically a part of.", 0, 1, partOf));
-        children.add(new Property("hoursOfOperation", "", "What days/times during a week is this location usually open.", 0, java.lang.Integer.MAX_VALUE, hoursOfOperation));
-        children.add(new Property("availabilityExceptions", "string", "A description of when the locations opening ours are different to normal, e.g. public holiday availability. Succinctly describing all possible exceptions to normal site availability as detailed in the opening hours Times.", 0, 1, availabilityExceptions));
+        children.add(new Property("characteristic", "CodeableConcept", "Collection of characteristics (attributes).", 0, java.lang.Integer.MAX_VALUE, characteristic));
+        children.add(new Property("hoursOfOperation", "Availability", "What days/times during a week is this location usually open, and any exceptions where the location is not available.", 0, java.lang.Integer.MAX_VALUE, hoursOfOperation));
+        children.add(new Property("virtualService", "VirtualServiceDetail", "Connection details of a virtual service (e.g. shared conference call facility with dedicated number/details).", 0, java.lang.Integer.MAX_VALUE, virtualService));
         children.add(new Property("endpoint", "Reference(Endpoint)", "Technical endpoints providing access to services operated for the location.", 0, java.lang.Integer.MAX_VALUE, endpoint));
       }
 
@@ -1915,17 +1603,18 @@ public class Location extends DomainResource {
         case -2103166364: /*operationalStatus*/  return new Property("operationalStatus", "Coding", "The operational status covers operation values most relevant to beds (but can also apply to rooms/units/chairs/etc. such as an isolation unit/dialysis chair). This typically covers concepts such as contamination, housekeeping, and other activities like maintenance.", 0, 1, operationalStatus);
         case 3373707: /*name*/  return new Property("name", "string", "Name of the location as used by humans. Does not need to be unique.", 0, 1, name);
         case 92902992: /*alias*/  return new Property("alias", "string", "A list of alternate names that the location is known as, or was known as, in the past.", 0, java.lang.Integer.MAX_VALUE, alias);
-        case -1724546052: /*description*/  return new Property("description", "string", "Description of the Location, which helps in finding or referencing the place.", 0, 1, description);
+        case -1724546052: /*description*/  return new Property("description", "markdown", "Description of the Location, which helps in finding or referencing the place.", 0, 1, description);
         case 3357091: /*mode*/  return new Property("mode", "code", "Indicates whether a resource instance represents a specific location or a class of locations.", 0, 1, mode);
         case 3575610: /*type*/  return new Property("type", "CodeableConcept", "Indicates the type of function performed at the location.", 0, java.lang.Integer.MAX_VALUE, type);
-        case -1429363305: /*telecom*/  return new Property("telecom", "ContactPoint", "The contact details of communication devices available at the location. This can include phone numbers, fax numbers, mobile numbers, email addresses and web sites.", 0, java.lang.Integer.MAX_VALUE, telecom);
+        case 951526432: /*contact*/  return new Property("contact", "ExtendedContactDetail", "The contact details of communication devices available at the location. This can include addresses, phone numbers, fax numbers, mobile numbers, email addresses and web sites.", 0, java.lang.Integer.MAX_VALUE, contact);
         case -1147692044: /*address*/  return new Property("address", "Address", "Physical location.", 0, 1, address);
-        case -1474715471: /*physicalType*/  return new Property("physicalType", "CodeableConcept", "Physical form of the location, e.g. building, room, vehicle, road.", 0, 1, physicalType);
+        case 3148996: /*form*/  return new Property("form", "CodeableConcept", "Physical form of the location, e.g. building, room, vehicle, road, virtual.", 0, 1, form);
         case 747804969: /*position*/  return new Property("position", "", "The absolute geographic location of the Location, expressed using the WGS84 datum (This is the same co-ordinate system used in KML).", 0, 1, position);
         case -2058947787: /*managingOrganization*/  return new Property("managingOrganization", "Reference(Organization)", "The organization responsible for the provisioning and upkeep of the location.", 0, 1, managingOrganization);
         case -995410646: /*partOf*/  return new Property("partOf", "Reference(Location)", "Another Location of which this Location is physically a part of.", 0, 1, partOf);
-        case -1588872511: /*hoursOfOperation*/  return new Property("hoursOfOperation", "", "What days/times during a week is this location usually open.", 0, java.lang.Integer.MAX_VALUE, hoursOfOperation);
-        case -1149143617: /*availabilityExceptions*/  return new Property("availabilityExceptions", "string", "A description of when the locations opening ours are different to normal, e.g. public holiday availability. Succinctly describing all possible exceptions to normal site availability as detailed in the opening hours Times.", 0, 1, availabilityExceptions);
+        case 366313883: /*characteristic*/  return new Property("characteristic", "CodeableConcept", "Collection of characteristics (attributes).", 0, java.lang.Integer.MAX_VALUE, characteristic);
+        case -1588872511: /*hoursOfOperation*/  return new Property("hoursOfOperation", "Availability", "What days/times during a week is this location usually open, and any exceptions where the location is not available.", 0, java.lang.Integer.MAX_VALUE, hoursOfOperation);
+        case 1420774698: /*virtualService*/  return new Property("virtualService", "VirtualServiceDetail", "Connection details of a virtual service (e.g. shared conference call facility with dedicated number/details).", 0, java.lang.Integer.MAX_VALUE, virtualService);
         case 1741102485: /*endpoint*/  return new Property("endpoint", "Reference(Endpoint)", "Technical endpoints providing access to services operated for the location.", 0, java.lang.Integer.MAX_VALUE, endpoint);
         default: return super.getNamedProperty(_hash, _name, _checkValid);
         }
@@ -1940,17 +1629,18 @@ public class Location extends DomainResource {
         case -2103166364: /*operationalStatus*/ return this.operationalStatus == null ? new Base[0] : new Base[] {this.operationalStatus}; // Coding
         case 3373707: /*name*/ return this.name == null ? new Base[0] : new Base[] {this.name}; // StringType
         case 92902992: /*alias*/ return this.alias == null ? new Base[0] : this.alias.toArray(new Base[this.alias.size()]); // StringType
-        case -1724546052: /*description*/ return this.description == null ? new Base[0] : new Base[] {this.description}; // StringType
+        case -1724546052: /*description*/ return this.description == null ? new Base[0] : new Base[] {this.description}; // MarkdownType
         case 3357091: /*mode*/ return this.mode == null ? new Base[0] : new Base[] {this.mode}; // Enumeration<LocationMode>
         case 3575610: /*type*/ return this.type == null ? new Base[0] : this.type.toArray(new Base[this.type.size()]); // CodeableConcept
-        case -1429363305: /*telecom*/ return this.telecom == null ? new Base[0] : this.telecom.toArray(new Base[this.telecom.size()]); // ContactPoint
+        case 951526432: /*contact*/ return this.contact == null ? new Base[0] : this.contact.toArray(new Base[this.contact.size()]); // ExtendedContactDetail
         case -1147692044: /*address*/ return this.address == null ? new Base[0] : new Base[] {this.address}; // Address
-        case -1474715471: /*physicalType*/ return this.physicalType == null ? new Base[0] : new Base[] {this.physicalType}; // CodeableConcept
+        case 3148996: /*form*/ return this.form == null ? new Base[0] : new Base[] {this.form}; // CodeableConcept
         case 747804969: /*position*/ return this.position == null ? new Base[0] : new Base[] {this.position}; // LocationPositionComponent
         case -2058947787: /*managingOrganization*/ return this.managingOrganization == null ? new Base[0] : new Base[] {this.managingOrganization}; // Reference
         case -995410646: /*partOf*/ return this.partOf == null ? new Base[0] : new Base[] {this.partOf}; // Reference
-        case -1588872511: /*hoursOfOperation*/ return this.hoursOfOperation == null ? new Base[0] : this.hoursOfOperation.toArray(new Base[this.hoursOfOperation.size()]); // LocationHoursOfOperationComponent
-        case -1149143617: /*availabilityExceptions*/ return this.availabilityExceptions == null ? new Base[0] : new Base[] {this.availabilityExceptions}; // StringType
+        case 366313883: /*characteristic*/ return this.characteristic == null ? new Base[0] : this.characteristic.toArray(new Base[this.characteristic.size()]); // CodeableConcept
+        case -1588872511: /*hoursOfOperation*/ return this.hoursOfOperation == null ? new Base[0] : this.hoursOfOperation.toArray(new Base[this.hoursOfOperation.size()]); // Availability
+        case 1420774698: /*virtualService*/ return this.virtualService == null ? new Base[0] : this.virtualService.toArray(new Base[this.virtualService.size()]); // VirtualServiceDetail
         case 1741102485: /*endpoint*/ return this.endpoint == null ? new Base[0] : this.endpoint.toArray(new Base[this.endpoint.size()]); // Reference
         default: return super.getProperty(hash, name, checkValid);
         }
@@ -1977,7 +1667,7 @@ public class Location extends DomainResource {
           this.getAlias().add(TypeConvertor.castToString(value)); // StringType
           return value;
         case -1724546052: // description
-          this.description = TypeConvertor.castToString(value); // StringType
+          this.description = TypeConvertor.castToMarkdown(value); // MarkdownType
           return value;
         case 3357091: // mode
           value = new LocationModeEnumFactory().fromType(TypeConvertor.castToCode(value));
@@ -1986,14 +1676,14 @@ public class Location extends DomainResource {
         case 3575610: // type
           this.getType().add(TypeConvertor.castToCodeableConcept(value)); // CodeableConcept
           return value;
-        case -1429363305: // telecom
-          this.getTelecom().add(TypeConvertor.castToContactPoint(value)); // ContactPoint
+        case 951526432: // contact
+          this.getContact().add(TypeConvertor.castToExtendedContactDetail(value)); // ExtendedContactDetail
           return value;
         case -1147692044: // address
           this.address = TypeConvertor.castToAddress(value); // Address
           return value;
-        case -1474715471: // physicalType
-          this.physicalType = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
+        case 3148996: // form
+          this.form = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
           return value;
         case 747804969: // position
           this.position = (LocationPositionComponent) value; // LocationPositionComponent
@@ -2004,11 +1694,14 @@ public class Location extends DomainResource {
         case -995410646: // partOf
           this.partOf = TypeConvertor.castToReference(value); // Reference
           return value;
-        case -1588872511: // hoursOfOperation
-          this.getHoursOfOperation().add((LocationHoursOfOperationComponent) value); // LocationHoursOfOperationComponent
+        case 366313883: // characteristic
+          this.getCharacteristic().add(TypeConvertor.castToCodeableConcept(value)); // CodeableConcept
           return value;
-        case -1149143617: // availabilityExceptions
-          this.availabilityExceptions = TypeConvertor.castToString(value); // StringType
+        case -1588872511: // hoursOfOperation
+          this.getHoursOfOperation().add(TypeConvertor.castToAvailability(value)); // Availability
+          return value;
+        case 1420774698: // virtualService
+          this.getVirtualService().add(TypeConvertor.castToVirtualServiceDetail(value)); // VirtualServiceDetail
           return value;
         case 1741102485: // endpoint
           this.getEndpoint().add(TypeConvertor.castToReference(value)); // Reference
@@ -2032,33 +1725,80 @@ public class Location extends DomainResource {
         } else if (name.equals("alias")) {
           this.getAlias().add(TypeConvertor.castToString(value));
         } else if (name.equals("description")) {
-          this.description = TypeConvertor.castToString(value); // StringType
+          this.description = TypeConvertor.castToMarkdown(value); // MarkdownType
         } else if (name.equals("mode")) {
           value = new LocationModeEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.mode = (Enumeration) value; // Enumeration<LocationMode>
         } else if (name.equals("type")) {
           this.getType().add(TypeConvertor.castToCodeableConcept(value));
-        } else if (name.equals("telecom")) {
-          this.getTelecom().add(TypeConvertor.castToContactPoint(value));
+        } else if (name.equals("contact")) {
+          this.getContact().add(TypeConvertor.castToExtendedContactDetail(value));
         } else if (name.equals("address")) {
           this.address = TypeConvertor.castToAddress(value); // Address
-        } else if (name.equals("physicalType")) {
-          this.physicalType = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
+        } else if (name.equals("form")) {
+          this.form = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
         } else if (name.equals("position")) {
           this.position = (LocationPositionComponent) value; // LocationPositionComponent
         } else if (name.equals("managingOrganization")) {
           this.managingOrganization = TypeConvertor.castToReference(value); // Reference
         } else if (name.equals("partOf")) {
           this.partOf = TypeConvertor.castToReference(value); // Reference
+        } else if (name.equals("characteristic")) {
+          this.getCharacteristic().add(TypeConvertor.castToCodeableConcept(value));
         } else if (name.equals("hoursOfOperation")) {
-          this.getHoursOfOperation().add((LocationHoursOfOperationComponent) value);
-        } else if (name.equals("availabilityExceptions")) {
-          this.availabilityExceptions = TypeConvertor.castToString(value); // StringType
+          this.getHoursOfOperation().add(TypeConvertor.castToAvailability(value));
+        } else if (name.equals("virtualService")) {
+          this.getVirtualService().add(TypeConvertor.castToVirtualServiceDetail(value));
         } else if (name.equals("endpoint")) {
           this.getEndpoint().add(TypeConvertor.castToReference(value));
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("identifier")) {
+          this.getIdentifier().remove(value);
+        } else if (name.equals("status")) {
+          value = new LocationStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<LocationStatus>
+        } else if (name.equals("operationalStatus")) {
+          this.operationalStatus = null;
+        } else if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("alias")) {
+          this.getAlias().remove(value);
+        } else if (name.equals("description")) {
+          this.description = null;
+        } else if (name.equals("mode")) {
+          value = new LocationModeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.mode = (Enumeration) value; // Enumeration<LocationMode>
+        } else if (name.equals("type")) {
+          this.getType().remove(value);
+        } else if (name.equals("contact")) {
+          this.getContact().remove(value);
+        } else if (name.equals("address")) {
+          this.address = null;
+        } else if (name.equals("form")) {
+          this.form = null;
+        } else if (name.equals("position")) {
+          this.position = (LocationPositionComponent) value; // LocationPositionComponent
+        } else if (name.equals("managingOrganization")) {
+          this.managingOrganization = null;
+        } else if (name.equals("partOf")) {
+          this.partOf = null;
+        } else if (name.equals("characteristic")) {
+          this.getCharacteristic().remove(value);
+        } else if (name.equals("hoursOfOperation")) {
+          this.getHoursOfOperation().remove(value);
+        } else if (name.equals("virtualService")) {
+          this.getVirtualService().remove(value);
+        } else if (name.equals("endpoint")) {
+          this.getEndpoint().remove(value);
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -2072,14 +1812,15 @@ public class Location extends DomainResource {
         case -1724546052:  return getDescriptionElement();
         case 3357091:  return getModeElement();
         case 3575610:  return addType(); 
-        case -1429363305:  return addTelecom(); 
+        case 951526432:  return addContact(); 
         case -1147692044:  return getAddress();
-        case -1474715471:  return getPhysicalType();
+        case 3148996:  return getForm();
         case 747804969:  return getPosition();
         case -2058947787:  return getManagingOrganization();
         case -995410646:  return getPartOf();
+        case 366313883:  return addCharacteristic(); 
         case -1588872511:  return addHoursOfOperation(); 
-        case -1149143617:  return getAvailabilityExceptionsElement();
+        case 1420774698:  return addVirtualService(); 
         case 1741102485:  return addEndpoint(); 
         default: return super.makeProperty(hash, name);
         }
@@ -2094,17 +1835,18 @@ public class Location extends DomainResource {
         case -2103166364: /*operationalStatus*/ return new String[] {"Coding"};
         case 3373707: /*name*/ return new String[] {"string"};
         case 92902992: /*alias*/ return new String[] {"string"};
-        case -1724546052: /*description*/ return new String[] {"string"};
+        case -1724546052: /*description*/ return new String[] {"markdown"};
         case 3357091: /*mode*/ return new String[] {"code"};
         case 3575610: /*type*/ return new String[] {"CodeableConcept"};
-        case -1429363305: /*telecom*/ return new String[] {"ContactPoint"};
+        case 951526432: /*contact*/ return new String[] {"ExtendedContactDetail"};
         case -1147692044: /*address*/ return new String[] {"Address"};
-        case -1474715471: /*physicalType*/ return new String[] {"CodeableConcept"};
+        case 3148996: /*form*/ return new String[] {"CodeableConcept"};
         case 747804969: /*position*/ return new String[] {};
         case -2058947787: /*managingOrganization*/ return new String[] {"Reference"};
         case -995410646: /*partOf*/ return new String[] {"Reference"};
-        case -1588872511: /*hoursOfOperation*/ return new String[] {};
-        case -1149143617: /*availabilityExceptions*/ return new String[] {"string"};
+        case 366313883: /*characteristic*/ return new String[] {"CodeableConcept"};
+        case -1588872511: /*hoursOfOperation*/ return new String[] {"Availability"};
+        case 1420774698: /*virtualService*/ return new String[] {"VirtualServiceDetail"};
         case 1741102485: /*endpoint*/ return new String[] {"Reference"};
         default: return super.getTypesForProperty(hash, name);
         }
@@ -2117,37 +1859,37 @@ public class Location extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.status");
         }
         else if (name.equals("operationalStatus")) {
           this.operationalStatus = new Coding();
           return this.operationalStatus;
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.name");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.name");
         }
         else if (name.equals("alias")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.alias");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.alias");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.description");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.description");
         }
         else if (name.equals("mode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.mode");
+          throw new FHIRException("Cannot call addChild on a singleton property Location.mode");
         }
         else if (name.equals("type")) {
           return addType();
         }
-        else if (name.equals("telecom")) {
-          return addTelecom();
+        else if (name.equals("contact")) {
+          return addContact();
         }
         else if (name.equals("address")) {
           this.address = new Address();
           return this.address;
         }
-        else if (name.equals("physicalType")) {
-          this.physicalType = new CodeableConcept();
-          return this.physicalType;
+        else if (name.equals("form")) {
+          this.form = new CodeableConcept();
+          return this.form;
         }
         else if (name.equals("position")) {
           this.position = new LocationPositionComponent();
@@ -2161,11 +1903,14 @@ public class Location extends DomainResource {
           this.partOf = new Reference();
           return this.partOf;
         }
+        else if (name.equals("characteristic")) {
+          return addCharacteristic();
+        }
         else if (name.equals("hoursOfOperation")) {
           return addHoursOfOperation();
         }
-        else if (name.equals("availabilityExceptions")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Location.availabilityExceptions");
+        else if (name.equals("virtualService")) {
+          return addVirtualService();
         }
         else if (name.equals("endpoint")) {
           return addEndpoint();
@@ -2183,6 +1928,10 @@ public class Location extends DomainResource {
         Location dst = new Location();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Location) dst);
       }
 
       public void copyValues(Location dst) {
@@ -2207,22 +1956,31 @@ public class Location extends DomainResource {
           for (CodeableConcept i : type)
             dst.type.add(i.copy());
         };
-        if (telecom != null) {
-          dst.telecom = new ArrayList<ContactPoint>();
-          for (ContactPoint i : telecom)
-            dst.telecom.add(i.copy());
+        if (contact != null) {
+          dst.contact = new ArrayList<ExtendedContactDetail>();
+          for (ExtendedContactDetail i : contact)
+            dst.contact.add(i.copy());
         };
         dst.address = address == null ? null : address.copy();
-        dst.physicalType = physicalType == null ? null : physicalType.copy();
+        dst.form = form == null ? null : form.copy();
         dst.position = position == null ? null : position.copy();
         dst.managingOrganization = managingOrganization == null ? null : managingOrganization.copy();
         dst.partOf = partOf == null ? null : partOf.copy();
+        if (characteristic != null) {
+          dst.characteristic = new ArrayList<CodeableConcept>();
+          for (CodeableConcept i : characteristic)
+            dst.characteristic.add(i.copy());
+        };
         if (hoursOfOperation != null) {
-          dst.hoursOfOperation = new ArrayList<LocationHoursOfOperationComponent>();
-          for (LocationHoursOfOperationComponent i : hoursOfOperation)
+          dst.hoursOfOperation = new ArrayList<Availability>();
+          for (Availability i : hoursOfOperation)
             dst.hoursOfOperation.add(i.copy());
         };
-        dst.availabilityExceptions = availabilityExceptions == null ? null : availabilityExceptions.copy();
+        if (virtualService != null) {
+          dst.virtualService = new ArrayList<VirtualServiceDetail>();
+          for (VirtualServiceDetail i : virtualService)
+            dst.virtualService.add(i.copy());
+        };
         if (endpoint != null) {
           dst.endpoint = new ArrayList<Reference>();
           for (Reference i : endpoint)
@@ -2243,11 +2001,12 @@ public class Location extends DomainResource {
         Location o = (Location) other_;
         return compareDeep(identifier, o.identifier, true) && compareDeep(status, o.status, true) && compareDeep(operationalStatus, o.operationalStatus, true)
            && compareDeep(name, o.name, true) && compareDeep(alias, o.alias, true) && compareDeep(description, o.description, true)
-           && compareDeep(mode, o.mode, true) && compareDeep(type, o.type, true) && compareDeep(telecom, o.telecom, true)
-           && compareDeep(address, o.address, true) && compareDeep(physicalType, o.physicalType, true) && compareDeep(position, o.position, true)
+           && compareDeep(mode, o.mode, true) && compareDeep(type, o.type, true) && compareDeep(contact, o.contact, true)
+           && compareDeep(address, o.address, true) && compareDeep(form, o.form, true) && compareDeep(position, o.position, true)
            && compareDeep(managingOrganization, o.managingOrganization, true) && compareDeep(partOf, o.partOf, true)
-           && compareDeep(hoursOfOperation, o.hoursOfOperation, true) && compareDeep(availabilityExceptions, o.availabilityExceptions, true)
-           && compareDeep(endpoint, o.endpoint, true);
+           && compareDeep(characteristic, o.characteristic, true) && compareDeep(hoursOfOperation, o.hoursOfOperation, true)
+           && compareDeep(virtualService, o.virtualService, true) && compareDeep(endpoint, o.endpoint, true)
+          ;
       }
 
       @Override
@@ -2258,41 +2017,19 @@ public class Location extends DomainResource {
           return false;
         Location o = (Location) other_;
         return compareValues(status, o.status, true) && compareValues(name, o.name, true) && compareValues(alias, o.alias, true)
-           && compareValues(description, o.description, true) && compareValues(mode, o.mode, true) && compareValues(availabilityExceptions, o.availabilityExceptions, true)
-          ;
+           && compareValues(description, o.description, true) && compareValues(mode, o.mode, true);
       }
 
       public boolean isEmpty() {
         return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(identifier, status, operationalStatus
-          , name, alias, description, mode, type, telecom, address, physicalType, position
-          , managingOrganization, partOf, hoursOfOperation, availabilityExceptions, endpoint
-          );
+          , name, alias, description, mode, type, contact, address, form, position, managingOrganization
+          , partOf, characteristic, hoursOfOperation, virtualService, endpoint);
       }
 
   @Override
   public ResourceType getResourceType() {
     return ResourceType.Location;
    }
-
- /**
-   * Search parameter: <b>address</b>
-   * <p>
-   * Description: <b>A (part of the) address of the location</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>Location.address</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="address", path="Location.address", description="A (part of the) address of the location", type="string" )
-  public static final String SP_ADDRESS = "address";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>address</b>
-   * <p>
-   * Description: <b>A (part of the) address of the location</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>Location.address</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.StringClientParam ADDRESS = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_ADDRESS);
 
  /**
    * Search parameter: <b>address-city</b>
@@ -2395,6 +2132,66 @@ public class Location extends DomainResource {
   public static final ca.uhn.fhir.rest.gclient.TokenClientParam ADDRESS_USE = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_ADDRESS_USE);
 
  /**
+   * Search parameter: <b>address</b>
+   * <p>
+   * Description: <b>A (part of the) address of the location</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>Location.address</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="address", path="Location.address", description="A (part of the) address of the location", type="string" )
+  public static final String SP_ADDRESS = "address";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>address</b>
+   * <p>
+   * Description: <b>A (part of the) address of the location</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>Location.address</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.StringClientParam ADDRESS = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_ADDRESS);
+
+ /**
+   * Search parameter: <b>characteristic</b>
+   * <p>
+   * Description: <b>One of the Location's characteristics</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>Location.characteristic</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="characteristic", path="Location.characteristic", description="One of the Location's characteristics", type="token" )
+  public static final String SP_CHARACTERISTIC = "characteristic";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>characteristic</b>
+   * <p>
+   * Description: <b>One of the Location's characteristics</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>Location.characteristic</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam CHARACTERISTIC = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_CHARACTERISTIC);
+
+ /**
+   * Search parameter: <b>contains</b>
+   * <p>
+   * Description: <b>Select locations that contain the specified co-ordinates</b><br>
+   * Type: <b>special</b><br>
+   * Path: <b>Location.extension('http://hl7.org/fhir/StructureDefinition/location-boundary-geojson').value</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="contains", path="Location.extension('http://hl7.org/fhir/StructureDefinition/location-boundary-geojson').value", description="Select locations that contain the specified co-ordinates", type="special" )
+  public static final String SP_CONTAINS = "contains";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>contains</b>
+   * <p>
+   * Description: <b>Select locations that contain the specified co-ordinates</b><br>
+   * Type: <b>special</b><br>
+   * Path: <b>Location.extension('http://hl7.org/fhir/StructureDefinition/location-boundary-geojson').value</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.SpecialClientParam CONTAINS = new ca.uhn.fhir.rest.gclient.SpecialClientParam(SP_CONTAINS);
+
+ /**
    * Search parameter: <b>endpoint</b>
    * <p>
    * Description: <b>Technical endpoints providing access to services operated for the location</b><br>
@@ -2464,26 +2261,28 @@ public class Location extends DomainResource {
    * Search parameter: <b>near</b>
    * <p>
    * Description: <b>Search for locations where the location.position is near to, or within a specified distance of, the provided coordinates expressed as [latitude]|[longitude]|[distance]|[units] (using the WGS84 datum, see notes).
-If the units are omitted, then kms should be assumed. If the distance is omitted, then the server can use its own discretion as to what distances should be considered near (and units are irrelevant)
 
-Servers may search using various techniques that might have differing accuracies, depending on implementation efficiency.
+Servers which support the near parameter SHALL support the unit string 'km' for kilometers and SHOULD support '[mi_us]' for miles, support for other units is optional. If the units are omitted, then kms should be assumed. If the distance is omitted, then the server can use its own discretion as to what distances should be considered near (and units are irrelevant).
 
-Requires the near-distance parameter to be provided also</b><br>
+If the server is unable to understand the units (and does support the near search parameter), it MIGHT return an OperationOutcome and fail the search with a http status 400 BadRequest. If the server does not support the near parameter, the parameter MIGHT report the unused parameter in a bundled OperationOutcome and still perform the search ignoring the near parameter.
+
+Note: The algorithm to determine the distance is not defined by the specification, and systems might have different engines that calculate things differently. They could consider geographic point to point, or path via road, or including current traffic conditions, or just simple neighboring postcodes/localities if that's all it had access to.</b><br>
    * Type: <b>special</b><br>
    * Path: <b>Location.position</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="near", path="Location.position", description="Search for locations where the location.position is near to, or within a specified distance of, the provided coordinates expressed as [latitude]|[longitude]|[distance]|[units] (using the WGS84 datum, see notes).\nIf the units are omitted, then kms should be assumed. If the distance is omitted, then the server can use its own discretion as to what distances should be considered near (and units are irrelevant)\n\nServers may search using various techniques that might have differing accuracies, depending on implementation efficiency.\n\nRequires the near-distance parameter to be provided also", type="special" )
+  @SearchParamDefinition(name="near", path="Location.position", description="Search for locations where the location.position is near to, or within a specified distance of, the provided coordinates expressed as [latitude]|[longitude]|[distance]|[units] (using the WGS84 datum, see notes).\n\nServers which support the near parameter SHALL support the unit string 'km' for kilometers and SHOULD support '[mi_us]' for miles, support for other units is optional. If the units are omitted, then kms should be assumed. If the distance is omitted, then the server can use its own discretion as to what distances should be considered near (and units are irrelevant).\r\rIf the server is unable to understand the units (and does support the near search parameter), it MIGHT return an OperationOutcome and fail the search with a http status 400 BadRequest. If the server does not support the near parameter, the parameter MIGHT report the unused parameter in a bundled OperationOutcome and still perform the search ignoring the near parameter.\n\nNote: The algorithm to determine the distance is not defined by the specification, and systems might have different engines that calculate things differently. They could consider geographic point to point, or path via road, or including current traffic conditions, or just simple neighboring postcodes/localities if that's all it had access to.", type="special" )
   public static final String SP_NEAR = "near";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>near</b>
    * <p>
    * Description: <b>Search for locations where the location.position is near to, or within a specified distance of, the provided coordinates expressed as [latitude]|[longitude]|[distance]|[units] (using the WGS84 datum, see notes).
-If the units are omitted, then kms should be assumed. If the distance is omitted, then the server can use its own discretion as to what distances should be considered near (and units are irrelevant)
 
-Servers may search using various techniques that might have differing accuracies, depending on implementation efficiency.
+Servers which support the near parameter SHALL support the unit string 'km' for kilometers and SHOULD support '[mi_us]' for miles, support for other units is optional. If the units are omitted, then kms should be assumed. If the distance is omitted, then the server can use its own discretion as to what distances should be considered near (and units are irrelevant).
 
-Requires the near-distance parameter to be provided also</b><br>
+If the server is unable to understand the units (and does support the near search parameter), it MIGHT return an OperationOutcome and fail the search with a http status 400 BadRequest. If the server does not support the near parameter, the parameter MIGHT report the unused parameter in a bundled OperationOutcome and still perform the search ignoring the near parameter.
+
+Note: The algorithm to determine the distance is not defined by the specification, and systems might have different engines that calculate things differently. They could consider geographic point to point, or path via road, or including current traffic conditions, or just simple neighboring postcodes/localities if that's all it had access to.</b><br>
    * Type: <b>special</b><br>
    * Path: <b>Location.position</b><br>
    * </p>

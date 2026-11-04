@@ -29,12 +29,11 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.math.*;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.r5.model.Enumerations.*;
 import org.hl7.fhir.instance.model.api.IBaseBackboneElement;
@@ -118,6 +117,7 @@ public class ChargeItem extends DomainResource {
             case BILLED: return "billed";
             case ENTEREDINERROR: return "entered-in-error";
             case UNKNOWN: return "unknown";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -130,6 +130,7 @@ public class ChargeItem extends DomainResource {
             case BILLED: return "http://hl7.org/fhir/chargeitem-status";
             case ENTEREDINERROR: return "http://hl7.org/fhir/chargeitem-status";
             case UNKNOWN: return "http://hl7.org/fhir/chargeitem-status";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -142,6 +143,7 @@ public class ChargeItem extends DomainResource {
             case BILLED: return "The charge item has been billed (e.g. a billing engine has generated financial transactions by applying the associated ruled for the charge item to the context of the Encounter, and placed them into Claims/Invoices.";
             case ENTEREDINERROR: return "The charge item has been entered in error and should not be processed for billing.";
             case UNKNOWN: return "The authoring system does not know which of the status values currently applies for this charge item  Note: This concept is not to be used for \"other\" - one of the listed statuses is presumed to apply, it's just not known which one.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -154,6 +156,7 @@ public class ChargeItem extends DomainResource {
             case BILLED: return "Billed";
             case ENTEREDINERROR: return "Entered in Error";
             case UNKNOWN: return "Unknown";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -180,32 +183,34 @@ public class ChargeItem extends DomainResource {
           return ChargeItemStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown ChargeItemStatus code '"+codeString+"'");
         }
-        public Enumeration<ChargeItemStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ChargeItemStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<ChargeItemStatus>(this);
+            return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.NULL, code);
         if ("planned".equals(codeString))
-          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.PLANNED);
+          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.PLANNED, code);
         if ("billable".equals(codeString))
-          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.BILLABLE);
+          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.BILLABLE, code);
         if ("not-billable".equals(codeString))
-          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.NOTBILLABLE);
+          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.NOTBILLABLE, code);
         if ("aborted".equals(codeString))
-          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.ABORTED);
+          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.ABORTED, code);
         if ("billed".equals(codeString))
-          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.BILLED);
+          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.BILLED, code);
         if ("entered-in-error".equals(codeString))
-          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.ENTEREDINERROR);
+          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.ENTEREDINERROR, code);
         if ("unknown".equals(codeString))
-          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.UNKNOWN);
+          return new Enumeration<ChargeItemStatus>(this, ChargeItemStatus.UNKNOWN, code);
         throw new FHIRException("Unknown ChargeItemStatus code '"+codeString+"'");
         }
     public String toCode(ChargeItemStatus code) {
-      if (code == ChargeItemStatus.PLANNED)
+       if (code == ChargeItemStatus.NULL)
+           return null;
+       if (code == ChargeItemStatus.PLANNED)
         return "planned";
       if (code == ChargeItemStatus.BILLABLE)
         return "billable";
@@ -220,7 +225,7 @@ public class ChargeItem extends DomainResource {
       if (code == ChargeItemStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(ChargeItemStatus code) {
       return code.getSystem();
       }
@@ -239,7 +244,7 @@ public class ChargeItem extends DomainResource {
         /**
          * The device, practitioner, etc. who performed or participated in the service.
          */
-        @Child(name = "actor", type = {Practitioner.class, PractitionerRole.class, Organization.class, CareTeam.class, Patient.class, Device.class, RelatedPerson.class}, order=2, min=1, max=1, modifier=false, summary=false)
+        @Child(name = "actor", type = {Practitioner.class, PractitionerRole.class, Organization.class, HealthcareService.class, CareTeam.class, Patient.class, Device.class, RelatedPerson.class}, order=2, min=1, max=1, modifier=false, summary=false)
         @Description(shortDefinition="Individual who was performing", formalDefinition="The device, practitioner, etc. who performed or participated in the service." )
         protected Reference actor;
 
@@ -311,14 +316,14 @@ public class ChargeItem extends DomainResource {
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
           children.add(new Property("function", "CodeableConcept", "Describes the type of performance or participation(e.g. primary surgeon, anesthesiologiest, etc.).", 0, 1, function));
-          children.add(new Property("actor", "Reference(Practitioner|PractitionerRole|Organization|CareTeam|Patient|Device|RelatedPerson)", "The device, practitioner, etc. who performed or participated in the service.", 0, 1, actor));
+          children.add(new Property("actor", "Reference(Practitioner|PractitionerRole|Organization|HealthcareService|CareTeam|Patient|Device|RelatedPerson)", "The device, practitioner, etc. who performed or participated in the service.", 0, 1, actor));
         }
 
         @Override
         public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
           switch (_hash) {
           case 1380938712: /*function*/  return new Property("function", "CodeableConcept", "Describes the type of performance or participation(e.g. primary surgeon, anesthesiologiest, etc.).", 0, 1, function);
-          case 92645877: /*actor*/  return new Property("actor", "Reference(Practitioner|PractitionerRole|Organization|CareTeam|Patient|Device|RelatedPerson)", "The device, practitioner, etc. who performed or participated in the service.", 0, 1, actor);
+          case 92645877: /*actor*/  return new Property("actor", "Reference(Practitioner|PractitionerRole|Organization|HealthcareService|CareTeam|Patient|Device|RelatedPerson)", "The device, practitioner, etc. who performed or participated in the service.", 0, 1, actor);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
           }
 
@@ -359,6 +364,17 @@ public class ChargeItem extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("function")) {
+          this.function = null;
+        } else if (name.equals("actor")) {
+          this.actor = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -397,6 +413,10 @@ public class ChargeItem extends DomainResource {
         ChargeItemPerformerComponent dst = new ChargeItemPerformerComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ChargeItemPerformerComponent) dst);
       }
 
       public void copyValues(ChargeItemPerformerComponent dst) {
@@ -488,11 +508,11 @@ public class ChargeItem extends DomainResource {
     protected Reference subject;
 
     /**
-     * The encounter or episode of care that establishes the context for this event.
+     * This ChargeItem has the details of how the associated Encounter should be billed or otherwise be handled by finance systems.
      */
-    @Child(name = "context", type = {Encounter.class, EpisodeOfCare.class}, order=7, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Encounter / Episode associated with event", formalDefinition="The encounter or episode of care that establishes the context for this event." )
-    protected Reference context;
+    @Child(name = "encounter", type = {Encounter.class}, order=7, min=0, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="Encounter associated with this ChargeItem", formalDefinition="This ChargeItem has the details of how the associated Encounter should be billed or otherwise be handled by finance systems." )
+    protected Reference encounter;
 
     /**
      * Date/time(s) or duration when the charged service was applied.
@@ -509,17 +529,17 @@ public class ChargeItem extends DomainResource {
     protected List<ChargeItemPerformerComponent> performer;
 
     /**
-     * The organization requesting the service.
+     * The organization performing the service.
      */
     @Child(name = "performingOrganization", type = {Organization.class}, order=10, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="Organization providing the charged service", formalDefinition="The organization requesting the service." )
+    @Description(shortDefinition="Organization providing the charged service", formalDefinition="The organization performing the service." )
     protected Reference performingOrganization;
 
     /**
-     * The organization performing the service.
+     * The organization requesting the service.
      */
     @Child(name = "requestingOrganization", type = {Organization.class}, order=11, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="Organization requesting the charged service", formalDefinition="The organization performing the service." )
+    @Description(shortDefinition="Organization requesting the charged service", formalDefinition="The organization requesting the service." )
     protected Reference requestingOrganization;
 
     /**
@@ -545,25 +565,25 @@ public class ChargeItem extends DomainResource {
     protected List<CodeableConcept> bodysite;
 
     /**
-     * Factor overriding the factor determined by the rules associated with the code.
+     * The unit price of the chargable item.
      */
-    @Child(name = "factorOverride", type = {DecimalType.class}, order=15, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="Factor overriding the associated rules", formalDefinition="Factor overriding the factor determined by the rules associated with the code." )
-    protected DecimalType factorOverride;
+    @Child(name = "unitPriceComponent", type = {MonetaryComponent.class}, order=15, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="Unit price overriding the associated rules", formalDefinition="The unit price of the chargable item." )
+    protected MonetaryComponent unitPriceComponent;
 
     /**
-     * Total price of the charge overriding the list price associated with the code.
+     * The total price for the chargable item, accounting for the quantity.
      */
-    @Child(name = "priceOverride", type = {Money.class}, order=16, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="Price overriding the associated rules", formalDefinition="Total price of the charge overriding the list price associated with the code." )
-    protected Money priceOverride;
+    @Child(name = "totalPriceComponent", type = {MonetaryComponent.class}, order=16, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="Total price overriding the associated rules", formalDefinition="The total price for the chargable item, accounting for the quantity." )
+    protected MonetaryComponent totalPriceComponent;
 
     /**
      * If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.
      */
-    @Child(name = "overrideReason", type = {StringType.class}, order=17, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "overrideReason", type = {CodeableConcept.class}, order=17, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Reason for overriding the list price/factor", formalDefinition="If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action." )
-    protected StringType overrideReason;
+    protected CodeableConcept overrideReason;
 
     /**
      * The device, practitioner, etc. who entered the charge item.
@@ -590,17 +610,17 @@ public class ChargeItem extends DomainResource {
     /**
      * Indicated the rendered service that caused this charge.
      */
-    @Child(name = "service", type = {DiagnosticReport.class, ImagingStudy.class, Immunization.class, MedicationAdministration.class, MedicationDispense.class, Observation.class, Procedure.class, SupplyDelivery.class}, order=21, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "service", type = {CodeableReference.class}, order=21, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Which rendered service is being charged?", formalDefinition="Indicated the rendered service that caused this charge." )
-    protected List<Reference> service;
+    protected List<CodeableReference> service;
 
     /**
      * Identifies the device, food, drug or other product being charged either by type code or reference to an instance.
      */
-    @Child(name = "product", type = {Device.class, Medication.class, Substance.class, CodeableConcept.class}, order=22, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "product", type = {CodeableReference.class}, order=22, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Product charged", formalDefinition="Identifies the device, food, drug or other product being charged either by type code or reference to an instance." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/device-type")
-    protected DataType product;
+    protected List<CodeableReference> product;
 
     /**
      * Account into which this ChargeItems belongs.
@@ -623,7 +643,7 @@ public class ChargeItem extends DomainResource {
     @Description(shortDefinition="Further information supporting this charge", formalDefinition="Further information supporting this charge." )
     protected List<Reference> supportingInformation;
 
-    private static final long serialVersionUID = 2095236577L;
+    private static final long serialVersionUID = -766813613L;
 
   /**
    * Constructor
@@ -964,26 +984,26 @@ public class ChargeItem extends DomainResource {
     }
 
     /**
-     * @return {@link #context} (The encounter or episode of care that establishes the context for this event.)
+     * @return {@link #encounter} (This ChargeItem has the details of how the associated Encounter should be billed or otherwise be handled by finance systems.)
      */
-    public Reference getContext() { 
-      if (this.context == null)
+    public Reference getEncounter() { 
+      if (this.encounter == null)
         if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create ChargeItem.context");
+          throw new Error("Attempt to auto-create ChargeItem.encounter");
         else if (Configuration.doAutoCreate())
-          this.context = new Reference(); // cc
-      return this.context;
+          this.encounter = new Reference(); // cc
+      return this.encounter;
     }
 
-    public boolean hasContext() { 
-      return this.context != null && !this.context.isEmpty();
+    public boolean hasEncounter() { 
+      return this.encounter != null && !this.encounter.isEmpty();
     }
 
     /**
-     * @param value {@link #context} (The encounter or episode of care that establishes the context for this event.)
+     * @param value {@link #encounter} (This ChargeItem has the details of how the associated Encounter should be billed or otherwise be handled by finance systems.)
      */
-    public ChargeItem setContext(Reference value) { 
-      this.context = value;
+    public ChargeItem setEncounter(Reference value) { 
+      this.encounter = value;
       return this;
     }
 
@@ -1005,8 +1025,8 @@ public class ChargeItem extends DomainResource {
       return (DateTimeType) this.occurrence;
     }
 
-    public boolean hasOccurrenceDateTimeType() { 
-      return this != null && this.occurrence instanceof DateTimeType;
+    public boolean hasOccurrenceDateTimeType() {
+        return this.occurrence instanceof DateTimeType;
     }
 
     /**
@@ -1020,8 +1040,8 @@ public class ChargeItem extends DomainResource {
       return (Period) this.occurrence;
     }
 
-    public boolean hasOccurrencePeriod() { 
-      return this != null && this.occurrence instanceof Period;
+    public boolean hasOccurrencePeriod() {
+        return this.occurrence instanceof Period;
     }
 
     /**
@@ -1035,8 +1055,8 @@ public class ChargeItem extends DomainResource {
       return (Timing) this.occurrence;
     }
 
-    public boolean hasOccurrenceTiming() { 
-      return this != null && this.occurrence instanceof Timing;
+    public boolean hasOccurrenceTiming() {
+        return this.occurrence instanceof Timing;
     }
 
     public boolean hasOccurrence() { 
@@ -1048,7 +1068,7 @@ public class ChargeItem extends DomainResource {
      */
     public ChargeItem setOccurrence(DataType value) { 
       if (value != null && !(value instanceof DateTimeType || value instanceof Period || value instanceof Timing))
-        throw new Error("Not the right type for ChargeItem.occurrence[x]: "+value.fhirType());
+        throw new FHIRException("Not the right type for ChargeItem.occurrence[x]: "+value.fhirType());
       this.occurrence = value;
       return this;
     }
@@ -1107,7 +1127,7 @@ public class ChargeItem extends DomainResource {
     }
 
     /**
-     * @return {@link #performingOrganization} (The organization requesting the service.)
+     * @return {@link #performingOrganization} (The organization performing the service.)
      */
     public Reference getPerformingOrganization() { 
       if (this.performingOrganization == null)
@@ -1123,7 +1143,7 @@ public class ChargeItem extends DomainResource {
     }
 
     /**
-     * @param value {@link #performingOrganization} (The organization requesting the service.)
+     * @param value {@link #performingOrganization} (The organization performing the service.)
      */
     public ChargeItem setPerformingOrganization(Reference value) { 
       this.performingOrganization = value;
@@ -1131,7 +1151,7 @@ public class ChargeItem extends DomainResource {
     }
 
     /**
-     * @return {@link #requestingOrganization} (The organization performing the service.)
+     * @return {@link #requestingOrganization} (The organization requesting the service.)
      */
     public Reference getRequestingOrganization() { 
       if (this.requestingOrganization == null)
@@ -1147,7 +1167,7 @@ public class ChargeItem extends DomainResource {
     }
 
     /**
-     * @param value {@link #requestingOrganization} (The organization performing the service.)
+     * @param value {@link #requestingOrganization} (The organization requesting the service.)
      */
     public ChargeItem setRequestingOrganization(Reference value) { 
       this.requestingOrganization = value;
@@ -1256,110 +1276,63 @@ public class ChargeItem extends DomainResource {
     }
 
     /**
-     * @return {@link #factorOverride} (Factor overriding the factor determined by the rules associated with the code.). This is the underlying object with id, value and extensions. The accessor "getFactorOverride" gives direct access to the value
+     * @return {@link #unitPriceComponent} (The unit price of the chargable item.)
      */
-    public DecimalType getFactorOverrideElement() { 
-      if (this.factorOverride == null)
+    public MonetaryComponent getUnitPriceComponent() { 
+      if (this.unitPriceComponent == null)
         if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create ChargeItem.factorOverride");
+          throw new Error("Attempt to auto-create ChargeItem.unitPriceComponent");
         else if (Configuration.doAutoCreate())
-          this.factorOverride = new DecimalType(); // bb
-      return this.factorOverride;
+          this.unitPriceComponent = new MonetaryComponent(); // cc
+      return this.unitPriceComponent;
     }
 
-    public boolean hasFactorOverrideElement() { 
-      return this.factorOverride != null && !this.factorOverride.isEmpty();
-    }
-
-    public boolean hasFactorOverride() { 
-      return this.factorOverride != null && !this.factorOverride.isEmpty();
+    public boolean hasUnitPriceComponent() { 
+      return this.unitPriceComponent != null && !this.unitPriceComponent.isEmpty();
     }
 
     /**
-     * @param value {@link #factorOverride} (Factor overriding the factor determined by the rules associated with the code.). This is the underlying object with id, value and extensions. The accessor "getFactorOverride" gives direct access to the value
+     * @param value {@link #unitPriceComponent} (The unit price of the chargable item.)
      */
-    public ChargeItem setFactorOverrideElement(DecimalType value) { 
-      this.factorOverride = value;
+    public ChargeItem setUnitPriceComponent(MonetaryComponent value) { 
+      this.unitPriceComponent = value;
       return this;
     }
 
     /**
-     * @return Factor overriding the factor determined by the rules associated with the code.
+     * @return {@link #totalPriceComponent} (The total price for the chargable item, accounting for the quantity.)
      */
-    public BigDecimal getFactorOverride() { 
-      return this.factorOverride == null ? null : this.factorOverride.getValue();
-    }
-
-    /**
-     * @param value Factor overriding the factor determined by the rules associated with the code.
-     */
-    public ChargeItem setFactorOverride(BigDecimal value) { 
-      if (value == null)
-        this.factorOverride = null;
-      else {
-        if (this.factorOverride == null)
-          this.factorOverride = new DecimalType();
-        this.factorOverride.setValue(value);
-      }
-      return this;
-    }
-
-    /**
-     * @param value Factor overriding the factor determined by the rules associated with the code.
-     */
-    public ChargeItem setFactorOverride(long value) { 
-          this.factorOverride = new DecimalType();
-        this.factorOverride.setValue(value);
-      return this;
-    }
-
-    /**
-     * @param value Factor overriding the factor determined by the rules associated with the code.
-     */
-    public ChargeItem setFactorOverride(double value) { 
-          this.factorOverride = new DecimalType();
-        this.factorOverride.setValue(value);
-      return this;
-    }
-
-    /**
-     * @return {@link #priceOverride} (Total price of the charge overriding the list price associated with the code.)
-     */
-    public Money getPriceOverride() { 
-      if (this.priceOverride == null)
+    public MonetaryComponent getTotalPriceComponent() { 
+      if (this.totalPriceComponent == null)
         if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create ChargeItem.priceOverride");
+          throw new Error("Attempt to auto-create ChargeItem.totalPriceComponent");
         else if (Configuration.doAutoCreate())
-          this.priceOverride = new Money(); // cc
-      return this.priceOverride;
+          this.totalPriceComponent = new MonetaryComponent(); // cc
+      return this.totalPriceComponent;
     }
 
-    public boolean hasPriceOverride() { 
-      return this.priceOverride != null && !this.priceOverride.isEmpty();
+    public boolean hasTotalPriceComponent() { 
+      return this.totalPriceComponent != null && !this.totalPriceComponent.isEmpty();
     }
 
     /**
-     * @param value {@link #priceOverride} (Total price of the charge overriding the list price associated with the code.)
+     * @param value {@link #totalPriceComponent} (The total price for the chargable item, accounting for the quantity.)
      */
-    public ChargeItem setPriceOverride(Money value) { 
-      this.priceOverride = value;
+    public ChargeItem setTotalPriceComponent(MonetaryComponent value) { 
+      this.totalPriceComponent = value;
       return this;
     }
 
     /**
-     * @return {@link #overrideReason} (If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.). This is the underlying object with id, value and extensions. The accessor "getOverrideReason" gives direct access to the value
+     * @return {@link #overrideReason} (If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.)
      */
-    public StringType getOverrideReasonElement() { 
+    public CodeableConcept getOverrideReason() { 
       if (this.overrideReason == null)
         if (Configuration.errorOnAutoCreate())
           throw new Error("Attempt to auto-create ChargeItem.overrideReason");
         else if (Configuration.doAutoCreate())
-          this.overrideReason = new StringType(); // bb
+          this.overrideReason = new CodeableConcept(); // cc
       return this.overrideReason;
-    }
-
-    public boolean hasOverrideReasonElement() { 
-      return this.overrideReason != null && !this.overrideReason.isEmpty();
     }
 
     public boolean hasOverrideReason() { 
@@ -1367,31 +1340,10 @@ public class ChargeItem extends DomainResource {
     }
 
     /**
-     * @param value {@link #overrideReason} (If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.). This is the underlying object with id, value and extensions. The accessor "getOverrideReason" gives direct access to the value
+     * @param value {@link #overrideReason} (If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.)
      */
-    public ChargeItem setOverrideReasonElement(StringType value) { 
+    public ChargeItem setOverrideReason(CodeableConcept value) { 
       this.overrideReason = value;
-      return this;
-    }
-
-    /**
-     * @return If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.
-     */
-    public String getOverrideReason() { 
-      return this.overrideReason == null ? null : this.overrideReason.getValue();
-    }
-
-    /**
-     * @param value If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.
-     */
-    public ChargeItem setOverrideReason(String value) { 
-      if (Utilities.noString(value))
-        this.overrideReason = null;
-      else {
-        if (this.overrideReason == null)
-          this.overrideReason = new StringType();
-        this.overrideReason.setValue(value);
-      }
       return this;
     }
 
@@ -1524,16 +1476,16 @@ public class ChargeItem extends DomainResource {
     /**
      * @return {@link #service} (Indicated the rendered service that caused this charge.)
      */
-    public List<Reference> getService() { 
+    public List<CodeableReference> getService() { 
       if (this.service == null)
-        this.service = new ArrayList<Reference>();
+        this.service = new ArrayList<CodeableReference>();
       return this.service;
     }
 
     /**
      * @return Returns a reference to <code>this</code> for easy method chaining
      */
-    public ChargeItem setService(List<Reference> theService) { 
+    public ChargeItem setService(List<CodeableReference> theService) { 
       this.service = theService;
       return this;
     }
@@ -1541,25 +1493,25 @@ public class ChargeItem extends DomainResource {
     public boolean hasService() { 
       if (this.service == null)
         return false;
-      for (Reference item : this.service)
+      for (CodeableReference item : this.service)
         if (!item.isEmpty())
           return true;
       return false;
     }
 
-    public Reference addService() { //3
-      Reference t = new Reference();
+    public CodeableReference addService() { //3
+      CodeableReference t = new CodeableReference();
       if (this.service == null)
-        this.service = new ArrayList<Reference>();
+        this.service = new ArrayList<CodeableReference>();
       this.service.add(t);
       return t;
     }
 
-    public ChargeItem addService(Reference t) { //3
+    public ChargeItem addService(CodeableReference t) { //3
       if (t == null)
         return this;
       if (this.service == null)
-        this.service = new ArrayList<Reference>();
+        this.service = new ArrayList<CodeableReference>();
       this.service.add(t);
       return this;
     }
@@ -1567,7 +1519,7 @@ public class ChargeItem extends DomainResource {
     /**
      * @return The first repetition of repeating field {@link #service}, creating it if it does not already exist {3}
      */
-    public Reference getServiceFirstRep() { 
+    public CodeableReference getServiceFirstRep() { 
       if (getService().isEmpty()) {
         addService();
       }
@@ -1577,52 +1529,54 @@ public class ChargeItem extends DomainResource {
     /**
      * @return {@link #product} (Identifies the device, food, drug or other product being charged either by type code or reference to an instance.)
      */
-    public DataType getProduct() { 
+    public List<CodeableReference> getProduct() { 
+      if (this.product == null)
+        this.product = new ArrayList<CodeableReference>();
       return this.product;
     }
 
     /**
-     * @return {@link #product} (Identifies the device, food, drug or other product being charged either by type code or reference to an instance.)
+     * @return Returns a reference to <code>this</code> for easy method chaining
      */
-    public Reference getProductReference() throws FHIRException { 
-      if (this.product == null)
-        this.product = new Reference();
-      if (!(this.product instanceof Reference))
-        throw new FHIRException("Type mismatch: the type Reference was expected, but "+this.product.getClass().getName()+" was encountered");
-      return (Reference) this.product;
-    }
-
-    public boolean hasProductReference() { 
-      return this != null && this.product instanceof Reference;
-    }
-
-    /**
-     * @return {@link #product} (Identifies the device, food, drug or other product being charged either by type code or reference to an instance.)
-     */
-    public CodeableConcept getProductCodeableConcept() throws FHIRException { 
-      if (this.product == null)
-        this.product = new CodeableConcept();
-      if (!(this.product instanceof CodeableConcept))
-        throw new FHIRException("Type mismatch: the type CodeableConcept was expected, but "+this.product.getClass().getName()+" was encountered");
-      return (CodeableConcept) this.product;
-    }
-
-    public boolean hasProductCodeableConcept() { 
-      return this != null && this.product instanceof CodeableConcept;
+    public ChargeItem setProduct(List<CodeableReference> theProduct) { 
+      this.product = theProduct;
+      return this;
     }
 
     public boolean hasProduct() { 
-      return this.product != null && !this.product.isEmpty();
+      if (this.product == null)
+        return false;
+      for (CodeableReference item : this.product)
+        if (!item.isEmpty())
+          return true;
+      return false;
+    }
+
+    public CodeableReference addProduct() { //3
+      CodeableReference t = new CodeableReference();
+      if (this.product == null)
+        this.product = new ArrayList<CodeableReference>();
+      this.product.add(t);
+      return t;
+    }
+
+    public ChargeItem addProduct(CodeableReference t) { //3
+      if (t == null)
+        return this;
+      if (this.product == null)
+        this.product = new ArrayList<CodeableReference>();
+      this.product.add(t);
+      return this;
     }
 
     /**
-     * @param value {@link #product} (Identifies the device, food, drug or other product being charged either by type code or reference to an instance.)
+     * @return The first repetition of repeating field {@link #product}, creating it if it does not already exist {3}
      */
-    public ChargeItem setProduct(DataType value) { 
-      if (value != null && !(value instanceof Reference || value instanceof CodeableConcept))
-        throw new Error("Not the right type for ChargeItem.product[x]: "+value.fhirType());
-      this.product = value;
-      return this;
+    public CodeableReference getProductFirstRep() { 
+      if (getProduct().isEmpty()) {
+        addProduct();
+      }
+      return getProduct().get(0);
     }
 
     /**
@@ -1793,22 +1747,22 @@ public class ChargeItem extends DomainResource {
         children.add(new Property("partOf", "Reference(ChargeItem)", "ChargeItems can be grouped to larger ChargeItems covering the whole set.", 0, java.lang.Integer.MAX_VALUE, partOf));
         children.add(new Property("code", "CodeableConcept", "A code that identifies the charge, like a billing code.", 0, 1, code));
         children.add(new Property("subject", "Reference(Patient|Group)", "The individual or set of individuals the action is being or was performed on.", 0, 1, subject));
-        children.add(new Property("context", "Reference(Encounter|EpisodeOfCare)", "The encounter or episode of care that establishes the context for this event.", 0, 1, context));
+        children.add(new Property("encounter", "Reference(Encounter)", "This ChargeItem has the details of how the associated Encounter should be billed or otherwise be handled by finance systems.", 0, 1, encounter));
         children.add(new Property("occurrence[x]", "dateTime|Period|Timing", "Date/time(s) or duration when the charged service was applied.", 0, 1, occurrence));
         children.add(new Property("performer", "", "Indicates who or what performed or participated in the charged service.", 0, java.lang.Integer.MAX_VALUE, performer));
-        children.add(new Property("performingOrganization", "Reference(Organization)", "The organization requesting the service.", 0, 1, performingOrganization));
-        children.add(new Property("requestingOrganization", "Reference(Organization)", "The organization performing the service.", 0, 1, requestingOrganization));
+        children.add(new Property("performingOrganization", "Reference(Organization)", "The organization performing the service.", 0, 1, performingOrganization));
+        children.add(new Property("requestingOrganization", "Reference(Organization)", "The organization requesting the service.", 0, 1, requestingOrganization));
         children.add(new Property("costCenter", "Reference(Organization)", "The financial cost center permits the tracking of charge attribution.", 0, 1, costCenter));
         children.add(new Property("quantity", "Quantity", "Quantity of which the charge item has been serviced.", 0, 1, quantity));
         children.add(new Property("bodysite", "CodeableConcept", "The anatomical location where the related service has been applied.", 0, java.lang.Integer.MAX_VALUE, bodysite));
-        children.add(new Property("factorOverride", "decimal", "Factor overriding the factor determined by the rules associated with the code.", 0, 1, factorOverride));
-        children.add(new Property("priceOverride", "Money", "Total price of the charge overriding the list price associated with the code.", 0, 1, priceOverride));
-        children.add(new Property("overrideReason", "string", "If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.", 0, 1, overrideReason));
+        children.add(new Property("unitPriceComponent", "MonetaryComponent", "The unit price of the chargable item.", 0, 1, unitPriceComponent));
+        children.add(new Property("totalPriceComponent", "MonetaryComponent", "The total price for the chargable item, accounting for the quantity.", 0, 1, totalPriceComponent));
+        children.add(new Property("overrideReason", "CodeableConcept", "If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.", 0, 1, overrideReason));
         children.add(new Property("enterer", "Reference(Practitioner|PractitionerRole|Organization|Patient|Device|RelatedPerson)", "The device, practitioner, etc. who entered the charge item.", 0, 1, enterer));
         children.add(new Property("enteredDate", "dateTime", "Date the charge item was entered.", 0, 1, enteredDate));
         children.add(new Property("reason", "CodeableConcept", "Describes why the event occurred in coded or textual form.", 0, java.lang.Integer.MAX_VALUE, reason));
-        children.add(new Property("service", "Reference(DiagnosticReport|ImagingStudy|Immunization|MedicationAdministration|MedicationDispense|Observation|Procedure|SupplyDelivery)", "Indicated the rendered service that caused this charge.", 0, java.lang.Integer.MAX_VALUE, service));
-        children.add(new Property("product[x]", "Reference(Device|Medication|Substance)|CodeableConcept", "Identifies the device, food, drug or other product being charged either by type code or reference to an instance.", 0, 1, product));
+        children.add(new Property("service", "CodeableReference(DiagnosticReport|ImagingStudy|Immunization|MedicationAdministration|MedicationDispense|MedicationRequest|Observation|Procedure|ServiceRequest|SupplyDelivery)", "Indicated the rendered service that caused this charge.", 0, java.lang.Integer.MAX_VALUE, service));
+        children.add(new Property("product", "CodeableReference(Device|Medication|Substance)", "Identifies the device, food, drug or other product being charged either by type code or reference to an instance.", 0, java.lang.Integer.MAX_VALUE, product));
         children.add(new Property("account", "Reference(Account)", "Account into which this ChargeItems belongs.", 0, java.lang.Integer.MAX_VALUE, account));
         children.add(new Property("note", "Annotation", "Comments made about the event by the performer, subject or other participants.", 0, java.lang.Integer.MAX_VALUE, note));
         children.add(new Property("supportingInformation", "Reference(Any)", "Further information supporting this charge.", 0, java.lang.Integer.MAX_VALUE, supportingInformation));
@@ -1824,29 +1778,26 @@ public class ChargeItem extends DomainResource {
         case -995410646: /*partOf*/  return new Property("partOf", "Reference(ChargeItem)", "ChargeItems can be grouped to larger ChargeItems covering the whole set.", 0, java.lang.Integer.MAX_VALUE, partOf);
         case 3059181: /*code*/  return new Property("code", "CodeableConcept", "A code that identifies the charge, like a billing code.", 0, 1, code);
         case -1867885268: /*subject*/  return new Property("subject", "Reference(Patient|Group)", "The individual or set of individuals the action is being or was performed on.", 0, 1, subject);
-        case 951530927: /*context*/  return new Property("context", "Reference(Encounter|EpisodeOfCare)", "The encounter or episode of care that establishes the context for this event.", 0, 1, context);
+        case 1524132147: /*encounter*/  return new Property("encounter", "Reference(Encounter)", "This ChargeItem has the details of how the associated Encounter should be billed or otherwise be handled by finance systems.", 0, 1, encounter);
         case -2022646513: /*occurrence[x]*/  return new Property("occurrence[x]", "dateTime|Period|Timing", "Date/time(s) or duration when the charged service was applied.", 0, 1, occurrence);
         case 1687874001: /*occurrence*/  return new Property("occurrence[x]", "dateTime|Period|Timing", "Date/time(s) or duration when the charged service was applied.", 0, 1, occurrence);
         case -298443636: /*occurrenceDateTime*/  return new Property("occurrence[x]", "dateTime", "Date/time(s) or duration when the charged service was applied.", 0, 1, occurrence);
         case 1397156594: /*occurrencePeriod*/  return new Property("occurrence[x]", "Period", "Date/time(s) or duration when the charged service was applied.", 0, 1, occurrence);
         case 1515218299: /*occurrenceTiming*/  return new Property("occurrence[x]", "Timing", "Date/time(s) or duration when the charged service was applied.", 0, 1, occurrence);
         case 481140686: /*performer*/  return new Property("performer", "", "Indicates who or what performed or participated in the charged service.", 0, java.lang.Integer.MAX_VALUE, performer);
-        case 1273192628: /*performingOrganization*/  return new Property("performingOrganization", "Reference(Organization)", "The organization requesting the service.", 0, 1, performingOrganization);
-        case 1279054790: /*requestingOrganization*/  return new Property("requestingOrganization", "Reference(Organization)", "The organization performing the service.", 0, 1, requestingOrganization);
+        case 1273192628: /*performingOrganization*/  return new Property("performingOrganization", "Reference(Organization)", "The organization performing the service.", 0, 1, performingOrganization);
+        case 1279054790: /*requestingOrganization*/  return new Property("requestingOrganization", "Reference(Organization)", "The organization requesting the service.", 0, 1, requestingOrganization);
         case -593192318: /*costCenter*/  return new Property("costCenter", "Reference(Organization)", "The financial cost center permits the tracking of charge attribution.", 0, 1, costCenter);
         case -1285004149: /*quantity*/  return new Property("quantity", "Quantity", "Quantity of which the charge item has been serviced.", 0, 1, quantity);
         case 1703573481: /*bodysite*/  return new Property("bodysite", "CodeableConcept", "The anatomical location where the related service has been applied.", 0, java.lang.Integer.MAX_VALUE, bodysite);
-        case -451233221: /*factorOverride*/  return new Property("factorOverride", "decimal", "Factor overriding the factor determined by the rules associated with the code.", 0, 1, factorOverride);
-        case -216803275: /*priceOverride*/  return new Property("priceOverride", "Money", "Total price of the charge overriding the list price associated with the code.", 0, 1, priceOverride);
-        case -742878928: /*overrideReason*/  return new Property("overrideReason", "string", "If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.", 0, 1, overrideReason);
+        case -925197224: /*unitPriceComponent*/  return new Property("unitPriceComponent", "MonetaryComponent", "The unit price of the chargable item.", 0, 1, unitPriceComponent);
+        case 1731497496: /*totalPriceComponent*/  return new Property("totalPriceComponent", "MonetaryComponent", "The total price for the chargable item, accounting for the quantity.", 0, 1, totalPriceComponent);
+        case -742878928: /*overrideReason*/  return new Property("overrideReason", "CodeableConcept", "If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.", 0, 1, overrideReason);
         case -1591951995: /*enterer*/  return new Property("enterer", "Reference(Practitioner|PractitionerRole|Organization|Patient|Device|RelatedPerson)", "The device, practitioner, etc. who entered the charge item.", 0, 1, enterer);
         case 555978181: /*enteredDate*/  return new Property("enteredDate", "dateTime", "Date the charge item was entered.", 0, 1, enteredDate);
         case -934964668: /*reason*/  return new Property("reason", "CodeableConcept", "Describes why the event occurred in coded or textual form.", 0, java.lang.Integer.MAX_VALUE, reason);
-        case 1984153269: /*service*/  return new Property("service", "Reference(DiagnosticReport|ImagingStudy|Immunization|MedicationAdministration|MedicationDispense|Observation|Procedure|SupplyDelivery)", "Indicated the rendered service that caused this charge.", 0, java.lang.Integer.MAX_VALUE, service);
-        case 1753005361: /*product[x]*/  return new Property("product[x]", "Reference(Device|Medication|Substance)|CodeableConcept", "Identifies the device, food, drug or other product being charged either by type code or reference to an instance.", 0, 1, product);
-        case -309474065: /*product*/  return new Property("product[x]", "Reference(Device|Medication|Substance)|CodeableConcept", "Identifies the device, food, drug or other product being charged either by type code or reference to an instance.", 0, 1, product);
-        case -669667556: /*productReference*/  return new Property("product[x]", "Reference(Device|Medication|Substance)", "Identifies the device, food, drug or other product being charged either by type code or reference to an instance.", 0, 1, product);
-        case 906854066: /*productCodeableConcept*/  return new Property("product[x]", "CodeableConcept", "Identifies the device, food, drug or other product being charged either by type code or reference to an instance.", 0, 1, product);
+        case 1984153269: /*service*/  return new Property("service", "CodeableReference(DiagnosticReport|ImagingStudy|Immunization|MedicationAdministration|MedicationDispense|MedicationRequest|Observation|Procedure|ServiceRequest|SupplyDelivery)", "Indicated the rendered service that caused this charge.", 0, java.lang.Integer.MAX_VALUE, service);
+        case -309474065: /*product*/  return new Property("product", "CodeableReference(Device|Medication|Substance)", "Identifies the device, food, drug or other product being charged either by type code or reference to an instance.", 0, java.lang.Integer.MAX_VALUE, product);
         case -1177318867: /*account*/  return new Property("account", "Reference(Account)", "Account into which this ChargeItems belongs.", 0, java.lang.Integer.MAX_VALUE, account);
         case 3387378: /*note*/  return new Property("note", "Annotation", "Comments made about the event by the performer, subject or other participants.", 0, java.lang.Integer.MAX_VALUE, note);
         case -1248768647: /*supportingInformation*/  return new Property("supportingInformation", "Reference(Any)", "Further information supporting this charge.", 0, java.lang.Integer.MAX_VALUE, supportingInformation);
@@ -1865,7 +1816,7 @@ public class ChargeItem extends DomainResource {
         case -995410646: /*partOf*/ return this.partOf == null ? new Base[0] : this.partOf.toArray(new Base[this.partOf.size()]); // Reference
         case 3059181: /*code*/ return this.code == null ? new Base[0] : new Base[] {this.code}; // CodeableConcept
         case -1867885268: /*subject*/ return this.subject == null ? new Base[0] : new Base[] {this.subject}; // Reference
-        case 951530927: /*context*/ return this.context == null ? new Base[0] : new Base[] {this.context}; // Reference
+        case 1524132147: /*encounter*/ return this.encounter == null ? new Base[0] : new Base[] {this.encounter}; // Reference
         case 1687874001: /*occurrence*/ return this.occurrence == null ? new Base[0] : new Base[] {this.occurrence}; // DataType
         case 481140686: /*performer*/ return this.performer == null ? new Base[0] : this.performer.toArray(new Base[this.performer.size()]); // ChargeItemPerformerComponent
         case 1273192628: /*performingOrganization*/ return this.performingOrganization == null ? new Base[0] : new Base[] {this.performingOrganization}; // Reference
@@ -1873,14 +1824,14 @@ public class ChargeItem extends DomainResource {
         case -593192318: /*costCenter*/ return this.costCenter == null ? new Base[0] : new Base[] {this.costCenter}; // Reference
         case -1285004149: /*quantity*/ return this.quantity == null ? new Base[0] : new Base[] {this.quantity}; // Quantity
         case 1703573481: /*bodysite*/ return this.bodysite == null ? new Base[0] : this.bodysite.toArray(new Base[this.bodysite.size()]); // CodeableConcept
-        case -451233221: /*factorOverride*/ return this.factorOverride == null ? new Base[0] : new Base[] {this.factorOverride}; // DecimalType
-        case -216803275: /*priceOverride*/ return this.priceOverride == null ? new Base[0] : new Base[] {this.priceOverride}; // Money
-        case -742878928: /*overrideReason*/ return this.overrideReason == null ? new Base[0] : new Base[] {this.overrideReason}; // StringType
+        case -925197224: /*unitPriceComponent*/ return this.unitPriceComponent == null ? new Base[0] : new Base[] {this.unitPriceComponent}; // MonetaryComponent
+        case 1731497496: /*totalPriceComponent*/ return this.totalPriceComponent == null ? new Base[0] : new Base[] {this.totalPriceComponent}; // MonetaryComponent
+        case -742878928: /*overrideReason*/ return this.overrideReason == null ? new Base[0] : new Base[] {this.overrideReason}; // CodeableConcept
         case -1591951995: /*enterer*/ return this.enterer == null ? new Base[0] : new Base[] {this.enterer}; // Reference
         case 555978181: /*enteredDate*/ return this.enteredDate == null ? new Base[0] : new Base[] {this.enteredDate}; // DateTimeType
         case -934964668: /*reason*/ return this.reason == null ? new Base[0] : this.reason.toArray(new Base[this.reason.size()]); // CodeableConcept
-        case 1984153269: /*service*/ return this.service == null ? new Base[0] : this.service.toArray(new Base[this.service.size()]); // Reference
-        case -309474065: /*product*/ return this.product == null ? new Base[0] : new Base[] {this.product}; // DataType
+        case 1984153269: /*service*/ return this.service == null ? new Base[0] : this.service.toArray(new Base[this.service.size()]); // CodeableReference
+        case -309474065: /*product*/ return this.product == null ? new Base[0] : this.product.toArray(new Base[this.product.size()]); // CodeableReference
         case -1177318867: /*account*/ return this.account == null ? new Base[0] : this.account.toArray(new Base[this.account.size()]); // Reference
         case 3387378: /*note*/ return this.note == null ? new Base[0] : this.note.toArray(new Base[this.note.size()]); // Annotation
         case -1248768647: /*supportingInformation*/ return this.supportingInformation == null ? new Base[0] : this.supportingInformation.toArray(new Base[this.supportingInformation.size()]); // Reference
@@ -1914,8 +1865,8 @@ public class ChargeItem extends DomainResource {
         case -1867885268: // subject
           this.subject = TypeConvertor.castToReference(value); // Reference
           return value;
-        case 951530927: // context
-          this.context = TypeConvertor.castToReference(value); // Reference
+        case 1524132147: // encounter
+          this.encounter = TypeConvertor.castToReference(value); // Reference
           return value;
         case 1687874001: // occurrence
           this.occurrence = TypeConvertor.castToType(value); // DataType
@@ -1938,14 +1889,14 @@ public class ChargeItem extends DomainResource {
         case 1703573481: // bodysite
           this.getBodysite().add(TypeConvertor.castToCodeableConcept(value)); // CodeableConcept
           return value;
-        case -451233221: // factorOverride
-          this.factorOverride = TypeConvertor.castToDecimal(value); // DecimalType
+        case -925197224: // unitPriceComponent
+          this.unitPriceComponent = TypeConvertor.castToMonetaryComponent(value); // MonetaryComponent
           return value;
-        case -216803275: // priceOverride
-          this.priceOverride = TypeConvertor.castToMoney(value); // Money
+        case 1731497496: // totalPriceComponent
+          this.totalPriceComponent = TypeConvertor.castToMonetaryComponent(value); // MonetaryComponent
           return value;
         case -742878928: // overrideReason
-          this.overrideReason = TypeConvertor.castToString(value); // StringType
+          this.overrideReason = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
           return value;
         case -1591951995: // enterer
           this.enterer = TypeConvertor.castToReference(value); // Reference
@@ -1957,10 +1908,10 @@ public class ChargeItem extends DomainResource {
           this.getReason().add(TypeConvertor.castToCodeableConcept(value)); // CodeableConcept
           return value;
         case 1984153269: // service
-          this.getService().add(TypeConvertor.castToReference(value)); // Reference
+          this.getService().add(TypeConvertor.castToCodeableReference(value)); // CodeableReference
           return value;
         case -309474065: // product
-          this.product = TypeConvertor.castToType(value); // DataType
+          this.getProduct().add(TypeConvertor.castToCodeableReference(value)); // CodeableReference
           return value;
         case -1177318867: // account
           this.getAccount().add(TypeConvertor.castToReference(value)); // Reference
@@ -1993,8 +1944,8 @@ public class ChargeItem extends DomainResource {
           this.code = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
         } else if (name.equals("subject")) {
           this.subject = TypeConvertor.castToReference(value); // Reference
-        } else if (name.equals("context")) {
-          this.context = TypeConvertor.castToReference(value); // Reference
+        } else if (name.equals("encounter")) {
+          this.encounter = TypeConvertor.castToReference(value); // Reference
         } else if (name.equals("occurrence[x]")) {
           this.occurrence = TypeConvertor.castToType(value); // DataType
         } else if (name.equals("performer")) {
@@ -2009,12 +1960,12 @@ public class ChargeItem extends DomainResource {
           this.quantity = TypeConvertor.castToQuantity(value); // Quantity
         } else if (name.equals("bodysite")) {
           this.getBodysite().add(TypeConvertor.castToCodeableConcept(value));
-        } else if (name.equals("factorOverride")) {
-          this.factorOverride = TypeConvertor.castToDecimal(value); // DecimalType
-        } else if (name.equals("priceOverride")) {
-          this.priceOverride = TypeConvertor.castToMoney(value); // Money
+        } else if (name.equals("unitPriceComponent")) {
+          this.unitPriceComponent = TypeConvertor.castToMonetaryComponent(value); // MonetaryComponent
+        } else if (name.equals("totalPriceComponent")) {
+          this.totalPriceComponent = TypeConvertor.castToMonetaryComponent(value); // MonetaryComponent
         } else if (name.equals("overrideReason")) {
-          this.overrideReason = TypeConvertor.castToString(value); // StringType
+          this.overrideReason = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
         } else if (name.equals("enterer")) {
           this.enterer = TypeConvertor.castToReference(value); // Reference
         } else if (name.equals("enteredDate")) {
@@ -2022,9 +1973,9 @@ public class ChargeItem extends DomainResource {
         } else if (name.equals("reason")) {
           this.getReason().add(TypeConvertor.castToCodeableConcept(value));
         } else if (name.equals("service")) {
-          this.getService().add(TypeConvertor.castToReference(value));
-        } else if (name.equals("product[x]")) {
-          this.product = TypeConvertor.castToType(value); // DataType
+          this.getService().add(TypeConvertor.castToCodeableReference(value));
+        } else if (name.equals("product")) {
+          this.getProduct().add(TypeConvertor.castToCodeableReference(value));
         } else if (name.equals("account")) {
           this.getAccount().add(TypeConvertor.castToReference(value));
         } else if (name.equals("note")) {
@@ -2034,6 +1985,66 @@ public class ChargeItem extends DomainResource {
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("identifier")) {
+          this.getIdentifier().remove(value);
+        } else if (name.equals("definitionUri")) {
+          this.getDefinitionUri().remove(value);
+        } else if (name.equals("definitionCanonical")) {
+          this.getDefinitionCanonical().remove(value);
+        } else if (name.equals("status")) {
+          value = new ChargeItemStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<ChargeItemStatus>
+        } else if (name.equals("partOf")) {
+          this.getPartOf().remove(value);
+        } else if (name.equals("code")) {
+          this.code = null;
+        } else if (name.equals("subject")) {
+          this.subject = null;
+        } else if (name.equals("encounter")) {
+          this.encounter = null;
+        } else if (name.equals("occurrence[x]")) {
+          this.occurrence = null;
+        } else if (name.equals("performer")) {
+          this.getPerformer().remove((ChargeItemPerformerComponent) value);
+        } else if (name.equals("performingOrganization")) {
+          this.performingOrganization = null;
+        } else if (name.equals("requestingOrganization")) {
+          this.requestingOrganization = null;
+        } else if (name.equals("costCenter")) {
+          this.costCenter = null;
+        } else if (name.equals("quantity")) {
+          this.quantity = null;
+        } else if (name.equals("bodysite")) {
+          this.getBodysite().remove(value);
+        } else if (name.equals("unitPriceComponent")) {
+          this.unitPriceComponent = null;
+        } else if (name.equals("totalPriceComponent")) {
+          this.totalPriceComponent = null;
+        } else if (name.equals("overrideReason")) {
+          this.overrideReason = null;
+        } else if (name.equals("enterer")) {
+          this.enterer = null;
+        } else if (name.equals("enteredDate")) {
+          this.enteredDate = null;
+        } else if (name.equals("reason")) {
+          this.getReason().remove(value);
+        } else if (name.equals("service")) {
+          this.getService().remove(value);
+        } else if (name.equals("product")) {
+          this.getProduct().remove(value);
+        } else if (name.equals("account")) {
+          this.getAccount().remove(value);
+        } else if (name.equals("note")) {
+          this.getNote().remove(value);
+        } else if (name.equals("supportingInformation")) {
+          this.getSupportingInformation().remove(value);
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -2046,7 +2057,7 @@ public class ChargeItem extends DomainResource {
         case -995410646:  return addPartOf(); 
         case 3059181:  return getCode();
         case -1867885268:  return getSubject();
-        case 951530927:  return getContext();
+        case 1524132147:  return getEncounter();
         case -2022646513:  return getOccurrence();
         case 1687874001:  return getOccurrence();
         case 481140686:  return addPerformer(); 
@@ -2055,15 +2066,14 @@ public class ChargeItem extends DomainResource {
         case -593192318:  return getCostCenter();
         case -1285004149:  return getQuantity();
         case 1703573481:  return addBodysite(); 
-        case -451233221:  return getFactorOverrideElement();
-        case -216803275:  return getPriceOverride();
-        case -742878928:  return getOverrideReasonElement();
+        case -925197224:  return getUnitPriceComponent();
+        case 1731497496:  return getTotalPriceComponent();
+        case -742878928:  return getOverrideReason();
         case -1591951995:  return getEnterer();
         case 555978181:  return getEnteredDateElement();
         case -934964668:  return addReason(); 
         case 1984153269:  return addService(); 
-        case 1753005361:  return getProduct();
-        case -309474065:  return getProduct();
+        case -309474065:  return addProduct(); 
         case -1177318867:  return addAccount(); 
         case 3387378:  return addNote(); 
         case -1248768647:  return addSupportingInformation(); 
@@ -2082,7 +2092,7 @@ public class ChargeItem extends DomainResource {
         case -995410646: /*partOf*/ return new String[] {"Reference"};
         case 3059181: /*code*/ return new String[] {"CodeableConcept"};
         case -1867885268: /*subject*/ return new String[] {"Reference"};
-        case 951530927: /*context*/ return new String[] {"Reference"};
+        case 1524132147: /*encounter*/ return new String[] {"Reference"};
         case 1687874001: /*occurrence*/ return new String[] {"dateTime", "Period", "Timing"};
         case 481140686: /*performer*/ return new String[] {};
         case 1273192628: /*performingOrganization*/ return new String[] {"Reference"};
@@ -2090,14 +2100,14 @@ public class ChargeItem extends DomainResource {
         case -593192318: /*costCenter*/ return new String[] {"Reference"};
         case -1285004149: /*quantity*/ return new String[] {"Quantity"};
         case 1703573481: /*bodysite*/ return new String[] {"CodeableConcept"};
-        case -451233221: /*factorOverride*/ return new String[] {"decimal"};
-        case -216803275: /*priceOverride*/ return new String[] {"Money"};
-        case -742878928: /*overrideReason*/ return new String[] {"string"};
+        case -925197224: /*unitPriceComponent*/ return new String[] {"MonetaryComponent"};
+        case 1731497496: /*totalPriceComponent*/ return new String[] {"MonetaryComponent"};
+        case -742878928: /*overrideReason*/ return new String[] {"CodeableConcept"};
         case -1591951995: /*enterer*/ return new String[] {"Reference"};
         case 555978181: /*enteredDate*/ return new String[] {"dateTime"};
         case -934964668: /*reason*/ return new String[] {"CodeableConcept"};
-        case 1984153269: /*service*/ return new String[] {"Reference"};
-        case -309474065: /*product*/ return new String[] {"Reference", "CodeableConcept"};
+        case 1984153269: /*service*/ return new String[] {"CodeableReference"};
+        case -309474065: /*product*/ return new String[] {"CodeableReference"};
         case -1177318867: /*account*/ return new String[] {"Reference"};
         case 3387378: /*note*/ return new String[] {"Annotation"};
         case -1248768647: /*supportingInformation*/ return new String[] {"Reference"};
@@ -2112,13 +2122,13 @@ public class ChargeItem extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("definitionUri")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ChargeItem.definitionUri");
+          throw new FHIRException("Cannot call addChild on a singleton property ChargeItem.definitionUri");
         }
         else if (name.equals("definitionCanonical")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ChargeItem.definitionCanonical");
+          throw new FHIRException("Cannot call addChild on a singleton property ChargeItem.definitionCanonical");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ChargeItem.status");
+          throw new FHIRException("Cannot call addChild on a singleton property ChargeItem.status");
         }
         else if (name.equals("partOf")) {
           return addPartOf();
@@ -2131,9 +2141,9 @@ public class ChargeItem extends DomainResource {
           this.subject = new Reference();
           return this.subject;
         }
-        else if (name.equals("context")) {
-          this.context = new Reference();
-          return this.context;
+        else if (name.equals("encounter")) {
+          this.encounter = new Reference();
+          return this.encounter;
         }
         else if (name.equals("occurrenceDateTime")) {
           this.occurrence = new DateTimeType();
@@ -2169,22 +2179,24 @@ public class ChargeItem extends DomainResource {
         else if (name.equals("bodysite")) {
           return addBodysite();
         }
-        else if (name.equals("factorOverride")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ChargeItem.factorOverride");
+        else if (name.equals("unitPriceComponent")) {
+          this.unitPriceComponent = new MonetaryComponent();
+          return this.unitPriceComponent;
         }
-        else if (name.equals("priceOverride")) {
-          this.priceOverride = new Money();
-          return this.priceOverride;
+        else if (name.equals("totalPriceComponent")) {
+          this.totalPriceComponent = new MonetaryComponent();
+          return this.totalPriceComponent;
         }
         else if (name.equals("overrideReason")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ChargeItem.overrideReason");
+          this.overrideReason = new CodeableConcept();
+          return this.overrideReason;
         }
         else if (name.equals("enterer")) {
           this.enterer = new Reference();
           return this.enterer;
         }
         else if (name.equals("enteredDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ChargeItem.enteredDate");
+          throw new FHIRException("Cannot call addChild on a singleton property ChargeItem.enteredDate");
         }
         else if (name.equals("reason")) {
           return addReason();
@@ -2192,13 +2204,8 @@ public class ChargeItem extends DomainResource {
         else if (name.equals("service")) {
           return addService();
         }
-        else if (name.equals("productReference")) {
-          this.product = new Reference();
-          return this.product;
-        }
-        else if (name.equals("productCodeableConcept")) {
-          this.product = new CodeableConcept();
-          return this.product;
+        else if (name.equals("product")) {
+          return addProduct();
         }
         else if (name.equals("account")) {
           return addAccount();
@@ -2222,6 +2229,10 @@ public class ChargeItem extends DomainResource {
         ChargeItem dst = new ChargeItem();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ChargeItem) dst);
       }
 
       public void copyValues(ChargeItem dst) {
@@ -2249,7 +2260,7 @@ public class ChargeItem extends DomainResource {
         };
         dst.code = code == null ? null : code.copy();
         dst.subject = subject == null ? null : subject.copy();
-        dst.context = context == null ? null : context.copy();
+        dst.encounter = encounter == null ? null : encounter.copy();
         dst.occurrence = occurrence == null ? null : occurrence.copy();
         if (performer != null) {
           dst.performer = new ArrayList<ChargeItemPerformerComponent>();
@@ -2265,8 +2276,8 @@ public class ChargeItem extends DomainResource {
           for (CodeableConcept i : bodysite)
             dst.bodysite.add(i.copy());
         };
-        dst.factorOverride = factorOverride == null ? null : factorOverride.copy();
-        dst.priceOverride = priceOverride == null ? null : priceOverride.copy();
+        dst.unitPriceComponent = unitPriceComponent == null ? null : unitPriceComponent.copy();
+        dst.totalPriceComponent = totalPriceComponent == null ? null : totalPriceComponent.copy();
         dst.overrideReason = overrideReason == null ? null : overrideReason.copy();
         dst.enterer = enterer == null ? null : enterer.copy();
         dst.enteredDate = enteredDate == null ? null : enteredDate.copy();
@@ -2276,11 +2287,15 @@ public class ChargeItem extends DomainResource {
             dst.reason.add(i.copy());
         };
         if (service != null) {
-          dst.service = new ArrayList<Reference>();
-          for (Reference i : service)
+          dst.service = new ArrayList<CodeableReference>();
+          for (CodeableReference i : service)
             dst.service.add(i.copy());
         };
-        dst.product = product == null ? null : product.copy();
+        if (product != null) {
+          dst.product = new ArrayList<CodeableReference>();
+          for (CodeableReference i : product)
+            dst.product.add(i.copy());
+        };
         if (account != null) {
           dst.account = new ArrayList<Reference>();
           for (Reference i : account)
@@ -2312,10 +2327,10 @@ public class ChargeItem extends DomainResource {
         return compareDeep(identifier, o.identifier, true) && compareDeep(definitionUri, o.definitionUri, true)
            && compareDeep(definitionCanonical, o.definitionCanonical, true) && compareDeep(status, o.status, true)
            && compareDeep(partOf, o.partOf, true) && compareDeep(code, o.code, true) && compareDeep(subject, o.subject, true)
-           && compareDeep(context, o.context, true) && compareDeep(occurrence, o.occurrence, true) && compareDeep(performer, o.performer, true)
+           && compareDeep(encounter, o.encounter, true) && compareDeep(occurrence, o.occurrence, true) && compareDeep(performer, o.performer, true)
            && compareDeep(performingOrganization, o.performingOrganization, true) && compareDeep(requestingOrganization, o.requestingOrganization, true)
            && compareDeep(costCenter, o.costCenter, true) && compareDeep(quantity, o.quantity, true) && compareDeep(bodysite, o.bodysite, true)
-           && compareDeep(factorOverride, o.factorOverride, true) && compareDeep(priceOverride, o.priceOverride, true)
+           && compareDeep(unitPriceComponent, o.unitPriceComponent, true) && compareDeep(totalPriceComponent, o.totalPriceComponent, true)
            && compareDeep(overrideReason, o.overrideReason, true) && compareDeep(enterer, o.enterer, true)
            && compareDeep(enteredDate, o.enteredDate, true) && compareDeep(reason, o.reason, true) && compareDeep(service, o.service, true)
            && compareDeep(product, o.product, true) && compareDeep(account, o.account, true) && compareDeep(note, o.note, true)
@@ -2330,15 +2345,14 @@ public class ChargeItem extends DomainResource {
           return false;
         ChargeItem o = (ChargeItem) other_;
         return compareValues(definitionUri, o.definitionUri, true) && compareValues(definitionCanonical, o.definitionCanonical, true)
-           && compareValues(status, o.status, true) && compareValues(factorOverride, o.factorOverride, true) && compareValues(overrideReason, o.overrideReason, true)
-           && compareValues(enteredDate, o.enteredDate, true);
+           && compareValues(status, o.status, true) && compareValues(enteredDate, o.enteredDate, true);
       }
 
       public boolean isEmpty() {
         return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(identifier, definitionUri
-          , definitionCanonical, status, partOf, code, subject, context, occurrence, performer
-          , performingOrganization, requestingOrganization, costCenter, quantity, bodysite, factorOverride
-          , priceOverride, overrideReason, enterer, enteredDate, reason, service, product
+          , definitionCanonical, status, partOf, code, subject, encounter, occurrence, performer
+          , performingOrganization, requestingOrganization, costCenter, quantity, bodysite, unitPriceComponent
+          , totalPriceComponent, overrideReason, enterer, enteredDate, reason, service, product
           , account, note, supportingInformation);
       }
 
@@ -2372,52 +2386,6 @@ public class ChargeItem extends DomainResource {
    * the path value of "<b>ChargeItem:account</b>".
    */
   public static final ca.uhn.fhir.model.api.Include INCLUDE_ACCOUNT = new ca.uhn.fhir.model.api.Include("ChargeItem:account").toLocked();
-
- /**
-   * Search parameter: <b>code</b>
-   * <p>
-   * Description: <b>A code that identifies the charge, like a billing code</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>ChargeItem.code</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="code", path="ChargeItem.code", description="A code that identifies the charge, like a billing code", type="token" )
-  public static final String SP_CODE = "code";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>code</b>
-   * <p>
-   * Description: <b>A code that identifies the charge, like a billing code</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>ChargeItem.code</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam CODE = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_CODE);
-
- /**
-   * Search parameter: <b>context</b>
-   * <p>
-   * Description: <b>Encounter / Episode associated with event</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>ChargeItem.context</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="context", path="ChargeItem.context", description="Encounter / Episode associated with event", type="reference", providesMembershipIn={ @ca.uhn.fhir.model.api.annotation.Compartment(name="Base FHIR compartment definition for Encounter") }, target={Encounter.class, EpisodeOfCare.class } )
-  public static final String SP_CONTEXT = "context";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>context</b>
-   * <p>
-   * Description: <b>Encounter / Episode associated with event</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>ChargeItem.context</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam CONTEXT = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_CONTEXT);
-
-/**
-   * Constant for fluent queries to be used to add include statements. Specifies
-   * the path value of "<b>ChargeItem:context</b>".
-   */
-  public static final ca.uhn.fhir.model.api.Include INCLUDE_CONTEXT = new ca.uhn.fhir.model.api.Include("ChargeItem:context").toLocked();
 
  /**
    * Search parameter: <b>entered-date</b>
@@ -2470,86 +2438,40 @@ public class ChargeItem extends DomainResource {
    * <p>
    * Description: <b>Factor overriding the associated rules</b><br>
    * Type: <b>number</b><br>
-   * Path: <b>ChargeItem.factorOverride</b><br>
+   * Path: <b>ChargeItem.totalPriceComponent.factor</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="factor-override", path="ChargeItem.factorOverride", description="Factor overriding the associated rules", type="number" )
+  @SearchParamDefinition(name="factor-override", path="ChargeItem.totalPriceComponent.factor", description="Factor overriding the associated rules", type="number" )
   public static final String SP_FACTOR_OVERRIDE = "factor-override";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>factor-override</b>
    * <p>
    * Description: <b>Factor overriding the associated rules</b><br>
    * Type: <b>number</b><br>
-   * Path: <b>ChargeItem.factorOverride</b><br>
+   * Path: <b>ChargeItem.totalPriceComponent.factor</b><br>
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.NumberClientParam FACTOR_OVERRIDE = new ca.uhn.fhir.rest.gclient.NumberClientParam(SP_FACTOR_OVERRIDE);
-
- /**
-   * Search parameter: <b>identifier</b>
-   * <p>
-   * Description: <b>Business Identifier for item</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>ChargeItem.identifier</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="identifier", path="ChargeItem.identifier", description="Business Identifier for item", type="token" )
-  public static final String SP_IDENTIFIER = "identifier";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>identifier</b>
-   * <p>
-   * Description: <b>Business Identifier for item</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>ChargeItem.identifier</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
 
  /**
    * Search parameter: <b>occurrence</b>
    * <p>
    * Description: <b>When the charged service was applied</b><br>
    * Type: <b>date</b><br>
-   * Path: <b>ChargeItem.occurrence</b><br>
+   * Path: <b>ChargeItem.occurrence.ofType(dateTime) | ChargeItem.occurrence.ofType(Period) | ChargeItem.occurrence.ofType(Timing)</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="occurrence", path="ChargeItem.occurrence", description="When the charged service was applied", type="date" )
+  @SearchParamDefinition(name="occurrence", path="ChargeItem.occurrence.ofType(dateTime) | ChargeItem.occurrence.ofType(Period) | ChargeItem.occurrence.ofType(Timing)", description="When the charged service was applied", type="date" )
   public static final String SP_OCCURRENCE = "occurrence";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>occurrence</b>
    * <p>
    * Description: <b>When the charged service was applied</b><br>
    * Type: <b>date</b><br>
-   * Path: <b>ChargeItem.occurrence</b><br>
+   * Path: <b>ChargeItem.occurrence.ofType(dateTime) | ChargeItem.occurrence.ofType(Period) | ChargeItem.occurrence.ofType(Timing)</b><br>
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.DateClientParam OCCURRENCE = new ca.uhn.fhir.rest.gclient.DateClientParam(SP_OCCURRENCE);
-
- /**
-   * Search parameter: <b>patient</b>
-   * <p>
-   * Description: <b>Individual service was done for/to</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>ChargeItem.subject.where(resolve() is Patient)</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="patient", path="ChargeItem.subject.where(resolve() is Patient)", description="Individual service was done for/to", type="reference", target={Group.class, Patient.class } )
-  public static final String SP_PATIENT = "patient";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>patient</b>
-   * <p>
-   * Description: <b>Individual service was done for/to</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>ChargeItem.subject.where(resolve() is Patient)</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam PATIENT = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_PATIENT);
-
-/**
-   * Constant for fluent queries to be used to add include statements. Specifies
-   * the path value of "<b>ChargeItem:patient</b>".
-   */
-  public static final ca.uhn.fhir.model.api.Include INCLUDE_PATIENT = new ca.uhn.fhir.model.api.Include("ChargeItem:patient").toLocked();
 
  /**
    * Search parameter: <b>performer-actor</b>
@@ -2559,7 +2481,7 @@ public class ChargeItem extends DomainResource {
    * Path: <b>ChargeItem.performer.actor</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="performer-actor", path="ChargeItem.performer.actor", description="Individual who was performing", type="reference", providesMembershipIn={ @ca.uhn.fhir.model.api.annotation.Compartment(name="Base FHIR compartment definition for Device"), @ca.uhn.fhir.model.api.annotation.Compartment(name="Base FHIR compartment definition for Practitioner"), @ca.uhn.fhir.model.api.annotation.Compartment(name="Base FHIR compartment definition for RelatedPerson") }, target={CareTeam.class, Device.class, Organization.class, Patient.class, Practitioner.class, PractitionerRole.class, RelatedPerson.class } )
+  @SearchParamDefinition(name="performer-actor", path="ChargeItem.performer.actor", description="Individual who was performing", type="reference", providesMembershipIn={ @ca.uhn.fhir.model.api.annotation.Compartment(name="Base FHIR compartment definition for Device"), @ca.uhn.fhir.model.api.annotation.Compartment(name="Base FHIR compartment definition for Practitioner"), @ca.uhn.fhir.model.api.annotation.Compartment(name="Base FHIR compartment definition for RelatedPerson") }, target={CareTeam.class, Device.class, HealthcareService.class, Organization.class, Patient.class, Practitioner.class, PractitionerRole.class, RelatedPerson.class } )
   public static final String SP_PERFORMER_ACTOR = "performer-actor";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>performer-actor</b>
@@ -2628,17 +2550,17 @@ public class ChargeItem extends DomainResource {
    * <p>
    * Description: <b>Price overriding the associated rules</b><br>
    * Type: <b>quantity</b><br>
-   * Path: <b>ChargeItem.priceOverride</b><br>
+   * Path: <b>ChargeItem.totalPriceComponent.amount</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="price-override", path="ChargeItem.priceOverride", description="Price overriding the associated rules", type="quantity" )
+  @SearchParamDefinition(name="price-override", path="ChargeItem.totalPriceComponent.amount", description="Price overriding the associated rules", type="quantity" )
   public static final String SP_PRICE_OVERRIDE = "price-override";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>price-override</b>
    * <p>
    * Description: <b>Price overriding the associated rules</b><br>
    * Type: <b>quantity</b><br>
-   * Path: <b>ChargeItem.priceOverride</b><br>
+   * Path: <b>ChargeItem.totalPriceComponent.amount</b><br>
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.QuantityClientParam PRICE_OVERRIDE = new ca.uhn.fhir.rest.gclient.QuantityClientParam(SP_PRICE_OVERRIDE);
@@ -2694,17 +2616,17 @@ public class ChargeItem extends DomainResource {
    * <p>
    * Description: <b>Which rendered service is being charged?</b><br>
    * Type: <b>reference</b><br>
-   * Path: <b>ChargeItem.service</b><br>
+   * Path: <b>ChargeItem.service.reference</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="service", path="ChargeItem.service", description="Which rendered service is being charged?", type="reference", target={DiagnosticReport.class, ImagingStudy.class, Immunization.class, MedicationAdministration.class, MedicationDispense.class, Observation.class, Procedure.class, SupplyDelivery.class } )
+  @SearchParamDefinition(name="service", path="ChargeItem.service.reference", description="Which rendered service is being charged?", type="reference", target={DiagnosticReport.class, ImagingStudy.class, Immunization.class, MedicationAdministration.class, MedicationDispense.class, MedicationRequest.class, Observation.class, Procedure.class, ServiceRequest.class, SupplyDelivery.class } )
   public static final String SP_SERVICE = "service";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>service</b>
    * <p>
    * Description: <b>Which rendered service is being charged?</b><br>
    * Type: <b>reference</b><br>
-   * Path: <b>ChargeItem.service</b><br>
+   * Path: <b>ChargeItem.service.reference</b><br>
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam SERVICE = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_SERVICE);
@@ -2714,6 +2636,26 @@ public class ChargeItem extends DomainResource {
    * the path value of "<b>ChargeItem:service</b>".
    */
   public static final ca.uhn.fhir.model.api.Include INCLUDE_SERVICE = new ca.uhn.fhir.model.api.Include("ChargeItem:service").toLocked();
+
+ /**
+   * Search parameter: <b>status</b>
+   * <p>
+   * Description: <b>Is this charge item active</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ChargeItem.status</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="status", path="ChargeItem.status", description="Is this charge item active", type="token" )
+  public static final String SP_STATUS = "status";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>status</b>
+   * <p>
+   * Description: <b>Is this charge item active</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ChargeItem.status</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
 
  /**
    * Search parameter: <b>subject</b>
@@ -2740,6 +2682,478 @@ public class ChargeItem extends DomainResource {
    * the path value of "<b>ChargeItem:subject</b>".
    */
   public static final ca.uhn.fhir.model.api.Include INCLUDE_SUBJECT = new ca.uhn.fhir.model.api.Include("ChargeItem:subject").toLocked();
+
+ /**
+   * Search parameter: <b>code</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [AdverseEvent](adverseevent.html): Event or incident that occurred or was averted
+* [AllergyIntolerance](allergyintolerance.html): Code that identifies the allergy or intolerance
+* [AuditEvent](auditevent.html): More specific code for the event
+* [Basic](basic.html): Kind of Resource
+* [ChargeItem](chargeitem.html): A code that identifies the charge, like a billing code
+* [Condition](condition.html): Code for the condition
+* [DetectedIssue](detectedissue.html): Issue Type, e.g. drug-drug, duplicate therapy, etc.
+* [DeviceRequest](devicerequest.html): Code for what is being requested/ordered
+* [DiagnosticReport](diagnosticreport.html): The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result
+* [FamilyMemberHistory](familymemberhistory.html): A search by a condition code
+* [ImagingSelection](imagingselection.html): The imaging selection status
+* [List](list.html): What the purpose of this list is
+* [Medication](medication.html): Returns medications for a specific code
+* [MedicationAdministration](medicationadministration.html): Return administrations of this medication code
+* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine code
+* [MedicationRequest](medicationrequest.html): Return prescriptions of this medication code
+* [MedicationStatement](medicationstatement.html): Return statements of this medication code
+* [NutritionIntake](nutritionintake.html): Returns statements of this code of NutritionIntake
+* [Observation](observation.html): The code of the observation type
+* [Procedure](procedure.html): A code to identify a  procedure
+* [RequestOrchestration](requestorchestration.html): The code of the request orchestration
+* [Task](task.html): Search by task code
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>AdverseEvent.code | AllergyIntolerance.code | AllergyIntolerance.reaction.substance | AuditEvent.code | Basic.code | ChargeItem.code | Condition.code | DetectedIssue.code | DeviceRequest.code.concept | DiagnosticReport.code | FamilyMemberHistory.condition.code | ImagingSelection.status | List.code | Medication.code | MedicationAdministration.medication.concept | MedicationDispense.medication.concept | MedicationRequest.medication.concept | MedicationStatement.medication.concept | NutritionIntake.code | Observation.code | Procedure.code | RequestOrchestration.code | Task.code</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="code", path="AdverseEvent.code | AllergyIntolerance.code | AllergyIntolerance.reaction.substance | AuditEvent.code | Basic.code | ChargeItem.code | Condition.code | DetectedIssue.code | DeviceRequest.code.concept | DiagnosticReport.code | FamilyMemberHistory.condition.code | ImagingSelection.status | List.code | Medication.code | MedicationAdministration.medication.concept | MedicationDispense.medication.concept | MedicationRequest.medication.concept | MedicationStatement.medication.concept | NutritionIntake.code | Observation.code | Procedure.code | RequestOrchestration.code | Task.code", description="Multiple Resources: \r\n\r\n* [AdverseEvent](adverseevent.html): Event or incident that occurred or was averted\r\n* [AllergyIntolerance](allergyintolerance.html): Code that identifies the allergy or intolerance\r\n* [AuditEvent](auditevent.html): More specific code for the event\r\n* [Basic](basic.html): Kind of Resource\r\n* [ChargeItem](chargeitem.html): A code that identifies the charge, like a billing code\r\n* [Condition](condition.html): Code for the condition\r\n* [DetectedIssue](detectedissue.html): Issue Type, e.g. drug-drug, duplicate therapy, etc.\r\n* [DeviceRequest](devicerequest.html): Code for what is being requested/ordered\r\n* [DiagnosticReport](diagnosticreport.html): The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a condition code\r\n* [ImagingSelection](imagingselection.html): The imaging selection status\r\n* [List](list.html): What the purpose of this list is\r\n* [Medication](medication.html): Returns medications for a specific code\r\n* [MedicationAdministration](medicationadministration.html): Return administrations of this medication code\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine code\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions of this medication code\r\n* [MedicationStatement](medicationstatement.html): Return statements of this medication code\r\n* [NutritionIntake](nutritionintake.html): Returns statements of this code of NutritionIntake\r\n* [Observation](observation.html): The code of the observation type\r\n* [Procedure](procedure.html): A code to identify a  procedure\r\n* [RequestOrchestration](requestorchestration.html): The code of the request orchestration\r\n* [Task](task.html): Search by task code\r\n", type="token" )
+  public static final String SP_CODE = "code";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>code</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [AdverseEvent](adverseevent.html): Event or incident that occurred or was averted
+* [AllergyIntolerance](allergyintolerance.html): Code that identifies the allergy or intolerance
+* [AuditEvent](auditevent.html): More specific code for the event
+* [Basic](basic.html): Kind of Resource
+* [ChargeItem](chargeitem.html): A code that identifies the charge, like a billing code
+* [Condition](condition.html): Code for the condition
+* [DetectedIssue](detectedissue.html): Issue Type, e.g. drug-drug, duplicate therapy, etc.
+* [DeviceRequest](devicerequest.html): Code for what is being requested/ordered
+* [DiagnosticReport](diagnosticreport.html): The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result
+* [FamilyMemberHistory](familymemberhistory.html): A search by a condition code
+* [ImagingSelection](imagingselection.html): The imaging selection status
+* [List](list.html): What the purpose of this list is
+* [Medication](medication.html): Returns medications for a specific code
+* [MedicationAdministration](medicationadministration.html): Return administrations of this medication code
+* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine code
+* [MedicationRequest](medicationrequest.html): Return prescriptions of this medication code
+* [MedicationStatement](medicationstatement.html): Return statements of this medication code
+* [NutritionIntake](nutritionintake.html): Returns statements of this code of NutritionIntake
+* [Observation](observation.html): The code of the observation type
+* [Procedure](procedure.html): A code to identify a  procedure
+* [RequestOrchestration](requestorchestration.html): The code of the request orchestration
+* [Task](task.html): Search by task code
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>AdverseEvent.code | AllergyIntolerance.code | AllergyIntolerance.reaction.substance | AuditEvent.code | Basic.code | ChargeItem.code | Condition.code | DetectedIssue.code | DeviceRequest.code.concept | DiagnosticReport.code | FamilyMemberHistory.condition.code | ImagingSelection.status | List.code | Medication.code | MedicationAdministration.medication.concept | MedicationDispense.medication.concept | MedicationRequest.medication.concept | MedicationStatement.medication.concept | NutritionIntake.code | Observation.code | Procedure.code | RequestOrchestration.code | Task.code</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam CODE = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_CODE);
+
+ /**
+   * Search parameter: <b>encounter</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [AuditEvent](auditevent.html): Encounter related to the activity recorded in the AuditEvent
+* [CarePlan](careplan.html): The Encounter during which this CarePlan was created
+* [ChargeItem](chargeitem.html): Encounter associated with event
+* [Claim](claim.html): Encounters associated with a billed line item
+* [ClinicalImpression](clinicalimpression.html): The Encounter during which this ClinicalImpression was created
+* [Communication](communication.html): The Encounter during which this Communication was created
+* [CommunicationRequest](communicationrequest.html): The Encounter during which this CommunicationRequest was created
+* [Composition](composition.html): Context of the Composition
+* [Condition](condition.html): The Encounter during which this Condition was created
+* [DeviceRequest](devicerequest.html): Encounter during which request was created
+* [DiagnosticReport](diagnosticreport.html): The Encounter when the order was made
+* [EncounterHistory](encounterhistory.html): The Encounter associated with this set of history values
+* [ExplanationOfBenefit](explanationofbenefit.html): Encounters associated with a billed line item
+* [Flag](flag.html): Alert relevant during encounter
+* [ImagingStudy](imagingstudy.html): The context of the study
+* [List](list.html): Context in which list created
+* [MedicationDispense](medicationdispense.html): Returns dispenses with a specific encounter
+* [MedicationStatement](medicationstatement.html): Returns statements for a specific encounter
+* [NutritionIntake](nutritionintake.html): Returns statements for a specific encounter
+* [NutritionOrder](nutritionorder.html): Return nutrition orders with this encounter identifier
+* [Observation](observation.html): Encounter related to the observation
+* [Procedure](procedure.html): The Encounter during which this Procedure was created
+* [Provenance](provenance.html): Encounter related to the Provenance
+* [QuestionnaireResponse](questionnaireresponse.html): Encounter associated with the questionnaire response
+* [RequestOrchestration](requestorchestration.html): The encounter the request orchestration applies to
+* [RiskAssessment](riskassessment.html): Where was assessment performed?
+* [ServiceRequest](servicerequest.html): An encounter in which this request is made
+* [Task](task.html): Search by encounter
+* [VisionPrescription](visionprescription.html): Return prescriptions with this encounter identifier
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>AuditEvent.encounter | CarePlan.encounter | ChargeItem.encounter | Claim.item.encounter | ClinicalImpression.encounter | Communication.encounter | CommunicationRequest.encounter | Composition.encounter | Condition.encounter | DeviceRequest.encounter | DiagnosticReport.encounter | EncounterHistory.encounter | ExplanationOfBenefit.item.encounter | Flag.encounter | ImagingStudy.encounter | List.encounter | MedicationDispense.encounter | MedicationStatement.encounter | NutritionIntake.encounter | NutritionOrder.encounter | Observation.encounter | Procedure.encounter | Provenance.encounter | QuestionnaireResponse.encounter | RequestOrchestration.encounter | RiskAssessment.encounter | ServiceRequest.encounter | Task.encounter | VisionPrescription.encounter</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="encounter", path="AuditEvent.encounter | CarePlan.encounter | ChargeItem.encounter | Claim.item.encounter | ClinicalImpression.encounter | Communication.encounter | CommunicationRequest.encounter | Composition.encounter | Condition.encounter | DeviceRequest.encounter | DiagnosticReport.encounter | EncounterHistory.encounter | ExplanationOfBenefit.item.encounter | Flag.encounter | ImagingStudy.encounter | List.encounter | MedicationDispense.encounter | MedicationStatement.encounter | NutritionIntake.encounter | NutritionOrder.encounter | Observation.encounter | Procedure.encounter | Provenance.encounter | QuestionnaireResponse.encounter | RequestOrchestration.encounter | RiskAssessment.encounter | ServiceRequest.encounter | Task.encounter | VisionPrescription.encounter", description="Multiple Resources: \r\n\r\n* [AuditEvent](auditevent.html): Encounter related to the activity recorded in the AuditEvent\r\n* [CarePlan](careplan.html): The Encounter during which this CarePlan was created\r\n* [ChargeItem](chargeitem.html): Encounter associated with event\r\n* [Claim](claim.html): Encounters associated with a billed line item\r\n* [ClinicalImpression](clinicalimpression.html): The Encounter during which this ClinicalImpression was created\r\n* [Communication](communication.html): The Encounter during which this Communication was created\r\n* [CommunicationRequest](communicationrequest.html): The Encounter during which this CommunicationRequest was created\r\n* [Composition](composition.html): Context of the Composition\r\n* [Condition](condition.html): The Encounter during which this Condition was created\r\n* [DeviceRequest](devicerequest.html): Encounter during which request was created\r\n* [DiagnosticReport](diagnosticreport.html): The Encounter when the order was made\r\n* [EncounterHistory](encounterhistory.html): The Encounter associated with this set of history values\r\n* [ExplanationOfBenefit](explanationofbenefit.html): Encounters associated with a billed line item\r\n* [Flag](flag.html): Alert relevant during encounter\r\n* [ImagingStudy](imagingstudy.html): The context of the study\r\n* [List](list.html): Context in which list created\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses with a specific encounter\r\n* [MedicationStatement](medicationstatement.html): Returns statements for a specific encounter\r\n* [NutritionIntake](nutritionintake.html): Returns statements for a specific encounter\r\n* [NutritionOrder](nutritionorder.html): Return nutrition orders with this encounter identifier\r\n* [Observation](observation.html): Encounter related to the observation\r\n* [Procedure](procedure.html): The Encounter during which this Procedure was created\r\n* [Provenance](provenance.html): Encounter related to the Provenance\r\n* [QuestionnaireResponse](questionnaireresponse.html): Encounter associated with the questionnaire response\r\n* [RequestOrchestration](requestorchestration.html): The encounter the request orchestration applies to\r\n* [RiskAssessment](riskassessment.html): Where was assessment performed?\r\n* [ServiceRequest](servicerequest.html): An encounter in which this request is made\r\n* [Task](task.html): Search by encounter\r\n* [VisionPrescription](visionprescription.html): Return prescriptions with this encounter identifier\r\n", type="reference", providesMembershipIn={ @ca.uhn.fhir.model.api.annotation.Compartment(name="Base FHIR compartment definition for Encounter") }, target={Encounter.class } )
+  public static final String SP_ENCOUNTER = "encounter";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>encounter</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [AuditEvent](auditevent.html): Encounter related to the activity recorded in the AuditEvent
+* [CarePlan](careplan.html): The Encounter during which this CarePlan was created
+* [ChargeItem](chargeitem.html): Encounter associated with event
+* [Claim](claim.html): Encounters associated with a billed line item
+* [ClinicalImpression](clinicalimpression.html): The Encounter during which this ClinicalImpression was created
+* [Communication](communication.html): The Encounter during which this Communication was created
+* [CommunicationRequest](communicationrequest.html): The Encounter during which this CommunicationRequest was created
+* [Composition](composition.html): Context of the Composition
+* [Condition](condition.html): The Encounter during which this Condition was created
+* [DeviceRequest](devicerequest.html): Encounter during which request was created
+* [DiagnosticReport](diagnosticreport.html): The Encounter when the order was made
+* [EncounterHistory](encounterhistory.html): The Encounter associated with this set of history values
+* [ExplanationOfBenefit](explanationofbenefit.html): Encounters associated with a billed line item
+* [Flag](flag.html): Alert relevant during encounter
+* [ImagingStudy](imagingstudy.html): The context of the study
+* [List](list.html): Context in which list created
+* [MedicationDispense](medicationdispense.html): Returns dispenses with a specific encounter
+* [MedicationStatement](medicationstatement.html): Returns statements for a specific encounter
+* [NutritionIntake](nutritionintake.html): Returns statements for a specific encounter
+* [NutritionOrder](nutritionorder.html): Return nutrition orders with this encounter identifier
+* [Observation](observation.html): Encounter related to the observation
+* [Procedure](procedure.html): The Encounter during which this Procedure was created
+* [Provenance](provenance.html): Encounter related to the Provenance
+* [QuestionnaireResponse](questionnaireresponse.html): Encounter associated with the questionnaire response
+* [RequestOrchestration](requestorchestration.html): The encounter the request orchestration applies to
+* [RiskAssessment](riskassessment.html): Where was assessment performed?
+* [ServiceRequest](servicerequest.html): An encounter in which this request is made
+* [Task](task.html): Search by encounter
+* [VisionPrescription](visionprescription.html): Return prescriptions with this encounter identifier
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>AuditEvent.encounter | CarePlan.encounter | ChargeItem.encounter | Claim.item.encounter | ClinicalImpression.encounter | Communication.encounter | CommunicationRequest.encounter | Composition.encounter | Condition.encounter | DeviceRequest.encounter | DiagnosticReport.encounter | EncounterHistory.encounter | ExplanationOfBenefit.item.encounter | Flag.encounter | ImagingStudy.encounter | List.encounter | MedicationDispense.encounter | MedicationStatement.encounter | NutritionIntake.encounter | NutritionOrder.encounter | Observation.encounter | Procedure.encounter | Provenance.encounter | QuestionnaireResponse.encounter | RequestOrchestration.encounter | RiskAssessment.encounter | ServiceRequest.encounter | Task.encounter | VisionPrescription.encounter</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam ENCOUNTER = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_ENCOUNTER);
+
+/**
+   * Constant for fluent queries to be used to add include statements. Specifies
+   * the path value of "<b>ChargeItem:encounter</b>".
+   */
+  public static final ca.uhn.fhir.model.api.Include INCLUDE_ENCOUNTER = new ca.uhn.fhir.model.api.Include("ChargeItem:encounter").toLocked();
+
+ /**
+   * Search parameter: <b>identifier</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): Account number
+* [AdverseEvent](adverseevent.html): Business identifier for the event
+* [AllergyIntolerance](allergyintolerance.html): External ids for this item
+* [Appointment](appointment.html): An Identifier of the Appointment
+* [AppointmentResponse](appointmentresponse.html): An Identifier in this appointment response
+* [Basic](basic.html): Business identifier
+* [BodyStructure](bodystructure.html): Bodystructure identifier
+* [CarePlan](careplan.html): External Ids for this plan
+* [CareTeam](careteam.html): External Ids for this team
+* [ChargeItem](chargeitem.html): Business Identifier for item
+* [Claim](claim.html): The primary identifier of the financial resource
+* [ClaimResponse](claimresponse.html): The identity of the ClaimResponse
+* [ClinicalImpression](clinicalimpression.html): Business identifier
+* [Communication](communication.html): Unique identifier
+* [CommunicationRequest](communicationrequest.html): Unique identifier
+* [Composition](composition.html): Version-independent identifier for the Composition
+* [Condition](condition.html): A unique identifier of the condition record
+* [Consent](consent.html): Identifier for this record (external references)
+* [Contract](contract.html): The identity of the contract
+* [Coverage](coverage.html): The primary identifier of the insured and the coverage
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The business identifier of the Eligibility
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The business identifier
+* [DetectedIssue](detectedissue.html): Unique id for the detected issue
+* [DeviceRequest](devicerequest.html): Business identifier for request/order
+* [DeviceUsage](deviceusage.html): Search by identifier
+* [DiagnosticReport](diagnosticreport.html): An identifier for the report
+* [DocumentReference](documentreference.html): Identifier of the attachment binary
+* [Encounter](encounter.html): Identifier(s) by which this encounter is known
+* [EnrollmentRequest](enrollmentrequest.html): The business identifier of the Enrollment
+* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare
+* [ExplanationOfBenefit](explanationofbenefit.html): The business identifier of the Explanation of Benefit
+* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier
+* [Flag](flag.html): Business identifier
+* [Goal](goal.html): External Ids for this goal
+* [GuidanceResponse](guidanceresponse.html): The identifier of the guidance response
+* [ImagingSelection](imagingselection.html): Identifiers for the imaging selection
+* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID
+* [Immunization](immunization.html): Business identifier
+* [ImmunizationEvaluation](immunizationevaluation.html): ID of the evaluation
+* [ImmunizationRecommendation](immunizationrecommendation.html): Business identifier
+* [Invoice](invoice.html): Business Identifier for item
+* [List](list.html): Business identifier
+* [MeasureReport](measurereport.html): External identifier of the measure report to be returned
+* [Medication](medication.html): Returns medications with this external identifier
+* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier
+* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier
+* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier
+* [MedicationStatement](medicationstatement.html): Return statements with this external identifier
+* [MolecularSequence](molecularsequence.html): The unique identity for a particular sequence
+* [NutritionIntake](nutritionintake.html): Return statements with this external identifier
+* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier
+* [Observation](observation.html): The unique id for a particular observation
+* [Person](person.html): A person Identifier
+* [Procedure](procedure.html): A unique identifier for a procedure
+* [QuestionnaireResponse](questionnaireresponse.html): The unique identifier for the questionnaire response
+* [RelatedPerson](relatedperson.html): An Identifier of the RelatedPerson
+* [RequestOrchestration](requestorchestration.html): External identifiers for the request orchestration
+* [ResearchSubject](researchsubject.html): Business Identifier for research subject in a study
+* [RiskAssessment](riskassessment.html): Unique identifier for the assessment
+* [ServiceRequest](servicerequest.html): Identifiers assigned to this order
+* [Specimen](specimen.html): The unique identifier associated with the specimen
+* [SupplyDelivery](supplydelivery.html): External identifier
+* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest
+* [Task](task.html): Search for a task instance by its business identifier
+* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>Account.identifier | AdverseEvent.identifier | AllergyIntolerance.identifier | Appointment.identifier | AppointmentResponse.identifier | Basic.identifier | BodyStructure.identifier | CarePlan.identifier | CareTeam.identifier | ChargeItem.identifier | Claim.identifier | ClaimResponse.identifier | ClinicalImpression.identifier | Communication.identifier | CommunicationRequest.identifier | Composition.identifier | Condition.identifier | Consent.identifier | Contract.identifier | Coverage.identifier | CoverageEligibilityRequest.identifier | CoverageEligibilityResponse.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DeviceUsage.identifier | DiagnosticReport.identifier | DocumentReference.identifier | Encounter.identifier | EnrollmentRequest.identifier | EpisodeOfCare.identifier | ExplanationOfBenefit.identifier | FamilyMemberHistory.identifier | Flag.identifier | Goal.identifier | GuidanceResponse.identifier | ImagingSelection.identifier | ImagingStudy.identifier | Immunization.identifier | ImmunizationEvaluation.identifier | ImmunizationRecommendation.identifier | Invoice.identifier | List.identifier | MeasureReport.identifier | Medication.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationStatement.identifier | MolecularSequence.identifier | NutritionIntake.identifier | NutritionOrder.identifier | Observation.identifier | Person.identifier | Procedure.identifier | QuestionnaireResponse.identifier | RelatedPerson.identifier | RequestOrchestration.identifier | ResearchSubject.identifier | RiskAssessment.identifier | ServiceRequest.identifier | Specimen.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | Task.identifier | VisionPrescription.identifier</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="identifier", path="Account.identifier | AdverseEvent.identifier | AllergyIntolerance.identifier | Appointment.identifier | AppointmentResponse.identifier | Basic.identifier | BodyStructure.identifier | CarePlan.identifier | CareTeam.identifier | ChargeItem.identifier | Claim.identifier | ClaimResponse.identifier | ClinicalImpression.identifier | Communication.identifier | CommunicationRequest.identifier | Composition.identifier | Condition.identifier | Consent.identifier | Contract.identifier | Coverage.identifier | CoverageEligibilityRequest.identifier | CoverageEligibilityResponse.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DeviceUsage.identifier | DiagnosticReport.identifier | DocumentReference.identifier | Encounter.identifier | EnrollmentRequest.identifier | EpisodeOfCare.identifier | ExplanationOfBenefit.identifier | FamilyMemberHistory.identifier | Flag.identifier | Goal.identifier | GuidanceResponse.identifier | ImagingSelection.identifier | ImagingStudy.identifier | Immunization.identifier | ImmunizationEvaluation.identifier | ImmunizationRecommendation.identifier | Invoice.identifier | List.identifier | MeasureReport.identifier | Medication.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationStatement.identifier | MolecularSequence.identifier | NutritionIntake.identifier | NutritionOrder.identifier | Observation.identifier | Person.identifier | Procedure.identifier | QuestionnaireResponse.identifier | RelatedPerson.identifier | RequestOrchestration.identifier | ResearchSubject.identifier | RiskAssessment.identifier | ServiceRequest.identifier | Specimen.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | Task.identifier | VisionPrescription.identifier", description="Multiple Resources: \r\n\r\n* [Account](account.html): Account number\r\n* [AdverseEvent](adverseevent.html): Business identifier for the event\r\n* [AllergyIntolerance](allergyintolerance.html): External ids for this item\r\n* [Appointment](appointment.html): An Identifier of the Appointment\r\n* [AppointmentResponse](appointmentresponse.html): An Identifier in this appointment response\r\n* [Basic](basic.html): Business identifier\r\n* [BodyStructure](bodystructure.html): Bodystructure identifier\r\n* [CarePlan](careplan.html): External Ids for this plan\r\n* [CareTeam](careteam.html): External Ids for this team\r\n* [ChargeItem](chargeitem.html): Business Identifier for item\r\n* [Claim](claim.html): The primary identifier of the financial resource\r\n* [ClaimResponse](claimresponse.html): The identity of the ClaimResponse\r\n* [ClinicalImpression](clinicalimpression.html): Business identifier\r\n* [Communication](communication.html): Unique identifier\r\n* [CommunicationRequest](communicationrequest.html): Unique identifier\r\n* [Composition](composition.html): Version-independent identifier for the Composition\r\n* [Condition](condition.html): A unique identifier of the condition record\r\n* [Consent](consent.html): Identifier for this record (external references)\r\n* [Contract](contract.html): The identity of the contract\r\n* [Coverage](coverage.html): The primary identifier of the insured and the coverage\r\n* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The business identifier of the Eligibility\r\n* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The business identifier\r\n* [DetectedIssue](detectedissue.html): Unique id for the detected issue\r\n* [DeviceRequest](devicerequest.html): Business identifier for request/order\r\n* [DeviceUsage](deviceusage.html): Search by identifier\r\n* [DiagnosticReport](diagnosticreport.html): An identifier for the report\r\n* [DocumentReference](documentreference.html): Identifier of the attachment binary\r\n* [Encounter](encounter.html): Identifier(s) by which this encounter is known\r\n* [EnrollmentRequest](enrollmentrequest.html): The business identifier of the Enrollment\r\n* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare\r\n* [ExplanationOfBenefit](explanationofbenefit.html): The business identifier of the Explanation of Benefit\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier\r\n* [Flag](flag.html): Business identifier\r\n* [Goal](goal.html): External Ids for this goal\r\n* [GuidanceResponse](guidanceresponse.html): The identifier of the guidance response\r\n* [ImagingSelection](imagingselection.html): Identifiers for the imaging selection\r\n* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID\r\n* [Immunization](immunization.html): Business identifier\r\n* [ImmunizationEvaluation](immunizationevaluation.html): ID of the evaluation\r\n* [ImmunizationRecommendation](immunizationrecommendation.html): Business identifier\r\n* [Invoice](invoice.html): Business Identifier for item\r\n* [List](list.html): Business identifier\r\n* [MeasureReport](measurereport.html): External identifier of the measure report to be returned\r\n* [Medication](medication.html): Returns medications with this external identifier\r\n* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier\r\n* [MedicationStatement](medicationstatement.html): Return statements with this external identifier\r\n* [MolecularSequence](molecularsequence.html): The unique identity for a particular sequence\r\n* [NutritionIntake](nutritionintake.html): Return statements with this external identifier\r\n* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier\r\n* [Observation](observation.html): The unique id for a particular observation\r\n* [Person](person.html): A person Identifier\r\n* [Procedure](procedure.html): A unique identifier for a procedure\r\n* [QuestionnaireResponse](questionnaireresponse.html): The unique identifier for the questionnaire response\r\n* [RelatedPerson](relatedperson.html): An Identifier of the RelatedPerson\r\n* [RequestOrchestration](requestorchestration.html): External identifiers for the request orchestration\r\n* [ResearchSubject](researchsubject.html): Business Identifier for research subject in a study\r\n* [RiskAssessment](riskassessment.html): Unique identifier for the assessment\r\n* [ServiceRequest](servicerequest.html): Identifiers assigned to this order\r\n* [Specimen](specimen.html): The unique identifier associated with the specimen\r\n* [SupplyDelivery](supplydelivery.html): External identifier\r\n* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest\r\n* [Task](task.html): Search for a task instance by its business identifier\r\n* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier\r\n", type="token" )
+  public static final String SP_IDENTIFIER = "identifier";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>identifier</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): Account number
+* [AdverseEvent](adverseevent.html): Business identifier for the event
+* [AllergyIntolerance](allergyintolerance.html): External ids for this item
+* [Appointment](appointment.html): An Identifier of the Appointment
+* [AppointmentResponse](appointmentresponse.html): An Identifier in this appointment response
+* [Basic](basic.html): Business identifier
+* [BodyStructure](bodystructure.html): Bodystructure identifier
+* [CarePlan](careplan.html): External Ids for this plan
+* [CareTeam](careteam.html): External Ids for this team
+* [ChargeItem](chargeitem.html): Business Identifier for item
+* [Claim](claim.html): The primary identifier of the financial resource
+* [ClaimResponse](claimresponse.html): The identity of the ClaimResponse
+* [ClinicalImpression](clinicalimpression.html): Business identifier
+* [Communication](communication.html): Unique identifier
+* [CommunicationRequest](communicationrequest.html): Unique identifier
+* [Composition](composition.html): Version-independent identifier for the Composition
+* [Condition](condition.html): A unique identifier of the condition record
+* [Consent](consent.html): Identifier for this record (external references)
+* [Contract](contract.html): The identity of the contract
+* [Coverage](coverage.html): The primary identifier of the insured and the coverage
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The business identifier of the Eligibility
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The business identifier
+* [DetectedIssue](detectedissue.html): Unique id for the detected issue
+* [DeviceRequest](devicerequest.html): Business identifier for request/order
+* [DeviceUsage](deviceusage.html): Search by identifier
+* [DiagnosticReport](diagnosticreport.html): An identifier for the report
+* [DocumentReference](documentreference.html): Identifier of the attachment binary
+* [Encounter](encounter.html): Identifier(s) by which this encounter is known
+* [EnrollmentRequest](enrollmentrequest.html): The business identifier of the Enrollment
+* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare
+* [ExplanationOfBenefit](explanationofbenefit.html): The business identifier of the Explanation of Benefit
+* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier
+* [Flag](flag.html): Business identifier
+* [Goal](goal.html): External Ids for this goal
+* [GuidanceResponse](guidanceresponse.html): The identifier of the guidance response
+* [ImagingSelection](imagingselection.html): Identifiers for the imaging selection
+* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID
+* [Immunization](immunization.html): Business identifier
+* [ImmunizationEvaluation](immunizationevaluation.html): ID of the evaluation
+* [ImmunizationRecommendation](immunizationrecommendation.html): Business identifier
+* [Invoice](invoice.html): Business Identifier for item
+* [List](list.html): Business identifier
+* [MeasureReport](measurereport.html): External identifier of the measure report to be returned
+* [Medication](medication.html): Returns medications with this external identifier
+* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier
+* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier
+* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier
+* [MedicationStatement](medicationstatement.html): Return statements with this external identifier
+* [MolecularSequence](molecularsequence.html): The unique identity for a particular sequence
+* [NutritionIntake](nutritionintake.html): Return statements with this external identifier
+* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier
+* [Observation](observation.html): The unique id for a particular observation
+* [Person](person.html): A person Identifier
+* [Procedure](procedure.html): A unique identifier for a procedure
+* [QuestionnaireResponse](questionnaireresponse.html): The unique identifier for the questionnaire response
+* [RelatedPerson](relatedperson.html): An Identifier of the RelatedPerson
+* [RequestOrchestration](requestorchestration.html): External identifiers for the request orchestration
+* [ResearchSubject](researchsubject.html): Business Identifier for research subject in a study
+* [RiskAssessment](riskassessment.html): Unique identifier for the assessment
+* [ServiceRequest](servicerequest.html): Identifiers assigned to this order
+* [Specimen](specimen.html): The unique identifier associated with the specimen
+* [SupplyDelivery](supplydelivery.html): External identifier
+* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest
+* [Task](task.html): Search for a task instance by its business identifier
+* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>Account.identifier | AdverseEvent.identifier | AllergyIntolerance.identifier | Appointment.identifier | AppointmentResponse.identifier | Basic.identifier | BodyStructure.identifier | CarePlan.identifier | CareTeam.identifier | ChargeItem.identifier | Claim.identifier | ClaimResponse.identifier | ClinicalImpression.identifier | Communication.identifier | CommunicationRequest.identifier | Composition.identifier | Condition.identifier | Consent.identifier | Contract.identifier | Coverage.identifier | CoverageEligibilityRequest.identifier | CoverageEligibilityResponse.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DeviceUsage.identifier | DiagnosticReport.identifier | DocumentReference.identifier | Encounter.identifier | EnrollmentRequest.identifier | EpisodeOfCare.identifier | ExplanationOfBenefit.identifier | FamilyMemberHistory.identifier | Flag.identifier | Goal.identifier | GuidanceResponse.identifier | ImagingSelection.identifier | ImagingStudy.identifier | Immunization.identifier | ImmunizationEvaluation.identifier | ImmunizationRecommendation.identifier | Invoice.identifier | List.identifier | MeasureReport.identifier | Medication.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationStatement.identifier | MolecularSequence.identifier | NutritionIntake.identifier | NutritionOrder.identifier | Observation.identifier | Person.identifier | Procedure.identifier | QuestionnaireResponse.identifier | RelatedPerson.identifier | RequestOrchestration.identifier | ResearchSubject.identifier | RiskAssessment.identifier | ServiceRequest.identifier | Specimen.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | Task.identifier | VisionPrescription.identifier</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
+
+ /**
+   * Search parameter: <b>patient</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): The entity that caused the expenses
+* [AdverseEvent](adverseevent.html): Subject impacted by event
+* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for
+* [Appointment](appointment.html): One of the individuals of the appointment is this patient
+* [AppointmentResponse](appointmentresponse.html): This Response is for this Patient
+* [AuditEvent](auditevent.html): Where the activity involved patient data
+* [Basic](basic.html): Identifies the focus of this resource
+* [BodyStructure](bodystructure.html): Who this is about
+* [CarePlan](careplan.html): Who the care plan is for
+* [CareTeam](careteam.html): Who care team is for
+* [ChargeItem](chargeitem.html): Individual service was done for/to
+* [Claim](claim.html): Patient receiving the products or services
+* [ClaimResponse](claimresponse.html): The subject of care
+* [ClinicalImpression](clinicalimpression.html): Patient assessed
+* [Communication](communication.html): Focus of message
+* [CommunicationRequest](communicationrequest.html): Focus of message
+* [Composition](composition.html): Who and/or what the composition is about
+* [Condition](condition.html): Who has the condition?
+* [Consent](consent.html): Who the consent applies to
+* [Contract](contract.html): The identity of the subject of the contract (if a patient)
+* [Coverage](coverage.html): Retrieve coverages for a patient
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The reference to the patient
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The reference to the patient
+* [DetectedIssue](detectedissue.html): Associated patient
+* [DeviceRequest](devicerequest.html): Individual the service is ordered for
+* [DeviceUsage](deviceusage.html): Search by patient who used / uses the device
+* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient
+* [DocumentReference](documentreference.html): Who/what is the subject of the document
+* [Encounter](encounter.html): The patient present at the encounter
+* [EnrollmentRequest](enrollmentrequest.html): The party to be enrolled
+* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care
+* [ExplanationOfBenefit](explanationofbenefit.html): The reference to the patient
+* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for
+* [Flag](flag.html): The identity of a subject to list flags for
+* [Goal](goal.html): Who this goal is intended for
+* [GuidanceResponse](guidanceresponse.html): The identity of a patient to search for guidance response results
+* [ImagingSelection](imagingselection.html): Who the study is about
+* [ImagingStudy](imagingstudy.html): Who the study is about
+* [Immunization](immunization.html): The patient for the vaccination record
+* [ImmunizationEvaluation](immunizationevaluation.html): The patient being evaluated
+* [ImmunizationRecommendation](immunizationrecommendation.html): Who this profile is for
+* [Invoice](invoice.html): Recipient(s) of goods and services
+* [List](list.html): If all resources have the same subject
+* [MeasureReport](measurereport.html): The identity of a patient to search for individual measure report results for
+* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for
+* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for
+* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient
+* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.
+* [MolecularSequence](molecularsequence.html): The subject that the sequence is about
+* [NutritionIntake](nutritionintake.html): Returns statements for a specific patient.
+* [NutritionOrder](nutritionorder.html): The identity of the individual or set of individuals who requires the diet, formula or nutritional supplement
+* [Observation](observation.html): The subject that the observation is about (if patient)
+* [Person](person.html): The Person links to this Patient
+* [Procedure](procedure.html): Search by subject - a patient
+* [Provenance](provenance.html): Where the activity involved patient data
+* [QuestionnaireResponse](questionnaireresponse.html): The patient that is the subject of the questionnaire response
+* [RelatedPerson](relatedperson.html): The patient this related person is related to
+* [RequestOrchestration](requestorchestration.html): The identity of a patient to search for request orchestrations
+* [ResearchSubject](researchsubject.html): Who or what is part of study
+* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?
+* [ServiceRequest](servicerequest.html): Search by subject - a patient
+* [Specimen](specimen.html): The patient the specimen comes from
+* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied
+* [SupplyRequest](supplyrequest.html): The patient or subject for whom the supply is destined
+* [Task](task.html): Search by patient
+* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>Account.subject.where(resolve() is Patient) | AdverseEvent.subject.where(resolve() is Patient) | AllergyIntolerance.patient | Appointment.participant.actor.where(resolve() is Patient) | Appointment.subject.where(resolve() is Patient) | AppointmentResponse.actor.where(resolve() is Patient) | AuditEvent.patient | Basic.subject.where(resolve() is Patient) | BodyStructure.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ChargeItem.subject.where(resolve() is Patient) | Claim.patient | ClaimResponse.patient | ClinicalImpression.subject.where(resolve() is Patient) | Communication.subject.where(resolve() is Patient) | CommunicationRequest.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | Contract.subject.where(resolve() is Patient) | Coverage.beneficiary | CoverageEligibilityRequest.patient | CoverageEligibilityResponse.patient | DetectedIssue.subject.where(resolve() is Patient) | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.patient | DiagnosticReport.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EnrollmentRequest.candidate | EpisodeOfCare.patient | ExplanationOfBenefit.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | GuidanceResponse.subject.where(resolve() is Patient) | ImagingSelection.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | ImmunizationEvaluation.patient | ImmunizationRecommendation.patient | Invoice.subject.where(resolve() is Patient) | List.subject.where(resolve() is Patient) | MeasureReport.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationStatement.subject.where(resolve() is Patient) | MolecularSequence.subject.where(resolve() is Patient) | NutritionIntake.subject.where(resolve() is Patient) | NutritionOrder.subject.where(resolve() is Patient) | Observation.subject.where(resolve() is Patient) | Person.link.target.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | Provenance.patient | QuestionnaireResponse.subject.where(resolve() is Patient) | RelatedPerson.patient | RequestOrchestration.subject.where(resolve() is Patient) | ResearchSubject.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | Specimen.subject.where(resolve() is Patient) | SupplyDelivery.patient | SupplyRequest.deliverFor | Task.for.where(resolve() is Patient) | VisionPrescription.patient</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="patient", path="Account.subject.where(resolve() is Patient) | AdverseEvent.subject.where(resolve() is Patient) | AllergyIntolerance.patient | Appointment.participant.actor.where(resolve() is Patient) | Appointment.subject.where(resolve() is Patient) | AppointmentResponse.actor.where(resolve() is Patient) | AuditEvent.patient | Basic.subject.where(resolve() is Patient) | BodyStructure.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ChargeItem.subject.where(resolve() is Patient) | Claim.patient | ClaimResponse.patient | ClinicalImpression.subject.where(resolve() is Patient) | Communication.subject.where(resolve() is Patient) | CommunicationRequest.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | Contract.subject.where(resolve() is Patient) | Coverage.beneficiary | CoverageEligibilityRequest.patient | CoverageEligibilityResponse.patient | DetectedIssue.subject.where(resolve() is Patient) | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.patient | DiagnosticReport.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EnrollmentRequest.candidate | EpisodeOfCare.patient | ExplanationOfBenefit.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | GuidanceResponse.subject.where(resolve() is Patient) | ImagingSelection.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | ImmunizationEvaluation.patient | ImmunizationRecommendation.patient | Invoice.subject.where(resolve() is Patient) | List.subject.where(resolve() is Patient) | MeasureReport.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationStatement.subject.where(resolve() is Patient) | MolecularSequence.subject.where(resolve() is Patient) | NutritionIntake.subject.where(resolve() is Patient) | NutritionOrder.subject.where(resolve() is Patient) | Observation.subject.where(resolve() is Patient) | Person.link.target.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | Provenance.patient | QuestionnaireResponse.subject.where(resolve() is Patient) | RelatedPerson.patient | RequestOrchestration.subject.where(resolve() is Patient) | ResearchSubject.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | Specimen.subject.where(resolve() is Patient) | SupplyDelivery.patient | SupplyRequest.deliverFor | Task.for.where(resolve() is Patient) | VisionPrescription.patient", description="Multiple Resources: \r\n\r\n* [Account](account.html): The entity that caused the expenses\r\n* [AdverseEvent](adverseevent.html): Subject impacted by event\r\n* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for\r\n* [Appointment](appointment.html): One of the individuals of the appointment is this patient\r\n* [AppointmentResponse](appointmentresponse.html): This Response is for this Patient\r\n* [AuditEvent](auditevent.html): Where the activity involved patient data\r\n* [Basic](basic.html): Identifies the focus of this resource\r\n* [BodyStructure](bodystructure.html): Who this is about\r\n* [CarePlan](careplan.html): Who the care plan is for\r\n* [CareTeam](careteam.html): Who care team is for\r\n* [ChargeItem](chargeitem.html): Individual service was done for/to\r\n* [Claim](claim.html): Patient receiving the products or services\r\n* [ClaimResponse](claimresponse.html): The subject of care\r\n* [ClinicalImpression](clinicalimpression.html): Patient assessed\r\n* [Communication](communication.html): Focus of message\r\n* [CommunicationRequest](communicationrequest.html): Focus of message\r\n* [Composition](composition.html): Who and/or what the composition is about\r\n* [Condition](condition.html): Who has the condition?\r\n* [Consent](consent.html): Who the consent applies to\r\n* [Contract](contract.html): The identity of the subject of the contract (if a patient)\r\n* [Coverage](coverage.html): Retrieve coverages for a patient\r\n* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The reference to the patient\r\n* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The reference to the patient\r\n* [DetectedIssue](detectedissue.html): Associated patient\r\n* [DeviceRequest](devicerequest.html): Individual the service is ordered for\r\n* [DeviceUsage](deviceusage.html): Search by patient who used / uses the device\r\n* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient\r\n* [DocumentReference](documentreference.html): Who/what is the subject of the document\r\n* [Encounter](encounter.html): The patient present at the encounter\r\n* [EnrollmentRequest](enrollmentrequest.html): The party to be enrolled\r\n* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care\r\n* [ExplanationOfBenefit](explanationofbenefit.html): The reference to the patient\r\n* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for\r\n* [Flag](flag.html): The identity of a subject to list flags for\r\n* [Goal](goal.html): Who this goal is intended for\r\n* [GuidanceResponse](guidanceresponse.html): The identity of a patient to search for guidance response results\r\n* [ImagingSelection](imagingselection.html): Who the study is about\r\n* [ImagingStudy](imagingstudy.html): Who the study is about\r\n* [Immunization](immunization.html): The patient for the vaccination record\r\n* [ImmunizationEvaluation](immunizationevaluation.html): The patient being evaluated\r\n* [ImmunizationRecommendation](immunizationrecommendation.html): Who this profile is for\r\n* [Invoice](invoice.html): Recipient(s) of goods and services\r\n* [List](list.html): If all resources have the same subject\r\n* [MeasureReport](measurereport.html): The identity of a patient to search for individual measure report results for\r\n* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for\r\n* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for\r\n* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient\r\n* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.\r\n* [MolecularSequence](molecularsequence.html): The subject that the sequence is about\r\n* [NutritionIntake](nutritionintake.html): Returns statements for a specific patient.\r\n* [NutritionOrder](nutritionorder.html): The identity of the individual or set of individuals who requires the diet, formula or nutritional supplement\r\n* [Observation](observation.html): The subject that the observation is about (if patient)\r\n* [Person](person.html): The Person links to this Patient\r\n* [Procedure](procedure.html): Search by subject - a patient\r\n* [Provenance](provenance.html): Where the activity involved patient data\r\n* [QuestionnaireResponse](questionnaireresponse.html): The patient that is the subject of the questionnaire response\r\n* [RelatedPerson](relatedperson.html): The patient this related person is related to\r\n* [RequestOrchestration](requestorchestration.html): The identity of a patient to search for request orchestrations\r\n* [ResearchSubject](researchsubject.html): Who or what is part of study\r\n* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?\r\n* [ServiceRequest](servicerequest.html): Search by subject - a patient\r\n* [Specimen](specimen.html): The patient the specimen comes from\r\n* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied\r\n* [SupplyRequest](supplyrequest.html): The patient or subject for whom the supply is destined\r\n* [Task](task.html): Search by patient\r\n* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for\r\n", type="reference", target={Patient.class } )
+  public static final String SP_PATIENT = "patient";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>patient</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): The entity that caused the expenses
+* [AdverseEvent](adverseevent.html): Subject impacted by event
+* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for
+* [Appointment](appointment.html): One of the individuals of the appointment is this patient
+* [AppointmentResponse](appointmentresponse.html): This Response is for this Patient
+* [AuditEvent](auditevent.html): Where the activity involved patient data
+* [Basic](basic.html): Identifies the focus of this resource
+* [BodyStructure](bodystructure.html): Who this is about
+* [CarePlan](careplan.html): Who the care plan is for
+* [CareTeam](careteam.html): Who care team is for
+* [ChargeItem](chargeitem.html): Individual service was done for/to
+* [Claim](claim.html): Patient receiving the products or services
+* [ClaimResponse](claimresponse.html): The subject of care
+* [ClinicalImpression](clinicalimpression.html): Patient assessed
+* [Communication](communication.html): Focus of message
+* [CommunicationRequest](communicationrequest.html): Focus of message
+* [Composition](composition.html): Who and/or what the composition is about
+* [Condition](condition.html): Who has the condition?
+* [Consent](consent.html): Who the consent applies to
+* [Contract](contract.html): The identity of the subject of the contract (if a patient)
+* [Coverage](coverage.html): Retrieve coverages for a patient
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The reference to the patient
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The reference to the patient
+* [DetectedIssue](detectedissue.html): Associated patient
+* [DeviceRequest](devicerequest.html): Individual the service is ordered for
+* [DeviceUsage](deviceusage.html): Search by patient who used / uses the device
+* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient
+* [DocumentReference](documentreference.html): Who/what is the subject of the document
+* [Encounter](encounter.html): The patient present at the encounter
+* [EnrollmentRequest](enrollmentrequest.html): The party to be enrolled
+* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care
+* [ExplanationOfBenefit](explanationofbenefit.html): The reference to the patient
+* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for
+* [Flag](flag.html): The identity of a subject to list flags for
+* [Goal](goal.html): Who this goal is intended for
+* [GuidanceResponse](guidanceresponse.html): The identity of a patient to search for guidance response results
+* [ImagingSelection](imagingselection.html): Who the study is about
+* [ImagingStudy](imagingstudy.html): Who the study is about
+* [Immunization](immunization.html): The patient for the vaccination record
+* [ImmunizationEvaluation](immunizationevaluation.html): The patient being evaluated
+* [ImmunizationRecommendation](immunizationrecommendation.html): Who this profile is for
+* [Invoice](invoice.html): Recipient(s) of goods and services
+* [List](list.html): If all resources have the same subject
+* [MeasureReport](measurereport.html): The identity of a patient to search for individual measure report results for
+* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for
+* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for
+* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient
+* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.
+* [MolecularSequence](molecularsequence.html): The subject that the sequence is about
+* [NutritionIntake](nutritionintake.html): Returns statements for a specific patient.
+* [NutritionOrder](nutritionorder.html): The identity of the individual or set of individuals who requires the diet, formula or nutritional supplement
+* [Observation](observation.html): The subject that the observation is about (if patient)
+* [Person](person.html): The Person links to this Patient
+* [Procedure](procedure.html): Search by subject - a patient
+* [Provenance](provenance.html): Where the activity involved patient data
+* [QuestionnaireResponse](questionnaireresponse.html): The patient that is the subject of the questionnaire response
+* [RelatedPerson](relatedperson.html): The patient this related person is related to
+* [RequestOrchestration](requestorchestration.html): The identity of a patient to search for request orchestrations
+* [ResearchSubject](researchsubject.html): Who or what is part of study
+* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?
+* [ServiceRequest](servicerequest.html): Search by subject - a patient
+* [Specimen](specimen.html): The patient the specimen comes from
+* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied
+* [SupplyRequest](supplyrequest.html): The patient or subject for whom the supply is destined
+* [Task](task.html): Search by patient
+* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>Account.subject.where(resolve() is Patient) | AdverseEvent.subject.where(resolve() is Patient) | AllergyIntolerance.patient | Appointment.participant.actor.where(resolve() is Patient) | Appointment.subject.where(resolve() is Patient) | AppointmentResponse.actor.where(resolve() is Patient) | AuditEvent.patient | Basic.subject.where(resolve() is Patient) | BodyStructure.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ChargeItem.subject.where(resolve() is Patient) | Claim.patient | ClaimResponse.patient | ClinicalImpression.subject.where(resolve() is Patient) | Communication.subject.where(resolve() is Patient) | CommunicationRequest.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | Contract.subject.where(resolve() is Patient) | Coverage.beneficiary | CoverageEligibilityRequest.patient | CoverageEligibilityResponse.patient | DetectedIssue.subject.where(resolve() is Patient) | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.patient | DiagnosticReport.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EnrollmentRequest.candidate | EpisodeOfCare.patient | ExplanationOfBenefit.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | GuidanceResponse.subject.where(resolve() is Patient) | ImagingSelection.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | ImmunizationEvaluation.patient | ImmunizationRecommendation.patient | Invoice.subject.where(resolve() is Patient) | List.subject.where(resolve() is Patient) | MeasureReport.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationStatement.subject.where(resolve() is Patient) | MolecularSequence.subject.where(resolve() is Patient) | NutritionIntake.subject.where(resolve() is Patient) | NutritionOrder.subject.where(resolve() is Patient) | Observation.subject.where(resolve() is Patient) | Person.link.target.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | Provenance.patient | QuestionnaireResponse.subject.where(resolve() is Patient) | RelatedPerson.patient | RequestOrchestration.subject.where(resolve() is Patient) | ResearchSubject.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | Specimen.subject.where(resolve() is Patient) | SupplyDelivery.patient | SupplyRequest.deliverFor | Task.for.where(resolve() is Patient) | VisionPrescription.patient</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam PATIENT = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_PATIENT);
+
+/**
+   * Constant for fluent queries to be used to add include statements. Specifies
+   * the path value of "<b>ChargeItem:patient</b>".
+   */
+  public static final ca.uhn.fhir.model.api.Include INCLUDE_PATIENT = new ca.uhn.fhir.model.api.Include("ChargeItem:patient").toLocked();
 
 
 }

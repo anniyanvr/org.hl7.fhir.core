@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -78,11 +74,13 @@ public class V3CalendarCycleEnumFactory implements EnumFactory<V3CalendarCycle> 
       return V3CalendarCycle.WY;
     if ("WM".equals(codeString))
       return V3CalendarCycle.WM;
-    throw new IllegalArgumentException("Unknown V3CalendarCycle code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3CalendarCycle code '" + codeString + "'");
   }
 
   public String toCode(V3CalendarCycle code) {
-    if (code == V3CalendarCycle._CALENDARCYCLEONELETTER)
+       if (code == V3CalendarCycle.NULL)
+           return null;
+       if (code == V3CalendarCycle._CALENDARCYCLEONELETTER)
       return "_CalendarCycleOneLetter";
     if (code == V3CalendarCycle.CW)
       return "CW";
@@ -119,10 +117,10 @@ public class V3CalendarCycleEnumFactory implements EnumFactory<V3CalendarCycle> 
     if (code == V3CalendarCycle.WM)
       return "WM";
     return "?";
-  }
+   }
 
-    public String toSystem(V3CalendarCycle code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3CalendarCycle code) {
+    return code.getSystem();
+  }
 
 }

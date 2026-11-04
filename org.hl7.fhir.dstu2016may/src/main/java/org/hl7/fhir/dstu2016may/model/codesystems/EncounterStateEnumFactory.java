@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class EncounterStateEnumFactory implements EnumFactory<EncounterState> {
@@ -54,11 +50,13 @@ public class EncounterStateEnumFactory implements EnumFactory<EncounterState> {
       return EncounterState.FINISHED;
     if ("cancelled".equals(codeString))
       return EncounterState.CANCELLED;
-    throw new IllegalArgumentException("Unknown EncounterState code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown EncounterState code '" + codeString + "'");
   }
 
   public String toCode(EncounterState code) {
-    if (code == EncounterState.PLANNED)
+       if (code == EncounterState.NULL)
+           return null;
+       if (code == EncounterState.PLANNED)
       return "planned";
     if (code == EncounterState.ARRIVED)
       return "arrived";
@@ -71,10 +69,10 @@ public class EncounterStateEnumFactory implements EnumFactory<EncounterState> {
     if (code == EncounterState.CANCELLED)
       return "cancelled";
     return "?";
-  }
+   }
 
-    public String toSystem(EncounterState code) {
-      return code.getSystem();
-      }
+  public String toSystem(EncounterState code) {
+    return code.getSystem();
+  }
 
 }

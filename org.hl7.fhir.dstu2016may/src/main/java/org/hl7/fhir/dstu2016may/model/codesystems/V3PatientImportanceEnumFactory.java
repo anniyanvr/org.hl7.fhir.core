@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3PatientImportanceEnumFactory implements EnumFactory<V3PatientImportance> {
@@ -60,11 +56,13 @@ public class V3PatientImportanceEnumFactory implements EnumFactory<V3PatientImpo
       return V3PatientImportance.STF;
     if ("VIP".equals(codeString))
       return V3PatientImportance.VIP;
-    throw new IllegalArgumentException("Unknown V3PatientImportance code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3PatientImportance code '" + codeString + "'");
   }
 
   public String toCode(V3PatientImportance code) {
-    if (code == V3PatientImportance.BM)
+       if (code == V3PatientImportance.NULL)
+           return null;
+       if (code == V3PatientImportance.BM)
       return "BM";
     if (code == V3PatientImportance.DFM)
       return "DFM";
@@ -83,10 +81,10 @@ public class V3PatientImportanceEnumFactory implements EnumFactory<V3PatientImpo
     if (code == V3PatientImportance.VIP)
       return "VIP";
     return "?";
-  }
+   }
 
-    public String toSystem(V3PatientImportance code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3PatientImportance code) {
+    return code.getSystem();
+  }
 
 }

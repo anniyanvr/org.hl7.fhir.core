@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class RestfulCapabilityModeEnumFactory implements EnumFactory<RestfulCapabilityMode> {
@@ -46,19 +42,21 @@ public class RestfulCapabilityModeEnumFactory implements EnumFactory<RestfulCapa
       return RestfulCapabilityMode.CLIENT;
     if ("server".equals(codeString))
       return RestfulCapabilityMode.SERVER;
-    throw new IllegalArgumentException("Unknown RestfulCapabilityMode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown RestfulCapabilityMode code '" + codeString + "'");
   }
 
   public String toCode(RestfulCapabilityMode code) {
-    if (code == RestfulCapabilityMode.CLIENT)
+       if (code == RestfulCapabilityMode.NULL)
+           return null;
+       if (code == RestfulCapabilityMode.CLIENT)
       return "client";
     if (code == RestfulCapabilityMode.SERVER)
       return "server";
     return "?";
-  }
+   }
 
-    public String toSystem(RestfulCapabilityMode code) {
-      return code.getSystem();
-      }
+  public String toSystem(RestfulCapabilityMode code) {
+    return code.getSystem();
+  }
 
 }

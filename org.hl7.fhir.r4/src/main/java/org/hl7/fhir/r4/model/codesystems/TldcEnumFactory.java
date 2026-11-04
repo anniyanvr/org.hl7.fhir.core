@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class TldcEnumFactory implements EnumFactory<Tldc> {
@@ -58,11 +54,13 @@ public class TldcEnumFactory implements EnumFactory<Tldc> {
       return Tldc.RETIRED;
     if ("terminated".equals(codeString))
       return Tldc.TERMINATED;
-    throw new IllegalArgumentException("Unknown Tldc code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown Tldc code '" + codeString + "'");
   }
 
   public String toCode(Tldc code) {
-    if (code == Tldc.DRAFT)
+       if (code == Tldc.NULL)
+           return null;
+       if (code == Tldc.DRAFT)
       return "draft";
     if (code == Tldc.PENDING)
       return "pending";
@@ -79,10 +77,10 @@ public class TldcEnumFactory implements EnumFactory<Tldc> {
     if (code == Tldc.TERMINATED)
       return "terminated";
     return "?";
-  }
+   }
 
-    public String toSystem(Tldc code) {
-      return code.getSystem();
-      }
+  public String toSystem(Tldc code) {
+    return code.getSystem();
+  }
 
 }

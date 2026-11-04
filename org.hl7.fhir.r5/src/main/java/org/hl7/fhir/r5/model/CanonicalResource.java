@@ -29,26 +29,20 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.hl7.fhir.utilities.Utilities;
+import java.util.Map.Entry;
+
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
 import org.hl7.fhir.r5.model.Enumerations.*;
-import org.hl7.fhir.instance.model.api.IBaseBackboneElement;
+
+import org.hl7.fhir.utilities.UserDataNames;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.instance.model.api.ICompositeType;
-import ca.uhn.fhir.model.api.annotation.ResourceDef;
-import ca.uhn.fhir.model.api.annotation.SearchParamDefinition;
-import org.hl7.fhir.instance.model.api.IBaseBackboneElement;
-import ca.uhn.fhir.model.api.annotation.Child;
-import ca.uhn.fhir.model.api.annotation.ChildOrder;
-import ca.uhn.fhir.model.api.annotation.Description;
-import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Common Ancestor declaration for conformance and knowledge artifact resources.
+ * Common Interface declaration for conformance and knowledge artifact resources.
  */
 public abstract class CanonicalResource extends DomainResource {
 
@@ -76,7 +70,7 @@ public abstract class CanonicalResource extends DomainResource {
       return 1;
     }
     /**
-     * @return {@link #url} (An absolute URI that is used to identify this canonical resource when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this canonical resource is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the canonical resource is stored on different servers.). This is the underlying object with id, value and extensions. The accessor "getUrl" gives direct access to the value
+     * @return {@link #url} (An absolute URI that is used to identify this canonical resource when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this canonical resource is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the canonical resource is stored on different servers.). This is the underlying object with id, value and extensions. The accessor "getUrl" gives direct access to the value
      */
     public abstract UriType getUrlElement(); 
 
@@ -84,15 +78,15 @@ public abstract class CanonicalResource extends DomainResource {
     public abstract boolean hasUrl(); 
 
     /**
-     * @param value {@link #url} (An absolute URI that is used to identify this canonical resource when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this canonical resource is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the canonical resource is stored on different servers.). This is the underlying object with id, value and extensions. The accessor "getUrl" gives direct access to the value
+     * @param value {@link #url} (An absolute URI that is used to identify this canonical resource when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this canonical resource is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the canonical resource is stored on different servers.). This is the underlying object with id, value and extensions. The accessor "getUrl" gives direct access to the value
      */
     public abstract CanonicalResource setUrlElement(UriType value); 
     /**
-     * @return An absolute URI that is used to identify this canonical resource when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this canonical resource is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the canonical resource is stored on different servers.
+     * @return An absolute URI that is used to identify this canonical resource when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this canonical resource is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the canonical resource is stored on different servers.
      */
     public abstract String getUrl(); 
     /**
-     * @param value An absolute URI that is used to identify this canonical resource when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which at which an authoritative instance of this canonical resource is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the canonical resource is stored on different servers.
+     * @param value An absolute URI that is used to identify this canonical resource when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique and SHOULD be a literal address at which an authoritative instance of this canonical resource is (or will be) published. This URL can be the target of a canonical reference. It SHALL remain the same when the canonical resource is stored on different servers.
      */
     public abstract CanonicalResource setUrl(String value); 
     /**
@@ -124,7 +118,7 @@ public abstract class CanonicalResource extends DomainResource {
       return 1;
     }
     /**
-     * @return {@link #version} (The identifier that is used to identify this version of the canonical resource when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the canonical resource author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions can be placed in a lexicographical sequence.). This is the underlying object with id, value and extensions. The accessor "getVersion" gives direct access to the value
+     * @return {@link #version} (The identifier that is used to identify this version of the canonical resource when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the canonical resource author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions can be placed in a lexicographical sequence without additional knowledge.  (See the versionAlgorithm element.)). This is the underlying object with id, value and extensions. The accessor "getVersion" gives direct access to the value
      */
     public abstract StringType getVersionElement(); 
 
@@ -132,17 +126,43 @@ public abstract class CanonicalResource extends DomainResource {
     public abstract boolean hasVersion(); 
 
     /**
-     * @param value {@link #version} (The identifier that is used to identify this version of the canonical resource when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the canonical resource author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions can be placed in a lexicographical sequence.). This is the underlying object with id, value and extensions. The accessor "getVersion" gives direct access to the value
+     * @param value {@link #version} (The identifier that is used to identify this version of the canonical resource when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the canonical resource author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions can be placed in a lexicographical sequence without additional knowledge.  (See the versionAlgorithm element.)). This is the underlying object with id, value and extensions. The accessor "getVersion" gives direct access to the value
      */
     public abstract CanonicalResource setVersionElement(StringType value); 
     /**
-     * @return The identifier that is used to identify this version of the canonical resource when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the canonical resource author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions can be placed in a lexicographical sequence.
+     * @return The identifier that is used to identify this version of the canonical resource when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the canonical resource author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions can be placed in a lexicographical sequence without additional knowledge.  (See the versionAlgorithm element.)
      */
     public abstract String getVersion(); 
     /**
-     * @param value The identifier that is used to identify this version of the canonical resource when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the canonical resource author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions can be placed in a lexicographical sequence.
+     * @param value The identifier that is used to identify this version of the canonical resource when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the canonical resource author and is not expected to be globally unique. For example, it might be a timestamp (e.g. yyyymmdd) if a managed version is not available. There is also no expectation that versions can be placed in a lexicographical sequence without additional knowledge.  (See the versionAlgorithm element.)
      */
     public abstract CanonicalResource setVersion(String value); 
+    /**
+     * How many allowed for this property by the implementation
+     */
+    public int getVersionAlgorithmMax() { 
+      return 1;
+    }
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public abstract DataType getVersionAlgorithm(); 
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public abstract StringType getVersionAlgorithmStringType() throws FHIRException; 
+    public abstract boolean hasVersionAlgorithmStringType(); 
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public abstract Coding getVersionAlgorithmCoding() throws FHIRException; 
+    public abstract boolean hasVersionAlgorithmCoding(); 
+    public abstract boolean hasVersionAlgorithm(); 
+    /**
+     * @param value {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public abstract CanonicalResource setVersionAlgorithm(DataType value); 
+
     /**
      * How many allowed for this property by the implementation
      */
@@ -150,7 +170,7 @@ public abstract class CanonicalResource extends DomainResource {
       return 1;
     }
     /**
-     * @return {@link #name} (A natural language name identifying the canonical resource. This name should be usable as an identifier for the module by machine processing applications such as code generation.). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
+     * @return {@link #name} (A natural language name identifying the canonical resource. This name should be usable as an identifier for the resource by machine processing applications such as code generation.). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
      */
     public abstract StringType getNameElement(); 
 
@@ -158,15 +178,15 @@ public abstract class CanonicalResource extends DomainResource {
     public abstract boolean hasName(); 
 
     /**
-     * @param value {@link #name} (A natural language name identifying the canonical resource. This name should be usable as an identifier for the module by machine processing applications such as code generation.). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
+     * @param value {@link #name} (A natural language name identifying the canonical resource. This name should be usable as an identifier for the resource by machine processing applications such as code generation.). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
      */
     public abstract CanonicalResource setNameElement(StringType value); 
     /**
-     * @return A natural language name identifying the canonical resource. This name should be usable as an identifier for the module by machine processing applications such as code generation.
+     * @return A natural language name identifying the canonical resource. This name should be usable as an identifier for the resource by machine processing applications such as code generation.
      */
     public abstract String getName(); 
     /**
-     * @param value A natural language name identifying the canonical resource. This name should be usable as an identifier for the module by machine processing applications such as code generation.
+     * @param value A natural language name identifying the canonical resource. This name should be usable as an identifier for the resource by machine processing applications such as code generation.
      */
     public abstract CanonicalResource setName(String value); 
     /**
@@ -202,7 +222,7 @@ public abstract class CanonicalResource extends DomainResource {
       return 1;
     }
     /**
-     * @return {@link #status} (The status of this canonical resource. Enables tracking the life-cycle of the content.). This is the underlying object with id, value and extensions. The accessor "getStatus" gives direct access to the value
+     * @return {@link #status} (The current state of this canonical resource. ). This is the underlying object with id, value and extensions. The accessor "getStatus" gives direct access to the value
      */
     public abstract Enumeration<PublicationStatus> getStatusElement(); 
 
@@ -210,15 +230,15 @@ public abstract class CanonicalResource extends DomainResource {
     public abstract boolean hasStatus(); 
 
     /**
-     * @param value {@link #status} (The status of this canonical resource. Enables tracking the life-cycle of the content.). This is the underlying object with id, value and extensions. The accessor "getStatus" gives direct access to the value
+     * @param value {@link #status} (The current state of this canonical resource. ). This is the underlying object with id, value and extensions. The accessor "getStatus" gives direct access to the value
      */
     public abstract CanonicalResource setStatusElement(Enumeration<PublicationStatus> value); 
     /**
-     * @return The status of this canonical resource. Enables tracking the life-cycle of the content.
+     * @return The current state of this canonical resource. 
      */
     public abstract PublicationStatus getStatus(); 
     /**
-     * @param value The status of this canonical resource. Enables tracking the life-cycle of the content.
+     * @param value The current state of this canonical resource. 
      */
     public abstract CanonicalResource setStatus(PublicationStatus value); 
     /**
@@ -228,7 +248,7 @@ public abstract class CanonicalResource extends DomainResource {
       return 1;
     }
     /**
-     * @return {@link #experimental} (A Boolean value to indicate that this canonical resource is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.). This is the underlying object with id, value and extensions. The accessor "getExperimental" gives direct access to the value
+     * @return {@link #experimental} (A Boolean value to indicate that this canonical resource is authored for testing purposes (or education/evaluation/marketing) and is not intended for genuine usage.). This is the underlying object with id, value and extensions. The accessor "getExperimental" gives direct access to the value
      */
     public abstract BooleanType getExperimentalElement(); 
 
@@ -236,15 +256,15 @@ public abstract class CanonicalResource extends DomainResource {
     public abstract boolean hasExperimental(); 
 
     /**
-     * @param value {@link #experimental} (A Boolean value to indicate that this canonical resource is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.). This is the underlying object with id, value and extensions. The accessor "getExperimental" gives direct access to the value
+     * @param value {@link #experimental} (A Boolean value to indicate that this canonical resource is authored for testing purposes (or education/evaluation/marketing) and is not intended for genuine usage.). This is the underlying object with id, value and extensions. The accessor "getExperimental" gives direct access to the value
      */
     public abstract CanonicalResource setExperimentalElement(BooleanType value); 
     /**
-     * @return A Boolean value to indicate that this canonical resource is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
+     * @return A Boolean value to indicate that this canonical resource is authored for testing purposes (or education/evaluation/marketing) and is not intended for genuine usage.
      */
     public abstract boolean getExperimental(); 
     /**
-     * @param value A Boolean value to indicate that this canonical resource is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
+     * @param value A Boolean value to indicate that this canonical resource is authored for testing purposes (or education/evaluation/marketing) and is not intended for genuine usage.
      */
     public abstract CanonicalResource setExperimental(boolean value); 
     /**
@@ -254,7 +274,7 @@ public abstract class CanonicalResource extends DomainResource {
       return 1;
     }
     /**
-     * @return {@link #date} (The date  (and optionally time) when the canonical resource was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the canonical resource changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
+     * @return {@link #date} (The date  (and optionally time) when the canonical resource was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the canonical resource changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
      */
     public abstract DateTimeType getDateElement(); 
 
@@ -262,15 +282,15 @@ public abstract class CanonicalResource extends DomainResource {
     public abstract boolean hasDate(); 
 
     /**
-     * @param value {@link #date} (The date  (and optionally time) when the canonical resource was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the canonical resource changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
+     * @param value {@link #date} (The date  (and optionally time) when the canonical resource was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the canonical resource changes.). This is the underlying object with id, value and extensions. The accessor "getDate" gives direct access to the value
      */
     public abstract CanonicalResource setDateElement(DateTimeType value); 
     /**
-     * @return The date  (and optionally time) when the canonical resource was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the canonical resource changes.
+     * @return The date  (and optionally time) when the canonical resource was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the canonical resource changes.
      */
     public abstract Date getDate(); 
     /**
-     * @param value The date  (and optionally time) when the canonical resource was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the canonical resource changes.
+     * @param value The date  (and optionally time) when the canonical resource was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the canonical resource changes.
      */
     public abstract CanonicalResource setDate(Date value); 
     /**
@@ -280,7 +300,7 @@ public abstract class CanonicalResource extends DomainResource {
       return 1;
     }
     /**
-     * @return {@link #publisher} (The name of the organization or individual that published the canonical resource.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
+     * @return {@link #publisher} (The name of the organization or individual responsible for the release and ongoing maintenance of the canonical resource.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
      */
     public abstract StringType getPublisherElement(); 
 
@@ -288,15 +308,15 @@ public abstract class CanonicalResource extends DomainResource {
     public abstract boolean hasPublisher(); 
 
     /**
-     * @param value {@link #publisher} (The name of the organization or individual that published the canonical resource.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
+     * @param value {@link #publisher} (The name of the organization or individual responsible for the release and ongoing maintenance of the canonical resource.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
      */
     public abstract CanonicalResource setPublisherElement(StringType value); 
     /**
-     * @return The name of the organization or individual that published the canonical resource.
+     * @return The name of the organization or individual responsible for the release and ongoing maintenance of the canonical resource.
      */
     public abstract String getPublisher(); 
     /**
-     * @param value The name of the organization or individual that published the canonical resource.
+     * @param value The name of the organization or individual responsible for the release and ongoing maintenance of the canonical resource.
      */
     public abstract CanonicalResource setPublisher(String value); 
     /**
@@ -354,7 +374,7 @@ public abstract class CanonicalResource extends DomainResource {
       return Integer.MAX_VALUE;
     }
     /**
-     * @return {@link #useContext} (The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (insurance plans, studies, ...) and may be used to assist with indexing and searching for appropriate canonical resource instances.)
+     * @return {@link #useContext} (The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (insurance plans, studies, ...) and may be used to assist with indexing and searching for appropriate canonical resources.)
      */
     public abstract List<UsageContext> getUseContext(); 
     /**
@@ -443,6 +463,32 @@ public abstract class CanonicalResource extends DomainResource {
      * @param value A copyright statement relating to the canonical resource and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the canonical resource.
      */
     public abstract CanonicalResource setCopyright(String value); 
+    /**
+     * How many allowed for this property by the implementation
+     */
+    public int getCopyrightLabelMax() { 
+      return 1;
+    }
+    /**
+     * @return {@link #copyrightLabel} (A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').). This is the underlying object with id, value and extensions. The accessor "getCopyrightLabel" gives direct access to the value
+     */
+    public abstract StringType getCopyrightLabelElement(); 
+
+    public abstract boolean hasCopyrightLabelElement(); 
+    public abstract boolean hasCopyrightLabel(); 
+
+    /**
+     * @param value {@link #copyrightLabel} (A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').). This is the underlying object with id, value and extensions. The accessor "getCopyrightLabel" gives direct access to the value
+     */
+    public abstract CanonicalResource setCopyrightLabelElement(StringType value); 
+    /**
+     * @return A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').
+     */
+    public abstract String getCopyrightLabel(); 
+    /**
+     * @param value A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').
+     */
+    public abstract CanonicalResource setCopyrightLabel(String value); 
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
       }
@@ -476,6 +522,11 @@ public abstract class CanonicalResource extends DomainResource {
           return super.setProperty(name, value);
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+          super.removeChild(name, value);
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -503,6 +554,10 @@ public abstract class CanonicalResource extends DomainResource {
   }
 
       public abstract CanonicalResource copy();
+
+      public void assignValues(Base dst) {
+        copyValues((CanonicalResource) dst);
+      }
 
       public void copyValues(CanonicalResource dst) {
         super.copyValues(dst);
@@ -535,16 +590,41 @@ public abstract class CanonicalResource extends DomainResource {
 // Manual code (from Configuration.txt):
   @Override
   public String toString() {
-    return fhirType()+"["+getUrl()+"]";
+    return fhirType()+"["+getUrl()+(hasVersion() ? "|"+getVersion(): "")+"]";
   }
   
   public String present() {
+    if (hasUserData(UserDataNames.render_presentation)) {
+      return getUserString(UserDataNames.render_presentation);
+    }
     if (hasTitle())
       return getTitle();
     if (hasName())
       return getName();
     return toString();
   }
+
+  public String present(String lang) {
+    if (hasUserData(UserDataNames.render_presentation)) {
+      return getUserString(UserDataNames.render_presentation);
+    }
+    if (hasTitleElement()) {
+      for (Entry<String, String> t : ExtensionUtilities.getLanguageTranslations(getTitleElement()).entrySet()) {
+        if (t.getKey().equals(lang)) {
+          return t.getValue();
+        }
+      }
+    }
+    if (hasNameElement()) {
+      for (Entry<String, String> t : ExtensionUtilities.getLanguageTranslations(getNameElement()).entrySet()) {
+        if (t.getKey().equals(lang)) {
+          return t.getValue();
+        }
+      }
+    }
+    return present();
+  }
+
   
   public String getVUrl() {
     return getUrl() + (hasVersion() ? "|"+getVersion() : "");
@@ -553,9 +633,28 @@ public abstract class CanonicalResource extends DomainResource {
   public boolean supportsCopyright() {
     return true;
   }
-
+  
   public String getVersionedUrl() {
     return hasVersion() ? getUrl()+"|"+getVersion() : getUrl();
+  }  
+  
+
+  public String oid() {
+    for (Identifier id : getIdentifier()) {
+      if (id.getValue().startsWith("urn:oid:")) {
+        return id.getValue().substring(8);
+      }
+    }
+    return null;
+  }
+
+  public String getOid() {
+    for (Identifier id : getIdentifier()) {
+      if ("urn:ietf:rfc:3986".equals(id.getSystem()) && id.hasValue() && id.getValue().startsWith("urn:oid:")) {
+        return id.getValue().substring(8);
+      }
+    }
+    return null;
   }
 
 // end addition

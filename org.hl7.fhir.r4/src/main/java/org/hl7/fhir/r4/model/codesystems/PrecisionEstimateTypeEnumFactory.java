@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class PrecisionEstimateTypeEnumFactory implements EnumFactory<PrecisionEstimateType> {
@@ -50,11 +46,13 @@ public class PrecisionEstimateTypeEnumFactory implements EnumFactory<PrecisionEs
       return PrecisionEstimateType.SD;
     if ("SE".equals(codeString))
       return PrecisionEstimateType.SE;
-    throw new IllegalArgumentException("Unknown PrecisionEstimateType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown PrecisionEstimateType code '" + codeString + "'");
   }
 
   public String toCode(PrecisionEstimateType code) {
-    if (code == PrecisionEstimateType.CI)
+       if (code == PrecisionEstimateType.NULL)
+           return null;
+       if (code == PrecisionEstimateType.CI)
       return "CI";
     if (code == PrecisionEstimateType.IQR)
       return "IQR";
@@ -63,10 +61,10 @@ public class PrecisionEstimateTypeEnumFactory implements EnumFactory<PrecisionEs
     if (code == PrecisionEstimateType.SE)
       return "SE";
     return "?";
-  }
+   }
 
-    public String toSystem(PrecisionEstimateType code) {
-      return code.getSystem();
-      }
+  public String toSystem(PrecisionEstimateType code) {
+    return code.getSystem();
+  }
 
 }

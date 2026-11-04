@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class MaritalStatusEnumFactory implements EnumFactory<MaritalStatus> {
@@ -44,17 +40,19 @@ public class MaritalStatusEnumFactory implements EnumFactory<MaritalStatus> {
       return null;
     if ("U".equals(codeString))
       return MaritalStatus.U;
-    throw new IllegalArgumentException("Unknown MaritalStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MaritalStatus code '" + codeString + "'");
   }
 
   public String toCode(MaritalStatus code) {
-    if (code == MaritalStatus.U)
+       if (code == MaritalStatus.NULL)
+           return null;
+       if (code == MaritalStatus.U)
       return "U";
     return "?";
-  }
+   }
 
-    public String toSystem(MaritalStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(MaritalStatus code) {
+    return code.getSystem();
+  }
 
 }

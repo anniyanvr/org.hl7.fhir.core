@@ -32,6 +32,7 @@ package org.hl7.fhir.r5.elementmodel;
 
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,9 +44,10 @@ import org.hl7.fhir.exceptions.DefinitionException;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
 import org.hl7.fhir.r5.context.IWorkerContext;
-import org.hl7.fhir.r5.elementmodel.ParserBase.NamedElement;
 import org.hl7.fhir.r5.formats.IParser.OutputStyle;
 import org.hl7.fhir.r5.model.StructureDefinition;
+import org.hl7.fhir.utilities.FileUtilities;
+
 
 /**
  * This class provides special support for parsing v2 by the v2 logical model
@@ -54,6 +56,7 @@ import org.hl7.fhir.r5.model.StructureDefinition;
  * @author Grahame Grieve
  *
  */
+
 public class VerticalBarParser extends ParserBase {
 
   /**
@@ -453,16 +456,18 @@ public class VerticalBarParser extends ParserBase {
   private Delimiters delimiters = new Delimiters();
   
   @Override
-  public List<NamedElement> parse(InputStream stream) throws IOException, FHIRFormatError, DefinitionException, FHIRException {
-    StructureDefinition sd = context.fetchResource(StructureDefinition.class, "http://hl7.org/fhir/v2/StructureDefinition/Message");
-    Element message = new Element("Message", new Property(context, sd.getSnapshot().getElementFirstRep(), sd));
+  public List<ValidatedFragment> parse(InputStream inStream) throws IOException, FHIRFormatError, DefinitionException, FHIRException {
+    StructureDefinition sd = context.fetchResource(StructureDefinition.class, "http://hl7.org/fhir/v2/StructureDefinition/Message", IWorkerContext.VersionResolutionRules.defaultRule());
+    Element message = new Element("Message", new Property(context, sd.getSnapshot().getElementFirstRep(), sd, getProfileUtilities(), getContextUtilities()));
+    byte[] content = FileUtilities.streamToBytes(inStream);
+    ByteArrayInputStream stream = new ByteArrayInputStream(content);
     VerticalBarParserReader reader = new VerticalBarParserReader(new BufferedInputStream(stream), charset);
     
     preDecode(reader);
     while (!reader.isFinished()) //  && (getOptions().getSegmentLimit() == 0 || getOptions().getSegmentLimit() > message.getSegments().size()))
       readSegment(message, reader);
-    List<NamedElement> res = new ArrayList<>();
-    res.add(new NamedElement(null, message));
+    List<ValidatedFragment> res = new ArrayList<>();
+    res.add(new ValidatedFragment(ValidatedFragment.FOCUS_NAME, "hl7", message, content, false));
     return res;
   }
 

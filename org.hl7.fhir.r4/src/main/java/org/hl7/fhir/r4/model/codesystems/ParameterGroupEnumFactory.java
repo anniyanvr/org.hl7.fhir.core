@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ParameterGroupEnumFactory implements EnumFactory<ParameterGroup> {
@@ -60,11 +56,13 @@ public class ParameterGroupEnumFactory implements EnumFactory<ParameterGroup> {
       return ParameterGroup.BLOODCHEMISTRY;
     if ("miscellaneous".equals(codeString))
       return ParameterGroup.MISCELLANEOUS;
-    throw new IllegalArgumentException("Unknown ParameterGroup code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ParameterGroup code '" + codeString + "'");
   }
 
   public String toCode(ParameterGroup code) {
-    if (code == ParameterGroup.HAEMODYNAMIC)
+       if (code == ParameterGroup.NULL)
+           return null;
+       if (code == ParameterGroup.HAEMODYNAMIC)
       return "haemodynamic";
     if (code == ParameterGroup.ECG)
       return "ecg";
@@ -83,10 +81,10 @@ public class ParameterGroupEnumFactory implements EnumFactory<ParameterGroup> {
     if (code == ParameterGroup.MISCELLANEOUS)
       return "miscellaneous";
     return "?";
-  }
+   }
 
-    public String toSystem(ParameterGroup code) {
-      return code.getSystem();
-      }
+  public String toSystem(ParameterGroup code) {
+    return code.getSystem();
+  }
 
 }

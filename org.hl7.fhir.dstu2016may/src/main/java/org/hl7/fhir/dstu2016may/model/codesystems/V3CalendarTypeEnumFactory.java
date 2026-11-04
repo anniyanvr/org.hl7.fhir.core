@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3CalendarTypeEnumFactory implements EnumFactory<V3CalendarType> {
@@ -44,17 +40,19 @@ public class V3CalendarTypeEnumFactory implements EnumFactory<V3CalendarType> {
       return null;
     if ("GREG".equals(codeString))
       return V3CalendarType.GREG;
-    throw new IllegalArgumentException("Unknown V3CalendarType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3CalendarType code '" + codeString + "'");
   }
 
   public String toCode(V3CalendarType code) {
-    if (code == V3CalendarType.GREG)
+       if (code == V3CalendarType.NULL)
+           return null;
+       if (code == V3CalendarType.GREG)
       return "GREG";
     return "?";
-  }
+   }
 
-    public String toSystem(V3CalendarType code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3CalendarType code) {
+    return code.getSystem();
+  }
 
 }

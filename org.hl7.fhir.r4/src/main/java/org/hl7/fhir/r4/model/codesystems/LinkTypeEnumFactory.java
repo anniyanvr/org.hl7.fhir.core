@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class LinkTypeEnumFactory implements EnumFactory<LinkType> {
@@ -50,11 +46,13 @@ public class LinkTypeEnumFactory implements EnumFactory<LinkType> {
       return LinkType.REFER;
     if ("seealso".equals(codeString))
       return LinkType.SEEALSO;
-    throw new IllegalArgumentException("Unknown LinkType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown LinkType code '" + codeString + "'");
   }
 
   public String toCode(LinkType code) {
-    if (code == LinkType.REPLACEDBY)
+       if (code == LinkType.NULL)
+           return null;
+       if (code == LinkType.REPLACEDBY)
       return "replaced-by";
     if (code == LinkType.REPLACES)
       return "replaces";
@@ -63,10 +61,10 @@ public class LinkTypeEnumFactory implements EnumFactory<LinkType> {
     if (code == LinkType.SEEALSO)
       return "seealso";
     return "?";
-  }
+   }
 
-    public String toSystem(LinkType code) {
-      return code.getSystem();
-      }
+  public String toSystem(LinkType code) {
+    return code.getSystem();
+  }
 
 }

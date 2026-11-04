@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3EntityStatusEnumFactory implements EnumFactory<V3EntityStatus> {
@@ -52,11 +48,13 @@ public class V3EntityStatusEnumFactory implements EnumFactory<V3EntityStatus> {
       return V3EntityStatus.TERMINATED;
     if ("nullified".equals(codeString))
       return V3EntityStatus.NULLIFIED;
-    throw new IllegalArgumentException("Unknown V3EntityStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3EntityStatus code '" + codeString + "'");
   }
 
   public String toCode(V3EntityStatus code) {
-    if (code == V3EntityStatus.NORMAL)
+       if (code == V3EntityStatus.NULL)
+           return null;
+       if (code == V3EntityStatus.NORMAL)
       return "normal";
     if (code == V3EntityStatus.ACTIVE)
       return "active";
@@ -67,10 +65,10 @@ public class V3EntityStatusEnumFactory implements EnumFactory<V3EntityStatus> {
     if (code == V3EntityStatus.NULLIFIED)
       return "nullified";
     return "?";
-  }
+   }
 
-    public String toSystem(V3EntityStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3EntityStatus code) {
+    return code.getSystem();
+  }
 
 }

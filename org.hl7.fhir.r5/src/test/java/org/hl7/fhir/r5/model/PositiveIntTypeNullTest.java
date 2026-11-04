@@ -1,17 +1,20 @@
 package org.hl7.fhir.r5.model;
 
-import org.hl7.fhir.r5.model.PositiveIntType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class PositiveIntTypeNullTest {
 
   @Test
   @DisplayName("Test null value toString()")
   void testToString() {
-    PositiveIntType nullPositiveInt = new PositiveIntType();
-    System.out.println("Value -> " + nullPositiveInt);
+    assertDoesNotThrow(() -> {
+      PositiveIntType nullPositiveInt = new PositiveIntType();
+      System.out.println("Value -> " + nullPositiveInt);
+    });
   }
 
   @Test

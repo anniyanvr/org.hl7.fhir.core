@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ProvenanceAgentRoleEnumFactory implements EnumFactory<ProvenanceAgentRole> {
@@ -62,11 +58,13 @@ public class ProvenanceAgentRoleEnumFactory implements EnumFactory<ProvenanceAge
       return ProvenanceAgentRole.ASSEMBLER;
     if ("composer".equals(codeString))
       return ProvenanceAgentRole.COMPOSER;
-    throw new IllegalArgumentException("Unknown ProvenanceAgentRole code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ProvenanceAgentRole code '" + codeString + "'");
   }
 
   public String toCode(ProvenanceAgentRole code) {
-    if (code == ProvenanceAgentRole.ENTERER)
+       if (code == ProvenanceAgentRole.NULL)
+           return null;
+       if (code == ProvenanceAgentRole.ENTERER)
       return "enterer";
     if (code == ProvenanceAgentRole.PERFORMER)
       return "performer";
@@ -87,10 +85,10 @@ public class ProvenanceAgentRoleEnumFactory implements EnumFactory<ProvenanceAge
     if (code == ProvenanceAgentRole.COMPOSER)
       return "composer";
     return "?";
-  }
+   }
 
-    public String toSystem(ProvenanceAgentRole code) {
-      return code.getSystem();
-      }
+  public String toSystem(ProvenanceAgentRole code) {
+    return code.getSystem();
+  }
 
 }

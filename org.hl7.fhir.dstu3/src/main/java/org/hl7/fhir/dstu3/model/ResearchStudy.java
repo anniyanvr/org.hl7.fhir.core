@@ -168,12 +168,12 @@ public class ResearchStudy extends DomainResource {
           return ResearchStudyStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown ResearchStudyStatus code '"+codeString+"'");
         }
-        public Enumeration<ResearchStudyStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ResearchStudyStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ResearchStudyStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -191,7 +191,9 @@ public class ResearchStudy extends DomainResource {
         throw new FHIRException("Unknown ResearchStudyStatus code '"+codeString+"'");
         }
     public String toCode(ResearchStudyStatus code) {
-      if (code == ResearchStudyStatus.DRAFT)
+       if (code == ResearchStudyStatus.NULL)
+           return null;
+       if (code == ResearchStudyStatus.DRAFT)
         return "draft";
       if (code == ResearchStudyStatus.INPROGRESS)
         return "in-progress";
@@ -204,7 +206,7 @@ public class ResearchStudy extends DomainResource {
       if (code == ResearchStudyStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(ResearchStudyStatus code) {
       return code.getSystem();
       }
@@ -452,14 +454,14 @@ public class ResearchStudy extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ResearchStudy.name");
+          throw new FHIRException("Cannot call addChild on a singleton property ResearchStudy.name");
         }
         else if (name.equals("code")) {
           this.code = new CodeableConcept();
           return this.code;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ResearchStudy.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ResearchStudy.description");
         }
         else
           return super.addChild(name);
@@ -852,28 +854,6 @@ public class ResearchStudy extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<PlanDefinition> getProtocolTarget() { 
-      if (this.protocolTarget == null)
-        this.protocolTarget = new ArrayList<PlanDefinition>();
-      return this.protocolTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public PlanDefinition addProtocolTarget() { 
-      PlanDefinition r = new PlanDefinition();
-      if (this.protocolTarget == null)
-        this.protocolTarget = new ArrayList<PlanDefinition>();
-      this.protocolTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #partOf} (A larger research study of which this particular study is a component or step.)
      */
     public List<Reference> getPartOf() { 
@@ -924,28 +904,6 @@ public class ResearchStudy extends DomainResource {
         addPartOf();
       }
       return getPartOf().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<ResearchStudy> getPartOfTarget() { 
-      if (this.partOfTarget == null)
-        this.partOfTarget = new ArrayList<ResearchStudy>();
-      return this.partOfTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public ResearchStudy addPartOfTarget() { 
-      ResearchStudy r = new ResearchStudy();
-      if (this.partOfTarget == null)
-        this.partOfTarget = new ArrayList<ResearchStudy>();
-      this.partOfTarget.add(r);
-      return r;
     }
 
     /**
@@ -1414,28 +1372,6 @@ public class ResearchStudy extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Group> getEnrollmentTarget() { 
-      if (this.enrollmentTarget == null)
-        this.enrollmentTarget = new ArrayList<Group>();
-      return this.enrollmentTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Group addEnrollmentTarget() { 
-      Group r = new Group();
-      if (this.enrollmentTarget == null)
-        this.enrollmentTarget = new ArrayList<Group>();
-      this.enrollmentTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #period} (Identifies the start date and the expected (or actual, depending on status) end date for the study.)
      */
     public Period getPeriod() { 
@@ -1598,28 +1534,6 @@ public class ResearchStudy extends DomainResource {
         addSite();
       }
       return getSite().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Location> getSiteTarget() { 
-      if (this.siteTarget == null)
-        this.siteTarget = new ArrayList<Location>();
-      return this.siteTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Location addSiteTarget() { 
-      Location r = new Location();
-      if (this.siteTarget == null)
-        this.siteTarget = new ArrayList<Location>();
-      this.siteTarget.add(r);
-      return r;
     }
 
     /**
@@ -2011,7 +1925,7 @@ public class ResearchStudy extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ResearchStudy.title");
+          throw new FHIRException("Cannot call addChild on a singleton property ResearchStudy.title");
         }
         else if (name.equals("protocol")) {
           return addProtocol();
@@ -2020,7 +1934,7 @@ public class ResearchStudy extends DomainResource {
           return addPartOf();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ResearchStudy.status");
+          throw new FHIRException("Cannot call addChild on a singleton property ResearchStudy.status");
         }
         else if (name.equals("category")) {
           return addCategory();
@@ -2041,7 +1955,7 @@ public class ResearchStudy extends DomainResource {
           return addJurisdiction();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ResearchStudy.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ResearchStudy.description");
         }
         else if (name.equals("enrollment")) {
           return addEnrollment();

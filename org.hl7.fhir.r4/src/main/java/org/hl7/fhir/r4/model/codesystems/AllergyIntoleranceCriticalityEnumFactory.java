@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class AllergyIntoleranceCriticalityEnumFactory implements EnumFactory<AllergyIntoleranceCriticality> {
@@ -48,21 +44,23 @@ public class AllergyIntoleranceCriticalityEnumFactory implements EnumFactory<All
       return AllergyIntoleranceCriticality.HIGH;
     if ("unable-to-assess".equals(codeString))
       return AllergyIntoleranceCriticality.UNABLETOASSESS;
-    throw new IllegalArgumentException("Unknown AllergyIntoleranceCriticality code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown AllergyIntoleranceCriticality code '" + codeString + "'");
   }
 
   public String toCode(AllergyIntoleranceCriticality code) {
-    if (code == AllergyIntoleranceCriticality.LOW)
+       if (code == AllergyIntoleranceCriticality.NULL)
+           return null;
+       if (code == AllergyIntoleranceCriticality.LOW)
       return "low";
     if (code == AllergyIntoleranceCriticality.HIGH)
       return "high";
     if (code == AllergyIntoleranceCriticality.UNABLETOASSESS)
       return "unable-to-assess";
     return "?";
-  }
+   }
 
-    public String toSystem(AllergyIntoleranceCriticality code) {
-      return code.getSystem();
-      }
+  public String toSystem(AllergyIntoleranceCriticality code) {
+    return code.getSystem();
+  }
 
 }

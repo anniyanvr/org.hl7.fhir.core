@@ -2,158 +2,290 @@ package org.hl7.fhir.r5.renderers;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
-import org.hl7.fhir.r5.model.CodeableConcept;
-import org.hl7.fhir.r5.model.DomainResource;
-import org.hl7.fhir.r5.model.Provenance;
-import org.hl7.fhir.r5.model.Provenance.ProvenanceAgentComponent;
-import org.hl7.fhir.r5.model.Reference;
-import org.hl7.fhir.r5.model.Resource;
-import org.hl7.fhir.r5.model.UriType;
+import org.hl7.fhir.exceptions.DefinitionException;
+import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.exceptions.FHIRFormatError;
 import org.hl7.fhir.r5.renderers.utils.RenderingContext;
-import org.hl7.fhir.r5.renderers.utils.BaseWrappers.ResourceWrapper;
+import org.hl7.fhir.r5.renderers.utils.ResourceWrapper;
+import org.hl7.fhir.r5.utils.EOperationOutcome;
+
+import org.hl7.fhir.utilities.i18n.RenderingI18nContext;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 
+
 public class ProvenanceRenderer extends ResourceRenderer {
-  
-  public ProvenanceRenderer(RenderingContext context) {
-    super(context);
+
+  private static final int MAX_ENTITIES = 10;
+
+  public ProvenanceRenderer(RenderingContext context) { 
+    super(context); 
+  } 
+ 
+  @Override
+  public String buildSummary(ResourceWrapper prv) throws UnsupportedEncodingException, IOException {
+    return buildSummary(prv, 0);
   }
 
-  public boolean render(XhtmlNode x, Resource prv) throws UnsupportedEncodingException, IOException {
-    return render(x, (Provenance) prv);
+  @Override
+  public String buildSummary(ResourceWrapper prv, int recursionCount) throws UnsupportedEncodingException, IOException {
+    return (context.formatPhrase(RenderingI18nContext.PROV_FOR, displayReference(prv.firstChild("target"), recursionCount))+" ");
   }
-  
-  public boolean render(XhtmlNode x, Provenance prv) throws UnsupportedEncodingException, IOException {
-    boolean hasExtensions = false;
 
-    if (!prv.getTarget().isEmpty()) {
-      if (prv.getTarget().size() == 1) {
+  @Override
+  public void buildNarrative(RenderingStatus status, XhtmlNode x, ResourceWrapper prv) throws FHIRFormatError, DefinitionException, IOException, FHIRException, EOperationOutcome {
+    renderResourceTechDetails(prv, x);
+
+    if (prv.has("target")) {
+      List<ResourceWrapper> tl = prv.children("target");
+      if (tl.size() == 1) {
         XhtmlNode p = x.para();
-        p.tx("Provenance for ");
-        renderReference(prv, p, prv.getTargetFirstRep());
+        p.tx(context.formatPhrase(RenderingI18nContext.PROV_PROV)+" ");
+        renderReference(status, p, tl.get(0));
       } else {
-        x.para().tx("Provenance for:");
+        x.para().tx(context.formatPhrase(RenderingI18nContext.PROV_PROVE)+" ");
         XhtmlNode ul = x.ul();
-        for (Reference ref : prv.getTarget()) {
-          renderReference(prv, ul.li(), ref);
+        for (ResourceWrapper ref : tl) {
+          renderReference(status, ul.li(), ref);
         }
       }
     }
     // summary table
-    x.para().tx("Summary");
-    XhtmlNode t = x.table("grid");
+    x.para().tx(context.formatPhrase(RenderingI18nContext.GENERAL_SUMM));
+    XhtmlNode t = x.table("grid", false).markGenerated(!context.forValidResource());
     XhtmlNode tr;
-    if (prv.hasOccurred()) {
+    if (prv.has("occurred")) {
       tr = t.tr();
-      tr.td().tx("Occurrence");
-      if (prv.hasOccurredPeriod()) {
-        renderPeriod(tr.td(), prv.getOccurredPeriod());
-      } else {
-        renderDateTime(tr.td(), prv.getOccurredDateTimeType());        
-      }
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.PROV_OCC));
+      renderDataType(status, tr.td(), prv.child("occurred"));
     }
-    if (prv.hasRecorded()) {
+    if (prv.has("recorded")) {
       tr = t.tr();
-      tr.td().tx("Recorded");
-      tr.td().addText(prv.getRecordedElement().toHumanDisplay());
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.PROV_REC));
+      renderDataType(status, tr.td(), prv.child("recorded"));
     }
-    if (prv.hasPolicy()) {
+    if (prv.has("policy")) {
+      List<ResourceWrapper> tl = prv.children("policy");
       tr = t.tr();
-      tr.td().tx("Policy");
-      if (prv.getPolicy().size() == 1) {
-        renderUri(tr.td(), prv.getPolicy().get(0));
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.PROV_POL));
+      if (tl.size() == 1) {
+        renderDataType(status, tr.td(), tl.get(0));
       } else {
         XhtmlNode ul = tr.td().ul();
-        for (UriType u : prv.getPolicy()) {
-          renderUri(ul.li(), u);
+        for (ResourceWrapper u : tl) {
+          renderDataType(status, ul.li(), u);
         }
       }
     }
-    if (prv.hasLocation()) {
+    if (prv.has("location")) {
       tr = t.tr();
-      tr.td().tx("Location");
-      renderReference(prv, tr.td(), prv.getLocation());      
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.GENERAL_LOCATION));
+      renderDataType(status, tr.td(), prv.child("location"));
     }
-    if (prv.hasActivity()) {
+    if (prv.has("activity")) {
       tr = t.tr();
-      tr.td().tx("Activity");
-      renderCodeableConcept(tr.td(), prv.getActivity(), false);
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.PROV_ACT));
+      renderDataType(status, tr.td(), prv.child("activity"));
+    }
+    if (prv.has("reason")) {
+      tr = t.tr();
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.PROV_REASON));
+      renderList(status, tr.td(), prv.children("reason"));
+    }
+    if (prv.has("authorization")) {
+      tr = t.tr();
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.PROV_AUTHORIZATION));
+      renderList(status, tr.td(), prv.children("authorization"));
+    }
+    if (prv.has("why")) {
+      tr = t.tr();
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.PROV_WHY));
+      addMarkdown(tr.td(), prv.primitiveValue("why"));
+    }
+    if (prv.has("patient")) {
+      tr = t.tr();
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.GENERAL_SUBJ));
+      renderReference(status, tr.td(), prv.child("patient"));
+    }
+    if (prv.has("encounter")) {
+      tr = t.tr();
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.PROV_ENCOUNTER));
+      renderReference(status, tr.td(), prv.child("encounter"));
+    }
+    if (prv.has("basedOn")) {
+      tr = t.tr();
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.PROV_BASED_ON));
+      XhtmlNode td = tr.td();
+      List<ResourceWrapper> tl = prv.children("basedOn");
+      if (tl.size() == 1) {
+        renderReference(status, td, tl.get(0));
+      } else {
+        XhtmlNode ul = td.ul();
+        for (ResourceWrapper ref : tl) {
+          renderReference(status, ul.li(), ref);
+        }
+      }
     }
 
     boolean hasType = false;
     boolean hasRole = false;
     boolean hasOnBehalfOf = false;
-    for (ProvenanceAgentComponent a : prv.getAgent()) {
-      hasType = hasType || a.hasType(); 
-      hasRole = hasRole || a.hasRole(); 
-      hasOnBehalfOf = hasOnBehalfOf || a.hasOnBehalfOf(); 
+    for (ResourceWrapper a : prv.children("agent")) {
+      hasType = hasType || a.has("type"); 
+      hasRole = hasRole || a.has("role"); 
+      hasOnBehalfOf = hasOnBehalfOf || a.has("onBehalfOf"); 
     }    
-    x.para().b().tx("Agents");
-    t = x.table("grid");
+    x.para().b().tx(context.formatPhrase(RenderingI18nContext.PROV_AGE));
+    t = x.table("grid", false).markGenerated(!context.forValidResource());
     tr = t.tr();
     if (hasType) {
-      tr.td().b().tx("Type");
+      tr.td().b().tx(context.formatPhrase(RenderingI18nContext.GENERAL_TYPE));
     }
     if (hasRole) {
-      tr.td().b().tx("Role");
+      tr.td().b().tx(context.formatPhrase(RenderingI18nContext.PROV_ROLE));
     }
-    tr.td().b().tx("who");
+    tr.td().b().tx(context.formatPhrase(RenderingI18nContext.PROV_WHO));
     if (hasOnBehalfOf) {
-      tr.td().b().tx("On Behalf Of");
+      tr.td().b().tx(context.formatPhrase(RenderingI18nContext.PROV_BEHALF));
     }
-    for (ProvenanceAgentComponent a : prv.getAgent()) {
+    for (ResourceWrapper a : prv.children("agent")) {
       tr = t.tr();
       if (hasType) {
-        if (a.hasType()) {
-          renderCodeableConcept(tr.td(), a.getType(), false);         
+        if (a.has("type")) {
+          renderDataType(status, tr.td(), a.child("type"));         
         } else {
           tr.td();
         }
       }        
       if (hasRole) {
-        if (a.hasRole()) {
-          if (a.getRole().size() == 1) {
-            renderCodeableConcept(tr.td(), a.getType(), false);
-          } else {
-            XhtmlNode ul = tr.td().ul();
-            for (CodeableConcept cc : a.getRole()) {
-              renderCodeableConcept(ul.li(), cc, false);
-            }
-          }
-        } else {
-          tr.td();
-        }
+        renderList(status, tr.td(), a.children("role"));
       }
-      if (a.hasWho()) {
-        renderReference(prv, tr.td(), a.getWho());         
+      if (a.has("who")) {
+        renderReference(status, tr.td(), a.child("who"));         
       } else {
         tr.td();
       }
       if (hasOnBehalfOf) {
-        if (a.hasOnBehalfOf()) {
-          renderReference(prv, tr.td(), a.getOnBehalfOf());         
+        if (a.has("onBehalfOf")) {
+          renderReference(status, tr.td(), a.child("onBehalfOf"));         
         } else {
           tr.td();
         }
       }
     }
-    // agent table
 
-    return hasExtensions; 
+    List<ResourceWrapper> entities = prv.children("entity");
+    if (!entities.isEmpty()) {
+      boolean hasEntRole = false;
+      boolean hasWhat = false;
+      boolean hasEntAgent = false;
+      for (ResourceWrapper e : entities) {
+        hasEntRole = hasEntRole || e.has("role");
+        hasWhat = hasWhat || e.has("what");
+        hasEntAgent = hasEntAgent || e.has("agent");
+      }
+      x.para().b().tx(context.formatPhrase(RenderingI18nContext.PROV_ENT));
+      t = x.table("grid", false).markGenerated(!context.forValidResource());
+      tr = t.tr();
+      if (hasEntRole) {
+        tr.td().b().tx(context.formatPhrase(RenderingI18nContext.PROV_ROLE));
+      }
+      if (hasWhat) {
+        tr.td().b().tx(context.formatPhrase(RenderingI18nContext.PROV_WHAT));
+      }
+      if (hasEntAgent) {
+        tr.td().b().tx(context.formatPhrase(RenderingI18nContext.PROV_AGE));
+      }
+      int limit = Math.min(entities.size(), MAX_ENTITIES);
+      for (int i = 0; i < limit; i++) {
+        ResourceWrapper e = entities.get(i);
+        tr = t.tr();
+        if (hasEntRole) {
+          XhtmlNode td = tr.td();
+          if (e.has("role")) {
+            renderDataType(status, td, e.child("role"));
+          }
+        }
+        if (hasWhat) {
+          XhtmlNode td = tr.td();
+          if (e.has("what")) {
+            renderReference(status, td, e.child("what"));
+          }
+        }
+        if (hasEntAgent) {
+          XhtmlNode td = tr.td();
+          List<ResourceWrapper> al = e.children("agent");
+          if (al.size() == 1) {
+            renderEntityAgent(status, td, al.get(0));
+          } else if (al.size() > 1) {
+            XhtmlNode ul = td.ul();
+            for (ResourceWrapper a : al) {
+              renderEntityAgent(status, ul.li(), a);
+            }
+          }
+        }
+      }
+      if (entities.size() > MAX_ENTITIES) {
+        x.para().i().tx(context.formatPhrase(RenderingI18nContext.PROV_ENT_MORE, MAX_ENTITIES, entities.size()));
+      }
+    }
+
+    if (prv.has("contained")) {
+      if (context.isTechnicalMode()) {
+        x.hr();
+        x.para().b().tx(context.formatMessagePlural(prv.children("contained").size(), RenderingContext.PAT_CONTAINED));
+        addContained(status, x, prv.children("contained"));
+      } else {
+        addContainedAnchors(x, prv.children("contained"));
+      }
+    }
   }
 
-  public String display(Resource dr) throws UnsupportedEncodingException, IOException {
-    return display((Provenance) dr);
+  // references to contained resources resolve to these anchors even when the resources themselves are not rendered
+  private void addContainedAnchors(XhtmlNode x, List<ResourceWrapper> list) {
+    for (ResourceWrapper c : list) {
+      String sid = c.getScopedId();
+      if (sid == null) {
+        continue;
+      }
+      for (String anchor : new String[] {sid, "hc" + sid}) {
+        if (!context.hasAnchor(anchor)) {
+          context.addAnchor(anchor);
+          x.an(context.prefixAnchor(anchor));
+        }
+      }
+    }
   }
 
-  public String display(Provenance prv) throws UnsupportedEncodingException, IOException {
-    return "Provenance for "+displayReference(prv, prv.getTargetFirstRep());
+  private void renderEntityAgent(RenderingStatus status, XhtmlNode x, ResourceWrapper a) throws FHIRFormatError, DefinitionException, IOException {
+    if (a.has("who")) {
+      renderReference(status, x, a.child("who"));
+    }
+    if (a.has("role")) {
+      x.tx(" (");
+      boolean first = true;
+      for (ResourceWrapper r : a.children("role")) {
+        if (!first) {
+          x.tx(", ");
+        }
+        first = false;
+        renderCodeableConcept(status, x, r);
+      }
+      x.tx(")");
+    }
   }
- 
-  @Override
-  public String display(ResourceWrapper r) throws UnsupportedEncodingException, IOException {
-    return "Not done yet";
+
+  private void renderList(RenderingStatus status, XhtmlNode td, List<ResourceWrapper> list) throws FHIRFormatError, DefinitionException, IOException {
+    if (list.size() == 1) {
+      renderDataType(status, td, list.get(0));
+    } else if (list.size() > 1) {
+      XhtmlNode ul = td.ul();
+      for (ResourceWrapper cc : list) {
+        renderDataType(status, ul.li(), cc);
+      }
+    }
   }
+
 
 }

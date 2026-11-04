@@ -7,21 +7,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.utilities.TextFile;
-import org.hl7.fhir.utilities.json.JSONUtil;
-import org.hl7.fhir.utilities.json.JsonTrackingParser;
+import org.hl7.fhir.utilities.FileUtilities;
+import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.json.model.JsonObject;
+import org.hl7.fhir.utilities.json.parser.JsonParser;
 
-import com.google.gson.JsonObject;
-
+@SuppressWarnings("checkstyle:systemout")
 public class PackageScanner {
 
-  
   public static void main(String[] args) throws IOException {
     List<String> output = new ArrayList<>();
     Set<String> packages = new HashSet<>();
 
-    processServer("http://packages.fhir.org", output, packages);
-    processServer("http://packages2.fhir.org/packages", output, packages);
+    processServer(PackageServer.primaryServer(), output, packages);
+    processServer(PackageServer.secondaryServer(), output, packages);
     
     StringBuilder b = new StringBuilder();
     for (String s : output) {
@@ -29,13 +28,13 @@ public class PackageScanner {
       b.append("\r\n");
       System.out.println(s);
     }
-    TextFile.stringToFile(b.toString(), "c:\\temp\\packages.csv");
+    FileUtilities.stringToFile(b.toString(), Utilities.path("[tmp]", "packages.csv"));
   }
 
-  public static void processServer(String server, List<String> output, Set<String> packages) throws IOException {
+  public static void processServer(PackageServer server, List<String> output, Set<String> packages) throws IOException {
     System.out.println("Server: "+server);
     PackageClient client = new PackageClient(server);
-    List<PackageInfo> list = client.search(null, null, null, false);
+    List<PackageInfo> list = client.search(null, null, null, false, null);
     output.add("id\tversion\tcanonica\tfhir version\tfhir-versions\tkind\ttype\tsource");
     for (PackageInfo pi : list) {
       System.out.print("  fetch: "+pi.getId());
@@ -62,13 +61,12 @@ public class PackageScanner {
             } catch (Exception e) {
               fv = "--";
             }
-            output.add(pck.name()+"\t"+pck.version()+"\t"+pck.canonical()+"\t"+fv+'\t'+pck.fhirVersionList()+'\t'+JSONUtil.str(json, "kind")+'\t'+JSONUtil.str(json, "type")+'\t'+JsonTrackingParser.writeDense(json));          } catch (Exception e) {
+            output.add(pck.name()+"\t"+pck.version()+"\t"+pck.canonical()+"\t"+fv+'\t'+pck.fhirVersionList()+'\t'+json.asString("kind")+'\t'+json.asString("type")+'\t'+JsonParser.compose(json));          } catch (Exception e) {
             System.out.println("Error acessing "+pi.getId()+"#"+piv.getVersion()+": "+e.getMessage());
             e.printStackTrace();
           }
         }
       }
-      System.out.println("!");
     }
   }
 

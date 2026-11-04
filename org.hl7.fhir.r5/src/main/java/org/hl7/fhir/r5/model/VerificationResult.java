@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,7 +53,7 @@ import ca.uhn.fhir.model.api.annotation.Block;
 @ResourceDef(name="VerificationResult", profile="http://hl7.org/fhir/StructureDefinition/VerificationResult")
 public class VerificationResult extends DomainResource {
 
-    public enum Status {
+    public enum VerificationResultStatus {
         /**
          * ***TODO***
          */
@@ -79,10 +79,14 @@ public class VerificationResult extends DomainResource {
          */
         REVALFAIL, 
         /**
+         * The VerificationResult record was created erroneously and is not appropriated for use.
+         */
+        ENTEREDINERROR, 
+        /**
          * added to help the parsers with the generic types
          */
         NULL;
-        public static Status fromCode(String codeString) throws FHIRException {
+        public static VerificationResultStatus fromCode(String codeString) throws FHIRException {
             if (codeString == null || "".equals(codeString))
                 return null;
         if ("attested".equals(codeString))
@@ -97,10 +101,12 @@ public class VerificationResult extends DomainResource {
           return VALFAIL;
         if ("reval-fail".equals(codeString))
           return REVALFAIL;
+        if ("entered-in-error".equals(codeString))
+          return ENTEREDINERROR;
         if (Configuration.isAcceptInvalidEnums())
           return null;
         else
-          throw new FHIRException("Unknown Status code '"+codeString+"'");
+          throw new FHIRException("Unknown VerificationResultStatus code '"+codeString+"'");
         }
         public String toCode() {
           switch (this) {
@@ -110,6 +116,8 @@ public class VerificationResult extends DomainResource {
             case REQREVALID: return "req-revalid";
             case VALFAIL: return "val-fail";
             case REVALFAIL: return "reval-fail";
+            case ENTEREDINERROR: return "entered-in-error";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -121,6 +129,8 @@ public class VerificationResult extends DomainResource {
             case REQREVALID: return "http://hl7.org/fhir/CodeSystem/verificationresult-status";
             case VALFAIL: return "http://hl7.org/fhir/CodeSystem/verificationresult-status";
             case REVALFAIL: return "http://hl7.org/fhir/CodeSystem/verificationresult-status";
+            case ENTEREDINERROR: return "http://hl7.org/fhir/CodeSystem/verificationresult-status";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -132,6 +142,8 @@ public class VerificationResult extends DomainResource {
             case REQREVALID: return "***TODO***";
             case VALFAIL: return "***TODO***";
             case REVALFAIL: return "***TODO***";
+            case ENTEREDINERROR: return "The VerificationResult record was created erroneously and is not appropriated for use.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -143,68 +155,78 @@ public class VerificationResult extends DomainResource {
             case REQREVALID: return "Requires revalidation";
             case VALFAIL: return "Validation failed";
             case REVALFAIL: return "Re-Validation failed";
+            case ENTEREDINERROR: return "Entered in Error";
+            case NULL: return null;
             default: return "?";
           }
         }
     }
 
-  public static class StatusEnumFactory implements EnumFactory<Status> {
-    public Status fromCode(String codeString) throws IllegalArgumentException {
+  public static class VerificationResultStatusEnumFactory implements EnumFactory<VerificationResultStatus> {
+    public VerificationResultStatus fromCode(String codeString) throws IllegalArgumentException {
       if (codeString == null || "".equals(codeString))
             if (codeString == null || "".equals(codeString))
                 return null;
         if ("attested".equals(codeString))
-          return Status.ATTESTED;
+          return VerificationResultStatus.ATTESTED;
         if ("validated".equals(codeString))
-          return Status.VALIDATED;
+          return VerificationResultStatus.VALIDATED;
         if ("in-process".equals(codeString))
-          return Status.INPROCESS;
+          return VerificationResultStatus.INPROCESS;
         if ("req-revalid".equals(codeString))
-          return Status.REQREVALID;
+          return VerificationResultStatus.REQREVALID;
         if ("val-fail".equals(codeString))
-          return Status.VALFAIL;
+          return VerificationResultStatus.VALFAIL;
         if ("reval-fail".equals(codeString))
-          return Status.REVALFAIL;
-        throw new IllegalArgumentException("Unknown Status code '"+codeString+"'");
+          return VerificationResultStatus.REVALFAIL;
+        if ("entered-in-error".equals(codeString))
+          return VerificationResultStatus.ENTEREDINERROR;
+        throw new IllegalArgumentException("Unknown VerificationResultStatus code '"+codeString+"'");
         }
-        public Enumeration<Status> fromType(Base code) throws FHIRException {
+        public Enumeration<VerificationResultStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<Status>(this);
+            return new Enumeration<VerificationResultStatus>(this, VerificationResultStatus.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<VerificationResultStatus>(this, VerificationResultStatus.NULL, code);
         if ("attested".equals(codeString))
-          return new Enumeration<Status>(this, Status.ATTESTED);
+          return new Enumeration<VerificationResultStatus>(this, VerificationResultStatus.ATTESTED, code);
         if ("validated".equals(codeString))
-          return new Enumeration<Status>(this, Status.VALIDATED);
+          return new Enumeration<VerificationResultStatus>(this, VerificationResultStatus.VALIDATED, code);
         if ("in-process".equals(codeString))
-          return new Enumeration<Status>(this, Status.INPROCESS);
+          return new Enumeration<VerificationResultStatus>(this, VerificationResultStatus.INPROCESS, code);
         if ("req-revalid".equals(codeString))
-          return new Enumeration<Status>(this, Status.REQREVALID);
+          return new Enumeration<VerificationResultStatus>(this, VerificationResultStatus.REQREVALID, code);
         if ("val-fail".equals(codeString))
-          return new Enumeration<Status>(this, Status.VALFAIL);
+          return new Enumeration<VerificationResultStatus>(this, VerificationResultStatus.VALFAIL, code);
         if ("reval-fail".equals(codeString))
-          return new Enumeration<Status>(this, Status.REVALFAIL);
-        throw new FHIRException("Unknown Status code '"+codeString+"'");
+          return new Enumeration<VerificationResultStatus>(this, VerificationResultStatus.REVALFAIL, code);
+        if ("entered-in-error".equals(codeString))
+          return new Enumeration<VerificationResultStatus>(this, VerificationResultStatus.ENTEREDINERROR, code);
+        throw new FHIRException("Unknown VerificationResultStatus code '"+codeString+"'");
         }
-    public String toCode(Status code) {
-      if (code == Status.ATTESTED)
+    public String toCode(VerificationResultStatus code) {
+       if (code == VerificationResultStatus.NULL)
+           return null;
+       if (code == VerificationResultStatus.ATTESTED)
         return "attested";
-      if (code == Status.VALIDATED)
+      if (code == VerificationResultStatus.VALIDATED)
         return "validated";
-      if (code == Status.INPROCESS)
+      if (code == VerificationResultStatus.INPROCESS)
         return "in-process";
-      if (code == Status.REQREVALID)
+      if (code == VerificationResultStatus.REQREVALID)
         return "req-revalid";
-      if (code == Status.VALFAIL)
+      if (code == VerificationResultStatus.VALFAIL)
         return "val-fail";
-      if (code == Status.REVALFAIL)
+      if (code == VerificationResultStatus.REVALFAIL)
         return "reval-fail";
+      if (code == VerificationResultStatus.ENTEREDINERROR)
+        return "entered-in-error";
       return "?";
-      }
-    public String toSystem(Status code) {
+   }
+    public String toSystem(VerificationResultStatus code) {
       return code.getSystem();
       }
     }
@@ -645,6 +667,27 @@ public class VerificationResult extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("who")) {
+          this.who = null;
+        } else if (name.equals("type")) {
+          this.getType().remove(value);
+        } else if (name.equals("communicationMethod")) {
+          this.getCommunicationMethod().remove(value);
+        } else if (name.equals("validationStatus")) {
+          this.validationStatus = null;
+        } else if (name.equals("validationDate")) {
+          this.validationDate = null;
+        } else if (name.equals("canPushUpdates")) {
+          this.canPushUpdates = null;
+        } else if (name.equals("pushTypeAvailable")) {
+          this.getPushTypeAvailable().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -692,7 +735,7 @@ public class VerificationResult extends DomainResource {
           return this.validationStatus;
         }
         else if (name.equals("validationDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type VerificationResult.primarySource.validationDate");
+          throw new FHIRException("Cannot call addChild on a singleton property VerificationResult.primarySource.validationDate");
         }
         else if (name.equals("canPushUpdates")) {
           this.canPushUpdates = new CodeableConcept();
@@ -709,6 +752,10 @@ public class VerificationResult extends DomainResource {
         VerificationResultPrimarySourceComponent dst = new VerificationResultPrimarySourceComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((VerificationResultPrimarySourceComponent) dst);
       }
 
       public void copyValues(VerificationResultPrimarySourceComponent dst) {
@@ -818,14 +865,14 @@ public class VerificationResult extends DomainResource {
          * Signed assertion by the proxy entity indicating that they have the right to submit attested information on behalf of the attestation source.
          */
         @Child(name = "proxySignature", type = {Signature.class}, order=7, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Proxy signature", formalDefinition="Signed assertion by the proxy entity indicating that they have the right to submit attested information on behalf of the attestation source." )
+        @Description(shortDefinition="Proxy signature (digital or image)", formalDefinition="Signed assertion by the proxy entity indicating that they have the right to submit attested information on behalf of the attestation source." )
         protected Signature proxySignature;
 
         /**
          * Signed assertion by the attestation source that they have attested to the information.
          */
         @Child(name = "sourceSignature", type = {Signature.class}, order=8, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Attester signature", formalDefinition="Signed assertion by the attestation source that they have attested to the information." )
+        @Description(shortDefinition="Attester signature (digital or image)", formalDefinition="Signed assertion by the attestation source that they have attested to the information." )
         protected Signature sourceSignature;
 
         private static final long serialVersionUID = -1110142980L;
@@ -1203,6 +1250,29 @@ public class VerificationResult extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("who")) {
+          this.who = null;
+        } else if (name.equals("onBehalfOf")) {
+          this.onBehalfOf = null;
+        } else if (name.equals("communicationMethod")) {
+          this.communicationMethod = null;
+        } else if (name.equals("date")) {
+          this.date = null;
+        } else if (name.equals("sourceIdentityCertificate")) {
+          this.sourceIdentityCertificate = null;
+        } else if (name.equals("proxyIdentityCertificate")) {
+          this.proxyIdentityCertificate = null;
+        } else if (name.equals("proxySignature")) {
+          this.proxySignature = null;
+        } else if (name.equals("sourceSignature")) {
+          this.sourceSignature = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1250,13 +1320,13 @@ public class VerificationResult extends DomainResource {
           return this.communicationMethod;
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type VerificationResult.attestation.date");
+          throw new FHIRException("Cannot call addChild on a singleton property VerificationResult.attestation.date");
         }
         else if (name.equals("sourceIdentityCertificate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type VerificationResult.attestation.sourceIdentityCertificate");
+          throw new FHIRException("Cannot call addChild on a singleton property VerificationResult.attestation.sourceIdentityCertificate");
         }
         else if (name.equals("proxyIdentityCertificate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type VerificationResult.attestation.proxyIdentityCertificate");
+          throw new FHIRException("Cannot call addChild on a singleton property VerificationResult.attestation.proxyIdentityCertificate");
         }
         else if (name.equals("proxySignature")) {
           this.proxySignature = new Signature();
@@ -1274,6 +1344,10 @@ public class VerificationResult extends DomainResource {
         VerificationResultAttestationComponent dst = new VerificationResultAttestationComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((VerificationResultAttestationComponent) dst);
       }
 
       public void copyValues(VerificationResultAttestationComponent dst) {
@@ -1345,7 +1419,7 @@ public class VerificationResult extends DomainResource {
          * Signed assertion by the validator that they have validated the information.
          */
         @Child(name = "attestationSignature", type = {Signature.class}, order=3, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Validator signature", formalDefinition="Signed assertion by the validator that they have validated the information." )
+        @Description(shortDefinition="Validator signature (digital or image)", formalDefinition="Signed assertion by the validator that they have validated the information." )
         protected Signature attestationSignature;
 
         private static final long serialVersionUID = 335952370L;
@@ -1521,6 +1595,19 @@ public class VerificationResult extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("organization")) {
+          this.organization = null;
+        } else if (name.equals("identityCertificate")) {
+          this.identityCertificate = null;
+        } else if (name.equals("attestationSignature")) {
+          this.attestationSignature = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1550,7 +1637,7 @@ public class VerificationResult extends DomainResource {
           return this.organization;
         }
         else if (name.equals("identityCertificate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type VerificationResult.validator.identityCertificate");
+          throw new FHIRException("Cannot call addChild on a singleton property VerificationResult.validator.identityCertificate");
         }
         else if (name.equals("attestationSignature")) {
           this.attestationSignature = new Signature();
@@ -1564,6 +1651,10 @@ public class VerificationResult extends DomainResource {
         VerificationResultValidatorComponent dst = new VerificationResultValidatorComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((VerificationResultValidatorComponent) dst);
       }
 
       public void copyValues(VerificationResultValidatorComponent dst) {
@@ -1632,9 +1723,9 @@ public class VerificationResult extends DomainResource {
      * The validation status of the target (attested; validated; in process; requires revalidation; validation failed; revalidation failed).
      */
     @Child(name = "status", type = {CodeType.class}, order=3, min=1, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="attested | validated | in-process | req-revalid | val-fail | reval-fail", formalDefinition="The validation status of the target (attested; validated; in process; requires revalidation; validation failed; revalidation failed)." )
+    @Description(shortDefinition="attested | validated | in-process | req-revalid | val-fail | reval-fail | entered-in-error", formalDefinition="The validation status of the target (attested; validated; in process; requires revalidation; validation failed; revalidation failed)." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/verificationresult-status")
-    protected Enumeration<Status> status;
+    protected Enumeration<VerificationResultStatus> status;
 
     /**
      * When the validation status was updated.
@@ -1709,7 +1800,7 @@ public class VerificationResult extends DomainResource {
     @Description(shortDefinition="Information about the entity validating information", formalDefinition="Information about the entity validating information." )
     protected List<VerificationResultValidatorComponent> validator;
 
-    private static final long serialVersionUID = 1344259254L;
+    private static final long serialVersionUID = -612905810L;
 
   /**
    * Constructor
@@ -1721,7 +1812,7 @@ public class VerificationResult extends DomainResource {
   /**
    * Constructor
    */
-    public VerificationResult(Status status) {
+    public VerificationResult(VerificationResultStatus status) {
       super();
       this.setStatus(status);
     }
@@ -1867,12 +1958,12 @@ public class VerificationResult extends DomainResource {
     /**
      * @return {@link #status} (The validation status of the target (attested; validated; in process; requires revalidation; validation failed; revalidation failed).). This is the underlying object with id, value and extensions. The accessor "getStatus" gives direct access to the value
      */
-    public Enumeration<Status> getStatusElement() { 
+    public Enumeration<VerificationResultStatus> getStatusElement() { 
       if (this.status == null)
         if (Configuration.errorOnAutoCreate())
           throw new Error("Attempt to auto-create VerificationResult.status");
         else if (Configuration.doAutoCreate())
-          this.status = new Enumeration<Status>(new StatusEnumFactory()); // bb
+          this.status = new Enumeration<VerificationResultStatus>(new VerificationResultStatusEnumFactory()); // bb
       return this.status;
     }
 
@@ -1887,7 +1978,7 @@ public class VerificationResult extends DomainResource {
     /**
      * @param value {@link #status} (The validation status of the target (attested; validated; in process; requires revalidation; validation failed; revalidation failed).). This is the underlying object with id, value and extensions. The accessor "getStatus" gives direct access to the value
      */
-    public VerificationResult setStatusElement(Enumeration<Status> value) { 
+    public VerificationResult setStatusElement(Enumeration<VerificationResultStatus> value) { 
       this.status = value;
       return this;
     }
@@ -1895,16 +1986,16 @@ public class VerificationResult extends DomainResource {
     /**
      * @return The validation status of the target (attested; validated; in process; requires revalidation; validation failed; revalidation failed).
      */
-    public Status getStatus() { 
+    public VerificationResultStatus getStatus() { 
       return this.status == null ? null : this.status.getValue();
     }
 
     /**
      * @param value The validation status of the target (attested; validated; in process; requires revalidation; validation failed; revalidation failed).
      */
-    public VerificationResult setStatus(Status value) { 
+    public VerificationResult setStatus(VerificationResultStatus value) { 
         if (this.status == null)
-          this.status = new Enumeration<Status>(new StatusEnumFactory());
+          this.status = new Enumeration<VerificationResultStatus>(new VerificationResultStatusEnumFactory());
         this.status.setValue(value);
       return this;
     }
@@ -2357,7 +2448,7 @@ public class VerificationResult extends DomainResource {
         case -880905839: /*target*/ return this.target == null ? new Base[0] : this.target.toArray(new Base[this.target.size()]); // Reference
         case 308958310: /*targetLocation*/ return this.targetLocation == null ? new Base[0] : this.targetLocation.toArray(new Base[this.targetLocation.size()]); // StringType
         case 3377302: /*need*/ return this.need == null ? new Base[0] : new Base[] {this.need}; // CodeableConcept
-        case -892481550: /*status*/ return this.status == null ? new Base[0] : new Base[] {this.status}; // Enumeration<Status>
+        case -892481550: /*status*/ return this.status == null ? new Base[0] : new Base[] {this.status}; // Enumeration<VerificationResultStatus>
         case 247524032: /*statusDate*/ return this.statusDate == null ? new Base[0] : new Base[] {this.statusDate}; // DateTimeType
         case -279681197: /*validationType*/ return this.validationType == null ? new Base[0] : new Base[] {this.validationType}; // CodeableConcept
         case 797680566: /*validationProcess*/ return this.validationProcess == null ? new Base[0] : this.validationProcess.toArray(new Base[this.validationProcess.size()]); // CodeableConcept
@@ -2386,8 +2477,8 @@ public class VerificationResult extends DomainResource {
           this.need = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
           return value;
         case -892481550: // status
-          value = new StatusEnumFactory().fromType(TypeConvertor.castToCode(value));
-          this.status = (Enumeration) value; // Enumeration<Status>
+          value = new VerificationResultStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<VerificationResultStatus>
           return value;
         case 247524032: // statusDate
           this.statusDate = TypeConvertor.castToDateTime(value); // DateTimeType
@@ -2433,8 +2524,8 @@ public class VerificationResult extends DomainResource {
         } else if (name.equals("need")) {
           this.need = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
         } else if (name.equals("status")) {
-          value = new StatusEnumFactory().fromType(TypeConvertor.castToCode(value));
-          this.status = (Enumeration) value; // Enumeration<Status>
+          value = new VerificationResultStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<VerificationResultStatus>
         } else if (name.equals("statusDate")) {
           this.statusDate = TypeConvertor.castToDateTime(value); // DateTimeType
         } else if (name.equals("validationType")) {
@@ -2458,6 +2549,42 @@ public class VerificationResult extends DomainResource {
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("target")) {
+          this.getTarget().remove(value);
+        } else if (name.equals("targetLocation")) {
+          this.getTargetLocation().remove(value);
+        } else if (name.equals("need")) {
+          this.need = null;
+        } else if (name.equals("status")) {
+          value = new VerificationResultStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<VerificationResultStatus>
+        } else if (name.equals("statusDate")) {
+          this.statusDate = null;
+        } else if (name.equals("validationType")) {
+          this.validationType = null;
+        } else if (name.equals("validationProcess")) {
+          this.getValidationProcess().remove(value);
+        } else if (name.equals("frequency")) {
+          this.frequency = null;
+        } else if (name.equals("lastPerformed")) {
+          this.lastPerformed = null;
+        } else if (name.equals("nextScheduled")) {
+          this.nextScheduled = null;
+        } else if (name.equals("failureAction")) {
+          this.failureAction = null;
+        } else if (name.equals("primarySource")) {
+          this.getPrimarySource().remove((VerificationResultPrimarySourceComponent) value);
+        } else if (name.equals("attestation")) {
+          this.attestation = (VerificationResultAttestationComponent) value; // VerificationResultAttestationComponent
+        } else if (name.equals("validator")) {
+          this.getValidator().remove((VerificationResultValidatorComponent) value);
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -2510,17 +2637,17 @@ public class VerificationResult extends DomainResource {
           return addTarget();
         }
         else if (name.equals("targetLocation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type VerificationResult.targetLocation");
+          throw new FHIRException("Cannot call addChild on a singleton property VerificationResult.targetLocation");
         }
         else if (name.equals("need")) {
           this.need = new CodeableConcept();
           return this.need;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type VerificationResult.status");
+          throw new FHIRException("Cannot call addChild on a singleton property VerificationResult.status");
         }
         else if (name.equals("statusDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type VerificationResult.statusDate");
+          throw new FHIRException("Cannot call addChild on a singleton property VerificationResult.statusDate");
         }
         else if (name.equals("validationType")) {
           this.validationType = new CodeableConcept();
@@ -2534,10 +2661,10 @@ public class VerificationResult extends DomainResource {
           return this.frequency;
         }
         else if (name.equals("lastPerformed")) {
-          throw new FHIRException("Cannot call addChild on a primitive type VerificationResult.lastPerformed");
+          throw new FHIRException("Cannot call addChild on a singleton property VerificationResult.lastPerformed");
         }
         else if (name.equals("nextScheduled")) {
-          throw new FHIRException("Cannot call addChild on a primitive type VerificationResult.nextScheduled");
+          throw new FHIRException("Cannot call addChild on a singleton property VerificationResult.nextScheduled");
         }
         else if (name.equals("failureAction")) {
           this.failureAction = new CodeableConcept();
@@ -2566,6 +2693,10 @@ public class VerificationResult extends DomainResource {
         VerificationResult dst = new VerificationResult();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((VerificationResult) dst);
       }
 
       public void copyValues(VerificationResult dst) {
@@ -2650,6 +2781,184 @@ public class VerificationResult extends DomainResource {
    }
 
  /**
+   * Search parameter: <b>attestation-method</b>
+   * <p>
+   * Description: <b>Select validation information for data that was attested to using the specified method</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>VerificationResult.attestation.communicationMethod</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="attestation-method", path="VerificationResult.attestation.communicationMethod", description="Select validation information for data that was attested to using the specified method", type="token" )
+  public static final String SP_ATTESTATION_METHOD = "attestation-method";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>attestation-method</b>
+   * <p>
+   * Description: <b>Select validation information for data that was attested to using the specified method</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>VerificationResult.attestation.communicationMethod</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam ATTESTATION_METHOD = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_ATTESTATION_METHOD);
+
+ /**
+   * Search parameter: <b>attestation-onbehalfof</b>
+   * <p>
+   * Description: <b>Select validation information for data that was attested to on behalf of the specified source</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>VerificationResult.attestation.onBehalfOf</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="attestation-onbehalfof", path="VerificationResult.attestation.onBehalfOf", description="Select validation information for data that was attested to on behalf of the specified source", type="reference", target={Organization.class, Practitioner.class, PractitionerRole.class } )
+  public static final String SP_ATTESTATION_ONBEHALFOF = "attestation-onbehalfof";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>attestation-onbehalfof</b>
+   * <p>
+   * Description: <b>Select validation information for data that was attested to on behalf of the specified source</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>VerificationResult.attestation.onBehalfOf</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam ATTESTATION_ONBEHALFOF = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_ATTESTATION_ONBEHALFOF);
+
+/**
+   * Constant for fluent queries to be used to add include statements. Specifies
+   * the path value of "<b>VerificationResult:attestation-onbehalfof</b>".
+   */
+  public static final ca.uhn.fhir.model.api.Include INCLUDE_ATTESTATION_ONBEHALFOF = new ca.uhn.fhir.model.api.Include("VerificationResult:attestation-onbehalfof").toLocked();
+
+ /**
+   * Search parameter: <b>attestation-who</b>
+   * <p>
+   * Description: <b>Select validation information for data that was attested to by the specified source</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>VerificationResult.attestation.who</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="attestation-who", path="VerificationResult.attestation.who", description="Select validation information for data that was attested to by the specified source", type="reference", target={Organization.class, Practitioner.class, PractitionerRole.class } )
+  public static final String SP_ATTESTATION_WHO = "attestation-who";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>attestation-who</b>
+   * <p>
+   * Description: <b>Select validation information for data that was attested to by the specified source</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>VerificationResult.attestation.who</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam ATTESTATION_WHO = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_ATTESTATION_WHO);
+
+/**
+   * Constant for fluent queries to be used to add include statements. Specifies
+   * the path value of "<b>VerificationResult:attestation-who</b>".
+   */
+  public static final ca.uhn.fhir.model.api.Include INCLUDE_ATTESTATION_WHO = new ca.uhn.fhir.model.api.Include("VerificationResult:attestation-who").toLocked();
+
+ /**
+   * Search parameter: <b>primarysource-date</b>
+   * <p>
+   * Description: <b>Select validation information for data that was validated against a primary source on the specified date</b><br>
+   * Type: <b>date</b><br>
+   * Path: <b>VerificationResult.primarySource.validationDate</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="primarysource-date", path="VerificationResult.primarySource.validationDate", description="Select validation information for data that was validated against a primary source on the specified date", type="date" )
+  public static final String SP_PRIMARYSOURCE_DATE = "primarysource-date";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>primarysource-date</b>
+   * <p>
+   * Description: <b>Select validation information for data that was validated against a primary source on the specified date</b><br>
+   * Type: <b>date</b><br>
+   * Path: <b>VerificationResult.primarySource.validationDate</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.DateClientParam PRIMARYSOURCE_DATE = new ca.uhn.fhir.rest.gclient.DateClientParam(SP_PRIMARYSOURCE_DATE);
+
+ /**
+   * Search parameter: <b>primarysource-type</b>
+   * <p>
+   * Description: <b>Select validation information for data that was validated against the specified type of primary source organization</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>VerificationResult.primarySource.type</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="primarysource-type", path="VerificationResult.primarySource.type", description="Select validation information for data that was validated against the specified type of primary source organization", type="token" )
+  public static final String SP_PRIMARYSOURCE_TYPE = "primarysource-type";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>primarysource-type</b>
+   * <p>
+   * Description: <b>Select validation information for data that was validated against the specified type of primary source organization</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>VerificationResult.primarySource.type</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam PRIMARYSOURCE_TYPE = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_PRIMARYSOURCE_TYPE);
+
+ /**
+   * Search parameter: <b>primarysource-who</b>
+   * <p>
+   * Description: <b>Select validation information for data that was validated against the specified primary source</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>VerificationResult.primarySource.who</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="primarysource-who", path="VerificationResult.primarySource.who", description="Select validation information for data that was validated against the specified primary source", type="reference", target={Organization.class, Practitioner.class, PractitionerRole.class } )
+  public static final String SP_PRIMARYSOURCE_WHO = "primarysource-who";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>primarysource-who</b>
+   * <p>
+   * Description: <b>Select validation information for data that was validated against the specified primary source</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>VerificationResult.primarySource.who</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam PRIMARYSOURCE_WHO = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_PRIMARYSOURCE_WHO);
+
+/**
+   * Constant for fluent queries to be used to add include statements. Specifies
+   * the path value of "<b>VerificationResult:primarysource-who</b>".
+   */
+  public static final ca.uhn.fhir.model.api.Include INCLUDE_PRIMARYSOURCE_WHO = new ca.uhn.fhir.model.api.Include("VerificationResult:primarysource-who").toLocked();
+
+ /**
+   * Search parameter: <b>status-date</b>
+   * <p>
+   * Description: <b>Select validation information with a validation status that occurred at the specified date/time</b><br>
+   * Type: <b>date</b><br>
+   * Path: <b>VerificationResult.statusDate</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="status-date", path="VerificationResult.statusDate", description="Select validation information with a validation status that occurred at the specified date/time", type="date" )
+  public static final String SP_STATUS_DATE = "status-date";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>status-date</b>
+   * <p>
+   * Description: <b>Select validation information with a validation status that occurred at the specified date/time</b><br>
+   * Type: <b>date</b><br>
+   * Path: <b>VerificationResult.statusDate</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.DateClientParam STATUS_DATE = new ca.uhn.fhir.rest.gclient.DateClientParam(SP_STATUS_DATE);
+
+ /**
+   * Search parameter: <b>status</b>
+   * <p>
+   * Description: <b>Select validation information with the specified status</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>VerificationResult.status</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="status", path="VerificationResult.status", description="Select validation information with the specified status", type="token" )
+  public static final String SP_STATUS = "status";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>status</b>
+   * <p>
+   * Description: <b>Select validation information with the specified status</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>VerificationResult.status</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
+
+ /**
    * Search parameter: <b>target</b>
    * <p>
    * Description: <b>A resource that was validated</b><br>
@@ -2657,7 +2966,7 @@ public class VerificationResult extends DomainResource {
    * Path: <b>VerificationResult.target</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="target", path="VerificationResult.target", description="A resource that was validated", type="reference", target={Account.class, ActivityDefinition.class, AdministrableProductDefinition.class, AdverseEvent.class, AllergyIntolerance.class, Appointment.class, AppointmentResponse.class, AuditEvent.class, Basic.class, Binary.class, BiologicallyDerivedProduct.class, BodyStructure.class, Bundle.class, CapabilityStatement.class, CapabilityStatement2.class, CarePlan.class, CareTeam.class, CatalogEntry.class, ChargeItem.class, ChargeItemDefinition.class, Citation.class, Claim.class, ClaimResponse.class, ClinicalImpression.class, ClinicalUseIssue.class, CodeSystem.class, Communication.class, CommunicationRequest.class, CompartmentDefinition.class, Composition.class, ConceptMap.class, Condition.class, ConditionDefinition.class, Consent.class, Contract.class, Coverage.class, CoverageEligibilityRequest.class, CoverageEligibilityResponse.class, DetectedIssue.class, Device.class, DeviceDefinition.class, DeviceMetric.class, DeviceRequest.class, DeviceUsage.class, DiagnosticReport.class, DocumentManifest.class, DocumentReference.class, Encounter.class, Endpoint.class, EnrollmentRequest.class, EnrollmentResponse.class, EpisodeOfCare.class, EventDefinition.class, Evidence.class, EvidenceReport.class, EvidenceVariable.class, ExampleScenario.class, ExplanationOfBenefit.class, FamilyMemberHistory.class, Flag.class, Goal.class, GraphDefinition.class, Group.class, GuidanceResponse.class, HealthcareService.class, ImagingStudy.class, Immunization.class, ImmunizationEvaluation.class, ImmunizationRecommendation.class, ImplementationGuide.class, Ingredient.class, InsurancePlan.class, InventoryReport.class, Invoice.class, Library.class, Linkage.class, ListResource.class, Location.class, ManufacturedItemDefinition.class, Measure.class, MeasureReport.class, Medication.class, MedicationAdministration.class, MedicationDispense.class, MedicationKnowledge.class, MedicationRequest.class, MedicationUsage.class, MedicinalProductDefinition.class, MessageDefinition.class, MessageHeader.class, MolecularSequence.class, NamingSystem.class, NutritionIntake.class, NutritionOrder.class, NutritionProduct.class, Observation.class, ObservationDefinition.class, OperationDefinition.class, OperationOutcome.class, Organization.class, OrganizationAffiliation.class, PackagedProductDefinition.class, Patient.class, PaymentNotice.class, PaymentReconciliation.class, Permission.class, Person.class, PlanDefinition.class, Practitioner.class, PractitionerRole.class, Procedure.class, Provenance.class, Questionnaire.class, QuestionnaireResponse.class, RegulatedAuthorization.class, RelatedPerson.class, RequestGroup.class, ResearchStudy.class, ResearchSubject.class, RiskAssessment.class, Schedule.class, SearchParameter.class, ServiceRequest.class, Slot.class, Specimen.class, SpecimenDefinition.class, StructureDefinition.class, StructureMap.class, Subscription.class, SubscriptionStatus.class, SubscriptionTopic.class, Substance.class, SubstanceDefinition.class, SubstanceNucleicAcid.class, SubstancePolymer.class, SubstanceProtein.class, SubstanceReferenceInformation.class, SubstanceSourceMaterial.class, SupplyDelivery.class, SupplyRequest.class, Task.class, TerminologyCapabilities.class, TestReport.class, TestScript.class, ValueSet.class, VerificationResult.class, VisionPrescription.class } )
+  @SearchParamDefinition(name="target", path="VerificationResult.target", description="A resource that was validated", type="reference", target={Account.class, ActivityDefinition.class, ActorDefinition.class, AdministrableProductDefinition.class, AdverseEvent.class, AllergyIntolerance.class, Appointment.class, AppointmentResponse.class, ArtifactAssessment.class, AuditEvent.class, Basic.class, Binary.class, BiologicallyDerivedProduct.class, BiologicallyDerivedProductDispense.class, BodyStructure.class, Bundle.class, CapabilityStatement.class, CarePlan.class, CareTeam.class, ChargeItem.class, ChargeItemDefinition.class, Citation.class, Claim.class, ClaimResponse.class, ClinicalImpression.class, ClinicalUseDefinition.class, CodeSystem.class, Communication.class, CommunicationRequest.class, CompartmentDefinition.class, Composition.class, ConceptMap.class, Condition.class, ConditionDefinition.class, Consent.class, Contract.class, Coverage.class, CoverageEligibilityRequest.class, CoverageEligibilityResponse.class, DetectedIssue.class, Device.class, DeviceAssociation.class, DeviceDefinition.class, DeviceDispense.class, DeviceMetric.class, DeviceRequest.class, DeviceUsage.class, DiagnosticReport.class, DocumentReference.class, Encounter.class, EncounterHistory.class, Endpoint.class, EnrollmentRequest.class, EnrollmentResponse.class, EpisodeOfCare.class, EventDefinition.class, Evidence.class, EvidenceReport.class, EvidenceVariable.class, ExampleScenario.class, ExplanationOfBenefit.class, FamilyMemberHistory.class, Flag.class, FormularyItem.class, GenomicStudy.class, Goal.class, GraphDefinition.class, Group.class, GuidanceResponse.class, HealthcareService.class, ImagingSelection.class, ImagingStudy.class, Immunization.class, ImmunizationEvaluation.class, ImmunizationRecommendation.class, ImplementationGuide.class, Ingredient.class, InsurancePlan.class, InventoryItem.class, InventoryReport.class, Invoice.class, Library.class, Linkage.class, ListResource.class, Location.class, ManufacturedItemDefinition.class, Measure.class, MeasureReport.class, Medication.class, MedicationAdministration.class, MedicationDispense.class, MedicationKnowledge.class, MedicationRequest.class, MedicationStatement.class, MedicinalProductDefinition.class, MessageDefinition.class, MessageHeader.class, MolecularSequence.class, NamingSystem.class, NutritionIntake.class, NutritionOrder.class, NutritionProduct.class, Observation.class, ObservationDefinition.class, OperationDefinition.class, OperationOutcome.class, Organization.class, OrganizationAffiliation.class, PackagedProductDefinition.class, Parameters.class, Patient.class, PaymentNotice.class, PaymentReconciliation.class, Permission.class, Person.class, PlanDefinition.class, Practitioner.class, PractitionerRole.class, Procedure.class, Provenance.class, Questionnaire.class, QuestionnaireResponse.class, RegulatedAuthorization.class, RelatedPerson.class, RequestOrchestration.class, Requirements.class, ResearchStudy.class, ResearchSubject.class, RiskAssessment.class, Schedule.class, SearchParameter.class, ServiceRequest.class, Slot.class, Specimen.class, SpecimenDefinition.class, StructureDefinition.class, StructureMap.class, Subscription.class, SubscriptionStatus.class, SubscriptionTopic.class, Substance.class, SubstanceDefinition.class, SubstanceNucleicAcid.class, SubstancePolymer.class, SubstanceProtein.class, SubstanceReferenceInformation.class, SubstanceSourceMaterial.class, SupplyDelivery.class, SupplyRequest.class, Task.class, TerminologyCapabilities.class, TestPlan.class, TestReport.class, TestScript.class, Transport.class, ValueSet.class, VerificationResult.class, VisionPrescription.class } )
   public static final String SP_TARGET = "target";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>target</b>
@@ -2674,6 +2983,32 @@ public class VerificationResult extends DomainResource {
    * the path value of "<b>VerificationResult:target</b>".
    */
   public static final ca.uhn.fhir.model.api.Include INCLUDE_TARGET = new ca.uhn.fhir.model.api.Include("VerificationResult:target").toLocked();
+
+ /**
+   * Search parameter: <b>validator-organization</b>
+   * <p>
+   * Description: <b>Select validation information for data that was validated by the specified organization</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>VerificationResult.validator.organization</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="validator-organization", path="VerificationResult.validator.organization", description="Select validation information for data that was validated by the specified organization", type="reference", target={Organization.class } )
+  public static final String SP_VALIDATOR_ORGANIZATION = "validator-organization";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>validator-organization</b>
+   * <p>
+   * Description: <b>Select validation information for data that was validated by the specified organization</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>VerificationResult.validator.organization</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam VALIDATOR_ORGANIZATION = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_VALIDATOR_ORGANIZATION);
+
+/**
+   * Constant for fluent queries to be used to add include statements. Specifies
+   * the path value of "<b>VerificationResult:validator-organization</b>".
+   */
+  public static final ca.uhn.fhir.model.api.Include INCLUDE_VALIDATOR_ORGANIZATION = new ca.uhn.fhir.model.api.Include("VerificationResult:validator-organization").toLocked();
 
 
 }

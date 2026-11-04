@@ -1,5 +1,5 @@
 /** 
-   * Returns the {@link #getLink() link} which matches a given {@link BundleLinkComponent#getRelation() relation}.  
+   * Returns the {@link #getLinkList() link} which matches a given {@link BundleLinkComponent#getRelation() relation}.  
    * If no link is found which matches the given relation, returns <code>null</code>. If more than one 
    * link is found which matches the given relation, returns the first matching BundleLinkComponent. 
    *  
@@ -12,8 +12,8 @@
    */ 
   public BundleLinkComponent getLink(String theRelation) { 
     org.apache.commons.lang3.Validate.notBlank(theRelation, "theRelation may not be null or empty"); 
-    for (BundleLinkComponent next : getLink()) { 
-      if (theRelation.equals(next.getRelation())) { 
+    for (BundleLinkComponent next : getLinkList()) { 
+      if (theRelation.equals(next.getRelation().toCode())) { 
         return next; 
       } 
     } 
@@ -21,7 +21,7 @@
   } 
   
   /** 
-   * Returns the {@link #getLink() link} which matches a given {@link BundleLinkComponent#getRelation() relation}.  
+   * Returns the {@link #getLinkList() link} which matches a given {@link BundleLinkComponent#getRelation() relation}.  
    * If no link is found which matches the given relation, creates a new BundleLinkComponent with the 
    * given relation and adds it to this Bundle. If more than one 
    * link is found which matches the given relation, returns the first matching BundleLinkComponent. 
@@ -35,13 +35,13 @@
    */ 
   public BundleLinkComponent getLinkOrCreate(String theRelation) { 
     org.apache.commons.lang3.Validate.notBlank(theRelation, "theRelation may not be null or empty"); 
-    for (BundleLinkComponent next : getLink()) { 
-      if (theRelation.equals(next.getRelation())) { 
+    for (BundleLinkComponent next : getLinkList()) { 
+      if (theRelation.equals(next.getRelation().toCode())) { 
         return next; 
       } 
     } 
     BundleLinkComponent retVal = new BundleLinkComponent(); 
-    retVal.setRelation(theRelation); 
-    getLink().add(retVal); 
+    retVal.setRelation(LinkRelationTypes.fromCode(theRelation)); 
+    getLinkList().add(retVal); 
     return retVal; 
   }

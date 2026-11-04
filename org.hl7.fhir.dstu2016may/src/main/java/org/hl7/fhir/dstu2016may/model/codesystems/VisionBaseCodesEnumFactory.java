@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class VisionBaseCodesEnumFactory implements EnumFactory<VisionBaseCodes> {
@@ -50,11 +46,13 @@ public class VisionBaseCodesEnumFactory implements EnumFactory<VisionBaseCodes> 
       return VisionBaseCodes.IN;
     if ("out".equals(codeString))
       return VisionBaseCodes.OUT;
-    throw new IllegalArgumentException("Unknown VisionBaseCodes code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown VisionBaseCodes code '" + codeString + "'");
   }
 
   public String toCode(VisionBaseCodes code) {
-    if (code == VisionBaseCodes.UP)
+       if (code == VisionBaseCodes.NULL)
+           return null;
+       if (code == VisionBaseCodes.UP)
       return "up";
     if (code == VisionBaseCodes.DOWN)
       return "down";
@@ -63,10 +61,10 @@ public class VisionBaseCodesEnumFactory implements EnumFactory<VisionBaseCodes> 
     if (code == VisionBaseCodes.OUT)
       return "out";
     return "?";
-  }
+   }
 
-    public String toSystem(VisionBaseCodes code) {
-      return code.getSystem();
-      }
+  public String toSystem(VisionBaseCodes code) {
+    return code.getSystem();
+  }
 
 }

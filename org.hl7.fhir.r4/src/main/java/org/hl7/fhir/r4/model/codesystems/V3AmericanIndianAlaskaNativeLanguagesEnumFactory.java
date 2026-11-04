@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,10 +31,10 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
-public class V3AmericanIndianAlaskaNativeLanguagesEnumFactory implements EnumFactory<V3AmericanIndianAlaskaNativeLanguages> {
+public class V3AmericanIndianAlaskaNativeLanguagesEnumFactory
+    implements EnumFactory<V3AmericanIndianAlaskaNativeLanguages> {
 
   public V3AmericanIndianAlaskaNativeLanguages fromCode(String codeString) throws IllegalArgumentException {
     if (codeString == null || "".equals(codeString))
@@ -552,11 +549,13 @@ public class V3AmericanIndianAlaskaNativeLanguagesEnumFactory implements EnumFac
       return V3AmericanIndianAlaskaNativeLanguages.XYUC;
     if ("x-ZUN".equals(codeString))
       return V3AmericanIndianAlaskaNativeLanguages.XZUN;
-    throw new IllegalArgumentException("Unknown V3AmericanIndianAlaskaNativeLanguages code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3AmericanIndianAlaskaNativeLanguages code '" + codeString + "'");
   }
 
   public String toCode(V3AmericanIndianAlaskaNativeLanguages code) {
-    if (code == V3AmericanIndianAlaskaNativeLanguages._ALGIC)
+       if (code == V3AmericanIndianAlaskaNativeLanguages.NULL)
+           return null;
+       if (code == V3AmericanIndianAlaskaNativeLanguages._ALGIC)
       return "_Algic";
     if (code == V3AmericanIndianAlaskaNativeLanguages._ALGONQUIAN)
       return "_Algonquian";
@@ -1067,10 +1066,10 @@ public class V3AmericanIndianAlaskaNativeLanguagesEnumFactory implements EnumFac
     if (code == V3AmericanIndianAlaskaNativeLanguages.XZUN)
       return "x-ZUN";
     return "?";
-  }
+   }
 
-    public String toSystem(V3AmericanIndianAlaskaNativeLanguages code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3AmericanIndianAlaskaNativeLanguages code) {
+    return code.getSystem();
+  }
 
 }

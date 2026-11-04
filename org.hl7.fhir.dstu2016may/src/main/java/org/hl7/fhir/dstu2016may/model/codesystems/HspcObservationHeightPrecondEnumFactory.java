@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class HspcObservationHeightPrecondEnumFactory implements EnumFactory<HspcObservationHeightPrecond> {
@@ -50,11 +46,13 @@ public class HspcObservationHeightPrecondEnumFactory implements EnumFactory<Hspc
       return HspcObservationHeightPrecond._84140;
     if ("84141".equals(codeString))
       return HspcObservationHeightPrecond._84141;
-    throw new IllegalArgumentException("Unknown HspcObservationHeightPrecond code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown HspcObservationHeightPrecond code '" + codeString + "'");
   }
 
   public String toCode(HspcObservationHeightPrecond code) {
-    if (code == HspcObservationHeightPrecond._84138)
+       if (code == HspcObservationHeightPrecond.NULL)
+           return null;
+       if (code == HspcObservationHeightPrecond._84138)
       return "84138";
     if (code == HspcObservationHeightPrecond._84139)
       return "84139";
@@ -63,10 +61,10 @@ public class HspcObservationHeightPrecondEnumFactory implements EnumFactory<Hspc
     if (code == HspcObservationHeightPrecond._84141)
       return "84141";
     return "?";
-  }
+   }
 
-    public String toSystem(HspcObservationHeightPrecond code) {
-      return code.getSystem();
-      }
+  public String toSystem(HspcObservationHeightPrecond code) {
+    return code.getSystem();
+  }
 
 }

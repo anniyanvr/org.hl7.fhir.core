@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class CommunicationNotDoneReasonEnumFactory implements EnumFactory<CommunicationNotDoneReason> {
@@ -54,11 +50,13 @@ public class CommunicationNotDoneReasonEnumFactory implements EnumFactory<Commun
       return CommunicationNotDoneReason.FAMILYOBJECTION;
     if ("patient-objection".equals(codeString))
       return CommunicationNotDoneReason.PATIENTOBJECTION;
-    throw new IllegalArgumentException("Unknown CommunicationNotDoneReason code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CommunicationNotDoneReason code '" + codeString + "'");
   }
 
   public String toCode(CommunicationNotDoneReason code) {
-    if (code == CommunicationNotDoneReason.UNKNOWN)
+       if (code == CommunicationNotDoneReason.NULL)
+           return null;
+       if (code == CommunicationNotDoneReason.UNKNOWN)
       return "unknown";
     if (code == CommunicationNotDoneReason.SYSTEMERROR)
       return "system-error";
@@ -71,10 +69,10 @@ public class CommunicationNotDoneReasonEnumFactory implements EnumFactory<Commun
     if (code == CommunicationNotDoneReason.PATIENTOBJECTION)
       return "patient-objection";
     return "?";
-  }
+   }
 
-    public String toSystem(CommunicationNotDoneReason code) {
-      return code.getSystem();
-      }
+  public String toSystem(CommunicationNotDoneReason code) {
+    return code.getSystem();
+  }
 
 }

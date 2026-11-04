@@ -146,12 +146,12 @@ public class EligibilityResponse extends DomainResource {
           return EligibilityResponseStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown EligibilityResponseStatus code '"+codeString+"'");
         }
-        public Enumeration<EligibilityResponseStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<EligibilityResponseStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<EligibilityResponseStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -165,7 +165,9 @@ public class EligibilityResponse extends DomainResource {
         throw new FHIRException("Unknown EligibilityResponseStatus code '"+codeString+"'");
         }
     public String toCode(EligibilityResponseStatus code) {
-      if (code == EligibilityResponseStatus.ACTIVE)
+       if (code == EligibilityResponseStatus.NULL)
+           return null;
+       if (code == EligibilityResponseStatus.ACTIVE)
         return "active";
       if (code == EligibilityResponseStatus.CANCELLED)
         return "cancelled";
@@ -174,7 +176,7 @@ public class EligibilityResponse extends DomainResource {
       if (code == EligibilityResponseStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(EligibilityResponseStatus code) {
       return code.getSystem();
       }
@@ -1062,13 +1064,13 @@ public class EligibilityResponse extends DomainResource {
           return this.subCategory;
         }
         else if (name.equals("excluded")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EligibilityResponse.excluded");
+          throw new FHIRException("Cannot call addChild on a singleton property EligibilityResponse.excluded");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EligibilityResponse.name");
+          throw new FHIRException("Cannot call addChild on a singleton property EligibilityResponse.name");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EligibilityResponse.description");
+          throw new FHIRException("Cannot call addChild on a singleton property EligibilityResponse.description");
         }
         else if (name.equals("network")) {
           this.network = new CodeableConcept();
@@ -1227,8 +1229,8 @@ public class EligibilityResponse extends DomainResource {
           return (UnsignedIntType) this.allowed;
         }
 
-        public boolean hasAllowedUnsignedIntType() { 
-          return this != null && this.allowed instanceof UnsignedIntType;
+        public boolean hasAllowedUnsignedIntType() {
+            return this.allowed instanceof UnsignedIntType;
         }
 
         /**
@@ -1242,8 +1244,8 @@ public class EligibilityResponse extends DomainResource {
           return (StringType) this.allowed;
         }
 
-        public boolean hasAllowedStringType() { 
-          return this != null && this.allowed instanceof StringType;
+        public boolean hasAllowedStringType() {
+            return this.allowed instanceof StringType;
         }
 
         /**
@@ -1257,8 +1259,8 @@ public class EligibilityResponse extends DomainResource {
           return (Money) this.allowed;
         }
 
-        public boolean hasAllowedMoney() { 
-          return this != null && this.allowed instanceof Money;
+        public boolean hasAllowedMoney() {
+            return this.allowed instanceof Money;
         }
 
         public boolean hasAllowed() { 
@@ -1293,8 +1295,8 @@ public class EligibilityResponse extends DomainResource {
           return (UnsignedIntType) this.used;
         }
 
-        public boolean hasUsedUnsignedIntType() { 
-          return this != null && this.used instanceof UnsignedIntType;
+        public boolean hasUsedUnsignedIntType() {
+            return this.used instanceof UnsignedIntType;
         }
 
         /**
@@ -1308,8 +1310,8 @@ public class EligibilityResponse extends DomainResource {
           return (Money) this.used;
         }
 
-        public boolean hasUsedMoney() { 
-          return this != null && this.used instanceof Money;
+        public boolean hasUsedMoney() {
+            return this.used instanceof Money;
         }
 
         public boolean hasUsed() { 
@@ -2534,10 +2536,10 @@ public class EligibilityResponse extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EligibilityResponse.status");
+          throw new FHIRException("Cannot call addChild on a singleton property EligibilityResponse.status");
         }
         else if (name.equals("created")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EligibilityResponse.created");
+          throw new FHIRException("Cannot call addChild on a singleton property EligibilityResponse.created");
         }
         else if (name.equals("requestProvider")) {
           this.requestProvider = new Reference();
@@ -2556,14 +2558,14 @@ public class EligibilityResponse extends DomainResource {
           return this.outcome;
         }
         else if (name.equals("disposition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EligibilityResponse.disposition");
+          throw new FHIRException("Cannot call addChild on a singleton property EligibilityResponse.disposition");
         }
         else if (name.equals("insurer")) {
           this.insurer = new Reference();
           return this.insurer;
         }
         else if (name.equals("inforce")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EligibilityResponse.inforce");
+          throw new FHIRException("Cannot call addChild on a singleton property EligibilityResponse.inforce");
         }
         else if (name.equals("insurance")) {
           return addInsurance();

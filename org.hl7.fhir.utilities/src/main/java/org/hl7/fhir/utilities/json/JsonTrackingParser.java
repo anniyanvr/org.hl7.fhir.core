@@ -37,13 +37,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Stack;
 
-import org.hl7.fhir.utilities.SimpleHTTPClient;
-import org.hl7.fhir.utilities.SimpleHTTPClient.HTTPResult;
-import org.hl7.fhir.utilities.TextFile;
+import org.hl7.fhir.utilities.FileUtilities;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.http.HTTPResult;
+import org.hl7.fhir.utilities.http.ManagedWebAccess;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -193,6 +194,36 @@ public class JsonTrackingParser {
       }
     }
     
+    /**
+     * Inside a string, appends the characters up to the next quote, backslash or
+     * line break to the token in one go. getNextChar() would return each of them
+     * in turn, add one to the column, and the caller would append it as is.
+     *
+     * Leaves the cursor on the last character copied, so the next getNextChar()
+     * returns the quote, backslash or line break. Does nothing if there are
+     * pushed back characters, so they are still read first.
+     */
+    private void copyPlainChars() {
+      if (peek != null) {
+        return;
+      }
+      int start = cursor + 1;
+      int end = start;
+      int len = source.length();
+      while (end < len) {
+        char c = source.charAt(end);
+        if (c == '"' || c == '\\' || c == '\n') {
+          break;
+        }
+        end++;
+      }
+      if (end > start) {
+        b.append(source, start, end);
+        location.col += end - start;
+        cursor = end - 1;
+      }
+    }
+
     private void push(char ch){
     	peek = peek == null ? String.valueOf(ch) : String.valueOf(ch)+peek;
     }
@@ -265,7 +296,7 @@ public class JsonTrackingParser {
     		    push(ch1);
     		  }    		  
     		}
-    	} while (more() && Utilities.charInSet(ch, ' ', '\r', '\n', '\t'));
+    	} while (more() && (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t'));
     	lastLocationAWS = location.copy();
 
     	if (!more()) {
@@ -282,6 +313,7 @@ public class JsonTrackingParser {
     			type = TokenType.String;
     			b.setLength(0);
     			do {
+    				copyPlainChars();
     				ch = getNextChar();
     				if (ch == '\\') {
     					ch = getNextChar();
@@ -363,45 +395,69 @@ public class JsonTrackingParser {
   private boolean errorOnDuplicates = true;
   private boolean allowComments = false;
 
+  private static final int MAX_JSON_DEPTH = 500;
+  private int parseDepth = 0;
+
   public static JsonObject parseJson(String source) throws IOException {
     return parse(source, null);
   }
   
   public static JsonObject parseJson(InputStream stream) throws IOException {
-    return parse(TextFile.streamToString(stream), null);
+    return parse(FileUtilities.streamToString(stream), null);
   }
   
   public static JsonObject parseJson(byte[] stream) throws IOException {
-    return parse(TextFile.bytesToString(stream), null);
+    return parse(FileUtilities.bytesToString(stream), null);
+  }
+  
+  public static JsonArray parseJsonArray(byte[] stream) throws IOException {
+    return parseArray(FileUtilities.bytesToString(stream), null);
   }
   
   public static JsonObject parseJson(byte[] stream, boolean allowDuplicates) throws IOException {
-    return parse(TextFile.bytesToString(stream), null, allowDuplicates);
+    return parse(FileUtilities.bytesToString(stream), null, allowDuplicates);
   }
   
   public static JsonObject parseJson(File source) throws IOException {
-    return parse(TextFile.fileToString(source), null);
+    return parse(FileUtilities.fileToString(source), null);
   }
   
   public static JsonObject parseJsonFile(String source) throws IOException {
-    return parse(TextFile.fileToString(source), null);
+    return parse(FileUtilities.fileToString(source), null);
   }
   
   public static JsonObject parse(String source, Map<JsonElement, LocationData> map) throws IOException {
     return parse(source, map, false);
   }
     
+  public static JsonArray parseArray(String source, Map<JsonElement, LocationData> map) throws IOException {
+    return parseArray(source, map, false);
+  }
+    
+    
   public static JsonObject parse(String source, Map<JsonElement, LocationData> map, boolean allowDuplicates) throws IOException {
     return parse(source, map, allowDuplicates, false);
   }
   
+  public static JsonArray parseArray(String source, Map<JsonElement, LocationData> map, boolean allowDuplicates) throws IOException {
+    return parseArray(source, map, allowDuplicates, false);
+  }
+  
   public static JsonObject parse(String source, Map<JsonElement, LocationData> map, boolean allowDuplicates, boolean allowComments) throws IOException {
-		JsonTrackingParser self = new JsonTrackingParser();
-		self.map = map;
-		self.setErrorOnDuplicates(!allowDuplicates);
-		self.setAllowComments(allowComments);
+    JsonTrackingParser self = new JsonTrackingParser();
+    self.map = map;
+    self.setErrorOnDuplicates(!allowDuplicates);
+    self.setAllowComments(allowComments);
     return self.parse(Utilities.stripBOM(source));
-	}
+  }
+
+  public static JsonArray parseArray(String source, Map<JsonElement, LocationData> map, boolean allowDuplicates, boolean allowComments) throws IOException {
+    JsonTrackingParser self = new JsonTrackingParser();
+    self.map = map;
+    self.setErrorOnDuplicates(!allowDuplicates);
+    self.setAllowComments(allowComments);
+    return self.parseArray(Utilities.stripBOM(source));
+  }
 
 	private JsonObject parse(String source) throws IOException {
 		lexer = new Lexer(source);
@@ -414,14 +470,27 @@ public class JsonTrackingParser {
     else
       throw lexer.error("Unexpected content at start of JSON: "+lexer.getType().toString());
 
-    parseProperty();
-    readObject(result, true);
+    if (lexer.getType() != TokenType.Close) {
+      parseProperty();
+      readObject(result, true);
+    }
     if (map != null)
 		  map.put(result, loc);
     return result;
 	}
 
+  private JsonArray parseArray(String source) throws IOException {
+    return new Gson().fromJson(source, JsonArray.class);
+  }
+
 	private void readObject(JsonObject obj, boolean root) throws IOException {
+    parseDepth++;
+    try {
+      // guard against unbounded recursion in readObject/readArray (mutually recursive on nested
+      // objects/arrays) on deeply nested JSON, which would otherwise cause a StackOverflowError.
+      if (parseDepth > MAX_JSON_DEPTH) {
+        throw lexer.error("Exceeded maximum JSON nesting depth of " + MAX_JSON_DEPTH);
+      }
 	  if (map != null)
       map.put(obj, lexer.location.copy());
 
@@ -496,9 +565,19 @@ public class JsonTrackingParser {
 			}
 			next();
 		}
+	  } finally {
+	    parseDepth--;
+	  }
 	}
 
 	private boolean readArray(JsonArray arr, boolean root) throws IOException {
+    parseDepth++;
+    try {
+      // guard against unbounded recursion in readObject/readArray (mutually recursive on nested
+      // objects/arrays) on deeply nested JSON, which would otherwise cause a StackOverflowError.
+      if (parseDepth > MAX_JSON_DEPTH) {
+        throw lexer.error("Exceeded maximum JSON nesting depth of " + MAX_JSON_DEPTH);
+      }
 	  boolean res = false;
 	  while (!((itemType == ItemType.End) || (root && (itemType == ItemType.Eof)))) {
 	    res  = true;
@@ -549,6 +628,9 @@ public class JsonTrackingParser {
 	    next();
 	  }
 	  return res;
+	  } finally {
+	    parseDepth--;
+	  }
 	}
 
   private void next() throws IOException {
@@ -659,21 +741,21 @@ public class JsonTrackingParser {
   }
 
   public static void write(JsonObject json, File file) throws IOException {
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     String jcnt = gson.toJson(json);
-    TextFile.stringToFile(jcnt, file);    
+    FileUtilities.stringToFile(jcnt, file);    
   }
     
   public static void write(JsonObject json, File file, boolean pretty) throws IOException {
     Gson gson = pretty ? new GsonBuilder().setPrettyPrinting().create() : new GsonBuilder().create();
     String jcnt = gson.toJson(json);
-    TextFile.stringToFile(jcnt, file);    
+    FileUtilities.stringToFile(jcnt, file);    
   }
     
   public static void write(JsonObject json, String fileName) throws IOException {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     String jcnt = gson.toJson(json);
-    TextFile.stringToFile(jcnt, fileName);    
+    FileUtilities.stringToFile(jcnt, fileName);    
   }
   
   public static String write(JsonObject json) {
@@ -695,13 +777,27 @@ public class JsonTrackingParser {
       return gson.toJson(json).getBytes(StandardCharsets.UTF_8);    
     }    
   }
+
+  public static byte[] writeBytes(JsonArray json, boolean pretty) {
+    if (pretty) {
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+      return gson.toJson(json).getBytes(StandardCharsets.UTF_8);    
+    } else {
+      Gson gson = new GsonBuilder().create();
+      return gson.toJson(json).getBytes(StandardCharsets.UTF_8);    
+    }    
+  }
   
   public static JsonObject fetchJson(String source) throws IOException {
-    SimpleHTTPClient fetcher = new SimpleHTTPClient();
-    HTTPResult res = fetcher.get(source+"?nocache=" + System.currentTimeMillis());
+    HTTPResult res = ManagedWebAccess.get(Arrays.asList("web"), source+"?nocache=" + System.currentTimeMillis(), "application/json, application/fhir+json");
     res.checkThrowException();
     return parseJson(res.getContent());
   }
   
+  public static JsonArray fetchJsonArray(String source) throws IOException {
+    HTTPResult res = ManagedWebAccess.get(Arrays.asList("web"),source+"?nocache=" + System.currentTimeMillis(), "application/json, application/fhir+json");
+    res.checkThrowException();
+    return parseJsonArray(res.getContent());
+  }
 	
 }

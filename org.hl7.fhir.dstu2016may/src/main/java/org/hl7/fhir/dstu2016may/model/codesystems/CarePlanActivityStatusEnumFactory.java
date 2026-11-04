@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class CarePlanActivityStatusEnumFactory implements EnumFactory<CarePlanActivityStatus> {
@@ -54,11 +50,13 @@ public class CarePlanActivityStatusEnumFactory implements EnumFactory<CarePlanAc
       return CarePlanActivityStatus.COMPLETED;
     if ("cancelled".equals(codeString))
       return CarePlanActivityStatus.CANCELLED;
-    throw new IllegalArgumentException("Unknown CarePlanActivityStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CarePlanActivityStatus code '" + codeString + "'");
   }
 
   public String toCode(CarePlanActivityStatus code) {
-    if (code == CarePlanActivityStatus.NOTSTARTED)
+       if (code == CarePlanActivityStatus.NULL)
+           return null;
+       if (code == CarePlanActivityStatus.NOTSTARTED)
       return "not-started";
     if (code == CarePlanActivityStatus.SCHEDULED)
       return "scheduled";
@@ -71,10 +69,10 @@ public class CarePlanActivityStatusEnumFactory implements EnumFactory<CarePlanAc
     if (code == CarePlanActivityStatus.CANCELLED)
       return "cancelled";
     return "?";
-  }
+   }
 
-    public String toSystem(CarePlanActivityStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(CarePlanActivityStatus code) {
+    return code.getSystem();
+  }
 
 }

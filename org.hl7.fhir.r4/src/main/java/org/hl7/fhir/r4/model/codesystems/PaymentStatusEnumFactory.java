@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class PaymentStatusEnumFactory implements EnumFactory<PaymentStatus> {
@@ -46,19 +42,21 @@ public class PaymentStatusEnumFactory implements EnumFactory<PaymentStatus> {
       return PaymentStatus.PAID;
     if ("cleared".equals(codeString))
       return PaymentStatus.CLEARED;
-    throw new IllegalArgumentException("Unknown PaymentStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown PaymentStatus code '" + codeString + "'");
   }
 
   public String toCode(PaymentStatus code) {
-    if (code == PaymentStatus.PAID)
+       if (code == PaymentStatus.NULL)
+           return null;
+       if (code == PaymentStatus.PAID)
       return "paid";
     if (code == PaymentStatus.CLEARED)
       return "cleared";
     return "?";
-  }
+   }
 
-    public String toSystem(PaymentStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(PaymentStatus code) {
+    return code.getSystem();
+  }
 
 }

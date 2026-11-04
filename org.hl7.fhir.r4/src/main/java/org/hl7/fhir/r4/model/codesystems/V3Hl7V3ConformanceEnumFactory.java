@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3Hl7V3ConformanceEnumFactory implements EnumFactory<V3Hl7V3Conformance> {
@@ -54,11 +50,13 @@ public class V3Hl7V3ConformanceEnumFactory implements EnumFactory<V3Hl7V3Conform
       return V3Hl7V3Conformance.RI;
     if ("U".equals(codeString))
       return V3Hl7V3Conformance.U;
-    throw new IllegalArgumentException("Unknown V3Hl7V3Conformance code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3Hl7V3Conformance code '" + codeString + "'");
   }
 
   public String toCode(V3Hl7V3Conformance code) {
-    if (code == V3Hl7V3Conformance.I)
+       if (code == V3Hl7V3Conformance.NULL)
+           return null;
+       if (code == V3Hl7V3Conformance.I)
       return "I";
     if (code == V3Hl7V3Conformance.NP)
       return "NP";
@@ -71,10 +69,10 @@ public class V3Hl7V3ConformanceEnumFactory implements EnumFactory<V3Hl7V3Conform
     if (code == V3Hl7V3Conformance.U)
       return "U";
     return "?";
-  }
+   }
 
-    public String toSystem(V3Hl7V3Conformance code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3Hl7V3Conformance code) {
+    return code.getSystem();
+  }
 
 }

@@ -29,21 +29,18 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import org.hl7.fhir.r5.extensions.ExtensionDefinitions;
 import org.hl7.fhir.utilities.Utilities;
-import org.hl7.fhir.r5.model.Enumerations.*;
+
 import org.hl7.fhir.instance.model.api.IBaseBackboneElement;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.instance.model.api.ICompositeType;
 import ca.uhn.fhir.model.api.annotation.ResourceDef;
-import ca.uhn.fhir.model.api.annotation.SearchParamDefinition;
-import org.hl7.fhir.instance.model.api.IBaseBackboneElement;
 import ca.uhn.fhir.model.api.annotation.Child;
-import ca.uhn.fhir.model.api.annotation.ChildOrder;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
@@ -72,6 +69,10 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
          */
         INFORMATION, 
         /**
+         * The operation completed successfully.
+         */
+        SUCCESS, 
+        /**
          * added to help the parsers with the generic types
          */
         NULL;
@@ -86,6 +87,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
           return WARNING;
         if ("information".equals(codeString))
           return INFORMATION;
+        if ("success".equals(codeString))
+          return SUCCESS;
         if (Configuration.isAcceptInvalidEnums())
           return null;
         else
@@ -97,6 +100,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case ERROR: return "error";
             case WARNING: return "warning";
             case INFORMATION: return "information";
+            case SUCCESS: return "success";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -106,6 +111,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case ERROR: return "http://hl7.org/fhir/issue-severity";
             case WARNING: return "http://hl7.org/fhir/issue-severity";
             case INFORMATION: return "http://hl7.org/fhir/issue-severity";
+            case SUCCESS: return "http://hl7.org/fhir/issue-severity";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -115,6 +122,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case ERROR: return "The issue is sufficiently important to cause the action to fail.";
             case WARNING: return "The issue is not important enough to cause the action to fail but may cause it to be performed suboptimally or in a way that is not as desired.";
             case INFORMATION: return "The issue has no relation to the degree of success of the action.";
+            case SUCCESS: return "The operation completed successfully.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -124,8 +133,13 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case ERROR: return "Error";
             case WARNING: return "Warning";
             case INFORMATION: return "Information";
+            case SUCCESS: return "Operation Successful";
+            case NULL: return null;
             default: return "?";
           }
+        }
+        public boolean isHigherThan(IssueSeverity other) {
+          return this.ordinal() < other.ordinal();
         }
     }
 
@@ -142,28 +156,34 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
           return IssueSeverity.WARNING;
         if ("information".equals(codeString))
           return IssueSeverity.INFORMATION;
+        if ("success".equals(codeString))
+          return IssueSeverity.SUCCESS;
         throw new IllegalArgumentException("Unknown IssueSeverity code '"+codeString+"'");
         }
-        public Enumeration<IssueSeverity> fromType(Base code) throws FHIRException {
+        public Enumeration<IssueSeverity> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<IssueSeverity>(this);
+            return new Enumeration<IssueSeverity>(this, IssueSeverity.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<IssueSeverity>(this, IssueSeverity.NULL, code);
         if ("fatal".equals(codeString))
-          return new Enumeration<IssueSeverity>(this, IssueSeverity.FATAL);
+          return new Enumeration<IssueSeverity>(this, IssueSeverity.FATAL, code);
         if ("error".equals(codeString))
-          return new Enumeration<IssueSeverity>(this, IssueSeverity.ERROR);
+          return new Enumeration<IssueSeverity>(this, IssueSeverity.ERROR, code);
         if ("warning".equals(codeString))
-          return new Enumeration<IssueSeverity>(this, IssueSeverity.WARNING);
+          return new Enumeration<IssueSeverity>(this, IssueSeverity.WARNING, code);
         if ("information".equals(codeString))
-          return new Enumeration<IssueSeverity>(this, IssueSeverity.INFORMATION);
+          return new Enumeration<IssueSeverity>(this, IssueSeverity.INFORMATION, code);
+        if ("success".equals(codeString))
+          return new Enumeration<IssueSeverity>(this, IssueSeverity.SUCCESS, code);
         throw new FHIRException("Unknown IssueSeverity code '"+codeString+"'");
         }
     public String toCode(IssueSeverity code) {
-      if (code == IssueSeverity.FATAL)
+       if (code == IssueSeverity.NULL)
+           return null;
+       if (code == IssueSeverity.FATAL)
         return "fatal";
       if (code == IssueSeverity.ERROR)
         return "error";
@@ -171,8 +191,10 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
         return "warning";
       if (code == IssueSeverity.INFORMATION)
         return "information";
+      if (code == IssueSeverity.SUCCESS)
+        return "success";
       return "?";
-      }
+   }
     public String toSystem(IssueSeverity code) {
       return code.getSystem();
       }
@@ -272,6 +294,10 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
          */
         CONFLICT, 
         /**
+         * Some search filters might not have applied on all results.  Data may have been included that does not meet all of the filters listed in the `self` `Bundle.link`.
+         */
+        LIMITEDFILTER, 
+        /**
          * Transient processing issues. The system receiving the message may be able to resubmit the same content once an underlying issue is resolved.
          */
         TRANSIENT, 
@@ -303,6 +329,10 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
          * A message unrelated to the processing success of the completed operation (examples of the latter include things like reminders of password expiry, system maintenance times, etc.).
          */
         INFORMATIONAL, 
+        /**
+         * The operation completed successfully.
+         */
+        SUCCESS, 
         /**
          * added to help the parsers with the generic types
          */
@@ -356,6 +386,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
           return BUSINESSRULE;
         if ("conflict".equals(codeString))
           return CONFLICT;
+        if ("limited-filter".equals(codeString))
+          return LIMITEDFILTER;
         if ("transient".equals(codeString))
           return TRANSIENT;
         if ("lock-error".equals(codeString))
@@ -372,6 +404,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
           return THROTTLED;
         if ("informational".equals(codeString))
           return INFORMATIONAL;
+        if ("success".equals(codeString))
+          return SUCCESS;
         if (Configuration.isAcceptInvalidEnums())
           return null;
         else
@@ -402,6 +436,7 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case TOOCOSTLY: return "too-costly";
             case BUSINESSRULE: return "business-rule";
             case CONFLICT: return "conflict";
+            case LIMITEDFILTER: return "limited-filter";
             case TRANSIENT: return "transient";
             case LOCKERROR: return "lock-error";
             case NOSTORE: return "no-store";
@@ -410,6 +445,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case INCOMPLETE: return "incomplete";
             case THROTTLED: return "throttled";
             case INFORMATIONAL: return "informational";
+            case SUCCESS: return "success";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -438,6 +475,7 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case TOOCOSTLY: return "http://hl7.org/fhir/issue-type";
             case BUSINESSRULE: return "http://hl7.org/fhir/issue-type";
             case CONFLICT: return "http://hl7.org/fhir/issue-type";
+            case LIMITEDFILTER: return "http://hl7.org/fhir/issue-type";
             case TRANSIENT: return "http://hl7.org/fhir/issue-type";
             case LOCKERROR: return "http://hl7.org/fhir/issue-type";
             case NOSTORE: return "http://hl7.org/fhir/issue-type";
@@ -446,6 +484,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case INCOMPLETE: return "http://hl7.org/fhir/issue-type";
             case THROTTLED: return "http://hl7.org/fhir/issue-type";
             case INFORMATIONAL: return "http://hl7.org/fhir/issue-type";
+            case SUCCESS: return "http://hl7.org/fhir/issue-type";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -474,6 +514,7 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case TOOCOSTLY: return "The operation was stopped to protect server resources; e.g. a request for a value set expansion on all of SNOMED CT.";
             case BUSINESSRULE: return "The content/operation failed to pass some business rule and so could not proceed.";
             case CONFLICT: return "Content could not be accepted because of an edit conflict (i.e. version aware updates). (In a pure RESTful environment, this would be an HTTP 409 error, but this code may be used where the conflict is discovered further into the application architecture.).";
+            case LIMITEDFILTER: return "Some search filters might not have applied on all results.  Data may have been included that does not meet all of the filters listed in the `self` `Bundle.link`.";
             case TRANSIENT: return "Transient processing issues. The system receiving the message may be able to resubmit the same content once an underlying issue is resolved.";
             case LOCKERROR: return "A resource/record locking failure (usually in an underlying database).";
             case NOSTORE: return "The persistent store is unavailable; e.g. the database is down for maintenance or similar action, and the interaction or operation cannot be processed.";
@@ -482,6 +523,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case INCOMPLETE: return "Not all data sources typically accessed could be reached or responded in time, so the returned information might not be complete (applies to search interactions and some operations).";
             case THROTTLED: return "The system is not prepared to handle this request due to load management.";
             case INFORMATIONAL: return "A message unrelated to the processing success of the completed operation (examples of the latter include things like reminders of password expiry, system maintenance times, etc.).";
+            case SUCCESS: return "The operation completed successfully.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -510,6 +553,7 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case TOOCOSTLY: return "Operation Too Costly";
             case BUSINESSRULE: return "Business Rule Violation";
             case CONFLICT: return "Edit Version Conflict";
+            case LIMITEDFILTER: return "Limited Filter Application";
             case TRANSIENT: return "Transient Issue";
             case LOCKERROR: return "Lock Error";
             case NOSTORE: return "No Store Available";
@@ -518,6 +562,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
             case INCOMPLETE: return "Incomplete Results";
             case THROTTLED: return "Throttled";
             case INFORMATIONAL: return "Informational Note";
+            case SUCCESS: return "Operation Successful";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -574,6 +620,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
           return IssueType.BUSINESSRULE;
         if ("conflict".equals(codeString))
           return IssueType.CONFLICT;
+        if ("limited-filter".equals(codeString))
+          return IssueType.LIMITEDFILTER;
         if ("transient".equals(codeString))
           return IssueType.TRANSIENT;
         if ("lock-error".equals(codeString))
@@ -590,82 +638,90 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
           return IssueType.THROTTLED;
         if ("informational".equals(codeString))
           return IssueType.INFORMATIONAL;
+        if ("success".equals(codeString))
+          return IssueType.SUCCESS;
         throw new IllegalArgumentException("Unknown IssueType code '"+codeString+"'");
         }
-        public Enumeration<IssueType> fromType(Base code) throws FHIRException {
+        public Enumeration<IssueType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<IssueType>(this);
+            return new Enumeration<IssueType>(this, IssueType.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<IssueType>(this, IssueType.NULL, code);
         if ("invalid".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.INVALID);
+          return new Enumeration<IssueType>(this, IssueType.INVALID, code);
         if ("structure".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.STRUCTURE);
+          return new Enumeration<IssueType>(this, IssueType.STRUCTURE, code);
         if ("required".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.REQUIRED);
+          return new Enumeration<IssueType>(this, IssueType.REQUIRED, code);
         if ("value".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.VALUE);
+          return new Enumeration<IssueType>(this, IssueType.VALUE, code);
         if ("invariant".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.INVARIANT);
+          return new Enumeration<IssueType>(this, IssueType.INVARIANT, code);
         if ("security".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.SECURITY);
+          return new Enumeration<IssueType>(this, IssueType.SECURITY, code);
         if ("login".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.LOGIN);
+          return new Enumeration<IssueType>(this, IssueType.LOGIN, code);
         if ("unknown".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.UNKNOWN);
+          return new Enumeration<IssueType>(this, IssueType.UNKNOWN, code);
         if ("expired".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.EXPIRED);
+          return new Enumeration<IssueType>(this, IssueType.EXPIRED, code);
         if ("forbidden".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.FORBIDDEN);
+          return new Enumeration<IssueType>(this, IssueType.FORBIDDEN, code);
         if ("suppressed".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.SUPPRESSED);
+          return new Enumeration<IssueType>(this, IssueType.SUPPRESSED, code);
         if ("processing".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.PROCESSING);
+          return new Enumeration<IssueType>(this, IssueType.PROCESSING, code);
         if ("not-supported".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.NOTSUPPORTED);
+          return new Enumeration<IssueType>(this, IssueType.NOTSUPPORTED, code);
         if ("duplicate".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.DUPLICATE);
+          return new Enumeration<IssueType>(this, IssueType.DUPLICATE, code);
         if ("multiple-matches".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.MULTIPLEMATCHES);
+          return new Enumeration<IssueType>(this, IssueType.MULTIPLEMATCHES, code);
         if ("not-found".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.NOTFOUND);
+          return new Enumeration<IssueType>(this, IssueType.NOTFOUND, code);
         if ("deleted".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.DELETED);
+          return new Enumeration<IssueType>(this, IssueType.DELETED, code);
         if ("too-long".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.TOOLONG);
+          return new Enumeration<IssueType>(this, IssueType.TOOLONG, code);
         if ("code-invalid".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.CODEINVALID);
+          return new Enumeration<IssueType>(this, IssueType.CODEINVALID, code);
         if ("extension".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.EXTENSION);
+          return new Enumeration<IssueType>(this, IssueType.EXTENSION, code);
         if ("too-costly".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.TOOCOSTLY);
+          return new Enumeration<IssueType>(this, IssueType.TOOCOSTLY, code);
         if ("business-rule".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.BUSINESSRULE);
+          return new Enumeration<IssueType>(this, IssueType.BUSINESSRULE, code);
         if ("conflict".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.CONFLICT);
+          return new Enumeration<IssueType>(this, IssueType.CONFLICT, code);
+        if ("limited-filter".equals(codeString))
+          return new Enumeration<IssueType>(this, IssueType.LIMITEDFILTER, code);
         if ("transient".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.TRANSIENT);
+          return new Enumeration<IssueType>(this, IssueType.TRANSIENT, code);
         if ("lock-error".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.LOCKERROR);
+          return new Enumeration<IssueType>(this, IssueType.LOCKERROR, code);
         if ("no-store".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.NOSTORE);
+          return new Enumeration<IssueType>(this, IssueType.NOSTORE, code);
         if ("exception".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.EXCEPTION);
+          return new Enumeration<IssueType>(this, IssueType.EXCEPTION, code);
         if ("timeout".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.TIMEOUT);
+          return new Enumeration<IssueType>(this, IssueType.TIMEOUT, code);
         if ("incomplete".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.INCOMPLETE);
+          return new Enumeration<IssueType>(this, IssueType.INCOMPLETE, code);
         if ("throttled".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.THROTTLED);
+          return new Enumeration<IssueType>(this, IssueType.THROTTLED, code);
         if ("informational".equals(codeString))
-          return new Enumeration<IssueType>(this, IssueType.INFORMATIONAL);
+          return new Enumeration<IssueType>(this, IssueType.INFORMATIONAL, code);
+        if ("success".equals(codeString))
+          return new Enumeration<IssueType>(this, IssueType.SUCCESS, code);
         throw new FHIRException("Unknown IssueType code '"+codeString+"'");
         }
     public String toCode(IssueType code) {
-      if (code == IssueType.INVALID)
+       if (code == IssueType.NULL)
+           return null;
+       if (code == IssueType.INVALID)
         return "invalid";
       if (code == IssueType.STRUCTURE)
         return "structure";
@@ -711,6 +767,8 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
         return "business-rule";
       if (code == IssueType.CONFLICT)
         return "conflict";
+      if (code == IssueType.LIMITEDFILTER)
+        return "limited-filter";
       if (code == IssueType.TRANSIENT)
         return "transient";
       if (code == IssueType.LOCKERROR)
@@ -727,8 +785,10 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
         return "throttled";
       if (code == IssueType.INFORMATIONAL)
         return "informational";
+      if (code == IssueType.SUCCESS)
+        return "success";
       return "?";
-      }
+   }
     public String toSystem(IssueType code) {
       return code.getSystem();
       }
@@ -740,7 +800,7 @@ public class OperationOutcome extends DomainResource implements IBaseOperationOu
          * Indicates whether the issue indicates a variation from successful processing.
          */
         @Child(name = "severity", type = {CodeType.class}, order=1, min=1, max=1, modifier=false, summary=true)
-        @Description(shortDefinition="fatal | error | warning | information", formalDefinition="Indicates whether the issue indicates a variation from successful processing." )
+        @Description(shortDefinition="fatal | error | warning | information | success", formalDefinition="Indicates whether the issue indicates a variation from successful processing." )
         @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/issue-severity")
         protected Enumeration<IssueSeverity> severity;
 
@@ -1181,6 +1241,27 @@ For resource issues, this will be a simple XPath limited to element names, repet
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("severity")) {
+          value = new IssueSeverityEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.severity = (Enumeration) value; // Enumeration<IssueSeverity>
+        } else if (name.equals("code")) {
+          value = new IssueTypeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.code = (Enumeration) value; // Enumeration<IssueType>
+        } else if (name.equals("details")) {
+          this.details = null;
+        } else if (name.equals("diagnostics")) {
+          this.diagnostics = null;
+        } else if (name.equals("location")) {
+          this.getLocation().remove(value);
+        } else if (name.equals("expression")) {
+          this.getExpression().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1212,23 +1293,23 @@ For resource issues, this will be a simple XPath limited to element names, repet
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("severity")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OperationOutcome.issue.severity");
+          throw new FHIRException("Cannot call addChild on a singleton property OperationOutcome.issue.severity");
         }
         else if (name.equals("code")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OperationOutcome.issue.code");
+          throw new FHIRException("Cannot call addChild on a singleton property OperationOutcome.issue.code");
         }
         else if (name.equals("details")) {
           this.details = new CodeableConcept();
           return this.details;
         }
         else if (name.equals("diagnostics")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OperationOutcome.issue.diagnostics");
+          throw new FHIRException("Cannot call addChild on a singleton property OperationOutcome.issue.diagnostics");
         }
         else if (name.equals("location")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OperationOutcome.issue.location");
+          throw new FHIRException("Cannot call addChild on a singleton property OperationOutcome.issue.location");
         }
         else if (name.equals("expression")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OperationOutcome.issue.expression");
+          throw new FHIRException("Cannot call addChild on a singleton property OperationOutcome.issue.expression");
         }
         else
           return super.addChild(name);
@@ -1238,6 +1319,10 @@ For resource issues, this will be a simple XPath limited to element names, repet
         OperationOutcomeIssueComponent dst = new OperationOutcomeIssueComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((OperationOutcomeIssueComponent) dst);
       }
 
       public void copyValues(OperationOutcomeIssueComponent dst) {
@@ -1286,12 +1371,70 @@ For resource issues, this will be a simple XPath limited to element names, repet
           , diagnostics, location, expression);
       }
 
-  public String fhirType() {
-    return "OperationOutcome.issue";
+      public String fhirType() {
+        return "OperationOutcome.issue";
 
-  }
+      }
 
-  }
+      // added from java-adornments.txt:
+      @Override 
+      public String toString() { 
+        String srvr = hasExtension(ExtensionDefinitions.EXT_ISSUE_SERVER) ? " (from "+getExtensionString(ExtensionDefinitions.EXT_ISSUE_SERVER)+")" : "";
+        String ctxt = hasExtension(ExtensionDefinitions.EXT_ISSUE_ISSUE_CTXT) ? " (context: "+getExtensionString(ExtensionDefinitions.EXT_ISSUE_ISSUE_CTXT)+")" : "";
+        if (getExpression().size() == 1) { 
+          return getSeverity().toCode()+"/"+getCode().toCode()+" @ "+getExpression().get(0)+(hasDiagnostics() ? " "+getDiagnostics() : "")+": "+getDetails().getText()+ctxt+srvr;
+        } else { 
+          return getSeverity().toCode()+"/"+getCode().toCode()+" @ "+getExpression()+(hasDiagnostics() ? " "+getDiagnostics() : "")+": "+getDetails().getText()+ctxt+srvr;
+        } 
+      } 
+
+      public boolean isWarningOrMore() {
+        switch (getSeverity()) {
+        case FATAL: return true;
+        case ERROR: return true;
+        case WARNING: return true;
+        case INFORMATION: return false;
+        case SUCCESS: return false;
+        case NULL: return false;
+        default: return false;
+        }
+      }
+      public  boolean isInformationorLess() {
+        switch (getSeverity()) {
+        case FATAL: return false;
+        case ERROR: return true;
+        case WARNING: return false;
+        case INFORMATION: return true;
+        case SUCCESS: return true;
+        case NULL: return true;
+        default: return false;
+        }
+      }
+
+      public void resetPath(String root, String newRoot) {
+        for (StringType st : getLocation()) {
+          if (st.hasValue() && st.getValue().startsWith(root+".")) {
+            st.setValue(newRoot+st.getValue().substring(root.length()));
+          }
+        }
+        for (StringType st : getExpression()) {
+          if (st.hasValue() && st.getValue().startsWith(root+".")) {
+            st.setValue(newRoot+st.getValue().substring(root.length()));
+          }
+        }
+      }  
+
+      public String getText() {
+        if (getDetails().hasText()) {
+          return getDetails().getText();
+        }
+        if (hasDiagnostics()) {
+          return getDiagnostics();
+        }
+        return null;
+      }
+      // end addition
+    }
 
     /**
      * An error, warning, or information message that results from a system action.
@@ -1413,6 +1556,15 @@ For resource issues, this will be a simple XPath limited to element names, repet
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("issue")) {
+          this.getIssue().remove((OperationOutcomeIssueComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1449,6 +1601,10 @@ For resource issues, this will be a simple XPath limited to element names, repet
         OperationOutcome dst = new OperationOutcome();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((OperationOutcome) dst);
       }
 
       public void copyValues(OperationOutcome dst) {
@@ -1493,6 +1649,25 @@ For resource issues, this will be a simple XPath limited to element names, repet
     return ResourceType.OperationOutcome;
    }
 
+// Manual code (from Configuration.txt):
+  public boolean supportsCopyright() {
+    return true;
+  }
+
+  
+  public boolean isSuccess() {
+    for (OperationOutcomeIssueComponent iss : getIssue()) {
+      if (iss.isWarningOrMore() || iss.getCode() != IssueType.INFORMATIONAL) {
+        return false;
+      }
+      if (iss.isInformationorLess() || iss.getCode() != IssueType.INFORMATIONAL) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+// end addition
 
 }
 

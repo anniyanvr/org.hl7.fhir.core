@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +46,8 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for Address Type: An address expressed using postal conventions (as opposed to GPS or other location definition formats).  This data type may be used to convey addresses for use in delivering mail as well as for visiting locations which might not be valid for mail delivery.  There are a variety of postal address formats defined around the world.
+ * Address Type: An address expressed using postal conventions (as opposed to GPS or other location definition formats).  This data type may be used to convey addresses for use in delivering mail as well as for visiting locations which might not be valid for mail delivery.  There are a variety of postal address formats defined around the world.
+The ISO21090-codedString may be used to provide a coded representation of the contents of strings in an Address.
  */
 @DatatypeDef(name="Address")
 public class Address extends DataType implements ICompositeType {
@@ -87,6 +88,7 @@ public class Address extends DataType implements ICompositeType {
             case POSTAL: return "postal";
             case PHYSICAL: return "physical";
             case BOTH: return "both";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -95,6 +97,7 @@ public class Address extends DataType implements ICompositeType {
             case POSTAL: return "http://hl7.org/fhir/address-type";
             case PHYSICAL: return "http://hl7.org/fhir/address-type";
             case BOTH: return "http://hl7.org/fhir/address-type";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -103,6 +106,7 @@ public class Address extends DataType implements ICompositeType {
             case POSTAL: return "Mailing addresses - PO Boxes and care-of addresses.";
             case PHYSICAL: return "A physical address that can be visited.";
             case BOTH: return "An address that is both physical and postal.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -111,6 +115,7 @@ public class Address extends DataType implements ICompositeType {
             case POSTAL: return "Postal";
             case PHYSICAL: return "Physical";
             case BOTH: return "Postal & Physical";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -129,31 +134,33 @@ public class Address extends DataType implements ICompositeType {
           return AddressType.BOTH;
         throw new IllegalArgumentException("Unknown AddressType code '"+codeString+"'");
         }
-        public Enumeration<AddressType> fromType(Base code) throws FHIRException {
+        public Enumeration<AddressType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<AddressType>(this);
+            return new Enumeration<AddressType>(this, AddressType.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<AddressType>(this, AddressType.NULL, code);
         if ("postal".equals(codeString))
-          return new Enumeration<AddressType>(this, AddressType.POSTAL);
+          return new Enumeration<AddressType>(this, AddressType.POSTAL, code);
         if ("physical".equals(codeString))
-          return new Enumeration<AddressType>(this, AddressType.PHYSICAL);
+          return new Enumeration<AddressType>(this, AddressType.PHYSICAL, code);
         if ("both".equals(codeString))
-          return new Enumeration<AddressType>(this, AddressType.BOTH);
+          return new Enumeration<AddressType>(this, AddressType.BOTH, code);
         throw new FHIRException("Unknown AddressType code '"+codeString+"'");
         }
     public String toCode(AddressType code) {
-      if (code == AddressType.POSTAL)
+       if (code == AddressType.NULL)
+           return null;
+       if (code == AddressType.POSTAL)
         return "postal";
       if (code == AddressType.PHYSICAL)
         return "physical";
       if (code == AddressType.BOTH)
         return "both";
       return "?";
-      }
+   }
     public String toSystem(AddressType code) {
       return code.getSystem();
       }
@@ -209,6 +216,7 @@ public class Address extends DataType implements ICompositeType {
             case TEMP: return "temp";
             case OLD: return "old";
             case BILLING: return "billing";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -219,6 +227,7 @@ public class Address extends DataType implements ICompositeType {
             case TEMP: return "http://hl7.org/fhir/address-use";
             case OLD: return "http://hl7.org/fhir/address-use";
             case BILLING: return "http://hl7.org/fhir/address-use";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -229,6 +238,7 @@ public class Address extends DataType implements ICompositeType {
             case TEMP: return "A temporary address. The period can provide more detailed information.";
             case OLD: return "This address is no longer in use (or was never correct but retained for records).";
             case BILLING: return "An address to be used to send bills, invoices, receipts etc.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -239,6 +249,7 @@ public class Address extends DataType implements ICompositeType {
             case TEMP: return "Temporary";
             case OLD: return "Old / Incorrect";
             case BILLING: return "Billing";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -261,28 +272,30 @@ public class Address extends DataType implements ICompositeType {
           return AddressUse.BILLING;
         throw new IllegalArgumentException("Unknown AddressUse code '"+codeString+"'");
         }
-        public Enumeration<AddressUse> fromType(Base code) throws FHIRException {
+        public Enumeration<AddressUse> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<AddressUse>(this);
+            return new Enumeration<AddressUse>(this, AddressUse.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<AddressUse>(this, AddressUse.NULL, code);
         if ("home".equals(codeString))
-          return new Enumeration<AddressUse>(this, AddressUse.HOME);
+          return new Enumeration<AddressUse>(this, AddressUse.HOME, code);
         if ("work".equals(codeString))
-          return new Enumeration<AddressUse>(this, AddressUse.WORK);
+          return new Enumeration<AddressUse>(this, AddressUse.WORK, code);
         if ("temp".equals(codeString))
-          return new Enumeration<AddressUse>(this, AddressUse.TEMP);
+          return new Enumeration<AddressUse>(this, AddressUse.TEMP, code);
         if ("old".equals(codeString))
-          return new Enumeration<AddressUse>(this, AddressUse.OLD);
+          return new Enumeration<AddressUse>(this, AddressUse.OLD, code);
         if ("billing".equals(codeString))
-          return new Enumeration<AddressUse>(this, AddressUse.BILLING);
+          return new Enumeration<AddressUse>(this, AddressUse.BILLING, code);
         throw new FHIRException("Unknown AddressUse code '"+codeString+"'");
         }
     public String toCode(AddressUse code) {
-      if (code == AddressUse.HOME)
+       if (code == AddressUse.NULL)
+           return null;
+       if (code == AddressUse.HOME)
         return "home";
       if (code == AddressUse.WORK)
         return "work";
@@ -293,7 +306,7 @@ public class Address extends DataType implements ICompositeType {
       if (code == AddressUse.BILLING)
         return "billing";
       return "?";
-      }
+   }
     public String toSystem(AddressUse code) {
       return code.getSystem();
       }
@@ -976,6 +989,35 @@ public class Address extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("use")) {
+          value = new AddressUseEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.use = (Enumeration) value; // Enumeration<AddressUse>
+        } else if (name.equals("type")) {
+          value = new AddressTypeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.type = (Enumeration) value; // Enumeration<AddressType>
+        } else if (name.equals("text")) {
+          this.text = null;
+        } else if (name.equals("line")) {
+          this.getLine().remove(value);
+        } else if (name.equals("city")) {
+          this.city = null;
+        } else if (name.equals("district")) {
+          this.district = null;
+        } else if (name.equals("state")) {
+          this.state = null;
+        } else if (name.equals("postalCode")) {
+          this.postalCode = null;
+        } else if (name.equals("country")) {
+          this.country = null;
+        } else if (name.equals("period")) {
+          this.period = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1015,31 +1057,31 @@ public class Address extends DataType implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("use")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Address.use");
+          throw new FHIRException("Cannot call addChild on a singleton property Address.use");
         }
         else if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Address.type");
+          throw new FHIRException("Cannot call addChild on a singleton property Address.type");
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Address.text");
+          throw new FHIRException("Cannot call addChild on a singleton property Address.text");
         }
         else if (name.equals("line")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Address.line");
+          throw new FHIRException("Cannot call addChild on a singleton property Address.line");
         }
         else if (name.equals("city")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Address.city");
+          throw new FHIRException("Cannot call addChild on a singleton property Address.city");
         }
         else if (name.equals("district")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Address.district");
+          throw new FHIRException("Cannot call addChild on a singleton property Address.district");
         }
         else if (name.equals("state")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Address.state");
+          throw new FHIRException("Cannot call addChild on a singleton property Address.state");
         }
         else if (name.equals("postalCode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Address.postalCode");
+          throw new FHIRException("Cannot call addChild on a singleton property Address.postalCode");
         }
         else if (name.equals("country")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Address.country");
+          throw new FHIRException("Cannot call addChild on a singleton property Address.country");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -1058,6 +1100,10 @@ public class Address extends DataType implements ICompositeType {
         Address dst = new Address();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Address) dst);
       }
 
       public void copyValues(Address dst) {

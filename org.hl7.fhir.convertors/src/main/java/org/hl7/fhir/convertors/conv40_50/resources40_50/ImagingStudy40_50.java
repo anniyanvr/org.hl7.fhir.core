@@ -11,8 +11,7 @@ import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.UnsignedInt40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.model.CodeableReference;
-import org.hl7.fhir.r5.model.ImagingStudy.ImagingStudyProcedureComponent;
+import org.hl7.fhir.r5.model.*;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -54,7 +53,8 @@ public class ImagingStudy40_50 {
       tgt.addIdentifier(Identifier40_50.convertIdentifier(t));
     if (src.hasStatus())
       tgt.setStatusElement(convertImagingStudyStatus(src.getStatusElement()));
-    for (org.hl7.fhir.r4.model.Coding t : src.getModality()) tgt.addModality(Coding40_50.convertCoding(t));
+    for (org.hl7.fhir.r4.model.Coding t : src.getModality())  
+      tgt.addModality(new CodeableConcept().addCoding(Coding40_50.convertCoding(t)));
     if (src.hasSubject())
       tgt.setSubject(Reference40_50.convertReference(src.getSubject()));
     if (src.hasEncounter())
@@ -64,17 +64,17 @@ public class ImagingStudy40_50 {
     for (org.hl7.fhir.r4.model.Reference t : src.getBasedOn()) tgt.addBasedOn(Reference40_50.convertReference(t));
     if (src.hasReferrer())
       tgt.setReferrer(Reference40_50.convertReference(src.getReferrer()));
-    for (org.hl7.fhir.r4.model.Reference t : src.getInterpreter())
-      tgt.addInterpreter(Reference40_50.convertReference(t));
+//    for (org.hl7.fhir.r4.model.Reference t : src.getInterpreter())
+//      tgt.addInterpreter(Reference40_50.convertReference(t));
     for (org.hl7.fhir.r4.model.Reference t : src.getEndpoint()) tgt.addEndpoint(Reference40_50.convertReference(t));
     if (src.hasNumberOfSeries())
       tgt.setNumberOfSeriesElement(UnsignedInt40_50.convertUnsignedInt(src.getNumberOfSeriesElement()));
     if (src.hasNumberOfInstances())
       tgt.setNumberOfInstancesElement(UnsignedInt40_50.convertUnsignedInt(src.getNumberOfInstancesElement()));
     if (src.hasProcedureReference())
-      tgt.addProcedure().setValue(Reference40_50.convertReference(src.getProcedureReference()));
+      tgt.addProcedure().setReference(Reference40_50.convertReference(src.getProcedureReference()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getProcedureCode())
-      tgt.addProcedure().setValue(CodeableConcept40_50.convertCodeableConcept(t));
+      tgt.addProcedure().setConcept(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasLocation())
       tgt.setLocation(Reference40_50.convertReference(src.getLocation()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getReasonCode())
@@ -98,7 +98,9 @@ public class ImagingStudy40_50 {
       tgt.addIdentifier(Identifier40_50.convertIdentifier(t));
     if (src.hasStatus())
       tgt.setStatusElement(convertImagingStudyStatus(src.getStatusElement()));
-    for (org.hl7.fhir.r5.model.Coding t : src.getModality()) tgt.addModality(Coding40_50.convertCoding(t));
+    for (CodeableConcept t : src.getModality())
+      for (Coding tt : t.getCoding())
+        tgt.addModality(Coding40_50.convertCoding(tt));
     if (src.hasSubject())
       tgt.setSubject(Reference40_50.convertReference(src.getSubject()));
     if (src.hasEncounter())
@@ -108,18 +110,18 @@ public class ImagingStudy40_50 {
     for (org.hl7.fhir.r5.model.Reference t : src.getBasedOn()) tgt.addBasedOn(Reference40_50.convertReference(t));
     if (src.hasReferrer())
       tgt.setReferrer(Reference40_50.convertReference(src.getReferrer()));
-    for (org.hl7.fhir.r5.model.Reference t : src.getInterpreter())
-      tgt.addInterpreter(Reference40_50.convertReference(t));
+//    for (org.hl7.fhir.r5.model.Reference t : src.getInterpreter())
+//      tgt.addInterpreter(Reference40_50.convertReference(t));
     for (org.hl7.fhir.r5.model.Reference t : src.getEndpoint()) tgt.addEndpoint(Reference40_50.convertReference(t));
     if (src.hasNumberOfSeries())
       tgt.setNumberOfSeriesElement(UnsignedInt40_50.convertUnsignedInt(src.getNumberOfSeriesElement()));
     if (src.hasNumberOfInstances())
       tgt.setNumberOfInstancesElement(UnsignedInt40_50.convertUnsignedInt(src.getNumberOfInstancesElement()));
-    for (ImagingStudyProcedureComponent t : src.getProcedure()) {
-      if (t.hasValueCodeableConcept())
-        tgt.addProcedureCode(CodeableConcept40_50.convertCodeableConcept(t.getValueCodeableConcept()));
-      if (t.hasValueReference()) {
-        tgt.setProcedureReference(Reference40_50.convertReference(t.getValueReference()));
+    for (CodeableReference t : src.getProcedure()) {
+      if (t.hasConcept())
+        tgt.addProcedureCode(CodeableConcept40_50.convertCodeableConcept(t.getConcept()));
+      if (t.hasReference()) {
+        tgt.setProcedureReference(Reference40_50.convertReference(t.getReference()));
       }
     }
     if (src.hasLocation())
@@ -139,81 +141,89 @@ public class ImagingStudy40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.ImagingStudy.ImagingStudyStatus> convertImagingStudyStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.ImagingStudy.ImagingStudyStatus> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.ImagingStudy.ImagingStudyStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case REGISTERED:
-        tgt.setValue(org.hl7.fhir.r5.model.ImagingStudy.ImagingStudyStatus.REGISTERED);
-        break;
-      case AVAILABLE:
-        tgt.setValue(org.hl7.fhir.r5.model.ImagingStudy.ImagingStudyStatus.AVAILABLE);
-        break;
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r5.model.ImagingStudy.ImagingStudyStatus.CANCELLED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.ImagingStudy.ImagingStudyStatus.ENTEREDINERROR);
-        break;
-      case UNKNOWN:
-        tgt.setValue(org.hl7.fhir.r5.model.ImagingStudy.ImagingStudyStatus.UNKNOWN);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.ImagingStudy.ImagingStudyStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<ImagingStudy.ImagingStudyStatus> tgt = new Enumeration<>(new ImagingStudy.ImagingStudyStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case REGISTERED:
+                  tgt.setValue(ImagingStudy.ImagingStudyStatus.REGISTERED);
+                  break;
+              case AVAILABLE:
+                  tgt.setValue(ImagingStudy.ImagingStudyStatus.AVAILABLE);
+                  break;
+              case CANCELLED:
+                  tgt.setValue(ImagingStudy.ImagingStudyStatus.CANCELLED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(ImagingStudy.ImagingStudyStatus.ENTEREDINERROR);
+                  break;
+              case UNKNOWN:
+                  tgt.setValue(ImagingStudy.ImagingStudyStatus.UNKNOWN);
+                  break;
+              default:
+                  tgt.setValue(ImagingStudy.ImagingStudyStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus> convertImagingStudyStatus(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.ImagingStudy.ImagingStudyStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case REGISTERED:
-        tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.REGISTERED);
-        break;
-      case AVAILABLE:
-        tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.AVAILABLE);
-        break;
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.CANCELLED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.ENTEREDINERROR);
-        break;
-      case UNKNOWN:
-        tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.UNKNOWN);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case REGISTERED:
+                  tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.REGISTERED);
+                  break;
+              case AVAILABLE:
+                  tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.AVAILABLE);
+                  break;
+              case CANCELLED:
+                  tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.CANCELLED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.ENTEREDINERROR);
+                  break;
+              case UNKNOWN:
+                  tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.UNKNOWN);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r5.model.ImagingStudy.ImagingStudySeriesComponent convertImagingStudySeriesComponent(org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ImagingStudy.ImagingStudySeriesComponent tgt = new org.hl7.fhir.r5.model.ImagingStudy.ImagingStudySeriesComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasUid())
       tgt.setUidElement(Id40_50.convertId(src.getUidElement()));
     if (src.hasNumber())
       tgt.setNumberElement(UnsignedInt40_50.convertUnsignedInt(src.getNumberElement()));
     if (src.hasModality())
-      tgt.setModality(Coding40_50.convertCoding(src.getModality()));
+      tgt.setModality(new CodeableConcept().addCoding(Coding40_50.convertCoding(src.getModality())));
     if (src.hasDescription())
       tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
     if (src.hasNumberOfInstances())
       tgt.setNumberOfInstancesElement(UnsignedInt40_50.convertUnsignedInt(src.getNumberOfInstancesElement()));
     for (org.hl7.fhir.r4.model.Reference t : src.getEndpoint()) tgt.addEndpoint(Reference40_50.convertReference(t));
     if (src.hasBodySite())
-      tgt.setBodySite(Coding40_50.convertCoding(src.getBodySite()));
+      tgt.setBodySite(new CodeableReference(new CodeableConcept(Coding40_50.convertCoding(src.getBodySite()))));
     if (src.hasLaterality())
-      tgt.setLaterality(Coding40_50.convertCoding(src.getLaterality()));
+      tgt.setLaterality(new CodeableConcept(Coding40_50.convertCoding(src.getLaterality())));
     for (org.hl7.fhir.r4.model.Reference t : src.getSpecimen()) tgt.addSpecimen(Reference40_50.convertReference(t));
     if (src.hasStarted())
       tgt.setStartedElement(DateTime40_50.convertDateTime(src.getStartedElement()));
@@ -228,22 +238,22 @@ public class ImagingStudy40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesComponent tgt = new org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasUid())
       tgt.setUidElement(Id40_50.convertId(src.getUidElement()));
     if (src.hasNumber())
       tgt.setNumberElement(UnsignedInt40_50.convertUnsignedInt(src.getNumberElement()));
     if (src.hasModality())
-      tgt.setModality(Coding40_50.convertCoding(src.getModality()));
+      tgt.setModality(Coding40_50.convertCoding(src.getModality().getCodingFirstRep()));
     if (src.hasDescription())
       tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
     if (src.hasNumberOfInstances())
       tgt.setNumberOfInstancesElement(UnsignedInt40_50.convertUnsignedInt(src.getNumberOfInstancesElement()));
     for (org.hl7.fhir.r5.model.Reference t : src.getEndpoint()) tgt.addEndpoint(Reference40_50.convertReference(t));
-    if (src.hasBodySite())
-      tgt.setBodySite(Coding40_50.convertCoding(src.getBodySite()));
-    if (src.hasLaterality())
-      tgt.setLaterality(Coding40_50.convertCoding(src.getLaterality()));
+    if (src.getBodySite().getConcept().hasCoding())
+      tgt.setBodySite(Coding40_50.convertCoding(src.getBodySite().getConcept().getCodingFirstRep()));
+    if (src.getLaterality().hasCoding())
+      tgt.setLaterality(Coding40_50.convertCoding(src.getLaterality().getCodingFirstRep()));
     for (org.hl7.fhir.r5.model.Reference t : src.getSpecimen()) tgt.addSpecimen(Reference40_50.convertReference(t));
     if (src.hasStarted())
       tgt.setStartedElement(DateTime40_50.convertDateTime(src.getStartedElement()));
@@ -258,7 +268,7 @@ public class ImagingStudy40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ImagingStudy.ImagingStudySeriesPerformerComponent tgt = new org.hl7.fhir.r5.model.ImagingStudy.ImagingStudySeriesPerformerComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasFunction())
       tgt.setFunction(CodeableConcept40_50.convertCodeableConcept(src.getFunction()));
     if (src.hasActor())
@@ -270,7 +280,7 @@ public class ImagingStudy40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesPerformerComponent tgt = new org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesPerformerComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasFunction())
       tgt.setFunction(CodeableConcept40_50.convertCodeableConcept(src.getFunction()));
     if (src.hasActor())
@@ -282,7 +292,7 @@ public class ImagingStudy40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ImagingStudy.ImagingStudySeriesInstanceComponent tgt = new org.hl7.fhir.r5.model.ImagingStudy.ImagingStudySeriesInstanceComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasUid())
       tgt.setUidElement(Id40_50.convertId(src.getUidElement()));
     if (src.hasSopClass())
@@ -298,7 +308,7 @@ public class ImagingStudy40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesInstanceComponent tgt = new org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesInstanceComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasUid())
       tgt.setUidElement(Id40_50.convertId(src.getUidElement()));
     if (src.hasSopClass())

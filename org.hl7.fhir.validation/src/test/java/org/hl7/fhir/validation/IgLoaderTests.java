@@ -1,0 +1,177 @@
+package org.hl7.fhir.validation;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.model.ModelContext;
+import org.hl7.fhir.model.core.VersionResolutionRules;
+import org.hl7.fhir.services.context.IWorkerContext;
+
+import org.hl7.fhir.standalone.context.SimpleWorkerContext;
+import org.hl7.fhir.model.core.ImplementationGuide;
+import org.hl7.fhir.model.core.ValueSet;
+import org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager;
+import org.hl7.fhir.utilities.ByteProvider;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+public class IgLoaderTests {
+
+  final static String DUMMY_PATH = Paths.get("src","test","resources", "igLoad", "my-dummy-ig.json").toAbsolutePath().toString();
+  final static String DUMMY_FOO_PATH = Paths.get("src","test","resources", "igLoad", "my-dummy-ig[foo].json").toAbsolutePath().toString();
+
+  @Mock
+  FilesystemPackageCacheManager filesystemPackageCacheManager;
+
+  @Mock
+  SimpleWorkerContext simpleWorkerContext;
+
+  @Mock
+  org.hl7.fhir.utilities.TimeTracker timeTracker;
+
+  private static Stream<Arguments> getTestIgLoadParams() {
+      return Stream.of(
+              Arguments.of(DUMMY_PATH, DUMMY_PATH, "4.0.1"),
+              Arguments.of("[3.0.2]" + DUMMY_PATH, DUMMY_PATH, "3.0.2"),
+              Arguments.of("[" + DUMMY_PATH, "[" + DUMMY_PATH, "4.0.1"),
+              Arguments.of(DUMMY_FOO_PATH, DUMMY_FOO_PATH, "4.0.1"),
+              Arguments.of("[3.0.2]"+DUMMY_FOO_PATH, DUMMY_FOO_PATH, "3.0.2")
+      );
+  }
+
+  @ParameterizedTest
+  @MethodSource("getTestIgLoadParams")
+  public void testIgLoad(String packageString, String expectedPackageName, String expectedFhirVersion) throws IOException {
+
+    final byte[] dummyBytes = {};
+    final String dummyKey = "dummyKey";
+
+    final Map<String, ByteProvider> dummyMap = new HashMap<>();
+    dummyMap.put(dummyKey, ByteProvider.forBytes(dummyBytes));
+
+
+      IgLoader igLoader = Mockito.spy(new IgLoader(
+      filesystemPackageCacheManager,
+      simpleWorkerContext,
+      "4.0.1"
+    ));
+
+    doReturn(dummyMap).when(igLoader).loadIgSource(expectedPackageName, false, true);
+    doReturn(timeTracker).when(simpleWorkerContext).clock();
+
+    List<ImplementationGuide> igs = Collections.emptyList();
+    igLoader.loadIg( igs,
+      Collections.emptyMap(),
+      packageString,
+   false);
+
+    Mockito.verify(igLoader, times(1)).loadResourceByVersion(expectedFhirVersion, dummyBytes, dummyKey);
+  }
+
+  @Test
+  public void testFailIfInvalidFHIRVersion() throws IOException {
+    IgLoader igLoader = Mockito.spy(new IgLoader(
+      filesystemPackageCacheManager,
+      simpleWorkerContext,
+      "4.0.1"
+    ));
+    Exception exception = assertThrows(FHIRException.class, () -> {
+
+      List<ImplementationGuide> igs = Collections.emptyList();
+      igLoader.loadIg(igs,
+        Collections.emptyMap(),
+        "[0.1.2]" + DUMMY_PATH,
+        false);
+    });
+
+    assertLinesMatch(Arrays.asList(".*Unsupported FHIR Version.*"), Arrays.asList(exception.getMessage()));
+  }
+
+  public static Stream<Arguments> zipSlipData()  {
+
+    return Stream.of(
+      Arguments.of("/zip-slip/zip-slip.zip", "Entry with an illegal path: ../evil.txt"),
+      Arguments.of("/zip-slip/zip-slip-2.zip", "Entry with an illegal path: child/../../evil.txt"),
+      Arguments.of("/zip-slip/zip-slip-peer.zip", "Entry with an illegal path: ../childpeer/evil.txt"),
+      Arguments.of("/zip-slip/zip-slip-win.zip", "Entry with an illegal path: ../evil.txt")
+    );
+  }
+
+  @ParameterizedTest(name = "{index}: file {0}")
+  @MethodSource("zipSlipData")
+  public void testReadZipSlip(String classPath, String expectedMessage) {
+    RuntimeException thrown = Assertions.assertThrows(RuntimeException.class, () -> {
+      IgLoader igLoader = Mockito.spy(new IgLoader(
+        filesystemPackageCacheManager,
+        simpleWorkerContext,
+        "4.0.1"
+      ));
+      igLoader.readZip(IgLoaderTests.class.getResourceAsStream((classPath)));
+    });
+    assertNotNull(thrown);
+    Assertions.assertEquals(expectedMessage, thrown.getMessage());
+  }
+
+  @Test
+  public void testReadZip() throws IOException {
+    IgLoader igLoader = Mockito.spy(new IgLoader(
+      filesystemPackageCacheManager,
+      simpleWorkerContext,
+      "4.0.1"
+    ));
+    Map<String, ByteProvider> map = igLoader.readZip(IgLoaderTests.class.getResourceAsStream("/zip-slip/zip-normal.zip"));
+    final String testPath = "zip-normal/depth1/test.txt";
+    assertTrue(map.containsKey(testPath));
+    String testFileContent = new String(map.get(testPath).getBytes(), StandardCharsets.UTF_8);
+    Assertions.assertEquals("dummy file content", testFileContent);
+  }
+
+
+  @Test
+  public void testCrossVersionPrecedence() throws IOException {
+    FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager.Builder().withTestingCacheFolder().build();
+    SimpleWorkerContext simpleWorkerContext = new SimpleWorkerContext.SimpleWorkerContextBuilder(ModelContext.fullCoreContext()).withAllowLoadingDuplicates(true).fromPackage(pcm.loadPackage("hl7.fhir.r4.core"));
+    simpleWorkerContext.setPackageManager(pcm);
+    simpleWorkerContext.setLoaderFactory(new IgLoader(simpleWorkerContext.packageManager(), simpleWorkerContext, simpleWorkerContext.getFHIRVersion(), true));
+
+    ValueSet es = simpleWorkerContext.fetchResource(ValueSet.class, "http://hl7.org/fhir/ValueSet/encounter-status", VersionResolutionRules.LATEST, null);
+    ValueSet es4 = simpleWorkerContext.fetchResource(ValueSet.class, "http://hl7.org/fhir/ValueSet/encounter-status", VersionResolutionRules.LATEST, "4.0.1");
+    ValueSet es5 = simpleWorkerContext.fetchResource(ValueSet.class, "http://hl7.org/fhir/ValueSet/encounter-status", VersionResolutionRules.LATEST, "5.0.0");
+    assertNotNull(es);
+    assertEquals("4.0.1", es.getVersion());
+    assertNotNull(es4);
+    assertNull(es5);
+
+    simpleWorkerContext.loadPackage("hl7.fhir.r5.core");
+    es = simpleWorkerContext.fetchResource(ValueSet.class, "http://hl7.org/fhir/ValueSet/encounter-status", VersionResolutionRules.LATEST, null);
+    es4 = simpleWorkerContext.fetchResource(ValueSet.class, "http://hl7.org/fhir/ValueSet/encounter-status", VersionResolutionRules.LATEST, "4.0.1");
+    es5 = simpleWorkerContext.fetchResource(ValueSet.class, "http://hl7.org/fhir/ValueSet/encounter-status", VersionResolutionRules.LATEST, "5.0.0");
+    assertNotNull(es);
+    assertEquals("4.0.1", es.getVersion());
+    assertNotNull(es4);
+    assertNotNull(es5);
+
+  }
+}

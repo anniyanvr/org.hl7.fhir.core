@@ -203,12 +203,12 @@ public class Encounter extends DomainResource {
           return EncounterStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown EncounterStatus code '"+codeString+"'");
         }
-        public Enumeration<EncounterStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<EncounterStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<EncounterStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("planned".equals(codeString))
@@ -232,7 +232,9 @@ public class Encounter extends DomainResource {
         throw new FHIRException("Unknown EncounterStatus code '"+codeString+"'");
         }
     public String toCode(EncounterStatus code) {
-      if (code == EncounterStatus.PLANNED)
+       if (code == EncounterStatus.NULL)
+           return null;
+       if (code == EncounterStatus.PLANNED)
         return "planned";
       if (code == EncounterStatus.ARRIVED)
         return "arrived";
@@ -251,7 +253,7 @@ public class Encounter extends DomainResource {
       if (code == EncounterStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(EncounterStatus code) {
       return code.getSystem();
       }
@@ -355,12 +357,12 @@ Not to be used when the patient is currently at the location
           return EncounterLocationStatus.COMPLETED;
         throw new IllegalArgumentException("Unknown EncounterLocationStatus code '"+codeString+"'");
         }
-        public Enumeration<EncounterLocationStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<EncounterLocationStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<EncounterLocationStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("planned".equals(codeString))
@@ -374,7 +376,9 @@ Not to be used when the patient is currently at the location
         throw new FHIRException("Unknown EncounterLocationStatus code '"+codeString+"'");
         }
     public String toCode(EncounterLocationStatus code) {
-      if (code == EncounterLocationStatus.PLANNED)
+       if (code == EncounterLocationStatus.NULL)
+           return null;
+       if (code == EncounterLocationStatus.PLANNED)
         return "planned";
       if (code == EncounterLocationStatus.ACTIVE)
         return "active";
@@ -383,7 +387,7 @@ Not to be used when the patient is currently at the location
       if (code == EncounterLocationStatus.COMPLETED)
         return "completed";
       return "?";
-      }
+   }
     public String toSystem(EncounterLocationStatus code) {
       return code.getSystem();
       }
@@ -569,7 +573,7 @@ Not to be used when the patient is currently at the location
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Encounter.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Encounter.status");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -1369,7 +1373,7 @@ Not to be used when the patient is currently at the location
           return this.role;
         }
         else if (name.equals("rank")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Encounter.rank");
+          throw new FHIRException("Cannot call addChild on a singleton property Encounter.rank");
         }
         else
           return super.addChild(name);
@@ -2346,7 +2350,7 @@ Not to be used when the patient is currently at the location
           return this.location;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Encounter.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Encounter.status");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -3004,28 +3008,6 @@ This would be used for a case where an admission starts of as an emergency encou
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<EpisodeOfCare> getEpisodeOfCareTarget() { 
-      if (this.episodeOfCareTarget == null)
-        this.episodeOfCareTarget = new ArrayList<EpisodeOfCare>();
-      return this.episodeOfCareTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public EpisodeOfCare addEpisodeOfCareTarget() { 
-      EpisodeOfCare r = new EpisodeOfCare();
-      if (this.episodeOfCareTarget == null)
-        this.episodeOfCareTarget = new ArrayList<EpisodeOfCare>();
-      this.episodeOfCareTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #incomingReferral} (The referral request this encounter satisfies (incoming referral).)
      */
     public List<Reference> getIncomingReferral() { 
@@ -3076,28 +3058,6 @@ This would be used for a case where an admission starts of as an emergency encou
         addIncomingReferral();
       }
       return getIncomingReferral().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<ReferralRequest> getIncomingReferralTarget() { 
-      if (this.incomingReferralTarget == null)
-        this.incomingReferralTarget = new ArrayList<ReferralRequest>();
-      return this.incomingReferralTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public ReferralRequest addIncomingReferralTarget() { 
-      ReferralRequest r = new ReferralRequest();
-      if (this.incomingReferralTarget == null)
-        this.incomingReferralTarget = new ArrayList<ReferralRequest>();
-      this.incomingReferralTarget.add(r);
-      return r;
     }
 
     /**
@@ -3402,28 +3362,6 @@ This would be used for a case where an admission starts of as an emergency encou
         addAccount();
       }
       return getAccount().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Account> getAccountTarget() { 
-      if (this.accountTarget == null)
-        this.accountTarget = new ArrayList<Account>();
-      return this.accountTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Account addAccountTarget() { 
-      Account r = new Account();
-      if (this.accountTarget == null)
-        this.accountTarget = new ArrayList<Account>();
-      this.accountTarget.add(r);
-      return r;
     }
 
     /**
@@ -3860,7 +3798,7 @@ This would be used for a case where an admission starts of as an emergency encou
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Encounter.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Encounter.status");
         }
         else if (name.equals("statusHistory")) {
           return addStatusHistory();

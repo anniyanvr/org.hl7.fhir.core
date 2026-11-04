@@ -2,146 +2,202 @@ package org.hl7.fhir.r5.renderers;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.hl7.fhir.exceptions.DefinitionException;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
-import org.hl7.fhir.r5.model.CodeType;
-import org.hl7.fhir.r5.model.DomainResource;
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
 import org.hl7.fhir.r5.model.Enumeration;
-import org.hl7.fhir.r5.model.Extension;
+import org.hl7.fhir.r5.model.Enumerations.SearchComparator;
+import org.hl7.fhir.r5.model.Enumerations.SearchModifierCode;
+import org.hl7.fhir.r5.model.Enumerations.VersionIndependentResourceTypesAll;
 import org.hl7.fhir.r5.model.OperationDefinition;
-import org.hl7.fhir.r5.model.OperationDefinition.OperationDefinitionParameterComponent;
 import org.hl7.fhir.r5.model.Resource;
 import org.hl7.fhir.r5.model.SearchParameter;
-import org.hl7.fhir.r5.model.SearchParameter.SearchComparator;
-import org.hl7.fhir.r5.model.SearchParameter.SearchModifierCode;
 import org.hl7.fhir.r5.model.SearchParameter.SearchParameterComponentComponent;
 import org.hl7.fhir.r5.model.StringType;
 import org.hl7.fhir.r5.model.StructureDefinition;
 import org.hl7.fhir.r5.renderers.utils.RenderingContext;
-import org.hl7.fhir.r5.renderers.utils.Resolver.ResourceContext;
+import org.hl7.fhir.r5.renderers.utils.RenderingContext.KnownLinkType;
+import org.hl7.fhir.r5.renderers.utils.ResourceWrapper;
 import org.hl7.fhir.r5.utils.EOperationOutcome;
-import org.hl7.fhir.r5.utils.ToolingExtensions;
+
+
+import org.hl7.fhir.utilities.StandardsStatus;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.i18n.RenderingI18nContext;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
+
 
 public class SearchParameterRenderer extends TerminologyRenderer {
 
-  public SearchParameterRenderer(RenderingContext context) {
-    super(context);
-  }
 
-  public SearchParameterRenderer(RenderingContext context, ResourceContext rcontext) {
-    super(context, rcontext);
+  public SearchParameterRenderer(RenderingContext context) { 
+    super(context); 
+  } 
+ 
+  @Override
+  public void buildNarrative(RenderingStatus status, XhtmlNode x, ResourceWrapper r) throws FHIRFormatError, DefinitionException, IOException, FHIRException, EOperationOutcome {
+    if (r.isDirect()) {
+      renderResourceTechDetails(r, x);
+      genSummaryTable(status, x, (SearchParameter) r.getBase());
+
+      render(status, x, (SearchParameter) r.getBase());      
+    } else {
+      // the intention is to change this in the future
+      x.para().tx("SearchParameterRenderer only renders native resources directly");
+    }
   }
   
-  public boolean render(XhtmlNode x, Resource dr) throws IOException, FHIRException, EOperationOutcome {
-    return render(x, (OperationDefinition) dr);
+  
+  @Override
+  public String buildSummary(ResourceWrapper r) throws UnsupportedEncodingException, IOException {
+    return canonicalTitle(r);
   }
 
-  public boolean render(XhtmlNode x, SearchParameter spd) throws IOException, FHIRException, EOperationOutcome {
-    x.h2().addText(spd.getName());
+  public void render(RenderingStatus status, XhtmlNode x, SearchParameter spd) throws IOException, FHIRException, EOperationOutcome {
+    XhtmlNode h2 = x.h2();
+    h2.addText(spd.getName());
+    StandardsStatus ss = ExtensionUtilities.getStandardsStatus(spd);
+    if (context.isShowStandardsStatus() && ss != context.getDefaultStandardsStatus()) {
+      genStandardsStatus(h2, ss);
+    }
     XhtmlNode p =  x.para();
-    p.tx("Parameter ");
+    p.tx(context.formatPhrase(RenderingI18nContext.GENERAL_PAR)+" ");
     p.code().tx(spd.getCode());
     p.tx(":");
     p.code().tx(spd.getType().toCode());
     addMarkdown(x, spd.getDescription());
 
-    XhtmlNode tbl = x.table("grid");
+    XhtmlNode tbl = x.table("grid", false).markGenerated(!context.forValidResource());
     XhtmlNode tr = tbl.tr();
-    tr.td().tx(Utilities.pluralize("Resource", spd.getBase().size()));
+    tr.td().tx(Utilities.pluralize(context.formatPhrase(RenderingI18nContext.GENERAL_RESOURCE), spd.getBase().size()));
     XhtmlNode td = tr.td();
-    for (CodeType t : spd.getBase()) {
-      StructureDefinition sd = context.getWorker().fetchTypeDefinition(t.toString());
-      if (sd != null && sd.hasUserData("path")) {
-        td.sep(", ").ah(sd.getUserString("path")).tx(t.getCode());
+    for (Enumeration<VersionIndependentResourceTypesAll> t : spd.getBase()) {
+      StructureDefinition sd = context.getWorker().fetchTypeDefinition(t.getCode());
+      if (sd != null && sd.hasWebPath()) {
+        td.sep(", ");
+        td.ah(context.prefixLocalHref(context.prefixLocalHref(sd.getWebPath()))).tx(t.getCode());
       } else {
-        td.sep(", ").tx(t.getCode());
+        td.sep(", ");
+        td.tx(t.getCode());
       }
     }
     tr = tbl.tr();
-    tr.td().tx("Expression");
+    tr.td().tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_EXP));
     if (spd.hasExpression()) {
       tr.td().code().tx(spd.getExpression());
     } else {
-      tr.td().tx("(none)");
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_NONE));
     }
-    if (spd.hasXpathUsage()) {
+    if (spd.hasProcessingMode()) {
       tr = tbl.tr();
-      tr.td().tx("Usage");
-      tr.td().tx(spd.getXpathUsage().getDisplay());      
-    }
-    if (spd.hasXpath()) {
-      tr = tbl.tr();
-      tr.td().tx("XPath");
-      tr.td().code().tx(spd.getXpath());      
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_PROC));
+      tr.td().tx(spd.getProcessingMode().getDisplay());      
     }
     if (spd.hasTarget()) {
       tr = tbl.tr();
-      tr.td().tx(Utilities.pluralize("Target Resources", spd.getTarget().size()));
+      tr.td().tx(Utilities.pluralize(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_REND_TARGET), spd.getTarget().size()));
       td = tr.td();
-      for (CodeType t : spd.getTarget()) {
-        StructureDefinition sd = context.getWorker().fetchTypeDefinition(t.toString());
-        if (sd != null && sd.hasUserData("path")) {
-          td.sep(", ").ah(sd.getUserString("path")).tx(t.getCode());
-        } else {
-          td.sep(", ").tx(t.getCode());
+      if (isAllConcreteResources(spd.getTarget())) {
+        td.ah(context.prefixLocalHref(Utilities.pathURL(context.getLink(KnownLinkType.SPEC, true), "resourcelist.html"))).tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_RES));
+      } else {
+        for (Enumeration<VersionIndependentResourceTypesAll> t : spd.getTarget()) {
+          StructureDefinition sd = context.getWorker().fetchTypeDefinition(t.getCode());
+          if (sd != null && sd.hasWebPath()) {
+            td.sep(", ");
+            td.ah(context.prefixLocalHref(sd.getWebPath())).tx(t.getCode());
+          } else {
+            td.sep(", ");
+            td.tx(t.getCode());
+          }
         }
       }
     }
-    tr = tbl.tr();
-    tr.td().tx("Multiples");
-    if (spd.getMultipleAnd() && spd.getMultipleOr()) {
-      tr.td().tx("The parameter can repeat (and) and can have repeating values (or)");      
-    } else if (spd.getMultipleOr()) {
-      tr.td().tx("The parameter can repeat (and) but each repeat can only have one value");      
+    tr = tbl.tr();    
+    tr.td().tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_MULTIPLES));
+    XhtmlNode ul = tr.td().ul();
+    if (!spd.hasMultipleAnd()) {
+      ul.li().tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_MULTIPLE_AND_SERVER));
     } else if (spd.getMultipleAnd()) {
-      tr.td().tx("The parameter cannot repeat (and) but the single parameter can have multiple values (or)");      
-    } else { 
-      tr.td().tx("The parameter cannot repeat or have multiple values");
+      ul.li().tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_MULTIPLE_AND_REPEAT));
+    } else {
+      ul.li().tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_MULTIPLE_AND_APPEAR));
     }
+    if (!spd.hasMultipleOr()) {
+      ul.li().tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_MULTIPLE_OR_SERVER));
+    } else if (spd.getMultipleOr()) {
+      ul.li().tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_MULTIPLE_OR_MULTIPLE));
+    } else {
+      ul.li().tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_MULTIPLE_OR_ONE));
+    }
+
     if (spd.hasComparator()) {
       tr = tbl.tr();
-      tr.td().tx("Comparators");
-      td = tr.td().tx("Allowed: ");
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.GENERAL_COMPARATORS));
+      td = tr.td();
+      td.tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_ALLOWED)+" ");
       for (Enumeration<SearchComparator> t : spd.getComparator()) {
-        td.sep(", ").tx(t.asStringValue());
+        td.sep(", ");
+        td.tx(t.asStringValue());
       }      
     }
     if (spd.hasModifier()) {
       tr = tbl.tr();
-      tr.td().tx("Modifiers");
-      td = tr.td().tx("Allowed: ");
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.GENERAL_MODIFIERS));
+      td = tr.td();
+      td.tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_ALLOWED)+" ");
       for (Enumeration<SearchModifierCode> t : spd.getModifier()) {
-        td.sep(", ").tx(t.asStringValue());
+        td.sep(", ");
+        td.tx(t.asStringValue());
       }      
     }
     if (spd.hasChain()) {
       tr = tbl.tr();
-      tr.td().tx("Chains");
-      td = tr.td().tx("Allowed: ");
+      tr.td().tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_CHAIN));
+      td = tr.td();
+      td.tx(context.formatPhrase(RenderingI18nContext.SEARCH_PAR_ALLOWED)+" ");
       for (StringType t : spd.getChain()) {
-        td.sep(", ").tx(t.asStringValue());
+        td.sep(", ");
+        td.tx(t.asStringValue());
       }      
     }
     
     if (spd.hasComponent()) {
-      x.para().b().tx("Components");
-      tbl = x.table("grid");
+      x.para().b().tx(context.formatPhrase(RenderingI18nContext.GENERAL_COMPONENT));
+      tbl = x.table("grid", false).markGenerated(!context.forValidResource());
       for (SearchParameterComponentComponent t : spd.getComponent()) {
         tr = tbl.tr();
-        SearchParameter tsp = context.getWorker().fetchResource(SearchParameter.class, t.getDefinition());
-        if (tsp != null && tsp.hasUserData("path")) {
-          tr.td().ah(tsp.getUserString("path")).tx(tsp.present());          
+        SearchParameter tsp = context.getWorker().fetchResource(SearchParameter.class, t.getDefinition(), ExtensionUtilities.getVersionResolutionRules(t.getDefinitionElement()), null, spd);
+        if (tsp != null && tsp.hasWebPath()) {
+          tr.td().ah(context.prefixLocalHref(tsp.getWebPath())).tx(tsp.present());          
         } else {
           tr.td().tx(t.getDefinition());
         }
         tr.td().code().tx(t.getExpression());
+        var tdt = tr.td();
+        if (tsp != null) {
+          tdt.code().tx(tsp.getTypeElement().getCode());
+        }
       }
     }
-    return false;
+  }
+
+  private boolean isAllConcreteResources(List<Enumeration<VersionIndependentResourceTypesAll>> list) {
+    for (String s : context.getWorker().getResourceNames()) {
+      StructureDefinition sd = context.getWorker().fetchTypeDefinition(s);
+      if (!sd.getAbstract() && !Utilities.existsInList(sd.getType(), context.formatPhrase(RenderingI18nContext.GENERAL_PAR))) {
+        boolean found = false;
+        for (Enumeration<VersionIndependentResourceTypesAll> c : list) {
+          found = found || sd.getName().equals(c.getCode());
+        }
+        if (!found) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   public void describe(XhtmlNode x, OperationDefinition opd) {
@@ -154,7 +210,7 @@ public class SearchParameterRenderer extends TerminologyRenderer {
 
   @Override
   public String display(Resource r) throws UnsupportedEncodingException, IOException {
-    return ((OperationDefinition) r).present();
+    return ((SearchParameter) r).present();
   }
 
 }

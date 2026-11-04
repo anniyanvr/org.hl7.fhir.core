@@ -440,28 +440,6 @@ public class ImmunizationRecommendation extends DomainResource {
         }
 
         /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Immunization> getSupportingImmunizationTarget() { 
-          if (this.supportingImmunizationTarget == null)
-            this.supportingImmunizationTarget = new ArrayList<Immunization>();
-          return this.supportingImmunizationTarget;
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public Immunization addSupportingImmunizationTarget() { 
-          Immunization r = new Immunization();
-          if (this.supportingImmunizationTarget == null)
-            this.supportingImmunizationTarget = new ArrayList<Immunization>();
-          this.supportingImmunizationTarget.add(r);
-          return r;
-        }
-
-        /**
          * @return {@link #supportingPatientInformation} (Patient Information that supports the status and recommendation.  This includes patient observations, adverse reactions and allergy/intolerance information.)
          */
         public List<Reference> getSupportingPatientInformation() { 
@@ -512,16 +490,6 @@ public class ImmunizationRecommendation extends DomainResource {
             addSupportingPatientInformation();
           }
           return getSupportingPatientInformation().get(0);
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Resource> getSupportingPatientInformationTarget() { 
-          if (this.supportingPatientInformationTarget == null)
-            this.supportingPatientInformationTarget = new ArrayList<Resource>();
-          return this.supportingPatientInformationTarget;
         }
 
         protected void listChildren(List<Property> children) {
@@ -668,7 +636,7 @@ public class ImmunizationRecommendation extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImmunizationRecommendation.date");
+          throw new FHIRException("Cannot call addChild on a singleton property ImmunizationRecommendation.date");
         }
         else if (name.equals("vaccineCode")) {
           this.vaccineCode = new CodeableConcept();
@@ -679,7 +647,7 @@ public class ImmunizationRecommendation extends DomainResource {
           return this.targetDisease;
         }
         else if (name.equals("doseNumber")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImmunizationRecommendation.doseNumber");
+          throw new FHIRException("Cannot call addChild on a singleton property ImmunizationRecommendation.doseNumber");
         }
         else if (name.equals("forecastStatus")) {
           this.forecastStatus = new CodeableConcept();
@@ -948,7 +916,7 @@ public class ImmunizationRecommendation extends DomainResource {
           return this.code;
         }
         else if (name.equals("value")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImmunizationRecommendation.value");
+          throw new FHIRException("Cannot call addChild on a singleton property ImmunizationRecommendation.value");
         }
         else
           return super.addChild(name);
@@ -1318,17 +1286,17 @@ public class ImmunizationRecommendation extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("doseSequence")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImmunizationRecommendation.doseSequence");
+          throw new FHIRException("Cannot call addChild on a singleton property ImmunizationRecommendation.doseSequence");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImmunizationRecommendation.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ImmunizationRecommendation.description");
         }
         else if (name.equals("authority")) {
           this.authority = new Reference();
           return this.authority;
         }
         else if (name.equals("series")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImmunizationRecommendation.series");
+          throw new FHIRException("Cannot call addChild on a singleton property ImmunizationRecommendation.series");
         }
         else
           return super.addChild(name);

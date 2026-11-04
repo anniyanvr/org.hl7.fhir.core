@@ -30,15 +30,9 @@ POSSIBILITY OF SUCH DAMAGE.
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.hl7.fhir.core.generator.analysis.Analysis;
 import org.hl7.fhir.core.generator.analysis.TypeInfo;
-import org.hl7.fhir.core.generator.codegen.JavaBaseGenerator;
 import org.hl7.fhir.core.generator.engine.Definitions;
 import org.hl7.fhir.r5.model.ElementDefinition;
 import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
@@ -48,11 +42,11 @@ public class JavaParserRdfGenerator extends JavaBaseGenerator {
 
 //  private StringBuilder parser = new StringBuilder();
   private StringBuilder composer = new StringBuilder();
-  private StringBuilder reg = new StringBuilder();
-  private StringBuilder regt = new StringBuilder();
+  private InstanceOfCases reg = new InstanceOfCases();
+  private InstanceOfCases regt = new InstanceOfCases();
 
-  public JavaParserRdfGenerator(OutputStream out, Definitions definitions, Configuration configuration, Date genDate, String version) throws UnsupportedEncodingException {
-    super(out, definitions, configuration, version, genDate);
+  public JavaParserRdfGenerator(OutputStream out, Definitions definitions, Configuration configuration, String genDate, String version, String jid) throws UnsupportedEncodingException {
+    super(out, definitions, configuration, version, genDate, jid);
   }
   
   public void seeClass(Analysis analysis) throws Exception {
@@ -60,18 +54,20 @@ public class JavaParserRdfGenerator extends JavaBaseGenerator {
     generateComposer(analysis);
     if (!analysis.isAbstract()) {
       if (analysis.getStructure().getKind() == StructureDefinitionKind.COMPLEXTYPE) {
-        regt.append("    } else if (value instanceof "+analysis.getClassName()+") {\r\n      compose"+analysis.getClassName()+"(parent, parentType, name, ("+analysis.getClassName()+")value, index);\r\n");
+        regt.add(analysis.getStructure(), definitions, "    } else if (value instanceof "+analysis.getClassName()+") {\r\n      compose"+analysis.getClassName()+"(parent, parentType, name, ("+analysis.getClassName()+")value, index);\r\n");
       }
       if (analysis.getStructure().getKind() == StructureDefinitionKind.RESOURCE) {
-        reg.append("    } else if (resource instanceof "+analysis.getClassName()+") {\r\n      compose"+analysis.getClassName()+"(parent, null, \""+analysis.getName()+"\", ("+analysis.getClassName()+")resource, -1);\r\n");
+        reg.add(analysis.getStructure(), definitions, "    } else if (resource instanceof "+analysis.getClassName()+") {\r\n      compose"+analysis.getClassName()+"(parent, null, \""+escapeJavaString(analysis.getName())+"\", ("+analysis.getClassName()+")resource, -1);\r\n");
       }
     }
   }
   
   public void generate() throws Exception {   
     String template = config.getAdornments().get("RdfParser");
+    template = template.replace("{{jid}}", jid);
     template = template.replace("{{license}}", config.getLicense());
     template = template.replace("{{startMark}}", startVMarkValue());
+    template = template.replace("{{generated}}", generatedAnnotationValue());
 
     template = template.replace("{{composer}}", composer.toString());
     template = template.replace("{{compose-resource}}", reg.toString());
@@ -107,16 +103,16 @@ public class JavaParserRdfGenerator extends JavaBaseGenerator {
     composer.append("    if (Utilities.noString(parentType))\r\n");
     composer.append("      t = parent;\r\n");
     composer.append("    else {\r\n");
-    composer.append("      t = parent.predicate(\"fhir:\"+parentType+'.'+name);\r\n");
+    composer.append("      t = parent.predicate(\"fhir:\"+name,index > -1);\r\n");
     composer.append("    }\r\n");
-    composer.append("    compose"+ti.getAncestorName()+"(t, \""+ti.getDefn().getName()+"\", name, element, index);\r\n");
+    composer.append("    compose"+ti.getAncestorName()+"(t, \""+escapeJavaString(ti.getDefn().getName())+"\", name, element, index);\r\n");
     if (tn.equals("Coding")) 
       composer.append("    decorateCoding(t, element);\r\n");
     else if (tn.equals("CodeableConcept")) 
       composer.append("    decorateCodeableConcept(t, element);\r\n");
 
     for (ElementDefinition ed : ti.getChildren()) {
-      genElement(analysis, ti, ed, matchingInheritedElement(ti.getInheritedChildren(), ed));
+      genElement(analysis, ti, ed, matchingInheritedElement(ti.getInheritedChildren(), ed, analysis.getName()));
     }
     composer.append("  }\r\n\r\n");    
   }
@@ -183,16 +179,17 @@ public class JavaParserRdfGenerator extends JavaBaseGenerator {
     if (ed.unbounded()) {
 //      if (gname.endsWith("Element()") && !gname.equals("getElement()"))
 //        gname = gname.substring(0, gname.length()-9)+"()";
+      gname = gname.substring(0, gname.length()-2)+"List()";
       composer.append("    for (int i = 0; i < element."+gname+".size(); i++) {\r\n");
-      composer.append("      compose"+pfx+tname+"(t, \""+ti.getName()+"\", \""+name+"\", element."+gname+".get(i), i);\r\n");
+      composer.append("      compose"+pfx+tname+"(t, \""+escapeJavaString(ti.getName())+"\", \""+escapeJavaString(name)+"\", element."+gname+".get(i), i);\r\n");
       composer.append("    }\r\n");
     } else if (inh != null && inh.unbounded()) {
       composer.append("    if (element.has"+gname.substring(3).replace("ReferenceElement_", "ReferenceElement")+") {\r\n");
-      composer.append("      compose"+pfx+tname+"(t, \""+ti.getName()+"\", \""+name+"\", element."+gname.replace("()", "FirstRep()")+", -1);\r\n");
+      composer.append("      compose"+pfx+tname+"(t, \""+escapeJavaString(ti.getName())+"\", \""+escapeJavaString(name)+"\", element."+gname.replace("()", "FirstRep()")+", -1);\r\n");
       composer.append("    }\r\n");
     } else {
       composer.append("    if (element.has"+gname.substring(3).replace("ReferenceElement_", "ReferenceElement")+") {\r\n");
-      composer.append("      compose"+pfx+tname+"(t, \""+ti.getName()+"\", \""+name+"\", element."+gname+", -1);\r\n");
+      composer.append("      compose"+pfx+tname+"(t, \""+escapeJavaString(ti.getName())+"\", \""+escapeJavaString(name)+"\", element."+gname+", -1);\r\n");
       composer.append("    }\r\n");
     }
   }

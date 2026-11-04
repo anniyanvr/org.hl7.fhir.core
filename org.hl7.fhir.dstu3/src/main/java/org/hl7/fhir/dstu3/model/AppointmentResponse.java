@@ -143,12 +143,12 @@ public class AppointmentResponse extends DomainResource {
           return ParticipantStatus.NEEDSACTION;
         throw new IllegalArgumentException("Unknown ParticipantStatus code '"+codeString+"'");
         }
-        public Enumeration<ParticipantStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ParticipantStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ParticipantStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("accepted".equals(codeString))
@@ -162,7 +162,9 @@ public class AppointmentResponse extends DomainResource {
         throw new FHIRException("Unknown ParticipantStatus code '"+codeString+"'");
         }
     public String toCode(ParticipantStatus code) {
-      if (code == ParticipantStatus.ACCEPTED)
+       if (code == ParticipantStatus.NULL)
+           return null;
+       if (code == ParticipantStatus.ACCEPTED)
         return "accepted";
       if (code == ParticipantStatus.DECLINED)
         return "declined";
@@ -171,7 +173,7 @@ public class AppointmentResponse extends DomainResource {
       if (code == ParticipantStatus.NEEDSACTION)
         return "needs-action";
       return "?";
-      }
+   }
     public String toSystem(ParticipantStatus code) {
       return code.getSystem();
       }
@@ -787,10 +789,10 @@ public class AppointmentResponse extends DomainResource {
           return this.appointment;
         }
         else if (name.equals("start")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AppointmentResponse.start");
+          throw new FHIRException("Cannot call addChild on a singleton property AppointmentResponse.start");
         }
         else if (name.equals("end")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AppointmentResponse.end");
+          throw new FHIRException("Cannot call addChild on a singleton property AppointmentResponse.end");
         }
         else if (name.equals("participantType")) {
           return addParticipantType();
@@ -800,10 +802,10 @@ public class AppointmentResponse extends DomainResource {
           return this.actor;
         }
         else if (name.equals("participantStatus")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AppointmentResponse.participantStatus");
+          throw new FHIRException("Cannot call addChild on a singleton property AppointmentResponse.participantStatus");
         }
         else if (name.equals("comment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type AppointmentResponse.comment");
+          throw new FHIRException("Cannot call addChild on a singleton property AppointmentResponse.comment");
         }
         else
           return super.addChild(name);

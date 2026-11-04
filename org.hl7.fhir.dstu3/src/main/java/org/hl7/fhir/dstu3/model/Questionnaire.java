@@ -309,12 +309,12 @@ There is an extension 'http://hl7.org/fhir/StructureDefinition/questionnaire-uni
           return QuestionnaireItemType.QUANTITY;
         throw new IllegalArgumentException("Unknown QuestionnaireItemType code '"+codeString+"'");
         }
-        public Enumeration<QuestionnaireItemType> fromType(Base code) throws FHIRException {
+        public Enumeration<QuestionnaireItemType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<QuestionnaireItemType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("group".equals(codeString))
@@ -354,7 +354,9 @@ There is an extension 'http://hl7.org/fhir/StructureDefinition/questionnaire-uni
         throw new FHIRException("Unknown QuestionnaireItemType code '"+codeString+"'");
         }
     public String toCode(QuestionnaireItemType code) {
-      if (code == QuestionnaireItemType.GROUP)
+       if (code == QuestionnaireItemType.NULL)
+           return null;
+       if (code == QuestionnaireItemType.GROUP)
         return "group";
       if (code == QuestionnaireItemType.DISPLAY)
         return "display";
@@ -389,7 +391,7 @@ There is an extension 'http://hl7.org/fhir/StructureDefinition/questionnaire-uni
       if (code == QuestionnaireItemType.QUANTITY)
         return "quantity";
       return "?";
-      }
+   }
     public String toSystem(QuestionnaireItemType code) {
       return code.getSystem();
       }
@@ -1211,8 +1213,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (BooleanType) this.initial;
         }
 
-        public boolean hasInitialBooleanType() { 
-          return this != null && this.initial instanceof BooleanType;
+        public boolean hasInitialBooleanType() {
+            return this.initial instanceof BooleanType;
         }
 
         /**
@@ -1226,8 +1228,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (DecimalType) this.initial;
         }
 
-        public boolean hasInitialDecimalType() { 
-          return this != null && this.initial instanceof DecimalType;
+        public boolean hasInitialDecimalType() {
+            return this.initial instanceof DecimalType;
         }
 
         /**
@@ -1241,8 +1243,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (IntegerType) this.initial;
         }
 
-        public boolean hasInitialIntegerType() { 
-          return this != null && this.initial instanceof IntegerType;
+        public boolean hasInitialIntegerType() {
+            return this.initial instanceof IntegerType;
         }
 
         /**
@@ -1256,8 +1258,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (DateType) this.initial;
         }
 
-        public boolean hasInitialDateType() { 
-          return this != null && this.initial instanceof DateType;
+        public boolean hasInitialDateType() {
+            return this.initial instanceof DateType;
         }
 
         /**
@@ -1271,8 +1273,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (DateTimeType) this.initial;
         }
 
-        public boolean hasInitialDateTimeType() { 
-          return this != null && this.initial instanceof DateTimeType;
+        public boolean hasInitialDateTimeType() {
+            return this.initial instanceof DateTimeType;
         }
 
         /**
@@ -1286,8 +1288,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (TimeType) this.initial;
         }
 
-        public boolean hasInitialTimeType() { 
-          return this != null && this.initial instanceof TimeType;
+        public boolean hasInitialTimeType() {
+            return this.initial instanceof TimeType;
         }
 
         /**
@@ -1301,8 +1303,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (StringType) this.initial;
         }
 
-        public boolean hasInitialStringType() { 
-          return this != null && this.initial instanceof StringType;
+        public boolean hasInitialStringType() {
+            return this.initial instanceof StringType;
         }
 
         /**
@@ -1316,8 +1318,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (UriType) this.initial;
         }
 
-        public boolean hasInitialUriType() { 
-          return this != null && this.initial instanceof UriType;
+        public boolean hasInitialUriType() {
+            return this.initial instanceof UriType;
         }
 
         /**
@@ -1331,8 +1333,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (Attachment) this.initial;
         }
 
-        public boolean hasInitialAttachment() { 
-          return this != null && this.initial instanceof Attachment;
+        public boolean hasInitialAttachment() {
+            return this.initial instanceof Attachment;
         }
 
         /**
@@ -1346,8 +1348,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (Coding) this.initial;
         }
 
-        public boolean hasInitialCoding() { 
-          return this != null && this.initial instanceof Coding;
+        public boolean hasInitialCoding() {
+            return this.initial instanceof Coding;
         }
 
         /**
@@ -1361,8 +1363,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (Quantity) this.initial;
         }
 
-        public boolean hasInitialQuantity() { 
-          return this != null && this.initial instanceof Quantity;
+        public boolean hasInitialQuantity() {
+            return this.initial instanceof Quantity;
         }
 
         /**
@@ -1376,8 +1378,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (Reference) this.initial;
         }
 
-        public boolean hasInitialReference() { 
-          return this != null && this.initial instanceof Reference;
+        public boolean hasInitialReference() {
+            return this.initial instanceof Reference;
         }
 
         public boolean hasInitial() { 
@@ -1667,37 +1669,37 @@ Any information provided in these elements on a Questionnaire Item overrides the
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("linkId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.linkId");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.linkId");
         }
         else if (name.equals("definition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.definition");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.definition");
         }
         else if (name.equals("code")) {
           return addCode();
         }
         else if (name.equals("prefix")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.prefix");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.prefix");
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.text");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.text");
         }
         else if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.type");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.type");
         }
         else if (name.equals("enableWhen")) {
           return addEnableWhen();
         }
         else if (name.equals("required")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.required");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.required");
         }
         else if (name.equals("repeats")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.repeats");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.repeats");
         }
         else if (name.equals("readOnly")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.readOnly");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.readOnly");
         }
         else if (name.equals("maxLength")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.maxLength");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.maxLength");
         }
         else if (name.equals("options")) {
           this.options = new Reference();
@@ -1988,8 +1990,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (BooleanType) this.answer;
         }
 
-        public boolean hasAnswerBooleanType() { 
-          return this != null && this.answer instanceof BooleanType;
+        public boolean hasAnswerBooleanType() {
+            return this.answer instanceof BooleanType;
         }
 
         /**
@@ -2003,8 +2005,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (DecimalType) this.answer;
         }
 
-        public boolean hasAnswerDecimalType() { 
-          return this != null && this.answer instanceof DecimalType;
+        public boolean hasAnswerDecimalType() {
+            return this.answer instanceof DecimalType;
         }
 
         /**
@@ -2018,8 +2020,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (IntegerType) this.answer;
         }
 
-        public boolean hasAnswerIntegerType() { 
-          return this != null && this.answer instanceof IntegerType;
+        public boolean hasAnswerIntegerType() {
+            return this.answer instanceof IntegerType;
         }
 
         /**
@@ -2033,8 +2035,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (DateType) this.answer;
         }
 
-        public boolean hasAnswerDateType() { 
-          return this != null && this.answer instanceof DateType;
+        public boolean hasAnswerDateType() {
+            return this.answer instanceof DateType;
         }
 
         /**
@@ -2048,8 +2050,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (DateTimeType) this.answer;
         }
 
-        public boolean hasAnswerDateTimeType() { 
-          return this != null && this.answer instanceof DateTimeType;
+        public boolean hasAnswerDateTimeType() {
+            return this.answer instanceof DateTimeType;
         }
 
         /**
@@ -2063,8 +2065,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (TimeType) this.answer;
         }
 
-        public boolean hasAnswerTimeType() { 
-          return this != null && this.answer instanceof TimeType;
+        public boolean hasAnswerTimeType() {
+            return this.answer instanceof TimeType;
         }
 
         /**
@@ -2078,8 +2080,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (StringType) this.answer;
         }
 
-        public boolean hasAnswerStringType() { 
-          return this != null && this.answer instanceof StringType;
+        public boolean hasAnswerStringType() {
+            return this.answer instanceof StringType;
         }
 
         /**
@@ -2093,8 +2095,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (UriType) this.answer;
         }
 
-        public boolean hasAnswerUriType() { 
-          return this != null && this.answer instanceof UriType;
+        public boolean hasAnswerUriType() {
+            return this.answer instanceof UriType;
         }
 
         /**
@@ -2108,8 +2110,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (Attachment) this.answer;
         }
 
-        public boolean hasAnswerAttachment() { 
-          return this != null && this.answer instanceof Attachment;
+        public boolean hasAnswerAttachment() {
+            return this.answer instanceof Attachment;
         }
 
         /**
@@ -2123,8 +2125,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (Coding) this.answer;
         }
 
-        public boolean hasAnswerCoding() { 
-          return this != null && this.answer instanceof Coding;
+        public boolean hasAnswerCoding() {
+            return this.answer instanceof Coding;
         }
 
         /**
@@ -2138,8 +2140,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (Quantity) this.answer;
         }
 
-        public boolean hasAnswerQuantity() { 
-          return this != null && this.answer instanceof Quantity;
+        public boolean hasAnswerQuantity() {
+            return this.answer instanceof Quantity;
         }
 
         /**
@@ -2153,8 +2155,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (Reference) this.answer;
         }
 
-        public boolean hasAnswerReference() { 
-          return this != null && this.answer instanceof Reference;
+        public boolean hasAnswerReference() {
+            return this.answer instanceof Reference;
         }
 
         public boolean hasAnswer() { 
@@ -2269,10 +2271,10 @@ Any information provided in these elements on a Questionnaire Item overrides the
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("question")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.question");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.question");
         }
         else if (name.equals("hasAnswer")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.hasAnswer");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.hasAnswer");
         }
         else if (name.equals("answerBoolean")) {
           this.answer = new BooleanType();
@@ -2413,8 +2415,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (IntegerType) this.value;
         }
 
-        public boolean hasValueIntegerType() { 
-          return this != null && this.value instanceof IntegerType;
+        public boolean hasValueIntegerType() {
+            return this.value instanceof IntegerType;
         }
 
         /**
@@ -2428,8 +2430,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (DateType) this.value;
         }
 
-        public boolean hasValueDateType() { 
-          return this != null && this.value instanceof DateType;
+        public boolean hasValueDateType() {
+            return this.value instanceof DateType;
         }
 
         /**
@@ -2443,8 +2445,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (TimeType) this.value;
         }
 
-        public boolean hasValueTimeType() { 
-          return this != null && this.value instanceof TimeType;
+        public boolean hasValueTimeType() {
+            return this.value instanceof TimeType;
         }
 
         /**
@@ -2458,8 +2460,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (StringType) this.value;
         }
 
-        public boolean hasValueStringType() { 
-          return this != null && this.value instanceof StringType;
+        public boolean hasValueStringType() {
+            return this.value instanceof StringType;
         }
 
         /**
@@ -2473,8 +2475,8 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return (Coding) this.value;
         }
 
-        public boolean hasValueCoding() { 
-          return this != null && this.value instanceof Coding;
+        public boolean hasValueCoding() {
+            return this.value instanceof Coding;
         }
 
         public boolean hasValue() { 
@@ -4003,43 +4005,43 @@ Any information provided in these elements on a Questionnaire Item overrides the
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.url");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.url");
         }
         else if (name.equals("identifier")) {
           return addIdentifier();
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.version");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.version");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.name");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.name");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.title");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.title");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.status");
         }
         else if (name.equals("experimental")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.experimental");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.experimental");
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.date");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.date");
         }
         else if (name.equals("publisher")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.publisher");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.publisher");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.description");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.description");
         }
         else if (name.equals("purpose")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.purpose");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.purpose");
         }
         else if (name.equals("approvalDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.approvalDate");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.approvalDate");
         }
         else if (name.equals("lastReviewDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.lastReviewDate");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.lastReviewDate");
         }
         else if (name.equals("effectivePeriod")) {
           this.effectivePeriod = new Period();
@@ -4055,13 +4057,13 @@ Any information provided in these elements on a Questionnaire Item overrides the
           return addContact();
         }
         else if (name.equals("copyright")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.copyright");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.copyright");
         }
         else if (name.equals("code")) {
           return addCode();
         }
         else if (name.equals("subjectType")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Questionnaire.subjectType");
+          throw new FHIRException("Cannot call addChild on a singleton property Questionnaire.subjectType");
         }
         else if (name.equals("item")) {
           return addItem();

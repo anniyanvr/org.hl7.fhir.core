@@ -29,28 +29,32 @@ package org.hl7.fhir.r5.context;
   
  */
 
-
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.hl7.fhir.utilities.ToolingClientLogger;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
 
+
+@Slf4j
 public class HTMLClientLogger extends BaseLogger implements ToolingClientLogger {
-
-  private static final boolean DEBUG = false;
   
   private boolean req = false;
   private PrintStream file;
-  
-  public HTMLClientLogger(String log) {
+
+  public HTMLClientLogger(String log) throws IOException {
     if (log != null) {
       try {
-        file = new PrintStream(new FileOutputStream(log));
+        file = new PrintStream(ManagedFileAccess.outStream(log));
       } catch (FileNotFoundException e) {
       }
     }
@@ -58,43 +62,48 @@ public class HTMLClientLogger extends BaseLogger implements ToolingClientLogger 
 
   @Override
   public void logRequest(String method, String url, List<String> headers, byte[] body) {
-    if (DEBUG) {
-      System.out.println(" txlog req: " +method+" "+url+" "+present(body));
-    }
+
+    log.debug(" txlog req: " +method+" "+url+" "+present(body));
+
     if (file == null)
       return;
     String id = nextId();
     file.println("<hr/><a name=\"l"+id+"\"> </a>");
     file.println("<p>#"+id+"</p>");
     file.println("<pre>");
-    file.println(method+" "+url+" HTTP/1.0");
+    file.println(method+" "+url+" HTTP/1.1");
     if (headers != null) {
-      for (String s : headers) {  
-        file.println(Utilities.escapeXml(s));
+      for (String s : headers) {
+        if (s.startsWith("Api-Key")) {
+          file.println("Api-Key: xxxxxxxxxxxxxxxx");
+        } else {
+          file.println(s);
+        }
       }
     }
     if (body != null) {
-      file.println("");
-      try {
-        file.println(Utilities.escapeXml(new String(body, "UTF-8")));
-      } catch (UnsupportedEncodingException e) {
+      if (body.length > 1000000) {
+        body = Arrays.copyOf(body, 1000000);
       }
+      file.println("");
+      file.println(Utilities.escapeXmlText(new String(body, StandardCharsets.UTF_8)));
     }
     file.println("</pre>");
     req = true;
   }
 
   @Override
-  public void logResponse(String outcome, List<String> headers, byte[] body) {
-    if (DEBUG) {
-      System.out.println(" txlog resp: " +outcome+" "+present(body));
-    }
-    req = false;
+  public void logResponse(String outcome, List<String> headers, byte[] body, long start) {
+
+    log.debug(" txlog resp: " +outcome+" "+present(body));
+
+
     if (file == null)
       return;
     if (!req) {
-      System.out.println("Record Response without request");
+      log.info("Record Response without request");
     }
+    req = false;
     file.println("<pre>");
     file.println(outcome);
     for (String s : headers)  

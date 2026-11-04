@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ClinicalImpressionStatusEnumFactory implements EnumFactory<ClinicalImpressionStatus> {
@@ -48,21 +44,23 @@ public class ClinicalImpressionStatusEnumFactory implements EnumFactory<Clinical
       return ClinicalImpressionStatus.COMPLETED;
     if ("entered-in-error".equals(codeString))
       return ClinicalImpressionStatus.ENTEREDINERROR;
-    throw new IllegalArgumentException("Unknown ClinicalImpressionStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ClinicalImpressionStatus code '" + codeString + "'");
   }
 
   public String toCode(ClinicalImpressionStatus code) {
-    if (code == ClinicalImpressionStatus.INPROGRESS)
+       if (code == ClinicalImpressionStatus.NULL)
+           return null;
+       if (code == ClinicalImpressionStatus.INPROGRESS)
       return "in-progress";
     if (code == ClinicalImpressionStatus.COMPLETED)
       return "completed";
     if (code == ClinicalImpressionStatus.ENTEREDINERROR)
       return "entered-in-error";
     return "?";
-  }
+   }
 
-    public String toSystem(ClinicalImpressionStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(ClinicalImpressionStatus code) {
+    return code.getSystem();
+  }
 
 }

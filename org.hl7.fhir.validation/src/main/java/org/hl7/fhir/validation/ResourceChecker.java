@@ -1,57 +1,66 @@
 package org.hl7.fhir.validation;
 
-import org.hl7.fhir.r5.context.SimpleWorkerContext;
-import org.hl7.fhir.r5.elementmodel.Manager;
-import org.hl7.fhir.r5.elementmodel.SHCParser;
-import org.hl7.fhir.r5.elementmodel.Manager.FhirFormat;
-import org.hl7.fhir.r5.elementmodel.SHCParser.JWT;
-import org.hl7.fhir.r5.utils.structuremap.StructureMapUtilities;
-import org.hl7.fhir.utilities.TextFile;
-import org.hl7.fhir.utilities.Utilities;
-import org.hl7.fhir.utilities.json.JSONUtil;
-import org.hl7.fhir.utilities.json.JsonTrackingParser;
-
-import com.google.gson.JsonObject;
-
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import lombok.extern.slf4j.Slf4j;
+import org.hl7.fhir.model.utilities.formats.FhirFormat;
+import org.hl7.fhir.services.fml.StructureMapTools;
+import org.hl7.fhir.standalone.context.SimpleWorkerContext;
+import org.hl7.fhir.services.elementmodel.Manager;
+import org.hl7.fhir.services.elementmodel.SHCParser;
+import org.hl7.fhir.services.elementmodel.SHCParser.JWT;
+import org.hl7.fhir.utilities.FileUtilities;
+import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.json.model.JsonObject;
+import org.hl7.fhir.utilities.json.parser.JsonParser;
+
+@Slf4j
 public class ResourceChecker {
 
-//  protected static Manager.FhirFormat checkIsResource(SimpleWorkerContext context, boolean debug, String path) throws IOException {
+//  protected static FhirFormat checkIsResource(SimpleWorkerContext context, boolean debug, String path) throws IOException {
 //    
 //    if (Utilities.existsInList(ext, "json"))
-//      return Manager.FhirFormat.JSON;
+//      return FhirFormat.JSON;
 //    if (Utilities.existsInList(ext, "map"))
-//      return Manager.FhirFormat.TEXT;
+//      return FhirFormat.TEXT;
 //    if (Utilities.existsInList(ext, "txt"))
-//      return Manager.FhirFormat.TEXT;
+//      return FhirFormat.TEXT;
 //    if (Utilities.existsInList(ext, "jwt", "jws"))
-//      return Manager.FhirFormat.SHC;
+//      return FhirFormat.SHC;
 //
-//    return checkIsResource(context, debug, TextFile.fileToBytes(path), path);
+//    return checkIsResource(context, debug, FileUtilities.fileToBytes(path), path);
 //  }
-  public static Manager.FhirFormat checkIsResource(SimpleWorkerContext context, boolean debug, byte[] cnt, String filename, boolean guessFromExtension) {
-    System.out.println("   ..Detect format for " + filename);
+  public static FhirFormat checkIsResource(SimpleWorkerContext context, byte[] cnt, String filename, boolean guessFromExtension) {
+
+    if (cnt.length == 0) {
+      log.info("Loader: " + filename+" is empty");
+      return null;
+    }
     if (guessFromExtension) {
-      String ext = Utilities.getFileExtension(filename);
+      String ext = Utilities.getFileExtension(filename).toLowerCase();
       if (Utilities.existsInList(ext, "xml")) {
         return FhirFormat.XML;            
       }
       if (Utilities.existsInList(ext, "ttl")) {
         return FhirFormat.TURTLE;            
       }
-      if (Utilities.existsInList(ext, "map")) {
-        return Manager.FhirFormat.TEXT;
+      if (Utilities.existsInList(ext, "map", "fml")) {
+        return FhirFormat.FML;
       }
       if (Utilities.existsInList(ext, "jwt", "jws")) {
-        return Manager.FhirFormat.SHC;
+        return FhirFormat.SHC;
+      }
+      if (Utilities.existsInList(ext, "ndjson")) {
+        return FhirFormat.NDJSON;
       }
       if (Utilities.existsInList(ext, "json")) {
+        if (cnt.length > 2048) {
+          return FhirFormat.JSON;                      
+        }
         // no, we have to look inside, and decide.
         try {
-          JsonObject json = JsonTrackingParser.parseJson(cnt);
+          JsonObject json = JsonParser.parseObject(cnt);
           if (json.has("verifiableCredential")) {
             return FhirFormat.SHC;
           }        
@@ -61,61 +70,63 @@ public class ResourceChecker {
       }
       if (Utilities.existsInList(ext, "txt")) {
         try {
-          String src = TextFile.bytesToString(cnt);
+          String src = FileUtilities.bytesToString(cnt);
           if (src.startsWith("shc:/")) {
             return FhirFormat.SHC;
           }
+          if (src.startsWith("shlink:/") || src.contains("#shlink:/")) {
+            return FhirFormat.SHL;
+          }
         } catch (Exception e) {
         }
-        return Manager.FhirFormat.TEXT;
+        return FhirFormat.TEXT;
       }
     }
 
     try {
-      Manager.parse(context, new ByteArrayInputStream(cnt), Manager.FhirFormat.JSON);
-      return Manager.FhirFormat.JSON;
+      Manager.parse(context, new ByteArrayInputStream(cnt), FhirFormat.JSON);
+      return FhirFormat.JSON;
     } catch (Exception e) {
-      if (debug) {
-        System.out.println("Not JSON: " + e.getMessage());
-      }
+        log.debug("Not JSON: " + e.getMessage());
+    }
+    try {
+      Manager.parse(context, new ByteArrayInputStream(cnt), FhirFormat.NDJSON);
+      return FhirFormat.NDJSON;
+    } catch (Exception e) {
+       log.debug("Not NDJSON: " + e.getMessage());
     }
     try {
       ValidatorUtils.parseXml(cnt);
-      return Manager.FhirFormat.XML;
+      return FhirFormat.XML;
     } catch (Exception e) {
-      if (debug) {
-        System.out.println("Not XML: " + e.getMessage());
-      }
+      log.debug("Not XML: " + e.getMessage());
     }
     try {
-      Manager.parse(context, new ByteArrayInputStream(cnt), Manager.FhirFormat.TURTLE);
-      return Manager.FhirFormat.TURTLE;
+      Manager.parse(context, new ByteArrayInputStream(cnt), FhirFormat.TURTLE);
+      return FhirFormat.TURTLE;
     } catch (Exception e) {
-      if (debug) {
-        System.out.println("Not Turtle: " + e.getMessage());
-      }
+      log.debug("Not Turtle: " + e.getMessage());
     }
     try {
       String s = new String(cnt, StandardCharsets.UTF_8);
-      if (s.startsWith("shc:/")) 
-        s = SHCParser.decodeQRCode(s);
-      JWT jwt = SHCParser.decodeJWT(s);
-      return Manager.FhirFormat.SHC;
-    } catch (Exception e) {
-      if (debug) {
-        System.out.println("Not a smart health card: " + e.getMessage());
+      if (s.startsWith("shlink:/") || s.contains("#shlink:/")) {
+        return FhirFormat.SHL;
       }
+      if (s.startsWith("shc:/")) {
+        s = SHCParser.decodeQRCode(s);
+      }
+      JWT jwt = new SHCParser(context).decodeJWT(null, s);
+      return FhirFormat.SHC;
+    } catch (Exception e) {
+      log.debug("Not a smart health card: " + e.getMessage());
     }
     try {
-      new StructureMapUtilities(context, null, null).parse(TextFile.bytesToString(cnt), null);
-      return Manager.FhirFormat.TEXT;
+      new StructureMapTools(context, null, null).parse(FileUtilities.bytesToString(cnt), null);
+      return FhirFormat.TEXT;
     } catch (Exception e) {
-      if (debug) {
-        System.out.println("Not Text: " + e.getMessage());
-      }
+      log.debug("Not Text: " + e.getMessage());
     }
-    if (debug)
-      System.out.println("     .. not a resource: " + filename);
+    log.debug("     .. not a resource: " + filename);
     return null;
   }
 

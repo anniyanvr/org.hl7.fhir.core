@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class QicoreObservationVerificationEnumFactory implements EnumFactory<QicoreObservationVerification> {
@@ -46,19 +42,21 @@ public class QicoreObservationVerificationEnumFactory implements EnumFactory<Qic
       return QicoreObservationVerification._1;
     if ("2".equals(codeString))
       return QicoreObservationVerification._2;
-    throw new IllegalArgumentException("Unknown QicoreObservationVerification code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown QicoreObservationVerification code '" + codeString + "'");
   }
 
   public String toCode(QicoreObservationVerification code) {
-    if (code == QicoreObservationVerification._1)
+       if (code == QicoreObservationVerification.NULL)
+           return null;
+       if (code == QicoreObservationVerification._1)
       return "1";
     if (code == QicoreObservationVerification._2)
       return "2";
     return "?";
-  }
+   }
 
-    public String toSystem(QicoreObservationVerification code) {
-      return code.getSystem();
-      }
+  public String toSystem(QicoreObservationVerification code) {
+    return code.getSystem();
+  }
 
 }

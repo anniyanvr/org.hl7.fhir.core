@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +47,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for Attachment Type: For referring to data content defined in other formats.
+ * Attachment Type: For referring to data content defined in other formats.
  */
 @DatatypeDef(name="Attachment")
 public class Attachment extends DataType implements ICompositeType {
@@ -65,7 +65,7 @@ public class Attachment extends DataType implements ICompositeType {
      */
     @Child(name = "language", type = {CodeType.class}, order=1, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Human language of the content (BCP-47)", formalDefinition="The human language of the content. The value can be any valid value according to BCP 47." )
-    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/languages")
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/all-languages")
     protected CodeType language;
 
     /**
@@ -927,6 +927,39 @@ public class Attachment extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("contentType")) {
+          this.contentType = null;
+        } else if (name.equals("language")) {
+          this.language = null;
+        } else if (name.equals("data")) {
+          this.data = null;
+        } else if (name.equals("url")) {
+          this.url = null;
+        } else if (name.equals("size")) {
+          this.size = null;
+        } else if (name.equals("hash")) {
+          this.hash = null;
+        } else if (name.equals("title")) {
+          this.title = null;
+        } else if (name.equals("creation")) {
+          this.creation = null;
+        } else if (name.equals("height")) {
+          this.height = null;
+        } else if (name.equals("width")) {
+          this.width = null;
+        } else if (name.equals("frames")) {
+          this.frames = null;
+        } else if (name.equals("duration")) {
+          this.duration = null;
+        } else if (name.equals("pages")) {
+          this.pages = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -972,43 +1005,43 @@ public class Attachment extends DataType implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("contentType")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.contentType");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.contentType");
         }
         else if (name.equals("language")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.language");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.language");
         }
         else if (name.equals("data")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.data");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.data");
         }
         else if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.url");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.url");
         }
         else if (name.equals("size")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.size");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.size");
         }
         else if (name.equals("hash")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.hash");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.hash");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.title");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.title");
         }
         else if (name.equals("creation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.creation");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.creation");
         }
         else if (name.equals("height")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.height");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.height");
         }
         else if (name.equals("width")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.width");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.width");
         }
         else if (name.equals("frames")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.frames");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.frames");
         }
         else if (name.equals("duration")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.duration");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.duration");
         }
         else if (name.equals("pages")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Attachment.pages");
+          throw new FHIRException("Cannot call addChild on a singleton property Attachment.pages");
         }
         else
           return super.addChild(name);
@@ -1023,6 +1056,10 @@ public class Attachment extends DataType implements ICompositeType {
         Attachment dst = new Attachment();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Attachment) dst);
       }
 
       public void copyValues(Attachment dst) {

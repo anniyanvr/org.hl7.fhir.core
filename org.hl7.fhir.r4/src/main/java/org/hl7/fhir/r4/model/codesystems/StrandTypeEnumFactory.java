@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class StrandTypeEnumFactory implements EnumFactory<StrandType> {
@@ -46,19 +42,21 @@ public class StrandTypeEnumFactory implements EnumFactory<StrandType> {
       return StrandType.WATSON;
     if ("crick".equals(codeString))
       return StrandType.CRICK;
-    throw new IllegalArgumentException("Unknown StrandType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown StrandType code '" + codeString + "'");
   }
 
   public String toCode(StrandType code) {
-    if (code == StrandType.WATSON)
+       if (code == StrandType.NULL)
+           return null;
+       if (code == StrandType.WATSON)
       return "watson";
     if (code == StrandType.CRICK)
       return "crick";
     return "?";
-  }
+   }
 
-    public String toSystem(StrandType code) {
-      return code.getSystem();
-      }
+  public String toSystem(StrandType code) {
+    return code.getSystem();
+  }
 
 }

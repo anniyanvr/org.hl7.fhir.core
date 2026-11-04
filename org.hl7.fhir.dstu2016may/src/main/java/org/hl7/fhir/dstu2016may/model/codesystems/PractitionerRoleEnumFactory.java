@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class PractitionerRoleEnumFactory implements EnumFactory<PractitionerRole> {
@@ -54,11 +50,13 @@ public class PractitionerRoleEnumFactory implements EnumFactory<PractitionerRole
       return PractitionerRole.TEACHER;
     if ("ict".equals(codeString))
       return PractitionerRole.ICT;
-    throw new IllegalArgumentException("Unknown PractitionerRole code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown PractitionerRole code '" + codeString + "'");
   }
 
   public String toCode(PractitionerRole code) {
-    if (code == PractitionerRole.DOCTOR)
+       if (code == PractitionerRole.NULL)
+           return null;
+       if (code == PractitionerRole.DOCTOR)
       return "doctor";
     if (code == PractitionerRole.NURSE)
       return "nurse";
@@ -71,10 +69,10 @@ public class PractitionerRoleEnumFactory implements EnumFactory<PractitionerRole
     if (code == PractitionerRole.ICT)
       return "ict";
     return "?";
-  }
+   }
 
-    public String toSystem(PractitionerRole code) {
-      return code.getSystem();
-      }
+  public String toSystem(PractitionerRole code) {
+    return code.getSystem();
+  }
 
 }

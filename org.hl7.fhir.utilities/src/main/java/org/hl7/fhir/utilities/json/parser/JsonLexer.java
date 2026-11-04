@@ -1,0 +1,375 @@
+package org.hl7.fhir.utilities.json.parser;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.json.model.JsonComment;
+import org.hl7.fhir.utilities.json.model.JsonElement;
+import org.hl7.fhir.utilities.json.model.JsonLocationData;
+
+public class JsonLexer {
+  public static class State {
+    private String name;
+    private boolean isProp;
+    public State(String name, boolean isProp) {
+      super();
+      this.name = name;
+      this.isProp = isProp;
+    }
+    public String getName() {
+      return name;
+    }
+    public boolean isProp() {
+      return isProp;
+    }
+  }
+  
+  public enum TokenType {
+    Open, Close, String, Number, Colon, Comma, OpenArray, CloseArray, Eof, Null, Boolean;
+
+    boolean isValueType() {
+      return this == Open || this == String || this == Number || this == OpenArray || this == Boolean || this == Null;
+    }
+  }
+  
+  private String source;
+  private int cursor;
+  // pending pushed-back characters, top of stack at peekCount-1 (consumed next).
+  // this used to be a String, which meant an allocation for every push and every read.
+  private char[] peek = new char[8];
+  private int peekCount;
+  private String value;
+  private TokenType type;
+  private Stack<State> states = new Stack<State>();
+  private JsonLocationData lastLocationBWS;
+  private JsonLocationData lastLocationAWS;
+  private JsonLocationData location;
+  private StringBuilder b = new StringBuilder();
+  private boolean allowComments;
+  private boolean allowUnquotedStrings;
+  private List<JsonComment> comments = new ArrayList<>();
+  private boolean isUnquoted;
+  private String sourceName;
+
+  private final Stack<String> parenthesis = new Stack<>();
+
+  public JsonLexer(String source, boolean allowComments, boolean allowUnquotedStrings, int line) throws IOException {
+    this.source = source;
+    this.allowComments = allowComments;
+    this.allowUnquotedStrings = allowUnquotedStrings;
+    cursor = -1;
+    location = new JsonLocationData(line+1, 1);  
+    start();
+  }
+
+  private boolean more() {
+    return peekCount > 0 || cursor < source.length(); 
+  }
+
+  private String getNext(int length) throws IOException {
+    StringBuilder result = new StringBuilder(length);
+    while (result.length() < length && peekCount > 0) {
+      result.append(peek[--peekCount]);
+    }
+    if (result.length() < length) {
+      int len = length - result.length(); 
+      if (cursor > source.length() - len) 
+        throw error("Attempt to read past end of source");
+      result.append(source, cursor+1, cursor+len+1);
+      cursor = cursor + len;
+    }
+    for (int i = 0; i < result.length(); i++) {
+      if (result.charAt(i) == '\n')
+        location.newLine();
+      else
+        location.incCol();
+    }
+    return result.toString();
+  }
+
+  private char getNextChar() throws IOException {
+    char ch;
+    if (peekCount > 0) {
+      ch = peek[--peekCount];
+    } else {
+      cursor++;
+      if (cursor >= source.length()) {
+        ch = 0;
+      } else {
+        ch = source.charAt(cursor);
+      }
+    }
+    if (ch == '\n') {
+      location.newLine();
+    } else {
+      location.incCol();
+    }
+    return ch;
+  }
+
+  private void push(char ch){
+    if (peekCount == peek.length) {
+      peek = java.util.Arrays.copyOf(peek, peekCount * 2);
+    }
+    peek[peekCount++] = ch;
+    location.back();
+  }
+
+  public IOException error(String msg) {
+    return new IOException("Error parsing JSON source: "+msg+" at Line "+Integer.toString(location.getLine())+" (path=["+path()+"])"+(sourceName == null ? "" : " from '"+sourceName+"'"));
+  }
+
+  private String path() {
+    if (states.empty())
+      return value;
+    else {
+      String result = "";
+      for (State s : states) 
+        result = result + '/'+ s.getName();
+      result = result + value;
+      return result;
+    }
+  }
+
+  public void start() throws IOException {
+    //      char ch = getNextChar();
+    //      if (ch = '\.uEF')
+    //      begin
+    //        // skip BOM
+    //        getNextChar();
+    //        getNextChar();
+    //      end
+    //      else
+    //        push(ch);
+    next();
+  }
+
+  public TokenType getType() {
+    return type;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+
+  public JsonLocationData getLastLocationBWS() {
+    return lastLocationBWS;
+  }
+
+  public JsonLocationData getLastLocationAWS() {
+    return lastLocationAWS;
+  }
+
+
+  /**
+   * Fast path for the overwhelmingly common case: a quoted string containing no escape
+   * sequences. The general path below appends every character to a StringBuilder one at a
+   * time; here the value is a single substring of the source.
+   * <p>
+   * The opening quote has already been consumed. Returns false without consuming anything
+   * if the fast path does not apply, in which case the caller falls through to the general
+   * path, which is still responsible for reporting an unclosed string.
+   */
+  private boolean parseUnescapedString() {
+    if (peekCount > 0) {
+      return false;
+    }
+    int start = cursor + 1;
+    int len = source.length();
+    for (int i = start; i < len; i++) {
+      char ch = source.charAt(i);
+      if (ch == '\\') {
+        return false;
+      }
+      if (ch == '"') {
+        value = source.substring(start, i);
+        for (int j = start; j <= i; j++) {
+          if (source.charAt(j) == '\n') {
+            location.newLine();
+          } else {
+            location.incCol();
+          }
+        }
+        cursor = i;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public void next() throws IOException {
+    lastLocationBWS = location.copy();
+    char ch;
+    do {
+      ch = getNextChar();
+      if (allowComments && ch == '/') {
+        JsonLocationData start = location.prev();
+        char ch1 = getNextChar();
+        if (ch1 == '/') {
+          StringBuilder b = new StringBuilder();
+          boolean first = true;
+          while (more() && !Utilities.charInSet(ch, '\r', '\n')) {
+            if (first) first = false; else b.append(ch);
+            ch = getNextChar();
+          }
+          comments.add(new JsonComment(b.toString().trim(), start, location.prev()));
+        } else {
+          push(ch1);
+        }         
+      }
+    } while (more() && Utilities.charInSet(ch, ' ', '\r', '\n', '\t'));
+    lastLocationAWS = location.copy().prev();
+    isUnquoted = false;
+    if (!more()) {
+      type = TokenType.Eof;
+      if(!parenthesis.empty()) {
+        throw error("One or more parenthesis were not closed: " + parenthesis);
+      }
+    } else {
+      switch (ch) {
+      case '{' : 
+        type = TokenType.Open;
+        parenthesis.push("{");
+        break;
+      case '}' :
+        if(parenthesis.empty()) {
+          throw error("Unexpected close marker '}' at end of JSON");
+        }
+        String par = parenthesis.pop();
+        if(!par.equals("{")) {
+          throw error("Unexpected close marker '}'. Expected ']'");
+        }
+        type = TokenType.Close;
+        break;
+      case '"' :
+        type = TokenType.String;
+        if (parseUnescapedString()) {
+          break;
+        }
+        b.setLength(0);
+        do {
+          ch = getNextChar();
+          if (ch == '\\') {
+            ch = getNextChar();
+            switch (ch) {
+            case '"': b.append('"'); break;
+            case '\'': b.append('\''); break;
+            case '\\': b.append('\\'); break;
+            case '/': b.append('/'); break;
+            case 'n': b.append('\n'); break;
+            case 'r': b.append('\r'); break;
+            case 't': b.append('\t'); break;
+            case 'u': b.append((char) Integer.parseInt(getNext(4), 16)); break;
+            default :
+              throw error("unknown escape sequence: \\"+ch);
+            }
+            ch = ' ';
+          } else if (ch != '"')
+            b.append(ch);
+        } while (more() && (ch != '"'));
+        if (!more())
+          throw error("Unclosed string");
+        value = b.toString();
+        break;
+      case ':' : 
+        type = TokenType.Colon;
+        break;
+      case ',' : 
+        type = TokenType.Comma;
+        break;
+      case '[' :
+        parenthesis.push("[");
+        type = TokenType.OpenArray;
+        break;
+      case ']' :
+        if(parenthesis.empty()) {
+          throw error("Unexpected close marker ']' at end of JSON");
+        }
+        par = parenthesis.pop();
+        if(!par.equals("[")) {
+          throw error("Unexpected close marker ']'. Expected '}'");
+        }
+        type = TokenType.CloseArray;
+        break;
+      default:
+        if ((ch >= '0' && ch <= '9') || ch == '-') {
+          type = TokenType.Number;
+          b.setLength(0);
+          while (more() && ((ch >= '0' && ch <= '9') || ch == '-' || ch == '.') || ch == '+' || ch == 'e' || ch == 'E') {
+            b.append(ch);
+            ch = getNextChar();
+          }
+          value = b.toString();
+          push(ch);
+        } else if (Utilities.isAlphabetic(ch) || (ch == '_')) {
+          type = TokenType.String;
+          isUnquoted = true;
+          b.setLength(0);
+          while (more() && (Utilities.isAlphabetic(ch) || Utilities.isDigit(ch) || ch == '_' || ch == '.' || ch == '-')) {
+            b.append(ch);
+            ch = getNextChar();
+          }
+          value = b.toString();
+          push(ch);
+          if ("true".equals(value) || "false".equals(value)) {
+            this.type = TokenType.Boolean;
+            isUnquoted = false;
+          } else if ("null".equals(value)) {
+            this.type = TokenType.Null;
+            isUnquoted = false;
+          } else if (!allowUnquotedStrings) {
+            throw error("Unexpected content '"+value+"' in json format");
+          } 
+        } else {
+          throw error("Unexpected content '"+ch+"' in json format");
+        }
+      }
+    }
+  }
+
+  public String consume(TokenType type) throws IOException {
+    if (this.type != type)
+      throw error("JSON syntax error - found "+this.type.toString()+" expecting "+type.toString());
+    String result = value;
+    next();
+    return result;
+  }
+
+  public JsonLocationData getLocation() {
+    return location;
+  }
+
+  public Stack<State> getStates() {
+    return states;
+  }
+
+  public void takeComments(JsonElement child) {
+    if (!comments.isEmpty()) {
+      child.getComments().addAll(comments);
+      comments.clear();
+    }
+  }
+
+  public boolean isUnquoted() {
+    return isUnquoted;
+  }
+
+  @Override
+  public String toString() {
+    return "JsonLexer [cursor=" + cursor + ", peek=" + new String(peek, 0, peekCount) + ", type=" + type + ", location=" + location.toString() + "]";
+  }
+
+  public String getSourceName() {
+    return sourceName;
+  }
+
+  public void setSourceName(String sourceName) {
+    this.sourceName = sourceName;
+  }
+
+
+}

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ResearchStudyPhaseEnumFactory implements EnumFactory<ResearchStudyPhase> {
@@ -58,11 +54,13 @@ public class ResearchStudyPhaseEnumFactory implements EnumFactory<ResearchStudyP
       return ResearchStudyPhase.PHASE3;
     if ("phase-4".equals(codeString))
       return ResearchStudyPhase.PHASE4;
-    throw new IllegalArgumentException("Unknown ResearchStudyPhase code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ResearchStudyPhase code '" + codeString + "'");
   }
 
   public String toCode(ResearchStudyPhase code) {
-    if (code == ResearchStudyPhase.NA)
+       if (code == ResearchStudyPhase.NULL)
+           return null;
+       if (code == ResearchStudyPhase.NA)
       return "n-a";
     if (code == ResearchStudyPhase.EARLYPHASE1)
       return "early-phase-1";
@@ -79,10 +77,10 @@ public class ResearchStudyPhaseEnumFactory implements EnumFactory<ResearchStudyP
     if (code == ResearchStudyPhase.PHASE4)
       return "phase-4";
     return "?";
-  }
+   }
 
-    public String toSystem(ResearchStudyPhase code) {
-      return code.getSystem();
-      }
+  public String toSystem(ResearchStudyPhase code) {
+    return code.getSystem();
+  }
 
 }

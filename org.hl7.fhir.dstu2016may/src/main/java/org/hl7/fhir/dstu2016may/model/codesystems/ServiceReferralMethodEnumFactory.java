@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ServiceReferralMethodEnumFactory implements EnumFactory<ServiceReferralMethod> {
@@ -52,11 +48,13 @@ public class ServiceReferralMethodEnumFactory implements EnumFactory<ServiceRefe
       return ServiceReferralMethod.SEMAIL;
     if ("mail".equals(codeString))
       return ServiceReferralMethod.MAIL;
-    throw new IllegalArgumentException("Unknown ServiceReferralMethod code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ServiceReferralMethod code '" + codeString + "'");
   }
 
   public String toCode(ServiceReferralMethod code) {
-    if (code == ServiceReferralMethod.FAX)
+       if (code == ServiceReferralMethod.NULL)
+           return null;
+       if (code == ServiceReferralMethod.FAX)
       return "fax";
     if (code == ServiceReferralMethod.PHONE)
       return "phone";
@@ -67,10 +65,10 @@ public class ServiceReferralMethodEnumFactory implements EnumFactory<ServiceRefe
     if (code == ServiceReferralMethod.MAIL)
       return "mail";
     return "?";
-  }
+   }
 
-    public String toSystem(ServiceReferralMethod code) {
-      return code.getSystem();
-      }
+  public String toSystem(ServiceReferralMethod code) {
+    return code.getSystem();
+  }
 
 }

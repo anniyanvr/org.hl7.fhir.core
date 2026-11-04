@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ExamplescenarioActorTypeEnumFactory implements EnumFactory<ExamplescenarioActorType> {
@@ -46,19 +42,21 @@ public class ExamplescenarioActorTypeEnumFactory implements EnumFactory<Examples
       return ExamplescenarioActorType.PERSON;
     if ("entity".equals(codeString))
       return ExamplescenarioActorType.ENTITY;
-    throw new IllegalArgumentException("Unknown ExamplescenarioActorType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ExamplescenarioActorType code '" + codeString + "'");
   }
 
   public String toCode(ExamplescenarioActorType code) {
-    if (code == ExamplescenarioActorType.PERSON)
+       if (code == ExamplescenarioActorType.NULL)
+           return null;
+       if (code == ExamplescenarioActorType.PERSON)
       return "person";
     if (code == ExamplescenarioActorType.ENTITY)
       return "entity";
     return "?";
-  }
+   }
 
-    public String toSystem(ExamplescenarioActorType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ExamplescenarioActorType code) {
+    return code.getSystem();
+  }
 
 }

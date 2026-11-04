@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -132,11 +128,13 @@ public class V3Hl7RealmEnumFactory implements EnumFactory<V3Hl7Realm> {
       return V3Hl7Realm.NAMESPACEREALMS;
     if ("ZZ".equals(codeString))
       return V3Hl7Realm.ZZ;
-    throw new IllegalArgumentException("Unknown V3Hl7Realm code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3Hl7Realm code '" + codeString + "'");
   }
 
   public String toCode(V3Hl7Realm code) {
-    if (code == V3Hl7Realm.BINDINGREALMS)
+       if (code == V3Hl7Realm.NULL)
+           return null;
+       if (code == V3Hl7Realm.BINDINGREALMS)
       return "BindingRealms";
     if (code == V3Hl7Realm.AFFILIATEREALMS)
       return "AffiliateRealms";
@@ -227,10 +225,10 @@ public class V3Hl7RealmEnumFactory implements EnumFactory<V3Hl7Realm> {
     if (code == V3Hl7Realm.ZZ)
       return "ZZ";
     return "?";
-  }
+   }
 
-    public String toSystem(V3Hl7Realm code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3Hl7Realm code) {
+    return code.getSystem();
+  }
 
 }

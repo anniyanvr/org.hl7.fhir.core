@@ -185,12 +185,12 @@ public class ChargeItem extends DomainResource {
           return ChargeItemStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown ChargeItemStatus code '"+codeString+"'");
         }
-        public Enumeration<ChargeItemStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ChargeItemStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ChargeItemStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("planned".equals(codeString))
@@ -210,7 +210,9 @@ public class ChargeItem extends DomainResource {
         throw new FHIRException("Unknown ChargeItemStatus code '"+codeString+"'");
         }
     public String toCode(ChargeItemStatus code) {
-      if (code == ChargeItemStatus.PLANNED)
+       if (code == ChargeItemStatus.NULL)
+           return null;
+       if (code == ChargeItemStatus.PLANNED)
         return "planned";
       if (code == ChargeItemStatus.BILLABLE)
         return "billable";
@@ -225,7 +227,7 @@ public class ChargeItem extends DomainResource {
       if (code == ChargeItemStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(ChargeItemStatus code) {
       return code.getSystem();
       }
@@ -870,28 +872,6 @@ public class ChargeItem extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<ChargeItem> getPartOfTarget() { 
-      if (this.partOfTarget == null)
-        this.partOfTarget = new ArrayList<ChargeItem>();
-      return this.partOfTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public ChargeItem addPartOfTarget() { 
-      ChargeItem r = new ChargeItem();
-      if (this.partOfTarget == null)
-        this.partOfTarget = new ArrayList<ChargeItem>();
-      this.partOfTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #code} (A code that identifies the charge, like a billing code.)
      */
     public CodeableConcept getCode() { 
@@ -1011,8 +991,8 @@ public class ChargeItem extends DomainResource {
       return (DateTimeType) this.occurrence;
     }
 
-    public boolean hasOccurrenceDateTimeType() { 
-      return this != null && this.occurrence instanceof DateTimeType;
+    public boolean hasOccurrenceDateTimeType() {
+        return this.occurrence instanceof DateTimeType;
     }
 
     /**
@@ -1026,8 +1006,8 @@ public class ChargeItem extends DomainResource {
       return (Period) this.occurrence;
     }
 
-    public boolean hasOccurrencePeriod() { 
-      return this != null && this.occurrence instanceof Period;
+    public boolean hasOccurrencePeriod() {
+        return this.occurrence instanceof Period;
     }
 
     /**
@@ -1041,8 +1021,8 @@ public class ChargeItem extends DomainResource {
       return (Timing) this.occurrence;
     }
 
-    public boolean hasOccurrenceTiming() { 
-      return this != null && this.occurrence instanceof Timing;
+    public boolean hasOccurrenceTiming() {
+        return this.occurrence instanceof Timing;
     }
 
     public boolean hasOccurrence() { 
@@ -1612,16 +1592,6 @@ public class ChargeItem extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getServiceTarget() { 
-      if (this.serviceTarget == null)
-        this.serviceTarget = new ArrayList<Resource>();
-      return this.serviceTarget;
-    }
-
-    /**
      * @return {@link #account} (Account into which this ChargeItems belongs.)
      */
     public List<Reference> getAccount() { 
@@ -1672,28 +1642,6 @@ public class ChargeItem extends DomainResource {
         addAccount();
       }
       return getAccount().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Account> getAccountTarget() { 
-      if (this.accountTarget == null)
-        this.accountTarget = new ArrayList<Account>();
-      return this.accountTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Account addAccountTarget() { 
-      Account r = new Account();
-      if (this.accountTarget == null)
-        this.accountTarget = new ArrayList<Account>();
-      this.accountTarget.add(r);
-      return r;
     }
 
     /**
@@ -1800,16 +1748,6 @@ public class ChargeItem extends DomainResource {
         addSupportingInformation();
       }
       return getSupportingInformation().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getSupportingInformationTarget() { 
-      if (this.supportingInformationTarget == null)
-        this.supportingInformationTarget = new ArrayList<Resource>();
-      return this.supportingInformationTarget;
     }
 
       protected void listChildren(List<Property> children) {
@@ -2107,10 +2045,10 @@ public class ChargeItem extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("definition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ChargeItem.definition");
+          throw new FHIRException("Cannot call addChild on a singleton property ChargeItem.definition");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ChargeItem.status");
+          throw new FHIRException("Cannot call addChild on a singleton property ChargeItem.status");
         }
         else if (name.equals("partOf")) {
           return addPartOf();
@@ -2158,21 +2096,21 @@ public class ChargeItem extends DomainResource {
           return addBodysite();
         }
         else if (name.equals("factorOverride")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ChargeItem.factorOverride");
+          throw new FHIRException("Cannot call addChild on a singleton property ChargeItem.factorOverride");
         }
         else if (name.equals("priceOverride")) {
           this.priceOverride = new Money();
           return this.priceOverride;
         }
         else if (name.equals("overrideReason")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ChargeItem.overrideReason");
+          throw new FHIRException("Cannot call addChild on a singleton property ChargeItem.overrideReason");
         }
         else if (name.equals("enterer")) {
           this.enterer = new Reference();
           return this.enterer;
         }
         else if (name.equals("enteredDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ChargeItem.enteredDate");
+          throw new FHIRException("Cannot call addChild on a singleton property ChargeItem.enteredDate");
         }
         else if (name.equals("reason")) {
           return addReason();

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -122,11 +118,13 @@ public class V3VaccineManufacturerEnumFactory implements EnumFactory<V3VaccineMa
       return V3VaccineManufacturer.WA;
     if ("WAL".equals(codeString))
       return V3VaccineManufacturer.WAL;
-    throw new IllegalArgumentException("Unknown V3VaccineManufacturer code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3VaccineManufacturer code '" + codeString + "'");
   }
 
   public String toCode(V3VaccineManufacturer code) {
-    if (code == V3VaccineManufacturer.AB)
+       if (code == V3VaccineManufacturer.NULL)
+           return null;
+       if (code == V3VaccineManufacturer.AB)
       return "AB";
     if (code == V3VaccineManufacturer.AD)
       return "AD";
@@ -207,10 +205,10 @@ public class V3VaccineManufacturerEnumFactory implements EnumFactory<V3VaccineMa
     if (code == V3VaccineManufacturer.WAL)
       return "WAL";
     return "?";
-  }
+   }
 
-    public String toSystem(V3VaccineManufacturer code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3VaccineManufacturer code) {
+    return code.getSystem();
+  }
 
 }

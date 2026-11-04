@@ -5,15 +5,18 @@ package org.hl7.fhir.r5.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.exceptions.DefinitionException;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
-import org.hl7.fhir.r5.conformance.ProfileUtilities;
+import org.hl7.fhir.r5.conformance.profile.ProfileUtilities;
 import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
 import org.hl7.fhir.r5.model.Base;
 import org.hl7.fhir.r5.model.BooleanType;
 import org.hl7.fhir.r5.model.CanonicalType;
@@ -49,8 +52,10 @@ import org.hl7.fhir.r5.model.UriType;
 import org.hl7.fhir.r5.model.ValueSet;
 import org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionComponent;
 import org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionContainsComponent;
-import org.hl7.fhir.r5.terminologies.ValueSetExpander;
+import org.hl7.fhir.r5.terminologies.expansion.ValueSetExpander;
 import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
+
+import org.hl7.fhir.utilities.UserDataNames;
 import org.hl7.fhir.utilities.Utilities;
 
 
@@ -101,6 +106,7 @@ import org.hl7.fhir.utilities.Utilities;
  * @author Grahame
  *
  */
+
 public class QuestionnaireBuilder {
 
   private static final int MaxListboxCodings = 20;
@@ -114,17 +120,20 @@ public class QuestionnaireBuilder {
   private Factory factory = new Factory();
   private Map<String, String> vsCache = new HashMap<String, String>();
   private ValueSetExpander expander;
+  private Set<String> linkIds = new HashSet<>();
 
   // sometimes, when this is used, the questionnaire is already build and cached, and we are
   // processing the response. for technical reasons, we still go through the process, but
   // we don't do the intensive parts of the work (save time)
   private Questionnaire prebuiltQuestionnaire;
   private ProfileUtilities profileUtilities;
+  private String rootPath;
 
-  public QuestionnaireBuilder(IWorkerContext context) {
+  public QuestionnaireBuilder(IWorkerContext context, String rootPath) {
     super();
     this.context = context;
     profileUtilities = new ProfileUtilities(context, null, null); 
+    this.rootPath = rootPath;
   }
 
   public Resource getReference() {
@@ -209,9 +218,9 @@ public class QuestionnaireBuilder {
       // give it a fake group to build
       Questionnaire.QuestionnaireItemComponent group = new Questionnaire.QuestionnaireItemComponent();
       group.setType(QuestionnaireItemType.GROUP);
-      buildGroup(group, profile, profile.getSnapshot().getElement().get(0), list, answerGroups);
+      buildGroup(group, profile, profile.getSnapshot().getElement().get(0), profile.getSnapshot().getElement().get(0).getPath(), list, answerGroups);
     } else
-      buildGroup(questionnaire.getItem().get(0), profile, profile.getSnapshot().getElement().get(0), list, answerGroups);
+      buildGroup(questionnaire.getItem().get(0), profile, profile.getSnapshot().getElement().get(0), profile.getSnapshot().getElement().get(0).getPath(), list, answerGroups);
     //
     //     NarrativeGenerator ngen = new NarrativeGenerator(context);
     //     ngen.generate(result);
@@ -230,8 +239,10 @@ public class QuestionnaireBuilder {
       questionnaire.setPublisher(profile.getPublisher());
       Questionnaire.QuestionnaireItemComponent item = new Questionnaire.QuestionnaireItemComponent();
       questionnaire.addItem(item);
+      item.setLinkId("meta");
       item.getCode().addAll(profile.getKeyword());
-      questionnaire.setId(nextId("qs"));
+      questionnaire.setId(nextId("qgen-"+profile.getId()));
+      questionnaire.setUrl(Utilities.pathURL(rootPath, "Questionnaire", questionnaire.getId()));
     }
 
     if (response != null) {
@@ -241,7 +252,8 @@ public class QuestionnaireBuilder {
       response.setStatus(QuestionnaireResponseStatus.INPROGRESS);
       QuestionnaireResponse.QuestionnaireResponseItemComponent item = new QuestionnaireResponse.QuestionnaireResponseItemComponent();
       response.addItem(item);
-      item.setUserData("object", resource);
+      item.setLinkId("meta");
+      item.setUserData(UserDataNames.questionnaire_object, resource);
     }
 
   }
@@ -251,27 +263,34 @@ public class QuestionnaireBuilder {
     return prefix+Integer.toString(lastid);
   }
 
-  private void buildGroup(QuestionnaireItemComponent group, StructureDefinition profile, ElementDefinition element,
+  private void buildGroup(QuestionnaireItemComponent group, StructureDefinition profile, ElementDefinition element, String path,
       List<ElementDefinition> parents, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-	  group.setLinkId(element.getPath()); // todo: this will be wrong when we start slicing
+	  if (linkIds.contains(path)) {
+	    return;
+	  }
+	  linkIds.add(path);
+    group.setLinkId(path); // todo: this will be wrong when we start slicing
 	  group.setText(element.getShort()); // todo - may need to prepend the name tail... 
 	  if (element.getComment() != null) {
 	  	Questionnaire.QuestionnaireItemComponent display = new Questionnaire.QuestionnaireItemComponent();
 	  	display.setType(QuestionnaireItemType.DISPLAY);
 	  	display.setText(element.getComment());
 	  	group.addItem(display);
+	  	display.setLinkId(element.getId()+"-display");
 	  }
 	  group.setType(QuestionnaireItemType.GROUP);
-	  ToolingExtensions.addFlyOver(group, element.getDefinition());
+    ExtensionUtilities.addFlyOver(group, element.getDefinition(), element.getId()+"-flyover");
     group.setRequired(element.getMin() > 0);
     if (element.getMin() > 0)
-    	ToolingExtensions.addMin(group, element.getMin());
+      ExtensionUtilities.addMin(group, element.getMin());
     group.setRepeats(!element.getMax().equals("1"));
     if (!element.getMax().equals("*"))
-    	ToolingExtensions.addMax(group, Integer.parseInt(element.getMax()));
+      ExtensionUtilities.addMax(group, Integer.parseInt(element.getMax()));
 
+    int i = 0;
     for (org.hl7.fhir.r5.model.QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups) {
-      ag.setLinkId(group.getLinkId());
+      i++;
+      ag.setLinkId(group.getLinkId()+i);
       ag.setText(group.getText());
     }
 
@@ -284,16 +303,17 @@ public class QuestionnaireBuilder {
         nparents.addAll(parents);
         nparents.add(child);
         QuestionnaireItemComponent childGroup = group.addItem();
+        childGroup.setLinkId(child.getId()+"-grp");
         childGroup.setType(QuestionnaireItemType.GROUP);
 
         List<QuestionnaireResponse.QuestionnaireResponseItemComponent> nResponse = new ArrayList<QuestionnaireResponse.QuestionnaireResponseItemComponent>();
-        processExisting(child.getPath(), answerGroups, nResponse);
+        processExisting(child.getPath(), answerGroups, childGroup, nResponse);
         // if the element has a type, we add a question. else we add a group on the basis that
         // it will have children of its own
         if (child.getType().isEmpty() || isAbstractType(child.getType())) 
-          buildGroup(childGroup, profile, child, nparents, nResponse);
+          buildGroup(childGroup, profile, child, path+"."+child.getName(), nparents, nResponse);
         else if (isInlineDataType(child.getType()))
-          buildGroup(childGroup, profile, child, nparents, nResponse); // todo: get the right children for this one...
+          buildGroup(childGroup, profile, child, path+"."+child.getName(), nparents, nResponse); // todo: get the right children for this one...
         else
           buildQuestion(childGroup, profile, child, child.getPath(), nResponse, parents);
       }
@@ -334,14 +354,15 @@ public class QuestionnaireBuilder {
     return path.substring(path.lastIndexOf('.')+1);
   }
 
-  private void processExisting(String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> nResponse) throws FHIRException {
+  private void processExisting(String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups, QuestionnaireItemComponent item, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> nResponse) throws FHIRException {
     // processing existing data
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups) {
-      List<Base> children = ((Element) ag.getUserData("object")).listChildrenByName(tail(path));
+      List<Base> children = ((Element) ag.getUserData(UserDataNames.questionnaire_object)).listChildrenByName(tail(path));
       for (Base child : children) {
         if (child != null) {
           QuestionnaireResponse.QuestionnaireResponseItemComponent ans = ag.addItem();
-          ans.setUserData("object", child);
+          ag.setLinkId(item.getLinkId());
+          ans.setUserData(UserDataNames.questionnaire_object, child);
           nResponse.add(ans);
         }
       }
@@ -355,10 +376,10 @@ public class QuestionnaireBuilder {
       group.setText(element.getShort()); // prefix with name?
       group.setRequired(element.getMin() > 0);
 	    if (element.getMin() > 0)
-	    	ToolingExtensions.addMin(group, element.getMin());
-      group.setRepeats(!element.getMax().equals('1'));
+	    	ExtensionUtilities.addMin(group, element.getMin());
+      group.setRepeats(!element.getMax().equals("1"));
 	    if (!element.getMax().equals("*"))
-	    	ToolingExtensions.addMax(group, Integer.parseInt(element.getMax()));
+	    	ExtensionUtilities.addMax(group, Integer.parseInt(element.getMax()));
 
       for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups) {
         ag.setLinkId(group.getLinkId());
@@ -366,9 +387,9 @@ public class QuestionnaireBuilder {
       }
 
       if (!Utilities.noString(element.getComment())) 
-        ToolingExtensions.addFlyOver(group, element.getDefinition()+" "+element.getComment());
+        ExtensionUtilities.addFlyOver(group, element.getDefinition()+" "+element.getComment(), group.getLinkId()+"-flyover");
       else
-        ToolingExtensions.addFlyOver(group, element.getDefinition());
+        ExtensionUtilities.addFlyOver(group, element.getDefinition(), group.getLinkId()+"-flyover");
 
       if (element.getType().size() > 1 || element.getType().get(0).getWorkingCode().equals("*")) {
         List<TypeRefComponent> types = expandTypeList(element.getType());
@@ -376,13 +397,13 @@ public class QuestionnaireBuilder {
           for (TypeRefComponent t : types) {
             Questionnaire.QuestionnaireItemComponent sub = q.addItem();
             sub.setType(QuestionnaireItemType.GROUP);
-            sub.setLinkId(element.getPath()+"._"+t.getUserData("text"));
-            sub.setText((String) t.getUserData("text"));
+            sub.setLinkId(element.getPath()+"._"+t.getUserData(UserDataNames.questionnaire_text));
+            sub.setText((String) t.getUserData(UserDataNames.questionnaire_text));
             // always optional, never repeats
 
             List<QuestionnaireResponse.QuestionnaireResponseItemComponent> selected = new ArrayList<QuestionnaireResponse.QuestionnaireResponseItemComponent>();
             selectTypes(profile, sub, t, answerGroups, selected);
-            processDataType(profile, sub, element, element.getPath()+"._"+t.getUserData("text"), t, selected, parents);
+            processDataType(profile, sub, element, element.getPath()+"._"+t.getUserData(UserDataNames.questionnaire_text), t, selected, parents);
           }
       } else
         // now we have to build the question panel for each different data type
@@ -438,7 +459,7 @@ public class QuestionnaireBuilder {
 	        if (u.getValue().startsWith("http://hl7.org/fhir/StructureDefinition/")) { 
 	          ValueSetExpansionContainsComponent cc = vs.getExpansion().addContains();
     	      cc.setCode(u.getValue().substring(40));
-            cc.setSystem("http://hl7.org/fhir/resource-types");
+            cc.setSystem("http://hl7.org/fhir/fhir-types");
     	      cc.setDisplay(cc.getCode());
 	        }
         }
@@ -446,15 +467,15 @@ public class QuestionnaireBuilder {
         ValueSetExpansionContainsComponent cc = vs.getExpansion().addContains();
         cc.setCode(t.getWorkingCode());
         cc.setDisplay(t.getWorkingCode());
-        cc.setSystem("http://hl7.org/fhir/data-types");
+        cc.setSystem("http://hl7.org/fhir/fhir-types");
       } else for (UriType u : t.getProfile()) {
         ProfileUtilities pu = new ProfileUtilities(context, null, null);
-        StructureDefinition ps = pu.getProfile(profile, u.getValue());
+        StructureDefinition ps = pu.getProfile(profile, u);
         if (ps != null) {
           ValueSetExpansionContainsComponent cc = vs.getExpansion().addContains();
 	        cc.setCode(u.getValue());
           cc.setDisplay(ps.getType());
-          cc.setSystem("http://hl7.org/fhir/resource-types");
+          cc.setSystem("http://hl7.org/fhir/fhir-types");
         }
       }
     }
@@ -466,7 +487,7 @@ public class QuestionnaireBuilder {
     List<QuestionnaireResponse.QuestionnaireResponseItemComponent> temp = new ArrayList<QuestionnaireResponse.QuestionnaireResponseItemComponent>();
 
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent g : source)
-      if (instanceOf(t, (Element) g.getUserData("object"))) 
+      if (instanceOf(t, (Element) g.getUserData(UserDataNames.questionnaire_object))) 
         temp.add(g);
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent g : temp)
       source.remove(g);
@@ -484,7 +505,7 @@ public class QuestionnaireBuilder {
             Coding cc = new Coding();
             a.setValue(cc);
             cc.setCode(u.getValue().substring(40));
-            cc.setSystem("http://hl7.org/fhir/resource-types");
+            cc.setSystem("http://hl7.org/fhir/fhir-types");
           }
         }
       } else {
@@ -493,14 +514,14 @@ public class QuestionnaireBuilder {
         ProfileUtilities pu = new ProfileUtilities(context, null, null);
         StructureDefinition ps = null;
         if (t.hasProfile())
-          ps = pu.getProfile(profile, t.getProfile().get(0).getValue());
+          ps = pu.getProfile(profile, t.getProfile().get(0));
 
         if (ps != null) {
           cc.setCode(t.getProfile().get(0).getValue());
-          cc.setSystem("http://hl7.org/fhir/resource-types");
+          cc.setSystem("http://hl7.org/fhir/fhir-types");
         } else {
           cc.setCode(t.getWorkingCode());
-          cc.setSystem("http://hl7.org/fhir/data-types");
+          cc.setSystem("http://hl7.org/fhir/fhir-types");
         }
       }
 
@@ -509,7 +530,7 @@ public class QuestionnaireBuilder {
       dest.add(subg);
       subg.setLinkId(sub.getLinkId());
       subg.setText(sub.getText());
-      subg.setUserData("object", g.getUserData("object"));
+      subg.setUserData(UserDataNames.questionnaire_object, g.getUserData(UserDataNames.questionnaire_object));
     }
   }
 
@@ -542,7 +563,7 @@ public class QuestionnaireBuilder {
     if (vs != null) {
       if (vs.getExpansion() == null) {
         result.setAnswerValueSet(vs.getUrl());
-        ToolingExtensions.addControl(result, "lookup"); 
+        ExtensionUtilities.addControl(result, "lookup"); 
       } else {
         if (Utilities.noString(vs.getId())) {
           vs.setId(nextId("vs"));
@@ -573,7 +594,7 @@ public class QuestionnaireBuilder {
         List<Base> children = new ArrayList<Base>(); 
 
         QuestionnaireResponse.QuestionnaireResponseItemComponent aq = null;
-        Element obj = (Element) ag.getUserData("object");
+        Element obj = (Element) ag.getUserData(UserDataNames.questionnaire_object);
         if (isPrimitive((TypeRefComponent) obj))
           children.add(obj);
         else if (obj instanceof Enumeration) {
@@ -760,12 +781,12 @@ public class QuestionnaireBuilder {
       StructureDefinition sd = context.fetchTypeDefinition(tc);
       if (sd == null)
         throw new NotImplementedException("Unhandled Data Type: "+tc+" on element "+element.getPath());
-      buildGroup(group, sd, sd.getSnapshot().getElementFirstRep(), parents, answerGroups);
+      buildGroup(group, sd, sd.getSnapshot().getElementFirstRep(), path+"."+sd.getSnapshot().getElementFirstRep().getPath(), parents, answerGroups);
     }
   }
 
   private void addCodeQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "code");
+    ExtensionUtilities.addFhirType(group, "code");
     ValueSet vs = resolveValueSet(null, element.hasBinding() ? element.getBinding() : null);
     addQuestion(group, QuestionnaireItemType.CODING, constraintTypeForBinding(element.getBinding()), path, "value", unCamelCase(tail(element.getPath())), answerGroups, vs);
     group.setText(null);
@@ -785,7 +806,7 @@ public class QuestionnaireBuilder {
   }
 
   private void addStringQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "string");
+    ExtensionUtilities.addFhirType(group, "string");
     addQuestion(group, QuestionnaireItemType.STRING, null, path, "value", group.getText(), answerGroups);
 	  group.setText(null);
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups)
@@ -793,7 +814,7 @@ public class QuestionnaireBuilder {
   }
 
   private void addTimeQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "time");
+    ExtensionUtilities.addFhirType(group, "time");
     addQuestion(group, QuestionnaireItemType.TIME, null, path, "value", group.getText(), answerGroups);
 	  group.setText(null);
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups)
@@ -801,7 +822,7 @@ public class QuestionnaireBuilder {
   }
 
   private void addUriQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "uri");
+    ExtensionUtilities.addFhirType(group, "uri");
     addQuestion(group, QuestionnaireItemType.STRING, null, path, "value", group.getText(), answerGroups);
 	  group.setText(null);
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups)
@@ -809,7 +830,7 @@ public class QuestionnaireBuilder {
   }
 
   private void addBooleanQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "boolean");
+    ExtensionUtilities.addFhirType(group, "boolean");
     addQuestion(group, QuestionnaireItemType.BOOLEAN, null, path, "value", group.getText(), answerGroups);
 	  group.setText(null);
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups)
@@ -817,7 +838,7 @@ public class QuestionnaireBuilder {
   }
 
   private void addDecimalQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "decimal");
+    ExtensionUtilities.addFhirType(group, "decimal");
     addQuestion(group, QuestionnaireItemType.DECIMAL, null, path, "value", group.getText(), answerGroups);
 	  group.setText(null);
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups)
@@ -825,7 +846,7 @@ public class QuestionnaireBuilder {
   }
 
   private void addIntegerQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "integer");
+    ExtensionUtilities.addFhirType(group, "integer");
     addQuestion(group, QuestionnaireItemType.INTEGER, null, path, "value", group.getText(), answerGroups);
 	  group.setText(null);
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups)
@@ -833,7 +854,7 @@ public class QuestionnaireBuilder {
   }
 
   private void addDateTimeQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "datetime");
+    ExtensionUtilities.addFhirType(group, "datetime");
     addQuestion(group, QuestionnaireItemType.DATETIME, null, path, "value", group.getText(), answerGroups);
 	  group.setText(null);
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups)
@@ -841,7 +862,7 @@ public class QuestionnaireBuilder {
   }
 
   private void addInstantQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "instant");
+    ExtensionUtilities.addFhirType(group, "instant");
     addQuestion(group, QuestionnaireItemType.DATETIME, null, path, "value", group.getText(), answerGroups);
 	  group.setText(null);
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups)
@@ -849,7 +870,7 @@ public class QuestionnaireBuilder {
   }
 
   private void addBinaryQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) {
-    ToolingExtensions.addFhirType(group, "binary");
+    ExtensionUtilities.addFhirType(group, "binary");
     // ? Lloyd: how to support binary content
   }
   
@@ -858,14 +879,17 @@ public class QuestionnaireBuilder {
   private QuestionnaireAnswerConstraint constraintTypeForBinding(ElementDefinitionBindingComponent binding) {
     if (binding == null) 
       return null;
-    else if (binding.getStrength() != BindingStrength.REQUIRED) 
+    // A required binding means the answer must come from the value set, so only the
+    // listed options are allowed. Any weaker strength (extensible, preferred, example)
+    // also permits a value of the element's own type.
+    else if (binding.getStrength() == BindingStrength.REQUIRED)
       return QuestionnaireAnswerConstraint.OPTIONSONLY;
     else
-      return QuestionnaireAnswerConstraint.OPTIONSORTYPE; 
+      return QuestionnaireAnswerConstraint.OPTIONSORTYPE;
   }
 
   private void addCodingQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "Coding");
+    ExtensionUtilities.addFhirType(group, "Coding");
     addQuestion(group, QuestionnaireItemType.CODING, constraintTypeForBinding(element.getBinding()), path, "value", group.getText(), answerGroups, resolveValueSet(null, element.hasBinding() ? element.getBinding() : null));
     group.setText(null);
     for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups)
@@ -873,7 +897,7 @@ public class QuestionnaireBuilder {
   }
 
   private void addCodeableConceptQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "CodeableConcept");
+    ExtensionUtilities.addFhirType(group, "CodeableConcept");
     addQuestion(group, QuestionnaireItemType.CODING, constraintTypeForBinding(element.getBinding()), path, "coding", "code:", answerGroups, resolveValueSet(null, element.hasBinding() ? element.getBinding() : null));
     addQuestion(group, QuestionnaireItemType.STRING, null, path, "text", "text:", answerGroups);
   }
@@ -884,27 +908,27 @@ public class QuestionnaireBuilder {
   }
 
   private void addPeriodQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "Period");
+    ExtensionUtilities.addFhirType(group, "Period");
     addQuestion(group, QuestionnaireItemType.DATETIME, null, path, "low", "start:", answerGroups);
     addQuestion(group, QuestionnaireItemType.DATETIME, null, path, "end", "end:", answerGroups);
   }
 
   private void addRatioQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "Ratio");
+    ExtensionUtilities.addFhirType(group, "Ratio");
     addQuestion(group, QuestionnaireItemType.DECIMAL, null, path, "numerator", "numerator:", answerGroups);
     addQuestion(group, QuestionnaireItemType.DECIMAL, null, path, "denominator", "denominator:", answerGroups);
     addQuestion(group, QuestionnaireItemType.STRING, null, path, "units", "units:", answerGroups);
   }
 
   private void addHumanNameQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "Name");
+    ExtensionUtilities.addFhirType(group, "Name");
     addQuestion(group, QuestionnaireItemType.STRING, null, path, "text", "text:", answerGroups);
     addQuestion(group, QuestionnaireItemType.STRING, null, path, "family", "family:", answerGroups).setRepeats(true);
     addQuestion(group, QuestionnaireItemType.STRING, null, path, "given", "given:", answerGroups).setRepeats(true);
   }
 
   private void addAddressQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "Address");
+    ExtensionUtilities.addFhirType(group, "Address");
     addQuestion(group, QuestionnaireItemType.STRING, null, path, "text", "text:", answerGroups);
     addQuestion(group, QuestionnaireItemType.STRING, null, path, "line", "line:", answerGroups).setRepeats(true);
     addQuestion(group, QuestionnaireItemType.STRING, null, path, "city", "city:", answerGroups);
@@ -915,21 +939,21 @@ public class QuestionnaireBuilder {
   }
 
     private void addContactPointQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-    ToolingExtensions.addFhirType(group, "ContactPoint");
+    ExtensionUtilities.addFhirType(group, "ContactPoint");
     addQuestion(group, QuestionnaireItemType.CODING, QuestionnaireAnswerConstraint.OPTIONSONLY, path, "system", "type:", answerGroups, resolveValueSet("http://hl7.org/fhir/vs/contact-point-system"));
     addQuestion(group, QuestionnaireItemType.STRING, null, path, "value", "value:", answerGroups);
     addQuestion(group, QuestionnaireItemType.CODING, QuestionnaireAnswerConstraint.OPTIONSONLY, path, "use", "use:", answerGroups, resolveValueSet("http://hl7.org/fhir/vs/contact-point-use"));
     }
     
     private void addIdentifierQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-      ToolingExtensions.addFhirType(group, "Identifier");
+      ExtensionUtilities.addFhirType(group, "Identifier");
       addQuestion(group, QuestionnaireItemType.STRING, null, path, "label", "label:", answerGroups);
       addQuestion(group, QuestionnaireItemType.STRING, null, path, "system", "system:", answerGroups);
       addQuestion(group, QuestionnaireItemType.STRING, null, path, "value", "value:", answerGroups);
     }
 
     private void addSimpleQuantityQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-      ToolingExtensions.addFhirType(group, "Quantity");
+      ExtensionUtilities.addFhirType(group, "Quantity");
       addQuestion(group, QuestionnaireItemType.DECIMAL, null, path, "value", "value:", answerGroups);
       addQuestion(group, QuestionnaireItemType.STRING, null, path, "units", "units:", answerGroups);
       addQuestion(group, QuestionnaireItemType.STRING, null, path, "code", "coded units:", answerGroups);
@@ -937,7 +961,7 @@ public class QuestionnaireBuilder {
     }
 
     private void addQuantityQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-      ToolingExtensions.addFhirType(group, "Quantity");
+      ExtensionUtilities.addFhirType(group, "Quantity");
       addQuestion(group, QuestionnaireItemType.CODING, QuestionnaireAnswerConstraint.OPTIONSONLY, path, "comparator", "comp:", answerGroups, resolveValueSet("http://hl7.org/fhir/vs/quantity-comparator"));
       addQuestion(group, QuestionnaireItemType.DECIMAL, null, path, "value", "value:", answerGroups);
       addQuestion(group, QuestionnaireItemType.STRING, null, path, "units", "units:", answerGroups);
@@ -946,52 +970,52 @@ public class QuestionnaireBuilder {
     }
 
     private void addMoneyQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-      ToolingExtensions.addFhirType(group, "Money");
+      ExtensionUtilities.addFhirType(group, "Money");
       addQuestion(group, QuestionnaireItemType.DECIMAL, null, path, "value", "value:", answerGroups);
       addQuestion(group, QuestionnaireItemType.STRING, null, path, "currency", "currency:", answerGroups);
   }
 
     private void addAgeQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-      ToolingExtensions.addFhirType(group, "Age");
+      ExtensionUtilities.addFhirType(group, "Age");
       addQuestion(group, QuestionnaireItemType.CODING, QuestionnaireAnswerConstraint.OPTIONSONLY, path, "comparator", "comp:", answerGroups, resolveValueSet("http://hl7.org/fhir/vs/quantity-comparator"));
       addQuestion(group, QuestionnaireItemType.DECIMAL, null, path, "value", "value:", answerGroups);
       addQuestion(group, QuestionnaireItemType.CODING, QuestionnaireAnswerConstraint.OPTIONSONLY, path, "units", "units:", answerGroups, resolveValueSet("http://hl7.org/fhir/vs/duration-units"));
     }
 
     private void addDurationQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-      ToolingExtensions.addFhirType(group, "Duration");
+      ExtensionUtilities.addFhirType(group, "Duration");
       addQuestion(group, QuestionnaireItemType.DECIMAL, null, path, "value", "value:", answerGroups);
       addQuestion(group, QuestionnaireItemType.STRING, null, path, "units", "units:", answerGroups);
     }
 
     private void addAttachmentQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) {
-      ToolingExtensions.addFhirType(group, "Attachment");
+      ExtensionUtilities.addFhirType(group, "Attachment");
       //    raise Exception.Create("addAttachmentQuestions not Done Yet");
     }
 
     private void addRangeQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-      ToolingExtensions.addFhirType(group, "Range");
+      ExtensionUtilities.addFhirType(group, "Range");
       addQuestion(group, QuestionnaireItemType.DECIMAL, null, path, "low", "low:", answerGroups);
       addQuestion(group, QuestionnaireItemType.DECIMAL, null, path, "high", "high:", answerGroups);
       addQuestion(group, QuestionnaireItemType.STRING, null, path, "units", "units:", answerGroups);
     }
     
     private void addSampledDataQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) {
-      ToolingExtensions.addFhirType(group, "SampledData");
+      ExtensionUtilities.addFhirType(group, "SampledData");
     }
     
     private void addTimingQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) throws FHIRException {
-      ToolingExtensions.addFhirType(group, "Schedule");
+      ExtensionUtilities.addFhirType(group, "Schedule");
       addQuestion(group, QuestionnaireItemType.STRING, null, path, "text", "text:", answerGroups);
       addQuestion(group, QuestionnaireItemType.DATETIME, null, path, "date", "date:", answerGroups);
       QuestionnaireItemComponent q = addQuestion(group, QuestionnaireItemType.REFERENCE, null, path, "author", "author:", answerGroups);
-      ToolingExtensions.addAllowedResource(q, "Patient");
-      ToolingExtensions.addAllowedResource(q, "Practitioner");
-      ToolingExtensions.addAllowedResource(q, "RelatedPerson");
+      ExtensionUtilities.addAllowedResource(q, "Patient");
+      ExtensionUtilities.addAllowedResource(q, "Practitioner");
+      ExtensionUtilities.addAllowedResource(q, "RelatedPerson");
     }
     
     private void addAnnotationQuestions(QuestionnaireItemComponent group, ElementDefinition element, String path, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups) {
-      ToolingExtensions.addFhirType(group, "Annotation");
+      ExtensionUtilities.addFhirType(group, "Annotation");
     }
   // Special Types ---------------------------------------------------------------
 
@@ -1000,7 +1024,7 @@ public class QuestionnaireBuilder {
       //    rn : String;
       //    i : integer;
       //    q : TFhirQuestionnaireGroupQuestion;
-      ToolingExtensions.addFhirType(group, "Reference");
+      ExtensionUtilities.addFhirType(group, "Reference");
 
       QuestionnaireItemComponent q = addQuestion(group, QuestionnaireItemType.REFERENCE, null, path, "value", group.getText(), answerGroups);
       group.setText(null);
@@ -1009,10 +1033,10 @@ public class QuestionnaireBuilder {
       if (u.getValue().startsWith("http://hl7.org/fhir/StructureDefinition/"))
         rn.append(u.getValue().substring(40));
       if (rn.length() == 0)
-        ToolingExtensions.addReferenceFilter(q, "subject=$subj&patient=$subj&encounter=$encounter");
+        ExtensionUtilities.addReferenceFilter(q, "subject=$subj&patient=$subj&encounter=$encounter");
       else {
-        ToolingExtensions.addAllowedResource(q, rn.toString());
-        ToolingExtensions.addReferenceFilter(q, "subject=$subj&patient=$subj&encounter=$encounter");
+        ExtensionUtilities.addAllowedResource(q, rn.toString());
+        ExtensionUtilities.addReferenceFilter(q, "subject=$subj&patient=$subj&encounter=$encounter");
       }
       for (QuestionnaireResponse.QuestionnaireResponseItemComponent ag : answerGroups)
         ag.setText(null);
@@ -1022,7 +1046,7 @@ public class QuestionnaireBuilder {
     private void addExtensionQuestions(StructureDefinition profile, QuestionnaireItemComponent group, ElementDefinition element, String path, String url, List<QuestionnaireResponse.QuestionnaireResponseItemComponent> answerGroups, List<ElementDefinition> parents) throws FHIRException { 
       // if this a  profiled extension, then we add it
     	if (!Utilities.noString(url)) {
-    		StructureDefinition ed =  context.fetchResource(StructureDefinition.class, url);
+    		StructureDefinition ed =  context.fetchResource(StructureDefinition.class, url, IWorkerContext.VersionResolutionRules.defaultRule());
     		if (ed != null) {
           if (answerGroups.size() > 0)
             throw new NotImplementedException("Debug this");

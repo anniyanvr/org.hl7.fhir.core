@@ -2,8 +2,6 @@ package org.hl7.fhir.dstu3.model;
 
 import java.math.BigDecimal;
 
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -159,12 +157,12 @@ public class TestReport extends DomainResource {
           return TestReportStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown TestReportStatus code '"+codeString+"'");
         }
-        public Enumeration<TestReportStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<TestReportStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<TestReportStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("completed".equals(codeString))
@@ -180,7 +178,9 @@ public class TestReport extends DomainResource {
         throw new FHIRException("Unknown TestReportStatus code '"+codeString+"'");
         }
     public String toCode(TestReportStatus code) {
-      if (code == TestReportStatus.COMPLETED)
+       if (code == TestReportStatus.NULL)
+           return null;
+       if (code == TestReportStatus.COMPLETED)
         return "completed";
       if (code == TestReportStatus.INPROGRESS)
         return "in-progress";
@@ -191,7 +191,7 @@ public class TestReport extends DomainResource {
       if (code == TestReportStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(TestReportStatus code) {
       return code.getSystem();
       }
@@ -279,12 +279,12 @@ public class TestReport extends DomainResource {
           return TestReportResult.PENDING;
         throw new IllegalArgumentException("Unknown TestReportResult code '"+codeString+"'");
         }
-        public Enumeration<TestReportResult> fromType(Base code) throws FHIRException {
+        public Enumeration<TestReportResult> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<TestReportResult>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("pass".equals(codeString))
@@ -296,14 +296,16 @@ public class TestReport extends DomainResource {
         throw new FHIRException("Unknown TestReportResult code '"+codeString+"'");
         }
     public String toCode(TestReportResult code) {
-      if (code == TestReportResult.PASS)
+       if (code == TestReportResult.NULL)
+           return null;
+       if (code == TestReportResult.PASS)
         return "pass";
       if (code == TestReportResult.FAIL)
         return "fail";
       if (code == TestReportResult.PENDING)
         return "pending";
       return "?";
-      }
+   }
     public String toSystem(TestReportResult code) {
       return code.getSystem();
       }
@@ -391,12 +393,12 @@ public class TestReport extends DomainResource {
           return TestReportParticipantType.SERVER;
         throw new IllegalArgumentException("Unknown TestReportParticipantType code '"+codeString+"'");
         }
-        public Enumeration<TestReportParticipantType> fromType(Base code) throws FHIRException {
+        public Enumeration<TestReportParticipantType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<TestReportParticipantType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("test-engine".equals(codeString))
@@ -408,14 +410,16 @@ public class TestReport extends DomainResource {
         throw new FHIRException("Unknown TestReportParticipantType code '"+codeString+"'");
         }
     public String toCode(TestReportParticipantType code) {
-      if (code == TestReportParticipantType.TESTENGINE)
+       if (code == TestReportParticipantType.NULL)
+           return null;
+       if (code == TestReportParticipantType.TESTENGINE)
         return "test-engine";
       if (code == TestReportParticipantType.CLIENT)
         return "client";
       if (code == TestReportParticipantType.SERVER)
         return "server";
       return "?";
-      }
+   }
     public String toSystem(TestReportParticipantType code) {
       return code.getSystem();
       }
@@ -527,12 +531,12 @@ public class TestReport extends DomainResource {
           return TestReportActionResult.ERROR;
         throw new IllegalArgumentException("Unknown TestReportActionResult code '"+codeString+"'");
         }
-        public Enumeration<TestReportActionResult> fromType(Base code) throws FHIRException {
+        public Enumeration<TestReportActionResult> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<TestReportActionResult>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("pass".equals(codeString))
@@ -548,7 +552,9 @@ public class TestReport extends DomainResource {
         throw new FHIRException("Unknown TestReportActionResult code '"+codeString+"'");
         }
     public String toCode(TestReportActionResult code) {
-      if (code == TestReportActionResult.PASS)
+       if (code == TestReportActionResult.NULL)
+           return null;
+       if (code == TestReportActionResult.PASS)
         return "pass";
       if (code == TestReportActionResult.SKIP)
         return "skip";
@@ -559,7 +565,7 @@ public class TestReport extends DomainResource {
       if (code == TestReportActionResult.ERROR)
         return "error";
       return "?";
-      }
+   }
     public String toSystem(TestReportActionResult code) {
       return code.getSystem();
       }
@@ -832,13 +838,13 @@ public class TestReport extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.type");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.type");
         }
         else if (name.equals("uri")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.uri");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.uri");
         }
         else if (name.equals("display")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.display");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.display");
         }
         else
           return super.addChild(name);
@@ -1536,13 +1542,13 @@ public class TestReport extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("result")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.result");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.result");
         }
         else if (name.equals("message")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.message");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.message");
         }
         else if (name.equals("detail")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.detail");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.detail");
         }
         else
           return super.addChild(name);
@@ -1861,13 +1867,13 @@ public class TestReport extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("result")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.result");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.result");
         }
         else if (name.equals("message")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.message");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.message");
         }
         else if (name.equals("detail")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.detail");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.detail");
         }
         else
           return super.addChild(name);
@@ -2183,10 +2189,10 @@ public class TestReport extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.name");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.name");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.description");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.description");
         }
         else if (name.equals("action")) {
           return addAction();
@@ -3598,26 +3604,26 @@ public class TestReport extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.name");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.name");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.status");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.status");
         }
         else if (name.equals("testScript")) {
           this.testScript = new Reference();
           return this.testScript;
         }
         else if (name.equals("result")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.result");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.result");
         }
         else if (name.equals("score")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.score");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.score");
         }
         else if (name.equals("tester")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.tester");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.tester");
         }
         else if (name.equals("issued")) {
-          throw new FHIRException("Cannot call addChild on a primitive type TestReport.issued");
+          throw new FHIRException("Cannot call addChild on a singleton property TestReport.issued");
         }
         else if (name.equals("participant")) {
           return addParticipant();

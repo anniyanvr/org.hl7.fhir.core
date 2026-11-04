@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ContractExpirationTypeEnumFactory implements EnumFactory<ContractExpirationType> {
@@ -44,17 +40,19 @@ public class ContractExpirationTypeEnumFactory implements EnumFactory<ContractEx
       return null;
     if ("breach".equals(codeString))
       return ContractExpirationType.BREACH;
-    throw new IllegalArgumentException("Unknown ContractExpirationType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ContractExpirationType code '" + codeString + "'");
   }
 
   public String toCode(ContractExpirationType code) {
-    if (code == ContractExpirationType.BREACH)
+       if (code == ContractExpirationType.NULL)
+           return null;
+       if (code == ContractExpirationType.BREACH)
       return "breach";
     return "?";
-  }
+   }
 
-    public String toSystem(ContractExpirationType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ContractExpirationType code) {
+    return code.getSystem();
+  }
 
 }

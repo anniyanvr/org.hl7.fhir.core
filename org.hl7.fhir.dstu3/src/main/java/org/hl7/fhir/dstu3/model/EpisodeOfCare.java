@@ -179,12 +179,12 @@ public class EpisodeOfCare extends DomainResource {
           return EpisodeOfCareStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown EpisodeOfCareStatus code '"+codeString+"'");
         }
-        public Enumeration<EpisodeOfCareStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<EpisodeOfCareStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<EpisodeOfCareStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("planned".equals(codeString))
@@ -204,7 +204,9 @@ public class EpisodeOfCare extends DomainResource {
         throw new FHIRException("Unknown EpisodeOfCareStatus code '"+codeString+"'");
         }
     public String toCode(EpisodeOfCareStatus code) {
-      if (code == EpisodeOfCareStatus.PLANNED)
+       if (code == EpisodeOfCareStatus.NULL)
+           return null;
+       if (code == EpisodeOfCareStatus.PLANNED)
         return "planned";
       if (code == EpisodeOfCareStatus.WAITLIST)
         return "waitlist";
@@ -219,7 +221,7 @@ public class EpisodeOfCare extends DomainResource {
       if (code == EpisodeOfCareStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(EpisodeOfCareStatus code) {
       return code.getSystem();
       }
@@ -405,7 +407,7 @@ public class EpisodeOfCare extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EpisodeOfCare.status");
+          throw new FHIRException("Cannot call addChild on a singleton property EpisodeOfCare.status");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -705,7 +707,7 @@ public class EpisodeOfCare extends DomainResource {
           return this.role;
         }
         else if (name.equals("rank")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EpisodeOfCare.rank");
+          throw new FHIRException("Cannot call addChild on a singleton property EpisodeOfCare.rank");
         }
         else
           return super.addChild(name);
@@ -1309,28 +1311,6 @@ public class EpisodeOfCare extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<ReferralRequest> getReferralRequestTarget() { 
-      if (this.referralRequestTarget == null)
-        this.referralRequestTarget = new ArrayList<ReferralRequest>();
-      return this.referralRequestTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public ReferralRequest addReferralRequestTarget() { 
-      ReferralRequest r = new ReferralRequest();
-      if (this.referralRequestTarget == null)
-        this.referralRequestTarget = new ArrayList<ReferralRequest>();
-      this.referralRequestTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #careManager} (The practitioner that is the care manager/care co-ordinator for this patient.)
      */
     public Reference getCareManager() { 
@@ -1428,28 +1408,6 @@ public class EpisodeOfCare extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<CareTeam> getTeamTarget() { 
-      if (this.teamTarget == null)
-        this.teamTarget = new ArrayList<CareTeam>();
-      return this.teamTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public CareTeam addTeamTarget() { 
-      CareTeam r = new CareTeam();
-      if (this.teamTarget == null)
-        this.teamTarget = new ArrayList<CareTeam>();
-      this.teamTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #account} (The set of accounts that may be used for billing for this EpisodeOfCare.)
      */
     public List<Reference> getAccount() { 
@@ -1500,28 +1458,6 @@ public class EpisodeOfCare extends DomainResource {
         addAccount();
       }
       return getAccount().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Account> getAccountTarget() { 
-      if (this.accountTarget == null)
-        this.accountTarget = new ArrayList<Account>();
-      return this.accountTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Account addAccountTarget() { 
-      Account r = new Account();
-      if (this.accountTarget == null)
-        this.accountTarget = new ArrayList<Account>();
-      this.accountTarget.add(r);
-      return r;
     }
 
       protected void listChildren(List<Property> children) {
@@ -1703,7 +1639,7 @@ public class EpisodeOfCare extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EpisodeOfCare.status");
+          throw new FHIRException("Cannot call addChild on a singleton property EpisodeOfCare.status");
         }
         else if (name.equals("statusHistory")) {
           return addStatusHistory();

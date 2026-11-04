@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ProvenanceAgentTypeEnumFactory implements EnumFactory<ProvenanceAgentType> {
@@ -62,11 +58,13 @@ public class ProvenanceAgentTypeEnumFactory implements EnumFactory<ProvenanceAge
       return ProvenanceAgentType.ASSEMBLER;
     if ("composer".equals(codeString))
       return ProvenanceAgentType.COMPOSER;
-    throw new IllegalArgumentException("Unknown ProvenanceAgentType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ProvenanceAgentType code '" + codeString + "'");
   }
 
   public String toCode(ProvenanceAgentType code) {
-    if (code == ProvenanceAgentType.ENTERER)
+       if (code == ProvenanceAgentType.NULL)
+           return null;
+       if (code == ProvenanceAgentType.ENTERER)
       return "enterer";
     if (code == ProvenanceAgentType.PERFORMER)
       return "performer";
@@ -87,10 +85,10 @@ public class ProvenanceAgentTypeEnumFactory implements EnumFactory<ProvenanceAge
     if (code == ProvenanceAgentType.COMPOSER)
       return "composer";
     return "?";
-  }
+   }
 
-    public String toSystem(ProvenanceAgentType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ProvenanceAgentType code) {
+    return code.getSystem();
+  }
 
 }

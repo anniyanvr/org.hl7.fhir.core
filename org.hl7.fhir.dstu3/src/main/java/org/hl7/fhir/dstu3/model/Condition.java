@@ -157,12 +157,12 @@ public class Condition extends DomainResource {
           return ConditionClinicalStatus.RESOLVED;
         throw new IllegalArgumentException("Unknown ConditionClinicalStatus code '"+codeString+"'");
         }
-        public Enumeration<ConditionClinicalStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ConditionClinicalStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ConditionClinicalStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -178,7 +178,9 @@ public class Condition extends DomainResource {
         throw new FHIRException("Unknown ConditionClinicalStatus code '"+codeString+"'");
         }
     public String toCode(ConditionClinicalStatus code) {
-      if (code == ConditionClinicalStatus.ACTIVE)
+       if (code == ConditionClinicalStatus.NULL)
+           return null;
+       if (code == ConditionClinicalStatus.ACTIVE)
         return "active";
       if (code == ConditionClinicalStatus.RECURRENCE)
         return "recurrence";
@@ -189,7 +191,7 @@ public class Condition extends DomainResource {
       if (code == ConditionClinicalStatus.RESOLVED)
         return "resolved";
       return "?";
-      }
+   }
     public String toSystem(ConditionClinicalStatus code) {
       return code.getSystem();
       }
@@ -313,12 +315,12 @@ public class Condition extends DomainResource {
           return ConditionVerificationStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown ConditionVerificationStatus code '"+codeString+"'");
         }
-        public Enumeration<ConditionVerificationStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ConditionVerificationStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ConditionVerificationStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("provisional".equals(codeString))
@@ -336,7 +338,9 @@ public class Condition extends DomainResource {
         throw new FHIRException("Unknown ConditionVerificationStatus code '"+codeString+"'");
         }
     public String toCode(ConditionVerificationStatus code) {
-      if (code == ConditionVerificationStatus.PROVISIONAL)
+       if (code == ConditionVerificationStatus.NULL)
+           return null;
+       if (code == ConditionVerificationStatus.PROVISIONAL)
         return "provisional";
       if (code == ConditionVerificationStatus.DIFFERENTIAL)
         return "differential";
@@ -349,7 +353,7 @@ public class Condition extends DomainResource {
       if (code == ConditionVerificationStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(ConditionVerificationStatus code) {
       return code.getSystem();
       }
@@ -461,16 +465,6 @@ public class Condition extends DomainResource {
             addAssessment();
           }
           return getAssessment().get(0);
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Resource> getAssessmentTarget() { 
-          if (this.assessmentTarget == null)
-            this.assessmentTarget = new ArrayList<Resource>();
-          return this.assessmentTarget;
         }
 
         protected void listChildren(List<Property> children) {
@@ -735,16 +729,6 @@ public class Condition extends DomainResource {
             addDetail();
           }
           return getDetail().get(0);
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Resource> getDetailTarget() { 
-          if (this.detailTarget == null)
-            this.detailTarget = new ArrayList<Resource>();
-          return this.detailTarget;
         }
 
         protected void listChildren(List<Property> children) {
@@ -1428,8 +1412,8 @@ public class Condition extends DomainResource {
       return (DateTimeType) this.onset;
     }
 
-    public boolean hasOnsetDateTimeType() { 
-      return this != null && this.onset instanceof DateTimeType;
+    public boolean hasOnsetDateTimeType() {
+        return this.onset instanceof DateTimeType;
     }
 
     /**
@@ -1443,8 +1427,8 @@ public class Condition extends DomainResource {
       return (Age) this.onset;
     }
 
-    public boolean hasOnsetAge() { 
-      return this != null && this.onset instanceof Age;
+    public boolean hasOnsetAge() {
+        return this.onset instanceof Age;
     }
 
     /**
@@ -1458,8 +1442,8 @@ public class Condition extends DomainResource {
       return (Period) this.onset;
     }
 
-    public boolean hasOnsetPeriod() { 
-      return this != null && this.onset instanceof Period;
+    public boolean hasOnsetPeriod() {
+        return this.onset instanceof Period;
     }
 
     /**
@@ -1473,8 +1457,8 @@ public class Condition extends DomainResource {
       return (Range) this.onset;
     }
 
-    public boolean hasOnsetRange() { 
-      return this != null && this.onset instanceof Range;
+    public boolean hasOnsetRange() {
+        return this.onset instanceof Range;
     }
 
     /**
@@ -1488,8 +1472,8 @@ public class Condition extends DomainResource {
       return (StringType) this.onset;
     }
 
-    public boolean hasOnsetStringType() { 
-      return this != null && this.onset instanceof StringType;
+    public boolean hasOnsetStringType() {
+        return this.onset instanceof StringType;
     }
 
     public boolean hasOnset() { 
@@ -1524,8 +1508,8 @@ public class Condition extends DomainResource {
       return (DateTimeType) this.abatement;
     }
 
-    public boolean hasAbatementDateTimeType() { 
-      return this != null && this.abatement instanceof DateTimeType;
+    public boolean hasAbatementDateTimeType() {
+        return this.abatement instanceof DateTimeType;
     }
 
     /**
@@ -1539,8 +1523,8 @@ public class Condition extends DomainResource {
       return (Age) this.abatement;
     }
 
-    public boolean hasAbatementAge() { 
-      return this != null && this.abatement instanceof Age;
+    public boolean hasAbatementAge() {
+        return this.abatement instanceof Age;
     }
 
     /**
@@ -1554,8 +1538,8 @@ public class Condition extends DomainResource {
       return (BooleanType) this.abatement;
     }
 
-    public boolean hasAbatementBooleanType() { 
-      return this != null && this.abatement instanceof BooleanType;
+    public boolean hasAbatementBooleanType() {
+        return this.abatement instanceof BooleanType;
     }
 
     /**
@@ -1569,8 +1553,8 @@ public class Condition extends DomainResource {
       return (Period) this.abatement;
     }
 
-    public boolean hasAbatementPeriod() { 
-      return this != null && this.abatement instanceof Period;
+    public boolean hasAbatementPeriod() {
+        return this.abatement instanceof Period;
     }
 
     /**
@@ -1584,8 +1568,8 @@ public class Condition extends DomainResource {
       return (Range) this.abatement;
     }
 
-    public boolean hasAbatementRange() { 
-      return this != null && this.abatement instanceof Range;
+    public boolean hasAbatementRange() {
+        return this.abatement instanceof Range;
     }
 
     /**
@@ -1599,8 +1583,8 @@ public class Condition extends DomainResource {
       return (StringType) this.abatement;
     }
 
-    public boolean hasAbatementStringType() { 
-      return this != null && this.abatement instanceof StringType;
+    public boolean hasAbatementStringType() {
+        return this.abatement instanceof StringType;
     }
 
     public boolean hasAbatement() { 
@@ -2071,10 +2055,10 @@ public class Condition extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("clinicalStatus")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Condition.clinicalStatus");
+          throw new FHIRException("Cannot call addChild on a singleton property Condition.clinicalStatus");
         }
         else if (name.equals("verificationStatus")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Condition.verificationStatus");
+          throw new FHIRException("Cannot call addChild on a singleton property Condition.verificationStatus");
         }
         else if (name.equals("category")) {
           return addCategory();
@@ -2143,7 +2127,7 @@ public class Condition extends DomainResource {
           return this.abatement;
         }
         else if (name.equals("assertedDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Condition.assertedDate");
+          throw new FHIRException("Cannot call addChild on a singleton property Condition.assertedDate");
         }
         else if (name.equals("asserter")) {
           this.asserter = new Reference();

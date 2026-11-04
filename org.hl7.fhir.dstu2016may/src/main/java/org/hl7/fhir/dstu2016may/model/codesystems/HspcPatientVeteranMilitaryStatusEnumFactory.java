@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class HspcPatientVeteranMilitaryStatusEnumFactory implements EnumFactory<HspcPatientVeteranMilitaryStatus> {
@@ -62,11 +58,13 @@ public class HspcPatientVeteranMilitaryStatusEnumFactory implements EnumFactory<
       return HspcPatientVeteranMilitaryStatus.CA02026A3EBF4FB409E002D89C931643;
     if ("75f4440a-ec37-47fe-b26d-39c09c204676".equals(codeString))
       return HspcPatientVeteranMilitaryStatus._75F4440AEC3747FEB26D39C09C204676;
-    throw new IllegalArgumentException("Unknown HspcPatientVeteranMilitaryStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown HspcPatientVeteranMilitaryStatus code '" + codeString + "'");
   }
 
   public String toCode(HspcPatientVeteranMilitaryStatus code) {
-    if (code == HspcPatientVeteranMilitaryStatus._8CA8CC2BBAA04CB68863418173C125D1)
+       if (code == HspcPatientVeteranMilitaryStatus.NULL)
+           return null;
+       if (code == HspcPatientVeteranMilitaryStatus._8CA8CC2BBAA04CB68863418173C125D1)
       return "8ca8cc2b-baa0-4cb6-8863-418173c125d1";
     if (code == HspcPatientVeteranMilitaryStatus._4EB9A0A1333448DF084DCEF37C9AC0D3)
       return "4eb9a0a1-3334-48df-084d-cef37c9ac0d3";
@@ -87,10 +85,10 @@ public class HspcPatientVeteranMilitaryStatusEnumFactory implements EnumFactory<
     if (code == HspcPatientVeteranMilitaryStatus._75F4440AEC3747FEB26D39C09C204676)
       return "75f4440a-ec37-47fe-b26d-39c09c204676";
     return "?";
-  }
+   }
 
-    public String toSystem(HspcPatientVeteranMilitaryStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(HspcPatientVeteranMilitaryStatus code) {
+    return code.getSystem();
+  }
 
 }

@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +45,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for RatioRange Type: A range of ratios expressed as a low and high numerator and a denominator.
+ * RatioRange Type: A range of ratios expressed as a low and high numerator and a denominator.
  */
 @DatatypeDef(name="RatioRange")
 public class RatioRange extends DataType implements ICompositeType {
@@ -211,6 +211,19 @@ public class RatioRange extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("lowNumerator")) {
+          this.lowNumerator = null;
+        } else if (name.equals("highNumerator")) {
+          this.highNumerator = null;
+        } else if (name.equals("denominator")) {
+          this.denominator = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -260,6 +273,10 @@ public class RatioRange extends DataType implements ICompositeType {
         RatioRange dst = new RatioRange();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((RatioRange) dst);
       }
 
       public void copyValues(RatioRange dst) {

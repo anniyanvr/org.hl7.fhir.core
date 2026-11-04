@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ObjectTypeEnumFactory implements EnumFactory<ObjectType> {
@@ -50,11 +46,13 @@ public class ObjectTypeEnumFactory implements EnumFactory<ObjectType> {
       return ObjectType._3;
     if ("4".equals(codeString))
       return ObjectType._4;
-    throw new IllegalArgumentException("Unknown ObjectType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ObjectType code '" + codeString + "'");
   }
 
   public String toCode(ObjectType code) {
-    if (code == ObjectType._1)
+       if (code == ObjectType.NULL)
+           return null;
+       if (code == ObjectType._1)
       return "1";
     if (code == ObjectType._2)
       return "2";
@@ -63,10 +61,10 @@ public class ObjectTypeEnumFactory implements EnumFactory<ObjectType> {
     if (code == ObjectType._4)
       return "4";
     return "?";
-  }
+   }
 
-    public String toSystem(ObjectType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ObjectType code) {
+    return code.getSystem();
+  }
 
 }

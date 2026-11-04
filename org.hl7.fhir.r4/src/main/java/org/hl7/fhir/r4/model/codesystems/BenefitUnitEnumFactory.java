@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class BenefitUnitEnumFactory implements EnumFactory<BenefitUnit> {
@@ -46,19 +42,21 @@ public class BenefitUnitEnumFactory implements EnumFactory<BenefitUnit> {
       return BenefitUnit.INDIVIDUAL;
     if ("family".equals(codeString))
       return BenefitUnit.FAMILY;
-    throw new IllegalArgumentException("Unknown BenefitUnit code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown BenefitUnit code '" + codeString + "'");
   }
 
   public String toCode(BenefitUnit code) {
-    if (code == BenefitUnit.INDIVIDUAL)
+       if (code == BenefitUnit.NULL)
+           return null;
+       if (code == BenefitUnit.INDIVIDUAL)
       return "individual";
     if (code == BenefitUnit.FAMILY)
       return "family";
     return "?";
-  }
+   }
 
-    public String toSystem(BenefitUnit code) {
-      return code.getSystem();
-      }
+  public String toSystem(BenefitUnit code) {
+    return code.getSystem();
+  }
 
 }

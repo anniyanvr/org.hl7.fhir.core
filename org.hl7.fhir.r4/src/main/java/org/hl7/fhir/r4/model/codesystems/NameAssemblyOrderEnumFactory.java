@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class NameAssemblyOrderEnumFactory implements EnumFactory<NameAssemblyOrder> {
@@ -50,11 +46,13 @@ public class NameAssemblyOrderEnumFactory implements EnumFactory<NameAssemblyOrd
       return NameAssemblyOrder.NL3;
     if ("NL4".equals(codeString))
       return NameAssemblyOrder.NL4;
-    throw new IllegalArgumentException("Unknown NameAssemblyOrder code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown NameAssemblyOrder code '" + codeString + "'");
   }
 
   public String toCode(NameAssemblyOrder code) {
-    if (code == NameAssemblyOrder.NL1)
+       if (code == NameAssemblyOrder.NULL)
+           return null;
+       if (code == NameAssemblyOrder.NL1)
       return "NL1";
     if (code == NameAssemblyOrder.NL2)
       return "NL2";
@@ -63,10 +61,10 @@ public class NameAssemblyOrderEnumFactory implements EnumFactory<NameAssemblyOrd
     if (code == NameAssemblyOrder.NL4)
       return "NL4";
     return "?";
-  }
+   }
 
-    public String toSystem(NameAssemblyOrder code) {
-      return code.getSystem();
-      }
+  public String toSystem(NameAssemblyOrder code) {
+    return code.getSystem();
+  }
 
 }

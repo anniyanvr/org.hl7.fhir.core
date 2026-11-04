@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -84,11 +80,13 @@ public class HspcAdmissionSourceEnumFactory implements EnumFactory<HspcAdmission
       return HspcAdmissionSource._528129530;
     if ("510105654".equals(codeString))
       return HspcAdmissionSource._510105654;
-    throw new IllegalArgumentException("Unknown HspcAdmissionSource code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown HspcAdmissionSource code '" + codeString + "'");
   }
 
   public String toCode(HspcAdmissionSource code) {
-    if (code == HspcAdmissionSource._102702)
+       if (code == HspcAdmissionSource.NULL)
+           return null;
+       if (code == HspcAdmissionSource._102702)
       return "102702";
     if (code == HspcAdmissionSource._17567)
       return "17567";
@@ -131,10 +129,10 @@ public class HspcAdmissionSourceEnumFactory implements EnumFactory<HspcAdmission
     if (code == HspcAdmissionSource._510105654)
       return "510105654";
     return "?";
-  }
+   }
 
-    public String toSystem(HspcAdmissionSource code) {
-      return code.getSystem();
-      }
+  public String toSystem(HspcAdmissionSource code) {
+    return code.getSystem();
+  }
 
 }

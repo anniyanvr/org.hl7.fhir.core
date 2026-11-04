@@ -1,15 +1,19 @@
 package org.hl7.fhir.convertors.conv40_50.resources40_50;
 
 import org.hl7.fhir.convertors.context.ConversionContext40_50;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.*;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Attachment40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.CodeableConcept40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.ContactPoint40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Identifier40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Boolean40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.MarkDown40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_50;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Time40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
-
-import java.util.stream.Collectors;
+import org.hl7.fhir.r4.model.HealthcareService;
+import org.hl7.fhir.r5.model.Enumeration;
+import org.hl7.fhir.r5.model.Enumerations;
+import org.hl7.fhir.r5.model.ExtendedContactDetail;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -63,13 +67,13 @@ public class HealthcareService40_50 {
     if (src.hasName())
       tgt.setNameElement(String40_50.convertString(src.getNameElement()));
     if (src.hasComment())
-      tgt.setCommentElement(String40_50.convertString(src.getCommentElement()));
+      tgt.setCommentElement(String40_50.convertStringToMarkdown(src.getCommentElement()));
     if (src.hasExtraDetails())
       tgt.setExtraDetailsElement(MarkDown40_50.convertMarkdown(src.getExtraDetailsElement()));
     if (src.hasPhoto())
       tgt.setPhoto(Attachment40_50.convertAttachment(src.getPhoto()));
     for (org.hl7.fhir.r4.model.ContactPoint t : src.getTelecom())
-      tgt.addTelecom(ContactPoint40_50.convertContactPoint(t));
+      tgt.getContactFirstRep().addTelecom(ContactPoint40_50.convertContactPoint(t));
     for (org.hl7.fhir.r4.model.Reference t : src.getCoverageArea())
       tgt.addCoverageArea(Reference40_50.convertReference(t));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getServiceProvisionCode())
@@ -86,12 +90,12 @@ public class HealthcareService40_50 {
       tgt.addReferralMethod(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasAppointmentRequired())
       tgt.setAppointmentRequiredElement(Boolean40_50.convertBoolean(src.getAppointmentRequiredElement()));
-    for (org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceAvailableTimeComponent t : src.getAvailableTime())
-      tgt.addAvailableTime(convertHealthcareServiceAvailableTimeComponent(t));
-    for (org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceNotAvailableComponent t : src.getNotAvailable())
-      tgt.addNotAvailable(convertHealthcareServiceNotAvailableComponent(t));
-    if (src.hasAvailabilityExceptions())
-      tgt.setAvailabilityExceptionsElement(String40_50.convertString(src.getAvailabilityExceptionsElement()));
+//    for (org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceAvailableTimeComponent t : src.getAvailableTime())
+//      tgt.addAvailableTime(convertHealthcareServiceAvailableTimeComponent(t));
+//    for (org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceNotAvailableComponent t : src.getNotAvailable())
+//      tgt.addNotAvailable(convertHealthcareServiceNotAvailableComponent(t));
+//    if (src.hasAvailabilityExceptions())
+//      tgt.setAvailabilityExceptionsElement(String40_50.convertString(src.getAvailabilityExceptionsElement()));
     for (org.hl7.fhir.r4.model.Reference t : src.getEndpoint()) tgt.addEndpoint(Reference40_50.convertReference(t));
     return tgt;
   }
@@ -122,8 +126,9 @@ public class HealthcareService40_50 {
       tgt.setExtraDetailsElement(MarkDown40_50.convertMarkdown(src.getExtraDetailsElement()));
     if (src.hasPhoto())
       tgt.setPhoto(Attachment40_50.convertAttachment(src.getPhoto()));
-    for (org.hl7.fhir.r5.model.ContactPoint t : src.getTelecom())
-      tgt.addTelecom(ContactPoint40_50.convertContactPoint(t));
+    for (ExtendedContactDetail t1 : src.getContact())
+      for (org.hl7.fhir.r5.model.ContactPoint t : t1.getTelecom())
+        tgt.addTelecom(ContactPoint40_50.convertContactPoint(t));
     for (org.hl7.fhir.r5.model.Reference t : src.getCoverageArea())
       tgt.addCoverageArea(Reference40_50.convertReference(t));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getServiceProvisionCode())
@@ -140,12 +145,12 @@ public class HealthcareService40_50 {
       tgt.addReferralMethod(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasAppointmentRequired())
       tgt.setAppointmentRequiredElement(Boolean40_50.convertBoolean(src.getAppointmentRequiredElement()));
-    for (org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceAvailableTimeComponent t : src.getAvailableTime())
-      tgt.addAvailableTime(convertHealthcareServiceAvailableTimeComponent(t));
-    for (org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceNotAvailableComponent t : src.getNotAvailable())
-      tgt.addNotAvailable(convertHealthcareServiceNotAvailableComponent(t));
-    if (src.hasAvailabilityExceptions())
-      tgt.setAvailabilityExceptionsElement(String40_50.convertString(src.getAvailabilityExceptionsElement()));
+//    for (org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceAvailableTimeComponent t : src.getAvailableTime())
+//      tgt.addAvailableTime(convertHealthcareServiceAvailableTimeComponent(t));
+//    for (org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceNotAvailableComponent t : src.getNotAvailable())
+//      tgt.addNotAvailable(convertHealthcareServiceNotAvailableComponent(t));
+//    if (src.hasAvailabilityExceptions())
+//      tgt.setAvailabilityExceptionsElement(String40_50.convertString(src.getAvailabilityExceptionsElement()));
     for (org.hl7.fhir.r5.model.Reference t : src.getEndpoint()) tgt.addEndpoint(Reference40_50.convertReference(t));
     return tgt;
   }
@@ -154,7 +159,7 @@ public class HealthcareService40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceEligibilityComponent tgt = new org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceEligibilityComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCode())
       tgt.setCode(CodeableConcept40_50.convertCodeableConcept(src.getCode()));
     if (src.hasComment())
@@ -166,7 +171,7 @@ public class HealthcareService40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceEligibilityComponent tgt = new org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceEligibilityComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCode())
       tgt.setCode(CodeableConcept40_50.convertCodeableConcept(src.getCode()));
     if (src.hasComment())
@@ -174,129 +179,137 @@ public class HealthcareService40_50 {
     return tgt;
   }
 
-  public static org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceAvailableTimeComponent convertHealthcareServiceAvailableTimeComponent(org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceAvailableTimeComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceAvailableTimeComponent tgt = new org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceAvailableTimeComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    tgt.setDaysOfWeek(src.getDaysOfWeek().stream()
-      .map(HealthcareService40_50::convertDaysOfWeek)
-      .collect(Collectors.toList()));
-    if (src.hasAllDay())
-      tgt.setAllDayElement(Boolean40_50.convertBoolean(src.getAllDayElement()));
-    if (src.hasAvailableStartTime())
-      tgt.setAvailableStartTimeElement(Time40_50.convertTime(src.getAvailableStartTimeElement()));
-    if (src.hasAvailableEndTime())
-      tgt.setAvailableEndTimeElement(Time40_50.convertTime(src.getAvailableEndTimeElement()));
-    return tgt;
-  }
+//  public static org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceAvailableTimeComponent convertHealthcareServiceAvailableTimeComponent(org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceAvailableTimeComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceAvailableTimeComponent tgt = new org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceAvailableTimeComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
+//    tgt.setDaysOfWeek(src.getDaysOfWeek().stream()
+//      .map(HealthcareService40_50::convertDaysOfWeek)
+//      .collect(Collectors.toList()));
+//    if (src.hasAllDay())
+//      tgt.setAllDayElement(Boolean40_50.convertBoolean(src.getAllDayElement()));
+//    if (src.hasAvailableStartTime())
+//      tgt.setAvailableStartTimeElement(Time40_50.convertTime(src.getAvailableStartTimeElement()));
+//    if (src.hasAvailableEndTime())
+//      tgt.setAvailableEndTimeElement(Time40_50.convertTime(src.getAvailableEndTimeElement()));
+//    return tgt;
+//  }
 
-  public static org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceAvailableTimeComponent convertHealthcareServiceAvailableTimeComponent(org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceAvailableTimeComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceAvailableTimeComponent tgt = new org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceAvailableTimeComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    tgt.setDaysOfWeek(src.getDaysOfWeek().stream()
-      .map(HealthcareService40_50::convertDaysOfWeek)
-      .collect(Collectors.toList()));
-    if (src.hasAllDay())
-      tgt.setAllDayElement(Boolean40_50.convertBoolean(src.getAllDayElement()));
-    if (src.hasAvailableStartTime())
-      tgt.setAvailableStartTimeElement(Time40_50.convertTime(src.getAvailableStartTimeElement()));
-    if (src.hasAvailableEndTime())
-      tgt.setAvailableEndTimeElement(Time40_50.convertTime(src.getAvailableEndTimeElement()));
-    return tgt;
-  }
+//  public static org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceAvailableTimeComponent convertHealthcareServiceAvailableTimeComponent(org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceAvailableTimeComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceAvailableTimeComponent tgt = new org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceAvailableTimeComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
+//    tgt.setDaysOfWeek(src.getDaysOfWeek().stream()
+//      .map(HealthcareService40_50::convertDaysOfWeek)
+//      .collect(Collectors.toList()));
+//    if (src.hasAllDay())
+//      tgt.setAllDayElement(Boolean40_50.convertBoolean(src.getAllDayElement()));
+//    if (src.hasAvailableStartTime())
+//      tgt.setAvailableStartTimeElement(Time40_50.convertTime(src.getAvailableStartTimeElement()));
+//    if (src.hasAvailableEndTime())
+//      tgt.setAvailableEndTimeElement(Time40_50.convertTime(src.getAvailableEndTimeElement()));
+//    return tgt;
+//  }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.DaysOfWeek> convertDaysOfWeek(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.HealthcareService.DaysOfWeek> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.DaysOfWeek> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Enumerations.DaysOfWeekEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case MON:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DaysOfWeek.MON);
-        break;
-      case TUE:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DaysOfWeek.TUE);
-        break;
-      case WED:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DaysOfWeek.WED);
-        break;
-      case THU:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DaysOfWeek.THU);
-        break;
-      case FRI:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DaysOfWeek.FRI);
-        break;
-      case SAT:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DaysOfWeek.SAT);
-        break;
-      case SUN:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DaysOfWeek.SUN);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DaysOfWeek.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Enumerations.DaysOfWeek> tgt = new Enumeration<>(new Enumerations.DaysOfWeekEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case MON:
+                  tgt.setValue(Enumerations.DaysOfWeek.MON);
+                  break;
+              case TUE:
+                  tgt.setValue(Enumerations.DaysOfWeek.TUE);
+                  break;
+              case WED:
+                  tgt.setValue(Enumerations.DaysOfWeek.WED);
+                  break;
+              case THU:
+                  tgt.setValue(Enumerations.DaysOfWeek.THU);
+                  break;
+              case FRI:
+                  tgt.setValue(Enumerations.DaysOfWeek.FRI);
+                  break;
+              case SAT:
+                  tgt.setValue(Enumerations.DaysOfWeek.SAT);
+                  break;
+              case SUN:
+                  tgt.setValue(Enumerations.DaysOfWeek.SUN);
+                  break;
+              default:
+                  tgt.setValue(Enumerations.DaysOfWeek.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.HealthcareService.DaysOfWeek> convertDaysOfWeek(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.DaysOfWeek> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.HealthcareService.DaysOfWeek> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.HealthcareService.DaysOfWeekEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case MON:
-        tgt.setValue(org.hl7.fhir.r4.model.HealthcareService.DaysOfWeek.MON);
-        break;
-      case TUE:
-        tgt.setValue(org.hl7.fhir.r4.model.HealthcareService.DaysOfWeek.TUE);
-        break;
-      case WED:
-        tgt.setValue(org.hl7.fhir.r4.model.HealthcareService.DaysOfWeek.WED);
-        break;
-      case THU:
-        tgt.setValue(org.hl7.fhir.r4.model.HealthcareService.DaysOfWeek.THU);
-        break;
-      case FRI:
-        tgt.setValue(org.hl7.fhir.r4.model.HealthcareService.DaysOfWeek.FRI);
-        break;
-      case SAT:
-        tgt.setValue(org.hl7.fhir.r4.model.HealthcareService.DaysOfWeek.SAT);
-        break;
-      case SUN:
-        tgt.setValue(org.hl7.fhir.r4.model.HealthcareService.DaysOfWeek.SUN);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.HealthcareService.DaysOfWeek.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<HealthcareService.DaysOfWeek> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new HealthcareService.DaysOfWeekEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case MON:
+                  tgt.setValue(HealthcareService.DaysOfWeek.MON);
+                  break;
+              case TUE:
+                  tgt.setValue(HealthcareService.DaysOfWeek.TUE);
+                  break;
+              case WED:
+                  tgt.setValue(HealthcareService.DaysOfWeek.WED);
+                  break;
+              case THU:
+                  tgt.setValue(HealthcareService.DaysOfWeek.THU);
+                  break;
+              case FRI:
+                  tgt.setValue(HealthcareService.DaysOfWeek.FRI);
+                  break;
+              case SAT:
+                  tgt.setValue(HealthcareService.DaysOfWeek.SAT);
+                  break;
+              case SUN:
+                  tgt.setValue(HealthcareService.DaysOfWeek.SUN);
+                  break;
+              default:
+                  tgt.setValue(HealthcareService.DaysOfWeek.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
-
-  public static org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceNotAvailableComponent convertHealthcareServiceNotAvailableComponent(org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceNotAvailableComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceNotAvailableComponent tgt = new org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceNotAvailableComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasDescription())
-      tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
-    if (src.hasDuring())
-      tgt.setDuring(Period40_50.convertPeriod(src.getDuring()));
-    return tgt;
-  }
-
-  public static org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceNotAvailableComponent convertHealthcareServiceNotAvailableComponent(org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceNotAvailableComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceNotAvailableComponent tgt = new org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceNotAvailableComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasDescription())
-      tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
-    if (src.hasDuring())
-      tgt.setDuring(Period40_50.convertPeriod(src.getDuring()));
-    return tgt;
-  }
+//
+//  public static org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceNotAvailableComponent convertHealthcareServiceNotAvailableComponent(org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceNotAvailableComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceNotAvailableComponent tgt = new org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceNotAvailableComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
+//    if (src.hasDescription())
+//      tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
+//    if (src.hasDuring())
+//      tgt.setDuring(Period40_50.convertPeriod(src.getDuring()));
+//    return tgt;
+//  }
+//
+//  public static org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceNotAvailableComponent convertHealthcareServiceNotAvailableComponent(org.hl7.fhir.r5.model.HealthcareService.HealthcareServiceNotAvailableComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceNotAvailableComponent tgt = new org.hl7.fhir.r4.model.HealthcareService.HealthcareServiceNotAvailableComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
+//    if (src.hasDescription())
+//      tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
+//    if (src.hasDuring())
+//      tgt.setDuring(Period40_50.convertPeriod(src.getDuring()));
+//    return tgt;
+//  }
 }

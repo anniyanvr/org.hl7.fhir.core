@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -102,11 +98,13 @@ public class V3AddressPartTypeEnumFactory implements EnumFactory<V3AddressPartTy
       return V3AddressPartType.UNIT;
     if ("ZIP".equals(codeString))
       return V3AddressPartType.ZIP;
-    throw new IllegalArgumentException("Unknown V3AddressPartType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3AddressPartType code '" + codeString + "'");
   }
 
   public String toCode(V3AddressPartType code) {
-    if (code == V3AddressPartType.ADL)
+       if (code == V3AddressPartType.NULL)
+           return null;
+       if (code == V3AddressPartType.ADL)
       return "ADL";
     if (code == V3AddressPartType.AL)
       return "AL";
@@ -167,10 +165,10 @@ public class V3AddressPartTypeEnumFactory implements EnumFactory<V3AddressPartTy
     if (code == V3AddressPartType.ZIP)
       return "ZIP";
     return "?";
-  }
+   }
 
-    public String toSystem(V3AddressPartType code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3AddressPartType code) {
+    return code.getSystem();
+  }
 
 }

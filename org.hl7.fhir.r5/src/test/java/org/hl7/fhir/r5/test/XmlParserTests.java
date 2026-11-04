@@ -3,16 +3,17 @@ package org.hl7.fhir.r5.test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.hl7.fhir.r5.context.ContextUtilities;
 import org.hl7.fhir.r5.context.SimpleWorkerContext;
 import org.hl7.fhir.r5.elementmodel.Element;
 import org.hl7.fhir.r5.elementmodel.Manager;
 import org.hl7.fhir.r5.elementmodel.Manager.FhirFormat;
+import org.hl7.fhir.r5.fhirpath.FHIRPathEngine;
 import org.hl7.fhir.r5.formats.IParser.OutputStyle;
 import org.hl7.fhir.r5.model.StructureDefinition;
 import org.hl7.fhir.r5.test.utils.TestingUtilities;
-import org.hl7.fhir.r5.utils.FHIRPathEngine;
 import org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager;
-import org.hl7.fhir.utilities.npm.ToolsVersion;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,10 +23,17 @@ public class XmlParserTests {
   private static SimpleWorkerContext context;
   private static FHIRPathEngine fp;
 
+  @AfterAll
+  public static void tearDown() {
+    context = null;
+    fp = null;
+  }
+
   @BeforeAll
   public static void setUp() throws Exception {
-    FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
-    context = SimpleWorkerContext.fromPackage(pcm.loadPackage("hl7.fhir.r4.core", "4.0.1"));
+    FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager.Builder().build();
+    context = TestingUtilities.getWorkerContext(pcm.loadPackage("hl7.fhir.r4.core", "4.0.1"));
+
     fp = new FHIRPathEngine(context);
 
     context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "any.xml"), "any.xml", null);
@@ -35,10 +43,10 @@ public class XmlParserTests {
     context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "ed.xml"), "ed.xml", null);
     context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "st.xml"), "st.xml", null);
     context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "cda.xml"), "cda.xml", null);
-    for (StructureDefinition sd : context.getStructures()) {
+    for (StructureDefinition sd : context.fetchResourcesByType(StructureDefinition.class)) {
       if (!sd.hasSnapshot()) {
         System.out.println("generate snapshot for " + sd.getUrl());
-        context.generateSnapshot(sd, true);
+        new ContextUtilities(context).generateSnapshot(sd);
       }
     }
   }

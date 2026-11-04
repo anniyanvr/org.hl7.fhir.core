@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class LinkageTypeEnumFactory implements EnumFactory<LinkageType> {
@@ -48,21 +44,23 @@ public class LinkageTypeEnumFactory implements EnumFactory<LinkageType> {
       return LinkageType.ALTERNATE;
     if ("historical".equals(codeString))
       return LinkageType.HISTORICAL;
-    throw new IllegalArgumentException("Unknown LinkageType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown LinkageType code '" + codeString + "'");
   }
 
   public String toCode(LinkageType code) {
-    if (code == LinkageType.SOURCE)
+       if (code == LinkageType.NULL)
+           return null;
+       if (code == LinkageType.SOURCE)
       return "source";
     if (code == LinkageType.ALTERNATE)
       return "alternate";
     if (code == LinkageType.HISTORICAL)
       return "historical";
     return "?";
-  }
+   }
 
-    public String toSystem(LinkageType code) {
-      return code.getSystem();
-      }
+  public String toSystem(LinkageType code) {
+    return code.getSystem();
+  }
 
 }

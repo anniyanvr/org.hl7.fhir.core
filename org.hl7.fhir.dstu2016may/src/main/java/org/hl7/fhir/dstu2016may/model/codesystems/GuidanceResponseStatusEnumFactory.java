@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class GuidanceResponseStatusEnumFactory implements EnumFactory<GuidanceResponseStatus> {
@@ -52,11 +48,13 @@ public class GuidanceResponseStatusEnumFactory implements EnumFactory<GuidanceRe
       return GuidanceResponseStatus.INPROGRESS;
     if ("failure".equals(codeString))
       return GuidanceResponseStatus.FAILURE;
-    throw new IllegalArgumentException("Unknown GuidanceResponseStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown GuidanceResponseStatus code '" + codeString + "'");
   }
 
   public String toCode(GuidanceResponseStatus code) {
-    if (code == GuidanceResponseStatus.SUCCESS)
+       if (code == GuidanceResponseStatus.NULL)
+           return null;
+       if (code == GuidanceResponseStatus.SUCCESS)
       return "success";
     if (code == GuidanceResponseStatus.DATAREQUESTED)
       return "data-requested";
@@ -67,10 +65,10 @@ public class GuidanceResponseStatusEnumFactory implements EnumFactory<GuidanceRe
     if (code == GuidanceResponseStatus.FAILURE)
       return "failure";
     return "?";
-  }
+   }
 
-    public String toSystem(GuidanceResponseStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(GuidanceResponseStatus code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class SynthesisTypeEnumFactory implements EnumFactory<SynthesisType> {
@@ -54,11 +50,13 @@ public class SynthesisTypeEnumFactory implements EnumFactory<SynthesisType> {
       return SynthesisType.RANGE;
     if ("classification".equals(codeString))
       return SynthesisType.CLASSIFICATION;
-    throw new IllegalArgumentException("Unknown SynthesisType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown SynthesisType code '" + codeString + "'");
   }
 
   public String toCode(SynthesisType code) {
-    if (code == SynthesisType.STDMA)
+       if (code == SynthesisType.NULL)
+           return null;
+       if (code == SynthesisType.STDMA)
       return "std-MA";
     if (code == SynthesisType.IPDMA)
       return "IPD-MA";
@@ -71,10 +69,10 @@ public class SynthesisTypeEnumFactory implements EnumFactory<SynthesisType> {
     if (code == SynthesisType.CLASSIFICATION)
       return "classification";
     return "?";
-  }
+   }
 
-    public String toSystem(SynthesisType code) {
-      return code.getSystem();
-      }
+  public String toSystem(SynthesisType code) {
+    return code.getSystem();
+  }
 
 }

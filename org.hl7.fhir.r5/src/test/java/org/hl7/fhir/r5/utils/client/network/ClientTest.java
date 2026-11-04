@@ -1,20 +1,33 @@
 package org.hl7.fhir.r5.utils.client.network;
 
-import okhttp3.HttpUrl;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
-import org.hl7.fhir.r5.context.HTMLClientLogger;
-import org.hl7.fhir.r5.formats.JsonParser;
-import org.hl7.fhir.r5.model.*;
-import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import org.hl7.fhir.r5.context.HTMLClientLogger;
+import org.hl7.fhir.r5.formats.JsonParser;
+import org.hl7.fhir.r5.model.Address;
+import org.hl7.fhir.r5.model.Enumerations;
+import org.hl7.fhir.r5.model.HumanName;
+import org.hl7.fhir.r5.model.Patient;
+import org.hl7.fhir.r5.model.Resource;
+import org.hl7.fhir.utilities.http.ManagedWebAccess;
+import org.hl7.fhir.utilities.settings.FhirSettingsPOJO;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mockito;
+
+import okhttp3.HttpUrl;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ClientTest {
@@ -36,6 +49,17 @@ class ClientTest {
     .addName(humanName)
     .addAddress(address)
     .setGender(Enumerations.AdministrativeGender.MALE);
+
+  @BeforeAll
+  static void beforeAll() {
+    ManagedWebAccess.loadFromFHIRSettings(
+      FhirSettingsPOJO.builder().ssrfProtectionEnabled(false).build());
+  }
+
+  @AfterAll
+  static void afterAll() {
+    ManagedWebAccess.loadFromFHIRSettings();
+  }
 
   @BeforeEach
   void setup() {
@@ -113,7 +137,7 @@ class ClientTest {
   @Test
   @DisplayName("PUT request, test payload received by server matches sent.")
   void test_put() throws IOException, URISyntaxException, InterruptedException {
-    byte[] payload = ByteUtils.resourceToByteArray(patient, true, false);
+    byte[] payload = ByteUtils.resourceToByteArray(patient, true, false, false);
     // Mock server response of 200, with the same resource payload returned that we included in the PUT request
     server.enqueue(
       new MockResponse()
@@ -131,7 +155,7 @@ class ClientTest {
   @Test
   @DisplayName("POST request, test payload received by server matches sent.")
   void test_post() throws IOException, URISyntaxException, InterruptedException {
-    byte[] payload = ByteUtils.resourceToByteArray(patient, true, false);
+    byte[] payload = ByteUtils.resourceToByteArray(patient, true, false, false);
     // Mock server response of 200, with the same resource payload returned that we included in the PUT request
     server.enqueue(
       new MockResponse()
@@ -149,7 +173,7 @@ class ClientTest {
   @Test
   @DisplayName("Testing the logger works.")
   void test_logger() throws IOException, URISyntaxException, InterruptedException {
-    byte[] payload = ByteUtils.resourceToByteArray(patient, true, false);
+    byte[] payload = ByteUtils.resourceToByteArray(patient, true, false, false);
     server.enqueue(
       new MockResponse()
         .setResponseCode(200)
@@ -163,6 +187,6 @@ class ClientTest {
     Mockito.verify(mockLogger, Mockito.times(1))
       .logRequest(Mockito.anyString(), Mockito.anyString(), Mockito.anyList(), Mockito.any());
     Mockito.verify(mockLogger, Mockito.times(1))
-      .logResponse(Mockito.anyString(), Mockito.anyList(), Mockito.any());
+      .logResponse(Mockito.anyString(), Mockito.anyList(), Mockito.any(), Mockito.anyLong());
   }
 }

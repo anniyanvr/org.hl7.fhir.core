@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class DefinitionUseEnumFactory implements EnumFactory<DefinitionUse> {
@@ -54,11 +50,13 @@ public class DefinitionUseEnumFactory implements EnumFactory<DefinitionUse> {
       return DefinitionUse.ARCHETYPE;
     if ("template".equals(codeString))
       return DefinitionUse.TEMPLATE;
-    throw new IllegalArgumentException("Unknown DefinitionUse code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown DefinitionUse code '" + codeString + "'");
   }
 
   public String toCode(DefinitionUse code) {
-    if (code == DefinitionUse.FHIRSTRUCTURE)
+       if (code == DefinitionUse.NULL)
+           return null;
+       if (code == DefinitionUse.FHIRSTRUCTURE)
       return "fhir-structure";
     if (code == DefinitionUse.CUSTOMRESOURCE)
       return "custom-resource";
@@ -71,10 +69,10 @@ public class DefinitionUseEnumFactory implements EnumFactory<DefinitionUse> {
     if (code == DefinitionUse.TEMPLATE)
       return "template";
     return "?";
-  }
+   }
 
-    public String toSystem(DefinitionUse code) {
-      return code.getSystem();
-      }
+  public String toSystem(DefinitionUse code) {
+    return code.getSystem();
+  }
 
 }

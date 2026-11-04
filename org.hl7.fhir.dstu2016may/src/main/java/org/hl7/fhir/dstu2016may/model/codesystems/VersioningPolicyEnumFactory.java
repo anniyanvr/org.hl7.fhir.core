@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class VersioningPolicyEnumFactory implements EnumFactory<VersioningPolicy> {
@@ -48,21 +44,23 @@ public class VersioningPolicyEnumFactory implements EnumFactory<VersioningPolicy
       return VersioningPolicy.VERSIONED;
     if ("versioned-update".equals(codeString))
       return VersioningPolicy.VERSIONEDUPDATE;
-    throw new IllegalArgumentException("Unknown VersioningPolicy code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown VersioningPolicy code '" + codeString + "'");
   }
 
   public String toCode(VersioningPolicy code) {
-    if (code == VersioningPolicy.NOVERSION)
+       if (code == VersioningPolicy.NULL)
+           return null;
+       if (code == VersioningPolicy.NOVERSION)
       return "no-version";
     if (code == VersioningPolicy.VERSIONED)
       return "versioned";
     if (code == VersioningPolicy.VERSIONEDUPDATE)
       return "versioned-update";
     return "?";
-  }
+   }
 
-    public String toSystem(VersioningPolicy code) {
-      return code.getSystem();
-      }
+  public String toSystem(VersioningPolicy code) {
+    return code.getSystem();
+  }
 
 }

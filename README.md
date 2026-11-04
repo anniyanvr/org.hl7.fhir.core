@@ -1,104 +1,270 @@
+<!---
+ ____________________
+|                    |
+|  N  O  T  I  C  E  |
+|____________________|
+
+Please maintain this README.md as a linkable document, as other documentation may link back to it. The following sections should appear consistently in all updates to this document to maintain linkability:
+
+## Building this Project
+## Releases
+## CI/CD
+## Maintenance
+
+--->
+
 # HAPI FHIR - HL7 FHIR Core Artifacts
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/hapifhir/org.hl7.fhir.core/badge)](https://scorecard.dev/viewer/?uri=github.com/hapifhir/org.hl7.fhir.core) [![CodeQL](https://github.com/hapifhir/org.hl7.fhir.core/actions/workflows/codeql.yml/badge.svg)](https://github.com/hapifhir/org.hl7.fhir.core/actions/workflows/codeql.yml) [![OWASP Security Scans](https://github.com/hapifhir/org.hl7.fhir.core/actions/workflows/owasp.yml/badge.svg)](https://github.com/hapifhir/org.hl7.fhir.core/actions/workflows/owasp.yml) [![Trivy Security Scans](https://github.com/hapifhir/org.hl7.fhir.core/actions/workflows/trivy.yml/badge.svg)](https://github.com/hapifhir/org.hl7.fhir.core/actions/workflows/trivy.yml)
 
-| CI Status (master) | 
-| :---: |
-| [![Build Status][Badge-BuildPipeline]][Link-BuildPipeline] |
 
-This is the java core object handling code, with utilities (including validator), for the FHIR specification. 
-included in this repo: 
+|                        CI Status (master)                        |                   Current Release                    |           Snapshot           |
+|:----------------------------------------------------------------:|:----------------------------------------------------:|:----------------------------:|
+| [![Build Status][Badge-BuildPipeline]][Link-AzureMasterPipeline] | [![Badge-maven-release-core]][Link-GithubZipRelease] | ![Badge-maven-snapshot-core] |
 
-* org.fhir.fhir.utilities: Shared code used by all the other projects - including the internationalization code
-* org.fhir.fhir.r5: Object models and utilities for R5 candidate (will change regularly as new R5 candidates are released)
-* org.fhir.fhir.r4: Object models and utilities for R4
-* org.fhir.fhir.dstu3: Object models and utilities for STU3
-* org.fhir.fhir.dstu2: Object models and utilities for STU2
-* org.fhir.fhir.dstu2016may: Object models and utilities for an early STU3 candidate still used by some implementers
-* org.fhir.fhir.convertors: Code to convert between versions, and other version independence code - uses all the above projects
-* org.fhir.fhir.validation: The FHIR Java validator (note: based on R5 internally, but validates all the above versions)
-* org.fhir.fhir.validation.cli: Holder project for releasing the FHIR validator as as single fat jar (will be removed in the future)
+This java project provides:
 
-This code is used in all HAPI servers and clients, and also is the HL7 maintained 
-FHIR Validator. In addition, this is the core code for the HL7 maintained IG publisher
-and FHIR main build publisher. As such, this code is considered an authoritatively 
+* A Java library containing object handling code for the FHIR specification.
+* Useful FHIR utilities, including the FHIR Validator
+
+This code is used in all [HAPI](https://github.com/hapifhir/hapi-fhir) servers and clients. It also provides the HL7 maintained
+FHIR Validator, both as a library and as a standalone CLI application. In addition, this
+is the core code for the HL7 maintained [IG publisher]((https://github.com/HL7/fhir-ig-publisher/))
+and FHIR [main build publisher](https://github.com/HL7/kindling). As such, this code is considered an authoritatively
 correct implementation of the core FHIR specification that it implements.
 
-### CI/CD
+The following is an overview of modules used in this project:
 
-All integration and delivery done on Azure pipelines. Azure project can be viewed [here][Link-AzureProject].
+* **org.fhir.fhir.utilities**: Shared code used by all the other projects - including the internationalization code
+* **org.fhir.fhir.r5**: Object models and utilities for R5
+* **org.hl7.fhir.r4b**: Object models and utilities for R4B (only the FHIRPath code is maintained)
+* **org.hl7.fhir.r4**: Object models and utilities for R4 (only the FHIRPath code is maintained)
+* **org.hl7.fhir.dstu3**: Object models and utilities for STU3 (only the FHIRPath code is maintained)
+* **org.fhir.fhir.dstu2**: Object models and utilities for STU2 (deprecated and scheduled for removal)
+* **org.hl7.fhir.dstu2016may**: Object models and utilities for an early STU3 candidate still used by some implementers (only the FHIRPath code is maintained)
+* **org.fhir.fhir.convertors**: Code to convert between versions, and other version independence code - uses all the above projects
+* **org.fhir.fhir.validation**: The FHIR Java validator (note: based on R5 internally, but validates all the above versions)
+* **org.fhir.fhir.validation.cli**: Holder project for releasing the FHIR validator as a single fat jar
 
-### Current Versions 
-| Project | Current Release | Latest SNAPSHOT |
-| :---: | :---: | :---: |
-| org.hl7.fhir.validation.cli | [![Release Artifacts][Badge-r4SonatypeRelease]][Link-cliSonatypeRelease] | [![Snapshot Artifact][Badge-cliSonatypeSnapshot]][Link-cliSonatypeSnapshot] |
-| org.hl7.fhir.validation | [![Release Artifacts][Badge-validationSonatypeRelease]][Link-validationSonatypeRelease] | [![Snapshot Artifact][Badge-validationSonatypeSnapshot]][Link-validationSonatypeSnapshot] |
-| org.hl7.fhir.dstu2 | [![Release Artifacts][Badge-dstu2SonatypeRelease]][Link-dstu2SonatypeRelease] | [![Snapshot Artifact][Badge-dstu2SonatypeSnapshot]][Link-dstu2SonatypeSnapshot] |
-| org.hl7.fhir.dstu2016may | [![Release Artifacts][Badge-dstu2016maySonatypeRelease]][Link-dstu2016maySonatypeRelease] | [![Snapshot Artifact][Badge-dstu2016maySonatypeSnapshot]][Link-dstu2016maySonatypeSnapshot] |
-| org.hl7.fhir.dstu3 | [![Release Artifacts][Badge-dstu3SonatypeRelease]][Link-dstu3SonatypeRelease] | [![Snapshot Artifact][Badge-dstu3SonatypeSnapshot]][Link-dstu3SonatypeSnapshot] |
-| org.hl7.fhir.r4 | [![Release Artifacts][Badge-r4SonatypeRelease]][Link-r4SonatypeRelease] | [![Snapshot Artifact][Badge-r4SonatypeSnapshot]][Link-r4SonatypeSnapshot] |
-| org.hl7.fhir.r5 | [![Release Artifacts][Badge-r5SonatypeRelease]][Link-r5SonatypeRelease] | [![Snapshot Artifact][Badge-r5SonatypeSnapshot]][Link-r5SonatypeSnapshot] |
+There are three additional modules that contain experimental code for support of FHIR R6 which are not yet
+suitable for production use:
 
-### Building this Project
-This project uses [Apache Maven](http://maven.apache.org) to build. To build:
+* **org.hl7.fhir.model**: Object models for the R6 candidate (will change regularly as new R6 candidates are released, and we start working with the R6 code)
+* **org.hl7.fhir.services**: Utilities for working with the R6 code
+* **org.hl7.fhir.standalone**: Worker context, terminology services and test infrastructure for running the R6 code in a single process
+
+Note: these packages will be it, going forward - future versions post R6 will be folded into the code in these modules.
+
+### Maintenance Status
+
+Not all of the code in this project is actively maintained.
+
+For the versions before R5 - STU2, the early STU3 candidate, STU3, R4 and R4B - only the FHIRPath
+implementation is maintained. The object models and the other utilities in those modules are still built and
+released, and they still work, but they are not being kept up to date with the specifications or with the rest
+of this project.
+
+The intention is that all the maintained code moves to the R6 modules as soon as that is practical, and that
+**org.hl7.fhir.r5** joins the older modules at that point. No date has been set for this. If you are starting
+something new, or deciding where your dependencies should sit, that is the direction to plan for.
+
+### Thread Safety
+
+The R6 modules are divided along a threading contract, and this is part of why the code was split up this way:
+
+* **org.hl7.fhir.model** and **org.hl7.fhir.services** are expected to be thread safe. Resources, and the
+  utilities and renderers that work on them, may be shared between threads. So anything cached on a resource -
+  including anything put in `userData` - has to be published safely, and derived state must not be accumulated
+  into a shared mutable collection.
+* **org.hl7.fhir.standalone** is not thread safe, and is not meant to be. The worker context, the canonical
+  resource manager and the terminology services in it assume a single thread, and do things such as loading a
+  resource lazily and deriving from it on first use.
+
+One precondition goes with this: snapshots must be generated before multi-threaded use begins. Snapshot
+generation writes derived state onto the definitions it processes, so it is not safe to generate a snapshot
+while other threads are reading that definition.
+
+
+## Additional Resources
+
+The R5 object model can be extended with *additional resources* - resources defined by an incubator IG
+rather than the base specification (for example the resources in the FHIR Testing IG). See
+[Registering Additional Resources in R5](additional-resources-r5.md) for how to generate code for them,
+register them with the parsers, and load their definitions into the worker context.
+
+## Internationalization
+
+This project implements internationalization for its user tools and utilities for several locales using a combination of [GNU PO](https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html) and [Java Properties](https://docs.oracle.com/javase/tutorial/i18n/resbundle/propfile.html) files.
+
+Translation from the core library's original English locale to other supported locales is an ongoing process.
+See [Translation Status](https://fhir.github.io/translation-utils/) for current details.
+
+
+## Building this Project
+
+### Prerequisites
+
+This project uses [Java](https://www.java.com) (minumum version 17), [Apache Maven](http://maven.apache.org), and [Lombok](https://projectlombok.org/) to build. You can find detailed instructions on setting up this project in your IDE [here](https://hl7.github.io/docs/core/getting-started).
+
+### Build Commands
+
+To build and add artifacts to your local Maven repository:
+
 ```
 mvn install
 ```
-Note that unit tests will run, but are currently not set to fail the build as they do not all pass. This is being worked on.
 
 To skip unit tests:
 ```
 mvn -Dmaven.test.skip install
 ```
-### Publishing Binaries
+> **Note:** If you're on Windows and use PowerShell, The `-` needs to be escaped with a backtick (`)
+> ```
+> mvn `-Dmaven.test.skip install
+> ```
 
-An brief overview of our publishing process is [here][Link-Publishing].
+To clean and rebuild the terminology server caches:
 
-For more detailed instructions on cutting a release, please read [the wiki][Link-PublishingRelease]
+_clean_
+```
+mvn clean -Dfhir.txcache.clean=true
+```
 
-### Download
+_rebuild_
+```
+mvn test -Dfhir.txcache.rebuild=true
+```
 
-All binaries are published on [OSS Sonatype][Link-Sonatype]. You will need to add the proper dependency to your `pom.xml` file, or your `build.gradle.kts` file.
+_The source contains cached terminology server responses for testing. If the expected responses have changed in any way,
+this cache should be cleaned and rebuilt with the above so that subsequent `mvn test` calls will have the most current
+responses cached._
+
+To build only the validator_cli jar locally:
+```
+mvn clean package -Dmaven.test.skip=true --projects org.hl7.fhir.validation.cli --no-transfer-progress
+cp org.hl7.fhir.validation.cli/target/org.hl7.fhir.validation.cli*-SNAPSHOT.jar ./validator_cli.jar
+```
+
+_This will produce `./validator_cli.jar` in the project root directory._
+
+### SpotBugs
+
+This project uses the [SpotBugs Maven plugin](https://spotbugs.github.io/spotbugs-maven-plugin/) for static analysis. The analysis settings (`threshold` and `maxRank`) are set in the root `pom.xml`. SpotBugs analyzes compiled classes, so each command below includes `compile`.
+
+To run SpotBugs on the whole project and fail the build if any issues match the `pom.xml` configuration:
+```
+mvn compile spotbugs:check -Dspotbugs.failOnError=false
+mvn spotbugs:verify
+```
+_The first command analyzes every module and lists the issues found without failing. The second reads those results and fails the build if any module has issues. Running `spotbugs:check` on its own would stop at the first failing module, and every module depends on `org.hl7.fhir.utilities`, so `--fail-at-end` doesn't help._
+
+To produce a human-readable HTML report of all issues, regardless of the `pom.xml` threshold, without failing the build:
+```
+mvn compile spotbugs:spotbugs -Dspotbugs.htmlOutput=true -Dspotbugs.threshold=Low -Dspotbugs.maxRank=20
+```
+_This produces a report for each module in `<module>/target/reports/spotbugs.html`, and a combined report for the whole project in `org.hl7.fhir.report/target/reports/spotbugs.html`._
+
+To run SpotBugs on a single module, first install the project so the module's dependencies resolve from your local Maven repository:
+```
+mvn install -Dmaven.test.skip
+mvn compile spotbugs:check -pl org.hl7.fhir.r5
+```
+
+To limit analysis to a single class or package:
+```
+mvn compile spotbugs:check -pl org.hl7.fhir.r5 -Dspotbugs.onlyAnalyze=org.hl7.fhir.r5.fhirpath.FHIRLexer
+mvn compile spotbugs:check -pl org.hl7.fhir.r5 "-Dspotbugs.onlyAnalyze=org.hl7.fhir.r5.fhirpath.*"
+```
+
+To browse results in the SpotBugs GUI, run an analysis first. The GUI shows the results of the most recent run, so only issues that passed that run's threshold appear:
+```
+mvn compile spotbugs:spotbugs -pl org.hl7.fhir.r5 -Dspotbugs.threshold=Low -Dspotbugs.maxRank=20
+mvn spotbugs:gui -pl org.hl7.fhir.r5
+```
+
+> **Note:** As with the build commands above, PowerShell users need to escape each `-D` with a backtick.
+
+## Releases
+
+The built binary for the FHIR command-line validator is released through [GitHub releases][Link-GithubReleases] and can be downloaded directly [here][Link-GithubZipRelease]. For instructions on using this validator visit the [FHIR Validator Confluence page][Link-ConfluenceValidator].
+
+All build artifacts are published on [Maven Central][Link-MavenCentral].
+
+### Current Versions
+
+|          Artifact           |                                  Release                                   |                Snapshot                |
+|:---------------------------:|:--------------------------------------------------------------------------:|:--------------------------------------:|
+|      org.hl7.fhir.core      |           [![Badge-maven-release-core]][Link-maven-release-core]           |      ![Badge-maven-snapshot-core]      |
+|   org.hl7.fhir.convertors   |     [![Badge-maven-release-convertors]][Link-maven-release-convertors]     |   ![Badge-maven-snapshot-convertors]   |
+|     org.hl7.fhir.dstu2      |          [![Badge-maven-release-dstu2]][Link-maven-release-dstu2]          |     ![Badge-maven-snapshot-dstu2]      |
+|  org.hl7.fhir.dstu2016may   |    [![Badge-maven-release-dstu2016may]][Link-maven-release-dstu2016may]    |  ![Badge-maven-snapshot-dstu2016may]   |
+|     org.hl7.fhir.dstu3      |          [![Badge-maven-release-dstu3]][Link-maven-release-dstu3]          |     ![Badge-maven-snapshot-dstu3]      |
+| org.hl7.fhir.dstu3.support  |  [![Badge-maven-release-dstu3-support]][Link-maven-release-dstu3-support]  | ![Badge-maven-snapshot-dstu3-support]  |
+|     org.hl7.fhir.model      |          [![Badge-maven-release-model]][Link-maven-release-model]          |     ![Badge-maven-snapshot-model]      |
+|       org.hl7.fhir.r4       |             [![Badge-maven-release-r4]][Link-maven-release-r4]             |       ![Badge-maven-snapshot-r4]       |
+|      org.hl7.fhir.r4b       |            [![Badge-maven-release-r4b]][Link-maven-release-r4b]            |      ![Badge-maven-snapshot-r4b]       |
+|       org.hl7.fhir.r5       |             [![Badge-maven-release-r5]][Link-maven-release-r5]             |       ![Badge-maven-snapshot-r5]       |
+|    org.hl7.fhir.support     |        [![Badge-maven-release-support]][Link-maven-release-support]        |    ![Badge-maven-snapshot-support]     |
+|   org.hl7.fhir.utilities    |      [![Badge-maven-release-utilities]][Link-maven-release-utilities]      |   ![Badge-maven-snapshot-utilities]    |
+|   org.hl7.fhir.validation   |     [![Badge-maven-release-validation]][Link-maven-release-validation]     |   ![Badge-maven-snapshot-validation]   |
+
+
+To use the most recent SNAPSHOT builds of these artifacts in your project will need to add the following repository to your `pom.xml` or `build.gradle.kts` file.
 
 ###### pom.xml
-```
-<repositories>
-    <repository>
-        <id>oss-snapshot</id>
-        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-    </repository>
-    <repository>
-        <id>oss-releases</id>
-        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-</repositories> 
+```xml
+<repository>
+  <name>Central Portal Snapshots</name>
+  <id>central-portal-snapshots</id>
+  <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+  <releases>
+    <enabled>false</enabled>
+  </releases>
+  <snapshots>
+    <enabled>true</enabled>
+  </snapshots>
+</repository>
 ```
 ###### build.gradle.kts
 
-```
+```kts
 repositories {
     maven {
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-    }
-    maven {
-        url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+        name = "Central Portal Snapshots"
+        url = URI("https://central.sonatype.com/repository/maven-snapshots/")
+
+        content {
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.utilities")
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.dstu2")
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.dstu2016may")
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.dstu3")
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.dstu3.support")
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.model")
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.r4")
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.r4b")
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.r5")
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.support")
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.convertors")
+            includeModule("ca.uhn.hapi.fhir", "org.hl7.fhir.validation")
+        }
     }
 }
 ```
 
 After adding the necessary repositories, you can include the libraries as follows:
 
-##### org.hl7.fhir.validation.cli
+##### org.hl7.fhir.validation
 ###### Maven
 ```xml
 <dependency>
     <groupId>ca.uhn.hapi.fhir</groupId>
-    <artifactId>org.hl7.fhir.validation.cli</artifactId>
+    <artifactId>org.hl7.fhir.validation</artifactId>
     <version>(latest version)</version>
 </dependency>
 ```
 
 ###### Gradle
 ```groovy
-compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.validation.cli', version: '(latest version)'
+compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.validation', version: '(latest version)'
 ```
 
 ##### org.hl7.fhir.dstu2
@@ -160,47 +326,89 @@ compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r4', version: '(l
 ```groovy
 compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r5', version: '(latest version)'
 ```
+## CI/CD
 
-### Maintenance
-This project is maintained by [Grahame Grieve][Link-grahameGithub], [James Agnew][Link-jamesGithub] and [Mark Iantorno][Link-markGithub] on behalf of the FHIR community.
+All integration and delivery done on Azure pipelines. Azure project can be viewed [here][Link-AzureProject].
+
+* **Pull Request Pipeline** is automatically run for every Pull Request to ensure that the project can be built via maven. [[Azure Pipeline]][Link-AzurePullRequestPipeline] [[source]](pull-request-pipeline.yml)
+* **Master Branch Pipeline** is automatically run whenever code is merged to the master branch and builds the SNAPSHOT binaries distributed to OSSRH [[Azure Pipeline]][Link-AzureMasterPipeline][[source]](master-branch-pipeline.yml)
+* **Release Branch Pipeline** is run manually whenever a release is ready to be made. It builds the [release binaries](#releases), distributes them to artifact repositories and sends release notifications. [[Azure Pipeline]][Link-AzureReleasePipeline][[source]](release-branch-pipeline.yml)
+
+A brief overview of our publishing process is [here][Link-Publishing].
+
+For more detailed instructions on cutting a release, please read [the wiki][Link-PublishingRelease]
+
+## Maintenance
+
+Have you found an issue? Do you have a feature request? Great! Submit it [here][Link-GithubIssues] and we'll try to fix it as soon as possible.
+
+This project is maintained by [Grahame Grieve][Link-grahameGithub], [James Agnew][Link-jamesGithub], [David Otasek][Link-davidGithub], and [Mark Iantorno][Link-markGithub] on behalf of the FHIR community.
+
+
+[Link-ConfluenceValidator]: https://confluence.hl7.org/display/FHIR/Using+the+FHIR+Validator
+
+[Link-SnapshotPipeline]: https://dev.azure.com/fhir-pipelines/fhir-core-library/_build/latest?definitionId=17&branchName=master
 
 [Link-AzureProject]: https://dev.azure.com/fhir-pipelines/fhir-core-library
-[Link-BuildPipeline]: https://dev.azure.com/fhir-pipelines/fhir-core-library/_build/latest?definitionId=29&branchName=master
-[Link-SnapshotPipeline]: https://dev.azure.com/fhir-pipelines/fhir-core-library/_build/latest?definitionId=17&branchName=master
-[Link-dstu2SonatypeSnapshot]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.dstu2&v=LATEST "Sonatype Snapshot"
-[Link-dstu2SonatypeRelease]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=releases&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.dstu2&v=LATEST "Sonatype Release"
-[Link-dstu2016maySonatypeSnapshot]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.dstu2016may&v=LATEST "Sonatype Snapshot"
-[Link-dstu2016maySonatypeRelease]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=releases&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.dstu2016may&v=LATEST "Sonatype Release"
-[Link-dstu3SonatypeSnapshot]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.dstu3&v=LATEST "Sonatype Snapshot"
-[Link-dstu3SonatypeRelease]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=releases&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.dstu3&v=LATEST "Sonatype Release"
-[Link-r4SonatypeSnapshot]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.r4&v=LATEST "Sonatype Snapshot"
-[Link-r4SonatypeRelease]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=releases&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.r4&v=LATEST "Sonatype Release"
-[Link-r5SonatypeSnapshot]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.r5&v=LATEST "Sonatype Snapshot"
-[Link-r5SonatypeRelease]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=releases&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.r5&v=LATEST "Sonatype Release"
-[Link-cliSonatypeSnapshot]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.validation.cli&v=LATEST "Sonatype Snapshot"
-[Link-cliSonatypeRelease]: https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar
-[Link-validationSonatypeSnapshot]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.validation&v=LATEST "Sonatype Snapshot"
-[Link-validationSonatypeRelease]: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=releases&g=ca.uhn.hapi.fhir&a=org.hl7.fhir.validation&v=LATEST "Sonatype Release"
-[Link-sonatype]: https://oss.sonatype.org/
+[Link-AzureMasterPipeline]: https://dev.azure.com/fhir-pipelines/fhir-core-library/_build/latest?definitionId=29&branchName=master
+[Link-AzurePullRequestPipeline]: https://dev.azure.com/fhir-pipelines/fhir-core-library/_build?definitionId=31
+[Link-AzureReleasePipeline]: https://dev.azure.com/fhir-pipelines/fhir-core-library/_build?definitionId=30
+
+[Link-MavenCentral]: https://central.sonatype.org/
+[Link-davidGithub]: https://github.com/dotasek
 [Link-grahameGithub]: https://github.com/grahamegrieve
 [Link-jamesGithub]: https://github.com/jamesagnew
 [Link-markGithub]: https://github.com/markiantorno
-[Link-Publishing]: https://github.com/FHIR/fhir-test-cases/wiki/Publishing-Binaries
-[Link-PublishingRelease]: https://github.com/FHIR/fhir-test-cases/wiki/Detailed-Release-Instructions
+[Link-PublishingRelease]: https://hl7.github.io/docs/ci-cd-building-release
+[Link-Publishing]: https://hl7.github.io/docs/ci-cd-publishing-binaries
+[Link-GithubIssues]: https://github.com/hapifhir/org.hl7.fhir.core/issues
+[Link-GithubReleases]: https://github.com/hapifhir/org.hl7.fhir.core/releases
+[Link-GithubZipRelease]: https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar
 
 [Badge-BuildPipeline]: https://dev.azure.com/fhir-pipelines/fhir-core-library/_apis/build/status/Master%20Branch%20Pipeline?branchName=master
 [Badge-SnapshotPipeline]: https://dev.azure.com/fhir-pipelines/fhir-core-library/_apis/build/status/Module%20SNAPSHOT%20Publisher?branchName=master
-[Badge-dstu2SonatypeRelease]: https://img.shields.io/nexus/r/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.dstu2.svg "Sonatype Releases"
-[Badge-dstu2SonatypeSnapshot]: https://img.shields.io/nexus/s/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.dstu2.svg "Sonatype Snapshots"
-[Badge-dstu2016maySonatypeRelease]: https://img.shields.io/nexus/r/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.dstu2016may.svg "Sonatype Releases"
-[Badge-dstu2016maySonatypeSnapshot]: https://img.shields.io/nexus/s/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.dstu2016may.svg "Sonatype Snapshots"
-[Badge-dstu3SonatypeRelease]: https://img.shields.io/nexus/r/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.dstu3.svg "Sonatype Releases"
-[Badge-dstu3SonatypeSnapshot]: https://img.shields.io/nexus/s/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.dstu3.svg "Sonatype Snapshots"
-[Badge-r4SonatypeRelease]: https://img.shields.io/nexus/r/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.r4.svg "Sonatype Releases"
-[Badge-r4SonatypeSnapshot]: https://img.shields.io/nexus/s/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.r4.svg "Sonatype Snapshots"
-[Badge-r5SonatypeRelease]: https://img.shields.io/nexus/r/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.r5.svg "Sonatype Releases"
-[Badge-r5SonatypeSnapshot]: https://img.shields.io/nexus/s/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.r5.svg "Sonatype Snapshots"
-[Badge-cliSonatypeRelease]: https://img.shields.io/nexus/r/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.validation.cli.svg "Sonatype Releases"
-[Badge-cliSonatypeSnapshot]: https://img.shields.io/nexus/s/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.validation.cli.svg "Sonatype Snapshots"
-[Badge-validationSonatypeRelease]: https://img.shields.io/nexus/r/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.validation.svg "Sonatype Releases"
-[Badge-validationSonatypeSnapshot]: https://img.shields.io/nexus/s/https/oss.sonatype.org/ca.uhn.hapi.fhir/org.hl7.fhir.validation.svg "Sonatype Snapshots"
+
+<!--- Maven Release Links --->
+[Link-maven-release-core]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.core
+[Link-maven-release-convertors]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.convertors
+[Link-maven-release-dstu2]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.dstu2
+[Link-maven-release-dstu2016may]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.dstu2016may
+[Link-maven-release-dstu3]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.dstu3
+[Link-maven-release-dstu3-support]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.dstu3.support
+[Link-maven-release-model]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.model
+[Link-maven-release-r4]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.r4
+[Link-maven-release-r4b]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.r4b
+[Link-maven-release-r5]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.r5
+[Link-maven-release-support]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.support
+[Link-maven-release-utilities]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.utilities
+[Link-maven-release-validation]: https://central.sonatype.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.validation
+
+<!--- Maven Release Badges --->
+[Badge-maven-release-core]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.core%2Fmaven-metadata.xml
+[Badge-maven-release-convertors]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.convertors%2Fmaven-metadata.xml
+[Badge-maven-release-dstu2]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.dstu2%2Fmaven-metadata.xml
+[Badge-maven-release-dstu2016may]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.dstu2016may%2Fmaven-metadata.xml
+[Badge-maven-release-dstu3]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.dstu3%2Fmaven-metadata.xml
+[Badge-maven-release-dstu3-support]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.dstu3.support%2Fmaven-metadata.xml
+[Badge-maven-release-model]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.model%2Fmaven-metadata.xml
+[Badge-maven-release-r4]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.r4%2Fmaven-metadata.xml
+[Badge-maven-release-r4b]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.r4b%2Fmaven-metadata.xml
+[Badge-maven-release-r5]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.r5%2Fmaven-metadata.xml
+[Badge-maven-release-support]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.support%2Fmaven-metadata.xml
+[Badge-maven-release-utilities]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.utilities%2Fmaven-metadata.xml
+[Badge-maven-release-validation]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.validation%2Fmaven-metadata.xml
+
+<!--- Maven SNAPSHOT badges --->
+[Badge-maven-snapshot-core]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.core%2Fmaven-metadata.xml
+[Badge-maven-snapshot-convertors]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.convertors%2Fmaven-metadata.xml
+[Badge-maven-snapshot-dstu2]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.dstu2%2Fmaven-metadata.xml
+[Badge-maven-snapshot-dstu2016may]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.dstu2016may%2Fmaven-metadata.xml
+[Badge-maven-snapshot-dstu3]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.dstu3%2Fmaven-metadata.xml
+[Badge-maven-snapshot-dstu3-support]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.dstu3.support%2Fmaven-metadata.xml
+[Badge-maven-snapshot-model]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.model%2Fmaven-metadata.xml
+[Badge-maven-snapshot-r4]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.r4%2Fmaven-metadata.xml
+[Badge-maven-snapshot-r4b]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.r4b%2Fmaven-metadata.xml
+[Badge-maven-snapshot-r5]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.r5%2Fmaven-metadata.xml
+[Badge-maven-snapshot-support]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.support%2Fmaven-metadata.xml
+[Badge-maven-snapshot-utilities]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.utilities%2Fmaven-metadata.xml
+[Badge-maven-snapshot-validation]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fca%2Fuhn%2Fhapi%2Ffhir%2Forg.hl7.fhir.validation%2Fmaven-metadata.xml

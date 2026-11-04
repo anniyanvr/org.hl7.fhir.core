@@ -2,6 +2,7 @@ package org.hl7.fhir.convertors.conv10_30.datatypes10_30.complextypes10_30;
 
 import org.hl7.fhir.convertors.context.ConversionContext10_30;
 import org.hl7.fhir.convertors.conv10_30.datatypes10_30.primitivetypes10_30.String10_30;
+import org.hl7.fhir.dstu3.model.HumanName;
 import org.hl7.fhir.exceptions.FHIRException;
 
 public class HumanName10_30 {
@@ -11,10 +12,10 @@ public class HumanName10_30 {
     ConversionContext10_30.INSTANCE.getVersionConvertor_10_30().copyElement(src, tgt);
     if (src.hasUse()) tgt.setUseElement(convertNameUse(src.getUseElement()));
     if (src.hasTextElement()) tgt.setTextElement(String10_30.convertString(src.getTextElement()));
-    for (org.hl7.fhir.dstu2.model.StringType t : src.getFamily()) tgt.setFamily(t.getValue());
-    for (org.hl7.fhir.dstu2.model.StringType t : src.getGiven()) tgt.addGiven(t.getValue());
-    for (org.hl7.fhir.dstu2.model.StringType t : src.getPrefix()) tgt.addPrefix(t.getValue());
-    for (org.hl7.fhir.dstu2.model.StringType t : src.getSuffix()) tgt.addSuffix(t.getValue());
+    for (org.hl7.fhir.dstu2.model.StringType t : src.getFamily()) tgt.setFamilyElement(String10_30.convertString(t));
+    for (org.hl7.fhir.dstu2.model.StringType t : src.getGiven()) tgt.getGiven().add(String10_30.convertString(t));
+    for (org.hl7.fhir.dstu2.model.StringType t : src.getPrefix()) tgt.getPrefix().add(String10_30.convertString(t));
+    for (org.hl7.fhir.dstu2.model.StringType t : src.getSuffix()) tgt.getSuffix().add(String10_30.convertString(t));
     if (src.hasPeriod()) tgt.setPeriod(Period10_30.convertPeriod(src.getPeriod()));
     return tgt;
   }
@@ -25,10 +26,10 @@ public class HumanName10_30 {
     ConversionContext10_30.INSTANCE.getVersionConvertor_10_30().copyElement(src, tgt);
     if (src.hasUse()) tgt.setUseElement(convertNameUse(src.getUseElement()));
     if (src.hasTextElement()) tgt.setTextElement(String10_30.convertString(src.getTextElement()));
-    if (src.hasFamily()) tgt.addFamily(src.getFamily());
-    for (org.hl7.fhir.dstu3.model.StringType t : src.getGiven()) tgt.addGiven(t.getValue());
-    for (org.hl7.fhir.dstu3.model.StringType t : src.getPrefix()) tgt.addPrefix(t.getValue());
-    for (org.hl7.fhir.dstu3.model.StringType t : src.getSuffix()) tgt.addSuffix(t.getValue());
+    if (src.hasFamily()) tgt.getFamily().add(String10_30.convertString(src.getFamilyElement()));
+    for (org.hl7.fhir.dstu3.model.StringType t : src.getGiven()) tgt.getGiven().add(String10_30.convertString(t));
+    for (org.hl7.fhir.dstu3.model.StringType t : src.getPrefix()) tgt.getPrefix().add(String10_30.convertString(t));
+    for (org.hl7.fhir.dstu3.model.StringType t : src.getSuffix()) tgt.getSuffix().add(String10_30.convertString(t));
     if (src.hasPeriod()) tgt.setPeriod(Period10_30.convertPeriod(src.getPeriod()));
     return tgt;
   }
@@ -38,35 +39,35 @@ public class HumanName10_30 {
     org.hl7.fhir.dstu3.model.Enumeration<org.hl7.fhir.dstu3.model.HumanName.NameUse> tgt = new org.hl7.fhir.dstu3.model.Enumeration<>(new org.hl7.fhir.dstu3.model.HumanName.NameUseEnumFactory());
     ConversionContext10_30.INSTANCE.getVersionConvertor_10_30().copyElement(src, tgt);
     if (src.getValue() == null) {
-      tgt.setValue(org.hl7.fhir.dstu3.model.HumanName.NameUse.NULL);
-    } else {
-      switch (src.getValue()) {
+    tgt.setValue(null);
+} else {
+      switch(src.getValue()) {
         case USUAL:
-          tgt.setValue(org.hl7.fhir.dstu3.model.HumanName.NameUse.USUAL);
-          break;
-        case OFFICIAL:
-          tgt.setValue(org.hl7.fhir.dstu3.model.HumanName.NameUse.OFFICIAL);
-          break;
-        case TEMP:
-          tgt.setValue(org.hl7.fhir.dstu3.model.HumanName.NameUse.TEMP);
-          break;
-        case NICKNAME:
-          tgt.setValue(org.hl7.fhir.dstu3.model.HumanName.NameUse.NICKNAME);
-          break;
-        case ANONYMOUS:
-          tgt.setValue(org.hl7.fhir.dstu3.model.HumanName.NameUse.ANONYMOUS);
-          break;
-        case OLD:
-          tgt.setValue(org.hl7.fhir.dstu3.model.HumanName.NameUse.OLD);
-          break;
-        case MAIDEN:
-          tgt.setValue(org.hl7.fhir.dstu3.model.HumanName.NameUse.MAIDEN);
-          break;
-        default:
-          tgt.setValue(org.hl7.fhir.dstu3.model.HumanName.NameUse.NULL);
-          break;
-      }
-    }
+                    tgt.setValue(HumanName.NameUse.USUAL);
+                    break;
+                case OFFICIAL:
+                    tgt.setValue(HumanName.NameUse.OFFICIAL);
+                    break;
+                case TEMP:
+                    tgt.setValue(HumanName.NameUse.TEMP);
+                    break;
+                case NICKNAME:
+                    tgt.setValue(HumanName.NameUse.NICKNAME);
+                    break;
+                case ANONYMOUS:
+                    tgt.setValue(HumanName.NameUse.ANONYMOUS);
+                    break;
+                case OLD:
+                    tgt.setValue(HumanName.NameUse.OLD);
+                    break;
+                case MAIDEN:
+                    tgt.setValue(HumanName.NameUse.MAIDEN);
+                    break;
+                default:
+                    tgt.setValue(HumanName.NameUse.NULL);
+                    break;
+       }
+}
     return tgt;
   }
 
@@ -75,35 +76,35 @@ public class HumanName10_30 {
     org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.HumanName.NameUse> tgt = new org.hl7.fhir.dstu2.model.Enumeration<>(new org.hl7.fhir.dstu2.model.HumanName.NameUseEnumFactory());
     ConversionContext10_30.INSTANCE.getVersionConvertor_10_30().copyElement(src, tgt);
     if (src.getValue() == null) {
-      tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.NULL);
-    } else {
-      switch (src.getValue()) {
+    tgt.setValue(null);
+} else {
+      switch(src.getValue()) {
         case USUAL:
-          tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.USUAL);
-          break;
-        case OFFICIAL:
-          tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.OFFICIAL);
-          break;
-        case TEMP:
-          tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.TEMP);
-          break;
-        case NICKNAME:
-          tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.NICKNAME);
-          break;
-        case ANONYMOUS:
-          tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.ANONYMOUS);
-          break;
-        case OLD:
-          tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.OLD);
-          break;
-        case MAIDEN:
-          tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.MAIDEN);
-          break;
-        default:
-          tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.NULL);
-          break;
-      }
-    }
+                    tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.USUAL);
+                    break;
+                case OFFICIAL:
+                    tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.OFFICIAL);
+                    break;
+                case TEMP:
+                    tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.TEMP);
+                    break;
+                case NICKNAME:
+                    tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.NICKNAME);
+                    break;
+                case ANONYMOUS:
+                    tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.ANONYMOUS);
+                    break;
+                case OLD:
+                    tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.OLD);
+                    break;
+                case MAIDEN:
+                    tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.MAIDEN);
+                    break;
+                default:
+                    tgt.setValue(org.hl7.fhir.dstu2.model.HumanName.NameUse.NULL);
+                    break;
+       }
+}
     return tgt;
   }
 }

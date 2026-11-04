@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,6 +82,7 @@ public class SpecimenDefinition extends DomainResource {
           switch (this) {
             case PREFERRED: return "preferred";
             case ALTERNATE: return "alternate";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -89,6 +90,7 @@ public class SpecimenDefinition extends DomainResource {
           switch (this) {
             case PREFERRED: return "http://hl7.org/fhir/specimen-contained-preference";
             case ALTERNATE: return "http://hl7.org/fhir/specimen-contained-preference";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -96,6 +98,7 @@ public class SpecimenDefinition extends DomainResource {
           switch (this) {
             case PREFERRED: return "This type of contained specimen is preferred to collect this kind of specimen.";
             case ALTERNATE: return "This type of conditioned specimen is an alternate.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -103,6 +106,7 @@ public class SpecimenDefinition extends DomainResource {
           switch (this) {
             case PREFERRED: return "Preferred";
             case ALTERNATE: return "Alternate";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -119,27 +123,29 @@ public class SpecimenDefinition extends DomainResource {
           return SpecimenContainedPreference.ALTERNATE;
         throw new IllegalArgumentException("Unknown SpecimenContainedPreference code '"+codeString+"'");
         }
-        public Enumeration<SpecimenContainedPreference> fromType(Base code) throws FHIRException {
+        public Enumeration<SpecimenContainedPreference> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<SpecimenContainedPreference>(this);
+            return new Enumeration<SpecimenContainedPreference>(this, SpecimenContainedPreference.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<SpecimenContainedPreference>(this, SpecimenContainedPreference.NULL, code);
         if ("preferred".equals(codeString))
-          return new Enumeration<SpecimenContainedPreference>(this, SpecimenContainedPreference.PREFERRED);
+          return new Enumeration<SpecimenContainedPreference>(this, SpecimenContainedPreference.PREFERRED, code);
         if ("alternate".equals(codeString))
-          return new Enumeration<SpecimenContainedPreference>(this, SpecimenContainedPreference.ALTERNATE);
+          return new Enumeration<SpecimenContainedPreference>(this, SpecimenContainedPreference.ALTERNATE, code);
         throw new FHIRException("Unknown SpecimenContainedPreference code '"+codeString+"'");
         }
     public String toCode(SpecimenContainedPreference code) {
-      if (code == SpecimenContainedPreference.PREFERRED)
+       if (code == SpecimenContainedPreference.NULL)
+           return null;
+       if (code == SpecimenContainedPreference.PREFERRED)
         return "preferred";
       if (code == SpecimenContainedPreference.ALTERNATE)
         return "alternate";
       return "?";
-      }
+   }
     public String toSystem(SpecimenContainedPreference code) {
       return code.getSystem();
       }
@@ -180,9 +186,9 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * Requirements for delivery and special handling of this kind of conditioned specimen.
          */
-        @Child(name = "requirement", type = {StringType.class}, order=5, min=0, max=1, modifier=false, summary=false)
+        @Child(name = "requirement", type = {MarkdownType.class}, order=5, min=0, max=1, modifier=false, summary=false)
         @Description(shortDefinition="Requirements for specimen delivery and special handling", formalDefinition="Requirements for delivery and special handling of this kind of conditioned specimen." )
-        protected StringType requirement;
+        protected MarkdownType requirement;
 
         /**
          * The usual time that a specimen of this kind is retained after the ordered tests are completed, for the purpose of additional testing.
@@ -221,7 +227,7 @@ public class SpecimenDefinition extends DomainResource {
         @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/diagnostic-service-sections")
         protected List<CodeableConcept> testingDestination;
 
-        private static final long serialVersionUID = 1859673754L;
+        private static final long serialVersionUID = -609761988L;
 
     /**
      * Constructor
@@ -379,12 +385,12 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * @return {@link #requirement} (Requirements for delivery and special handling of this kind of conditioned specimen.). This is the underlying object with id, value and extensions. The accessor "getRequirement" gives direct access to the value
          */
-        public StringType getRequirementElement() { 
+        public MarkdownType getRequirementElement() { 
           if (this.requirement == null)
             if (Configuration.errorOnAutoCreate())
               throw new Error("Attempt to auto-create SpecimenDefinitionTypeTestedComponent.requirement");
             else if (Configuration.doAutoCreate())
-              this.requirement = new StringType(); // bb
+              this.requirement = new MarkdownType(); // bb
           return this.requirement;
         }
 
@@ -399,7 +405,7 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * @param value {@link #requirement} (Requirements for delivery and special handling of this kind of conditioned specimen.). This is the underlying object with id, value and extensions. The accessor "getRequirement" gives direct access to the value
          */
-        public SpecimenDefinitionTypeTestedComponent setRequirementElement(StringType value) { 
+        public SpecimenDefinitionTypeTestedComponent setRequirementElement(MarkdownType value) { 
           this.requirement = value;
           return this;
         }
@@ -419,7 +425,7 @@ public class SpecimenDefinition extends DomainResource {
             this.requirement = null;
           else {
             if (this.requirement == null)
-              this.requirement = new StringType();
+              this.requirement = new MarkdownType();
             this.requirement.setValue(value);
           }
           return this;
@@ -659,7 +665,7 @@ public class SpecimenDefinition extends DomainResource {
           children.add(new Property("type", "CodeableConcept", "The kind of specimen conditioned for testing expected by lab.", 0, 1, type));
           children.add(new Property("preference", "code", "The preference for this type of conditioned specimen.", 0, 1, preference));
           children.add(new Property("container", "", "The specimen's container.", 0, 1, container));
-          children.add(new Property("requirement", "string", "Requirements for delivery and special handling of this kind of conditioned specimen.", 0, 1, requirement));
+          children.add(new Property("requirement", "markdown", "Requirements for delivery and special handling of this kind of conditioned specimen.", 0, 1, requirement));
           children.add(new Property("retentionTime", "Duration", "The usual time that a specimen of this kind is retained after the ordered tests are completed, for the purpose of additional testing.", 0, 1, retentionTime));
           children.add(new Property("singleUse", "boolean", "Specimen can be used by only one test or panel if the value is \"true\".", 0, 1, singleUse));
           children.add(new Property("rejectionCriterion", "CodeableConcept", "Criterion for rejection of the specimen in its container by the laboratory.", 0, java.lang.Integer.MAX_VALUE, rejectionCriterion));
@@ -674,7 +680,7 @@ public class SpecimenDefinition extends DomainResource {
           case 3575610: /*type*/  return new Property("type", "CodeableConcept", "The kind of specimen conditioned for testing expected by lab.", 0, 1, type);
           case -1459831589: /*preference*/  return new Property("preference", "code", "The preference for this type of conditioned specimen.", 0, 1, preference);
           case -410956671: /*container*/  return new Property("container", "", "The specimen's container.", 0, 1, container);
-          case 363387971: /*requirement*/  return new Property("requirement", "string", "Requirements for delivery and special handling of this kind of conditioned specimen.", 0, 1, requirement);
+          case 363387971: /*requirement*/  return new Property("requirement", "markdown", "Requirements for delivery and special handling of this kind of conditioned specimen.", 0, 1, requirement);
           case 1434969867: /*retentionTime*/  return new Property("retentionTime", "Duration", "The usual time that a specimen of this kind is retained after the ordered tests are completed, for the purpose of additional testing.", 0, 1, retentionTime);
           case -1494547425: /*singleUse*/  return new Property("singleUse", "boolean", "Specimen can be used by only one test or panel if the value is \"true\".", 0, 1, singleUse);
           case -553706344: /*rejectionCriterion*/  return new Property("rejectionCriterion", "CodeableConcept", "Criterion for rejection of the specimen in its container by the laboratory.", 0, java.lang.Integer.MAX_VALUE, rejectionCriterion);
@@ -692,7 +698,7 @@ public class SpecimenDefinition extends DomainResource {
         case 3575610: /*type*/ return this.type == null ? new Base[0] : new Base[] {this.type}; // CodeableConcept
         case -1459831589: /*preference*/ return this.preference == null ? new Base[0] : new Base[] {this.preference}; // Enumeration<SpecimenContainedPreference>
         case -410956671: /*container*/ return this.container == null ? new Base[0] : new Base[] {this.container}; // SpecimenDefinitionTypeTestedContainerComponent
-        case 363387971: /*requirement*/ return this.requirement == null ? new Base[0] : new Base[] {this.requirement}; // StringType
+        case 363387971: /*requirement*/ return this.requirement == null ? new Base[0] : new Base[] {this.requirement}; // MarkdownType
         case 1434969867: /*retentionTime*/ return this.retentionTime == null ? new Base[0] : new Base[] {this.retentionTime}; // Duration
         case -1494547425: /*singleUse*/ return this.singleUse == null ? new Base[0] : new Base[] {this.singleUse}; // BooleanType
         case -553706344: /*rejectionCriterion*/ return this.rejectionCriterion == null ? new Base[0] : this.rejectionCriterion.toArray(new Base[this.rejectionCriterion.size()]); // CodeableConcept
@@ -720,7 +726,7 @@ public class SpecimenDefinition extends DomainResource {
           this.container = (SpecimenDefinitionTypeTestedContainerComponent) value; // SpecimenDefinitionTypeTestedContainerComponent
           return value;
         case 363387971: // requirement
-          this.requirement = TypeConvertor.castToString(value); // StringType
+          this.requirement = TypeConvertor.castToMarkdown(value); // MarkdownType
           return value;
         case 1434969867: // retentionTime
           this.retentionTime = TypeConvertor.castToDuration(value); // Duration
@@ -754,7 +760,7 @@ public class SpecimenDefinition extends DomainResource {
         } else if (name.equals("container")) {
           this.container = (SpecimenDefinitionTypeTestedContainerComponent) value; // SpecimenDefinitionTypeTestedContainerComponent
         } else if (name.equals("requirement")) {
-          this.requirement = TypeConvertor.castToString(value); // StringType
+          this.requirement = TypeConvertor.castToMarkdown(value); // MarkdownType
         } else if (name.equals("retentionTime")) {
           this.retentionTime = TypeConvertor.castToDuration(value); // Duration
         } else if (name.equals("singleUse")) {
@@ -768,6 +774,34 @@ public class SpecimenDefinition extends DomainResource {
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("isDerived")) {
+          this.isDerived = null;
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("preference")) {
+          value = new SpecimenContainedPreferenceEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.preference = (Enumeration) value; // Enumeration<SpecimenContainedPreference>
+        } else if (name.equals("container")) {
+          this.container = (SpecimenDefinitionTypeTestedContainerComponent) value; // SpecimenDefinitionTypeTestedContainerComponent
+        } else if (name.equals("requirement")) {
+          this.requirement = null;
+        } else if (name.equals("retentionTime")) {
+          this.retentionTime = null;
+        } else if (name.equals("singleUse")) {
+          this.singleUse = null;
+        } else if (name.equals("rejectionCriterion")) {
+          this.getRejectionCriterion().remove(value);
+        } else if (name.equals("handling")) {
+          this.getHandling().remove((SpecimenDefinitionTypeTestedHandlingComponent) value);
+        } else if (name.equals("testingDestination")) {
+          this.getTestingDestination().remove(value);
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -795,7 +829,7 @@ public class SpecimenDefinition extends DomainResource {
         case 3575610: /*type*/ return new String[] {"CodeableConcept"};
         case -1459831589: /*preference*/ return new String[] {"code"};
         case -410956671: /*container*/ return new String[] {};
-        case 363387971: /*requirement*/ return new String[] {"string"};
+        case 363387971: /*requirement*/ return new String[] {"markdown"};
         case 1434969867: /*retentionTime*/ return new String[] {"Duration"};
         case -1494547425: /*singleUse*/ return new String[] {"boolean"};
         case -553706344: /*rejectionCriterion*/ return new String[] {"CodeableConcept"};
@@ -809,28 +843,28 @@ public class SpecimenDefinition extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("isDerived")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.typeTested.isDerived");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.typeTested.isDerived");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
           return this.type;
         }
         else if (name.equals("preference")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.typeTested.preference");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.typeTested.preference");
         }
         else if (name.equals("container")) {
           this.container = new SpecimenDefinitionTypeTestedContainerComponent();
           return this.container;
         }
         else if (name.equals("requirement")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.typeTested.requirement");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.typeTested.requirement");
         }
         else if (name.equals("retentionTime")) {
           this.retentionTime = new Duration();
           return this.retentionTime;
         }
         else if (name.equals("singleUse")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.typeTested.singleUse");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.typeTested.singleUse");
         }
         else if (name.equals("rejectionCriterion")) {
           return addRejectionCriterion();
@@ -849,6 +883,10 @@ public class SpecimenDefinition extends DomainResource {
         SpecimenDefinitionTypeTestedComponent dst = new SpecimenDefinitionTypeTestedComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SpecimenDefinitionTypeTestedComponent) dst);
       }
 
       public void copyValues(SpecimenDefinitionTypeTestedComponent dst) {
@@ -944,9 +982,9 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * The textual description of the kind of container.
          */
-        @Child(name = "description", type = {StringType.class}, order=4, min=0, max=1, modifier=false, summary=false)
+        @Child(name = "description", type = {MarkdownType.class}, order=4, min=0, max=1, modifier=false, summary=false)
         @Description(shortDefinition="The description of the kind of container", formalDefinition="The textual description of the kind of container." )
-        protected StringType description;
+        protected MarkdownType description;
 
         /**
          * The capacity (volume or other measure) of this kind of container.
@@ -972,11 +1010,11 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * Special processing that should be applied to the container for this kind of specimen.
          */
-        @Child(name = "preparation", type = {StringType.class}, order=8, min=0, max=1, modifier=false, summary=false)
+        @Child(name = "preparation", type = {MarkdownType.class}, order=8, min=0, max=1, modifier=false, summary=false)
         @Description(shortDefinition="Special processing applied to the container for this specimen type", formalDefinition="Special processing that should be applied to the container for this kind of specimen." )
-        protected StringType preparation;
+        protected MarkdownType preparation;
 
-        private static final long serialVersionUID = -1498817064L;
+        private static final long serialVersionUID = -932984420L;
 
     /**
      * Constructor
@@ -1060,12 +1098,12 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * @return {@link #description} (The textual description of the kind of container.). This is the underlying object with id, value and extensions. The accessor "getDescription" gives direct access to the value
          */
-        public StringType getDescriptionElement() { 
+        public MarkdownType getDescriptionElement() { 
           if (this.description == null)
             if (Configuration.errorOnAutoCreate())
               throw new Error("Attempt to auto-create SpecimenDefinitionTypeTestedContainerComponent.description");
             else if (Configuration.doAutoCreate())
-              this.description = new StringType(); // bb
+              this.description = new MarkdownType(); // bb
           return this.description;
         }
 
@@ -1080,7 +1118,7 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * @param value {@link #description} (The textual description of the kind of container.). This is the underlying object with id, value and extensions. The accessor "getDescription" gives direct access to the value
          */
-        public SpecimenDefinitionTypeTestedContainerComponent setDescriptionElement(StringType value) { 
+        public SpecimenDefinitionTypeTestedContainerComponent setDescriptionElement(MarkdownType value) { 
           this.description = value;
           return this;
         }
@@ -1100,7 +1138,7 @@ public class SpecimenDefinition extends DomainResource {
             this.description = null;
           else {
             if (this.description == null)
-              this.description = new StringType();
+              this.description = new MarkdownType();
             this.description.setValue(value);
           }
           return this;
@@ -1148,8 +1186,8 @@ public class SpecimenDefinition extends DomainResource {
           return (Quantity) this.minimumVolume;
         }
 
-        public boolean hasMinimumVolumeQuantity() { 
-          return this != null && this.minimumVolume instanceof Quantity;
+        public boolean hasMinimumVolumeQuantity() {
+            return this.minimumVolume instanceof Quantity;
         }
 
         /**
@@ -1163,8 +1201,8 @@ public class SpecimenDefinition extends DomainResource {
           return (StringType) this.minimumVolume;
         }
 
-        public boolean hasMinimumVolumeStringType() { 
-          return this != null && this.minimumVolume instanceof StringType;
+        public boolean hasMinimumVolumeStringType() {
+            return this.minimumVolume instanceof StringType;
         }
 
         public boolean hasMinimumVolume() { 
@@ -1176,7 +1214,7 @@ public class SpecimenDefinition extends DomainResource {
          */
         public SpecimenDefinitionTypeTestedContainerComponent setMinimumVolume(DataType value) { 
           if (value != null && !(value instanceof Quantity || value instanceof StringType))
-            throw new Error("Not the right type for SpecimenDefinition.typeTested.container.minimumVolume[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for SpecimenDefinition.typeTested.container.minimumVolume[x]: "+value.fhirType());
           this.minimumVolume = value;
           return this;
         }
@@ -1237,12 +1275,12 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * @return {@link #preparation} (Special processing that should be applied to the container for this kind of specimen.). This is the underlying object with id, value and extensions. The accessor "getPreparation" gives direct access to the value
          */
-        public StringType getPreparationElement() { 
+        public MarkdownType getPreparationElement() { 
           if (this.preparation == null)
             if (Configuration.errorOnAutoCreate())
               throw new Error("Attempt to auto-create SpecimenDefinitionTypeTestedContainerComponent.preparation");
             else if (Configuration.doAutoCreate())
-              this.preparation = new StringType(); // bb
+              this.preparation = new MarkdownType(); // bb
           return this.preparation;
         }
 
@@ -1257,7 +1295,7 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * @param value {@link #preparation} (Special processing that should be applied to the container for this kind of specimen.). This is the underlying object with id, value and extensions. The accessor "getPreparation" gives direct access to the value
          */
-        public SpecimenDefinitionTypeTestedContainerComponent setPreparationElement(StringType value) { 
+        public SpecimenDefinitionTypeTestedContainerComponent setPreparationElement(MarkdownType value) { 
           this.preparation = value;
           return this;
         }
@@ -1277,7 +1315,7 @@ public class SpecimenDefinition extends DomainResource {
             this.preparation = null;
           else {
             if (this.preparation == null)
-              this.preparation = new StringType();
+              this.preparation = new MarkdownType();
             this.preparation.setValue(value);
           }
           return this;
@@ -1288,11 +1326,11 @@ public class SpecimenDefinition extends DomainResource {
           children.add(new Property("material", "CodeableConcept", "The type of material of the container.", 0, 1, material));
           children.add(new Property("type", "CodeableConcept", "The type of container used to contain this kind of specimen.", 0, 1, type));
           children.add(new Property("cap", "CodeableConcept", "Color of container cap.", 0, 1, cap));
-          children.add(new Property("description", "string", "The textual description of the kind of container.", 0, 1, description));
+          children.add(new Property("description", "markdown", "The textual description of the kind of container.", 0, 1, description));
           children.add(new Property("capacity", "Quantity", "The capacity (volume or other measure) of this kind of container.", 0, 1, capacity));
           children.add(new Property("minimumVolume[x]", "Quantity|string", "The minimum volume to be conditioned in the container.", 0, 1, minimumVolume));
           children.add(new Property("additive", "", "Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.", 0, java.lang.Integer.MAX_VALUE, additive));
-          children.add(new Property("preparation", "string", "Special processing that should be applied to the container for this kind of specimen.", 0, 1, preparation));
+          children.add(new Property("preparation", "markdown", "Special processing that should be applied to the container for this kind of specimen.", 0, 1, preparation));
         }
 
         @Override
@@ -1301,14 +1339,14 @@ public class SpecimenDefinition extends DomainResource {
           case 299066663: /*material*/  return new Property("material", "CodeableConcept", "The type of material of the container.", 0, 1, material);
           case 3575610: /*type*/  return new Property("type", "CodeableConcept", "The type of container used to contain this kind of specimen.", 0, 1, type);
           case 98258: /*cap*/  return new Property("cap", "CodeableConcept", "Color of container cap.", 0, 1, cap);
-          case -1724546052: /*description*/  return new Property("description", "string", "The textual description of the kind of container.", 0, 1, description);
+          case -1724546052: /*description*/  return new Property("description", "markdown", "The textual description of the kind of container.", 0, 1, description);
           case -67824454: /*capacity*/  return new Property("capacity", "Quantity", "The capacity (volume or other measure) of this kind of container.", 0, 1, capacity);
           case 371830456: /*minimumVolume[x]*/  return new Property("minimumVolume[x]", "Quantity|string", "The minimum volume to be conditioned in the container.", 0, 1, minimumVolume);
           case -1674665784: /*minimumVolume*/  return new Property("minimumVolume[x]", "Quantity|string", "The minimum volume to be conditioned in the container.", 0, 1, minimumVolume);
           case -532143757: /*minimumVolumeQuantity*/  return new Property("minimumVolume[x]", "Quantity", "The minimum volume to be conditioned in the container.", 0, 1, minimumVolume);
           case 248461049: /*minimumVolumeString*/  return new Property("minimumVolume[x]", "string", "The minimum volume to be conditioned in the container.", 0, 1, minimumVolume);
           case -1226589236: /*additive*/  return new Property("additive", "", "Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.", 0, java.lang.Integer.MAX_VALUE, additive);
-          case -1315428713: /*preparation*/  return new Property("preparation", "string", "Special processing that should be applied to the container for this kind of specimen.", 0, 1, preparation);
+          case -1315428713: /*preparation*/  return new Property("preparation", "markdown", "Special processing that should be applied to the container for this kind of specimen.", 0, 1, preparation);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
           }
 
@@ -1320,11 +1358,11 @@ public class SpecimenDefinition extends DomainResource {
         case 299066663: /*material*/ return this.material == null ? new Base[0] : new Base[] {this.material}; // CodeableConcept
         case 3575610: /*type*/ return this.type == null ? new Base[0] : new Base[] {this.type}; // CodeableConcept
         case 98258: /*cap*/ return this.cap == null ? new Base[0] : new Base[] {this.cap}; // CodeableConcept
-        case -1724546052: /*description*/ return this.description == null ? new Base[0] : new Base[] {this.description}; // StringType
+        case -1724546052: /*description*/ return this.description == null ? new Base[0] : new Base[] {this.description}; // MarkdownType
         case -67824454: /*capacity*/ return this.capacity == null ? new Base[0] : new Base[] {this.capacity}; // Quantity
         case -1674665784: /*minimumVolume*/ return this.minimumVolume == null ? new Base[0] : new Base[] {this.minimumVolume}; // DataType
         case -1226589236: /*additive*/ return this.additive == null ? new Base[0] : this.additive.toArray(new Base[this.additive.size()]); // SpecimenDefinitionTypeTestedContainerAdditiveComponent
-        case -1315428713: /*preparation*/ return this.preparation == null ? new Base[0] : new Base[] {this.preparation}; // StringType
+        case -1315428713: /*preparation*/ return this.preparation == null ? new Base[0] : new Base[] {this.preparation}; // MarkdownType
         default: return super.getProperty(hash, name, checkValid);
         }
 
@@ -1343,7 +1381,7 @@ public class SpecimenDefinition extends DomainResource {
           this.cap = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
           return value;
         case -1724546052: // description
-          this.description = TypeConvertor.castToString(value); // StringType
+          this.description = TypeConvertor.castToMarkdown(value); // MarkdownType
           return value;
         case -67824454: // capacity
           this.capacity = TypeConvertor.castToQuantity(value); // Quantity
@@ -1355,7 +1393,7 @@ public class SpecimenDefinition extends DomainResource {
           this.getAdditive().add((SpecimenDefinitionTypeTestedContainerAdditiveComponent) value); // SpecimenDefinitionTypeTestedContainerAdditiveComponent
           return value;
         case -1315428713: // preparation
-          this.preparation = TypeConvertor.castToString(value); // StringType
+          this.preparation = TypeConvertor.castToMarkdown(value); // MarkdownType
           return value;
         default: return super.setProperty(hash, name, value);
         }
@@ -1371,7 +1409,7 @@ public class SpecimenDefinition extends DomainResource {
         } else if (name.equals("cap")) {
           this.cap = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
         } else if (name.equals("description")) {
-          this.description = TypeConvertor.castToString(value); // StringType
+          this.description = TypeConvertor.castToMarkdown(value); // MarkdownType
         } else if (name.equals("capacity")) {
           this.capacity = TypeConvertor.castToQuantity(value); // Quantity
         } else if (name.equals("minimumVolume[x]")) {
@@ -1379,10 +1417,33 @@ public class SpecimenDefinition extends DomainResource {
         } else if (name.equals("additive")) {
           this.getAdditive().add((SpecimenDefinitionTypeTestedContainerAdditiveComponent) value);
         } else if (name.equals("preparation")) {
-          this.preparation = TypeConvertor.castToString(value); // StringType
+          this.preparation = TypeConvertor.castToMarkdown(value); // MarkdownType
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("material")) {
+          this.material = null;
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("cap")) {
+          this.cap = null;
+        } else if (name.equals("description")) {
+          this.description = null;
+        } else if (name.equals("capacity")) {
+          this.capacity = null;
+        } else if (name.equals("minimumVolume[x]")) {
+          this.minimumVolume = null;
+        } else if (name.equals("additive")) {
+          this.getAdditive().remove((SpecimenDefinitionTypeTestedContainerAdditiveComponent) value);
+        } else if (name.equals("preparation")) {
+          this.preparation = null;
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -1408,11 +1469,11 @@ public class SpecimenDefinition extends DomainResource {
         case 299066663: /*material*/ return new String[] {"CodeableConcept"};
         case 3575610: /*type*/ return new String[] {"CodeableConcept"};
         case 98258: /*cap*/ return new String[] {"CodeableConcept"};
-        case -1724546052: /*description*/ return new String[] {"string"};
+        case -1724546052: /*description*/ return new String[] {"markdown"};
         case -67824454: /*capacity*/ return new String[] {"Quantity"};
         case -1674665784: /*minimumVolume*/ return new String[] {"Quantity", "string"};
         case -1226589236: /*additive*/ return new String[] {};
-        case -1315428713: /*preparation*/ return new String[] {"string"};
+        case -1315428713: /*preparation*/ return new String[] {"markdown"};
         default: return super.getTypesForProperty(hash, name);
         }
 
@@ -1433,7 +1494,7 @@ public class SpecimenDefinition extends DomainResource {
           return this.cap;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.typeTested.container.description");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.typeTested.container.description");
         }
         else if (name.equals("capacity")) {
           this.capacity = new Quantity();
@@ -1451,7 +1512,7 @@ public class SpecimenDefinition extends DomainResource {
           return addAdditive();
         }
         else if (name.equals("preparation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.typeTested.container.preparation");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.typeTested.container.preparation");
         }
         else
           return super.addChild(name);
@@ -1461,6 +1522,10 @@ public class SpecimenDefinition extends DomainResource {
         SpecimenDefinitionTypeTestedContainerComponent dst = new SpecimenDefinitionTypeTestedContainerComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SpecimenDefinitionTypeTestedContainerComponent) dst);
       }
 
       public void copyValues(SpecimenDefinitionTypeTestedContainerComponent dst) {
@@ -1519,7 +1584,7 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.
          */
-        @Child(name = "additive", type = {CodeableConcept.class, Substance.class}, order=1, min=1, max=1, modifier=false, summary=false)
+        @Child(name = "additive", type = {CodeableConcept.class, SubstanceDefinition.class}, order=1, min=1, max=1, modifier=false, summary=false)
         @Description(shortDefinition="Additive associated with container", formalDefinition="Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA." )
         @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://terminology.hl7.org/ValueSet/v2-0371")
         protected DataType additive;
@@ -1559,8 +1624,8 @@ public class SpecimenDefinition extends DomainResource {
           return (CodeableConcept) this.additive;
         }
 
-        public boolean hasAdditiveCodeableConcept() { 
-          return this != null && this.additive instanceof CodeableConcept;
+        public boolean hasAdditiveCodeableConcept() {
+            return this.additive instanceof CodeableConcept;
         }
 
         /**
@@ -1574,8 +1639,8 @@ public class SpecimenDefinition extends DomainResource {
           return (Reference) this.additive;
         }
 
-        public boolean hasAdditiveReference() { 
-          return this != null && this.additive instanceof Reference;
+        public boolean hasAdditiveReference() {
+            return this.additive instanceof Reference;
         }
 
         public boolean hasAdditive() { 
@@ -1587,23 +1652,23 @@ public class SpecimenDefinition extends DomainResource {
          */
         public SpecimenDefinitionTypeTestedContainerAdditiveComponent setAdditive(DataType value) { 
           if (value != null && !(value instanceof CodeableConcept || value instanceof Reference))
-            throw new Error("Not the right type for SpecimenDefinition.typeTested.container.additive.additive[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for SpecimenDefinition.typeTested.container.additive.additive[x]: "+value.fhirType());
           this.additive = value;
           return this;
         }
 
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
-          children.add(new Property("additive[x]", "CodeableConcept|Reference(Substance)", "Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.", 0, 1, additive));
+          children.add(new Property("additive[x]", "CodeableConcept|Reference(SubstanceDefinition)", "Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.", 0, 1, additive));
         }
 
         @Override
         public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
           switch (_hash) {
-          case 261915956: /*additive[x]*/  return new Property("additive[x]", "CodeableConcept|Reference(Substance)", "Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.", 0, 1, additive);
-          case -1226589236: /*additive*/  return new Property("additive[x]", "CodeableConcept|Reference(Substance)", "Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.", 0, 1, additive);
+          case 261915956: /*additive[x]*/  return new Property("additive[x]", "CodeableConcept|Reference(SubstanceDefinition)", "Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.", 0, 1, additive);
+          case -1226589236: /*additive*/  return new Property("additive[x]", "CodeableConcept|Reference(SubstanceDefinition)", "Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.", 0, 1, additive);
           case 1330272821: /*additiveCodeableConcept*/  return new Property("additive[x]", "CodeableConcept", "Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.", 0, 1, additive);
-          case -386783009: /*additiveReference*/  return new Property("additive[x]", "Reference(Substance)", "Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.", 0, 1, additive);
+          case -386783009: /*additiveReference*/  return new Property("additive[x]", "Reference(SubstanceDefinition)", "Substance introduced in the kind of container to preserve, maintain or enhance the specimen. Examples: Formalin, Citrate, EDTA.", 0, 1, additive);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
           }
 
@@ -1636,6 +1701,15 @@ public class SpecimenDefinition extends DomainResource {
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("additive[x]")) {
+          this.additive = null;
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -1675,6 +1749,10 @@ public class SpecimenDefinition extends DomainResource {
         SpecimenDefinitionTypeTestedContainerAdditiveComponent dst = new SpecimenDefinitionTypeTestedContainerAdditiveComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SpecimenDefinitionTypeTestedContainerAdditiveComponent) dst);
       }
 
       public void copyValues(SpecimenDefinitionTypeTestedContainerAdditiveComponent dst) {
@@ -1740,11 +1818,11 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * Additional textual instructions for the preservation or transport of the specimen. For instance, 'Protect from light exposure'.
          */
-        @Child(name = "instruction", type = {StringType.class}, order=4, min=0, max=1, modifier=false, summary=false)
+        @Child(name = "instruction", type = {MarkdownType.class}, order=4, min=0, max=1, modifier=false, summary=false)
         @Description(shortDefinition="Preservation instruction", formalDefinition="Additional textual instructions for the preservation or transport of the specimen. For instance, 'Protect from light exposure'." )
-        protected StringType instruction;
+        protected MarkdownType instruction;
 
-        private static final long serialVersionUID = 2130906844L;
+        private static final long serialVersionUID = 113016318L;
 
     /**
      * Constructor
@@ -1828,12 +1906,12 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * @return {@link #instruction} (Additional textual instructions for the preservation or transport of the specimen. For instance, 'Protect from light exposure'.). This is the underlying object with id, value and extensions. The accessor "getInstruction" gives direct access to the value
          */
-        public StringType getInstructionElement() { 
+        public MarkdownType getInstructionElement() { 
           if (this.instruction == null)
             if (Configuration.errorOnAutoCreate())
               throw new Error("Attempt to auto-create SpecimenDefinitionTypeTestedHandlingComponent.instruction");
             else if (Configuration.doAutoCreate())
-              this.instruction = new StringType(); // bb
+              this.instruction = new MarkdownType(); // bb
           return this.instruction;
         }
 
@@ -1848,7 +1926,7 @@ public class SpecimenDefinition extends DomainResource {
         /**
          * @param value {@link #instruction} (Additional textual instructions for the preservation or transport of the specimen. For instance, 'Protect from light exposure'.). This is the underlying object with id, value and extensions. The accessor "getInstruction" gives direct access to the value
          */
-        public SpecimenDefinitionTypeTestedHandlingComponent setInstructionElement(StringType value) { 
+        public SpecimenDefinitionTypeTestedHandlingComponent setInstructionElement(MarkdownType value) { 
           this.instruction = value;
           return this;
         }
@@ -1868,7 +1946,7 @@ public class SpecimenDefinition extends DomainResource {
             this.instruction = null;
           else {
             if (this.instruction == null)
-              this.instruction = new StringType();
+              this.instruction = new MarkdownType();
             this.instruction.setValue(value);
           }
           return this;
@@ -1879,7 +1957,7 @@ public class SpecimenDefinition extends DomainResource {
           children.add(new Property("temperatureQualifier", "CodeableConcept", "It qualifies the interval of temperature, which characterizes an occurrence of handling. Conditions that are not related to temperature may be handled in the instruction element.", 0, 1, temperatureQualifier));
           children.add(new Property("temperatureRange", "Range", "The temperature interval for this set of handling instructions.", 0, 1, temperatureRange));
           children.add(new Property("maxDuration", "Duration", "The maximum time interval of preservation of the specimen with these conditions.", 0, 1, maxDuration));
-          children.add(new Property("instruction", "string", "Additional textual instructions for the preservation or transport of the specimen. For instance, 'Protect from light exposure'.", 0, 1, instruction));
+          children.add(new Property("instruction", "markdown", "Additional textual instructions for the preservation or transport of the specimen. For instance, 'Protect from light exposure'.", 0, 1, instruction));
         }
 
         @Override
@@ -1888,7 +1966,7 @@ public class SpecimenDefinition extends DomainResource {
           case 548941206: /*temperatureQualifier*/  return new Property("temperatureQualifier", "CodeableConcept", "It qualifies the interval of temperature, which characterizes an occurrence of handling. Conditions that are not related to temperature may be handled in the instruction element.", 0, 1, temperatureQualifier);
           case -39203799: /*temperatureRange*/  return new Property("temperatureRange", "Range", "The temperature interval for this set of handling instructions.", 0, 1, temperatureRange);
           case 40284952: /*maxDuration*/  return new Property("maxDuration", "Duration", "The maximum time interval of preservation of the specimen with these conditions.", 0, 1, maxDuration);
-          case 301526158: /*instruction*/  return new Property("instruction", "string", "Additional textual instructions for the preservation or transport of the specimen. For instance, 'Protect from light exposure'.", 0, 1, instruction);
+          case 301526158: /*instruction*/  return new Property("instruction", "markdown", "Additional textual instructions for the preservation or transport of the specimen. For instance, 'Protect from light exposure'.", 0, 1, instruction);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
           }
 
@@ -1900,7 +1978,7 @@ public class SpecimenDefinition extends DomainResource {
         case 548941206: /*temperatureQualifier*/ return this.temperatureQualifier == null ? new Base[0] : new Base[] {this.temperatureQualifier}; // CodeableConcept
         case -39203799: /*temperatureRange*/ return this.temperatureRange == null ? new Base[0] : new Base[] {this.temperatureRange}; // Range
         case 40284952: /*maxDuration*/ return this.maxDuration == null ? new Base[0] : new Base[] {this.maxDuration}; // Duration
-        case 301526158: /*instruction*/ return this.instruction == null ? new Base[0] : new Base[] {this.instruction}; // StringType
+        case 301526158: /*instruction*/ return this.instruction == null ? new Base[0] : new Base[] {this.instruction}; // MarkdownType
         default: return super.getProperty(hash, name, checkValid);
         }
 
@@ -1919,7 +1997,7 @@ public class SpecimenDefinition extends DomainResource {
           this.maxDuration = TypeConvertor.castToDuration(value); // Duration
           return value;
         case 301526158: // instruction
-          this.instruction = TypeConvertor.castToString(value); // StringType
+          this.instruction = TypeConvertor.castToMarkdown(value); // MarkdownType
           return value;
         default: return super.setProperty(hash, name, value);
         }
@@ -1935,10 +2013,25 @@ public class SpecimenDefinition extends DomainResource {
         } else if (name.equals("maxDuration")) {
           this.maxDuration = TypeConvertor.castToDuration(value); // Duration
         } else if (name.equals("instruction")) {
-          this.instruction = TypeConvertor.castToString(value); // StringType
+          this.instruction = TypeConvertor.castToMarkdown(value); // MarkdownType
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("temperatureQualifier")) {
+          this.temperatureQualifier = null;
+        } else if (name.equals("temperatureRange")) {
+          this.temperatureRange = null;
+        } else if (name.equals("maxDuration")) {
+          this.maxDuration = null;
+        } else if (name.equals("instruction")) {
+          this.instruction = null;
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -1959,7 +2052,7 @@ public class SpecimenDefinition extends DomainResource {
         case 548941206: /*temperatureQualifier*/ return new String[] {"CodeableConcept"};
         case -39203799: /*temperatureRange*/ return new String[] {"Range"};
         case 40284952: /*maxDuration*/ return new String[] {"Duration"};
-        case 301526158: /*instruction*/ return new String[] {"string"};
+        case 301526158: /*instruction*/ return new String[] {"markdown"};
         default: return super.getTypesForProperty(hash, name);
         }
 
@@ -1980,7 +2073,7 @@ public class SpecimenDefinition extends DomainResource {
           return this.maxDuration;
         }
         else if (name.equals("instruction")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.typeTested.handling.instruction");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.typeTested.handling.instruction");
         }
         else
           return super.addChild(name);
@@ -1990,6 +2083,10 @@ public class SpecimenDefinition extends DomainResource {
         SpecimenDefinitionTypeTestedHandlingComponent dst = new SpecimenDefinitionTypeTestedHandlingComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SpecimenDefinitionTypeTestedHandlingComponent) dst);
       }
 
       public void copyValues(SpecimenDefinitionTypeTestedHandlingComponent dst) {
@@ -2056,30 +2153,45 @@ public class SpecimenDefinition extends DomainResource {
     protected StringType version;
 
     /**
+     * Indicates the mechanism used to compare versions to determine which is more current.
+     */
+    @Child(name = "versionAlgorithm", type = {StringType.class, Coding.class}, order=3, min=0, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="How to compare versions", formalDefinition="Indicates the mechanism used to compare versions to determine which is more current." )
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/version-algorithm")
+    protected DataType versionAlgorithm;
+
+    /**
+     * A natural language name identifying the specimen definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
+     */
+    @Child(name = "name", type = {StringType.class}, order=4, min=0, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="Name for this specimen definition (computer friendly)", formalDefinition="A natural language name identifying the specimen definition. This name should be usable as an identifier for the module by machine processing applications such as code generation." )
+    protected StringType name;
+
+    /**
      * A short, descriptive, user-friendly title for the SpecimenDefinition.
      */
-    @Child(name = "title", type = {StringType.class}, order=3, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "title", type = {StringType.class}, order=5, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Name for this SpecimenDefinition (Human friendly)", formalDefinition="A short, descriptive, user-friendly title for the SpecimenDefinition." )
     protected StringType title;
 
     /**
      * The canonical URL pointing to another FHIR-defined SpecimenDefinition that is adhered to in whole or in part by this definition.
      */
-    @Child(name = "derivedFromCanonical", type = {CanonicalType.class}, order=4, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "derivedFromCanonical", type = {CanonicalType.class}, order=6, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Based on FHIR definition of another SpecimenDefinition", formalDefinition="The canonical URL pointing to another FHIR-defined SpecimenDefinition that is adhered to in whole or in part by this definition." )
     protected List<CanonicalType> derivedFromCanonical;
 
     /**
      * The URL pointing to an externally-defined type of specimen, guideline or other definition that is adhered to in whole or in part by this definition.
      */
-    @Child(name = "derivedFromUri", type = {UriType.class}, order=5, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "derivedFromUri", type = {UriType.class}, order=7, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Based on external definition", formalDefinition="The URL pointing to an externally-defined type of specimen, guideline or other definition that is adhered to in whole or in part by this definition." )
     protected List<UriType> derivedFromUri;
 
     /**
      * The current state of theSpecimenDefinition.
      */
-    @Child(name = "status", type = {CodeType.class}, order=6, min=1, max=1, modifier=true, summary=true)
+    @Child(name = "status", type = {CodeType.class}, order=8, min=1, max=1, modifier=true, summary=true)
     @Description(shortDefinition="draft | active | retired | unknown", formalDefinition="The current state of theSpecimenDefinition." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/publication-status")
     protected Enumeration<PublicationStatus> status;
@@ -2087,56 +2199,56 @@ public class SpecimenDefinition extends DomainResource {
     /**
      * A flag to indicate that this SpecimenDefinition is not authored for  genuine usage.
      */
-    @Child(name = "experimental", type = {BooleanType.class}, order=7, min=0, max=1, modifier=true, summary=true)
+    @Child(name = "experimental", type = {BooleanType.class}, order=9, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="If this SpecimenDefinition is not for real usage", formalDefinition="A flag to indicate that this SpecimenDefinition is not authored for  genuine usage." )
     protected BooleanType experimental;
 
     /**
      * A code or group definition that describes the intended subject  from which this kind of specimen is to be collected.
      */
-    @Child(name = "subject", type = {CodeableConcept.class, Group.class}, order=8, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "subject", type = {CodeableConcept.class, Group.class}, order=10, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Type of subject for specimen collection", formalDefinition="A code or group definition that describes the intended subject  from which this kind of specimen is to be collected." )
     protected DataType subject;
 
     /**
      * For draft definitions, indicates the date of initial creation. For active definitions, represents the date of activation. For withdrawn definitions, indicates the date of withdrawal.
      */
-    @Child(name = "date", type = {DateTimeType.class}, order=9, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "date", type = {DateTimeType.class}, order=11, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Date status first applied", formalDefinition="For draft definitions, indicates the date of initial creation. For active definitions, represents the date of activation. For withdrawn definitions, indicates the date of withdrawal." )
     protected DateTimeType date;
 
     /**
      * Helps establish the "authority/credibility" of the SpecimenDefinition. May also allow for contact.
      */
-    @Child(name = "publisher", type = {Practitioner.class, PractitionerRole.class, Organization.class}, order=10, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "publisher", type = {StringType.class}, order=12, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="The name of the individual or organization that published the SpecimenDefinition", formalDefinition="Helps establish the \"authority/credibility\" of the SpecimenDefinition. May also allow for contact." )
-    protected Reference publisher;
+    protected StringType publisher;
 
     /**
      * Contact details to assist a user in finding and communicating with the publisher.
      */
-    @Child(name = "contact", type = {ContactDetail.class}, order=11, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "contact", type = {ContactDetail.class}, order=13, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Contact details for the publisher", formalDefinition="Contact details to assist a user in finding and communicating with the publisher." )
     protected List<ContactDetail> contact;
 
     /**
      * A free text natural language description of the SpecimenDefinition from the consumer's perspective.
      */
-    @Child(name = "description", type = {MarkdownType.class}, order=12, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "description", type = {MarkdownType.class}, order=14, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Natural language description of the SpecimenDefinition", formalDefinition="A free text natural language description of the SpecimenDefinition from the consumer's perspective." )
     protected MarkdownType description;
 
     /**
      * The content was developed with a focus and intent of supporting the contexts that are listed. These terms may be used to assist with indexing and searching of specimen definitions.
      */
-    @Child(name = "useContext", type = {UsageContext.class}, order=13, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "useContext", type = {UsageContext.class}, order=15, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Content intends to support these contexts", formalDefinition="The content was developed with a focus and intent of supporting the contexts that are listed. These terms may be used to assist with indexing and searching of specimen definitions." )
     protected List<UsageContext> useContext;
 
     /**
      * A jurisdiction in which the SpecimenDefinition is intended to be used.
      */
-    @Child(name = "jurisdiction", type = {CodeableConcept.class}, order=14, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "jurisdiction", type = {CodeableConcept.class}, order=16, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Intended jurisdiction for this SpecimenDefinition (if applicable)", formalDefinition="A jurisdiction in which the SpecimenDefinition is intended to be used." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/jurisdiction")
     protected List<CodeableConcept> jurisdiction;
@@ -2144,42 +2256,49 @@ public class SpecimenDefinition extends DomainResource {
     /**
      * Explains why this SpecimeDefinition is needed and why it has been designed as it has.
      */
-    @Child(name = "purpose", type = {MarkdownType.class}, order=15, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "purpose", type = {MarkdownType.class}, order=17, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Why this SpecimenDefinition is defined", formalDefinition="Explains why this SpecimeDefinition is needed and why it has been designed as it has." )
     protected MarkdownType purpose;
 
     /**
      * Copyright statement relating to the SpecimenDefinition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the SpecimenDefinition.
      */
-    @Child(name = "copyright", type = {MarkdownType.class}, order=16, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "copyright", type = {MarkdownType.class}, order=18, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Use and/or publishing restrictions", formalDefinition="Copyright statement relating to the SpecimenDefinition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the SpecimenDefinition." )
     protected MarkdownType copyright;
 
     /**
+     * A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').
+     */
+    @Child(name = "copyrightLabel", type = {StringType.class}, order=19, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="Copyright holder and year(s)", formalDefinition="A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved')." )
+    protected StringType copyrightLabel;
+
+    /**
      * The date on which the asset content was approved by the publisher. Approval happens once when the content is officially approved for usage.
      */
-    @Child(name = "approvalDate", type = {DateType.class}, order=17, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "approvalDate", type = {DateType.class}, order=20, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="When SpecimenDefinition was approved by publisher", formalDefinition="The date on which the asset content was approved by the publisher. Approval happens once when the content is officially approved for usage." )
     protected DateType approvalDate;
 
     /**
      * The date on which the asset content was last reviewed. Review happens periodically after that, but doesn't change the original approval date.
      */
-    @Child(name = "lastReviewDate", type = {DateType.class}, order=18, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="The date on which the asset content was last reviewed", formalDefinition="The date on which the asset content was last reviewed. Review happens periodically after that, but doesn't change the original approval date." )
+    @Child(name = "lastReviewDate", type = {DateType.class}, order=21, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="The date on which the asset content was last reviewed by the publisher", formalDefinition="The date on which the asset content was last reviewed. Review happens periodically after that, but doesn't change the original approval date." )
     protected DateType lastReviewDate;
 
     /**
      * The period during which the SpecimenDefinition content was or is planned to be effective.
      */
-    @Child(name = "effectivePeriod", type = {Period.class}, order=19, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "effectivePeriod", type = {Period.class}, order=22, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="The effective date range for the SpecimenDefinition", formalDefinition="The period during which the SpecimenDefinition content was or is planned to be effective." )
     protected Period effectivePeriod;
 
     /**
      * The kind of material to be collected.
      */
-    @Child(name = "typeCollected", type = {CodeableConcept.class}, order=20, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "typeCollected", type = {CodeableConcept.class}, order=23, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Kind of material to collect", formalDefinition="The kind of material to be collected." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://terminology.hl7.org/ValueSet/v2-0487")
     protected CodeableConcept typeCollected;
@@ -2187,7 +2306,7 @@ public class SpecimenDefinition extends DomainResource {
     /**
      * Preparation of the patient for specimen collection.
      */
-    @Child(name = "patientPreparation", type = {CodeableConcept.class}, order=21, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "patientPreparation", type = {CodeableConcept.class}, order=24, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Patient preparation for collection", formalDefinition="Preparation of the patient for specimen collection." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/prepare-patient-prior-specimen-collection")
     protected List<CodeableConcept> patientPreparation;
@@ -2195,14 +2314,14 @@ public class SpecimenDefinition extends DomainResource {
     /**
      * Time aspect of specimen collection (duration or offset).
      */
-    @Child(name = "timeAspect", type = {StringType.class}, order=22, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "timeAspect", type = {StringType.class}, order=25, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Time aspect for collection", formalDefinition="Time aspect of specimen collection (duration or offset)." )
     protected StringType timeAspect;
 
     /**
      * The action to be performed for collecting the specimen.
      */
-    @Child(name = "collection", type = {CodeableConcept.class}, order=23, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "collection", type = {CodeableConcept.class}, order=26, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
     @Description(shortDefinition="Specimen collection procedure", formalDefinition="The action to be performed for collecting the specimen." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/specimen-collection")
     protected List<CodeableConcept> collection;
@@ -2210,11 +2329,11 @@ public class SpecimenDefinition extends DomainResource {
     /**
      * Specimen conditioned in a container as expected by the testing laboratory.
      */
-    @Child(name = "typeTested", type = {}, order=24, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "typeTested", type = {}, order=27, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Specimen in container intended for testing by lab", formalDefinition="Specimen conditioned in a container as expected by the testing laboratory." )
     protected List<SpecimenDefinitionTypeTestedComponent> typeTested;
 
-    private static final long serialVersionUID = 830184995L;
+    private static final long serialVersionUID = 1698015458L;
 
   /**
    * Constructor
@@ -2349,6 +2468,106 @@ public class SpecimenDefinition extends DomainResource {
         if (this.version == null)
           this.version = new StringType();
         this.version.setValue(value);
+      }
+      return this;
+    }
+
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public DataType getVersionAlgorithm() { 
+      return this.versionAlgorithm;
+    }
+
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public StringType getVersionAlgorithmStringType() throws FHIRException { 
+      if (this.versionAlgorithm == null)
+        this.versionAlgorithm = new StringType();
+      if (!(this.versionAlgorithm instanceof StringType))
+        throw new FHIRException("Type mismatch: the type StringType was expected, but "+this.versionAlgorithm.getClass().getName()+" was encountered");
+      return (StringType) this.versionAlgorithm;
+    }
+
+    public boolean hasVersionAlgorithmStringType() {
+        return this.versionAlgorithm instanceof StringType;
+    }
+
+    /**
+     * @return {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public Coding getVersionAlgorithmCoding() throws FHIRException { 
+      if (this.versionAlgorithm == null)
+        this.versionAlgorithm = new Coding();
+      if (!(this.versionAlgorithm instanceof Coding))
+        throw new FHIRException("Type mismatch: the type Coding was expected, but "+this.versionAlgorithm.getClass().getName()+" was encountered");
+      return (Coding) this.versionAlgorithm;
+    }
+
+    public boolean hasVersionAlgorithmCoding() {
+        return this.versionAlgorithm instanceof Coding;
+    }
+
+    public boolean hasVersionAlgorithm() { 
+      return this.versionAlgorithm != null && !this.versionAlgorithm.isEmpty();
+    }
+
+    /**
+     * @param value {@link #versionAlgorithm} (Indicates the mechanism used to compare versions to determine which is more current.)
+     */
+    public SpecimenDefinition setVersionAlgorithm(DataType value) { 
+      if (value != null && !(value instanceof StringType || value instanceof Coding))
+        throw new FHIRException("Not the right type for SpecimenDefinition.versionAlgorithm[x]: "+value.fhirType());
+      this.versionAlgorithm = value;
+      return this;
+    }
+
+    /**
+     * @return {@link #name} (A natural language name identifying the specimen definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
+     */
+    public StringType getNameElement() { 
+      if (this.name == null)
+        if (Configuration.errorOnAutoCreate())
+          throw new Error("Attempt to auto-create SpecimenDefinition.name");
+        else if (Configuration.doAutoCreate())
+          this.name = new StringType(); // bb
+      return this.name;
+    }
+
+    public boolean hasNameElement() { 
+      return this.name != null && !this.name.isEmpty();
+    }
+
+    public boolean hasName() { 
+      return this.name != null && !this.name.isEmpty();
+    }
+
+    /**
+     * @param value {@link #name} (A natural language name identifying the specimen definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.). This is the underlying object with id, value and extensions. The accessor "getName" gives direct access to the value
+     */
+    public SpecimenDefinition setNameElement(StringType value) { 
+      this.name = value;
+      return this;
+    }
+
+    /**
+     * @return A natural language name identifying the specimen definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
+     */
+    public String getName() { 
+      return this.name == null ? null : this.name.getValue();
+    }
+
+    /**
+     * @param value A natural language name identifying the specimen definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
+     */
+    public SpecimenDefinition setName(String value) { 
+      if (Utilities.noString(value))
+        this.name = null;
+      else {
+        if (this.name == null)
+          this.name = new StringType();
+        this.name.setValue(value);
       }
       return this;
     }
@@ -2632,8 +2851,8 @@ public class SpecimenDefinition extends DomainResource {
       return (CodeableConcept) this.subject;
     }
 
-    public boolean hasSubjectCodeableConcept() { 
-      return this != null && this.subject instanceof CodeableConcept;
+    public boolean hasSubjectCodeableConcept() {
+        return this.subject instanceof CodeableConcept;
     }
 
     /**
@@ -2647,8 +2866,8 @@ public class SpecimenDefinition extends DomainResource {
       return (Reference) this.subject;
     }
 
-    public boolean hasSubjectReference() { 
-      return this != null && this.subject instanceof Reference;
+    public boolean hasSubjectReference() {
+        return this.subject instanceof Reference;
     }
 
     public boolean hasSubject() { 
@@ -2660,7 +2879,7 @@ public class SpecimenDefinition extends DomainResource {
      */
     public SpecimenDefinition setSubject(DataType value) { 
       if (value != null && !(value instanceof CodeableConcept || value instanceof Reference))
-        throw new Error("Not the right type for SpecimenDefinition.subject[x]: "+value.fhirType());
+        throw new FHIRException("Not the right type for SpecimenDefinition.subject[x]: "+value.fhirType());
       this.subject = value;
       return this;
     }
@@ -2715,15 +2934,19 @@ public class SpecimenDefinition extends DomainResource {
     }
 
     /**
-     * @return {@link #publisher} (Helps establish the "authority/credibility" of the SpecimenDefinition. May also allow for contact.)
+     * @return {@link #publisher} (Helps establish the "authority/credibility" of the SpecimenDefinition. May also allow for contact.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
      */
-    public Reference getPublisher() { 
+    public StringType getPublisherElement() { 
       if (this.publisher == null)
         if (Configuration.errorOnAutoCreate())
           throw new Error("Attempt to auto-create SpecimenDefinition.publisher");
         else if (Configuration.doAutoCreate())
-          this.publisher = new Reference(); // cc
+          this.publisher = new StringType(); // bb
       return this.publisher;
+    }
+
+    public boolean hasPublisherElement() { 
+      return this.publisher != null && !this.publisher.isEmpty();
     }
 
     public boolean hasPublisher() { 
@@ -2731,10 +2954,31 @@ public class SpecimenDefinition extends DomainResource {
     }
 
     /**
-     * @param value {@link #publisher} (Helps establish the "authority/credibility" of the SpecimenDefinition. May also allow for contact.)
+     * @param value {@link #publisher} (Helps establish the "authority/credibility" of the SpecimenDefinition. May also allow for contact.). This is the underlying object with id, value and extensions. The accessor "getPublisher" gives direct access to the value
      */
-    public SpecimenDefinition setPublisher(Reference value) { 
+    public SpecimenDefinition setPublisherElement(StringType value) { 
       this.publisher = value;
+      return this;
+    }
+
+    /**
+     * @return Helps establish the "authority/credibility" of the SpecimenDefinition. May also allow for contact.
+     */
+    public String getPublisher() { 
+      return this.publisher == null ? null : this.publisher.getValue();
+    }
+
+    /**
+     * @param value Helps establish the "authority/credibility" of the SpecimenDefinition. May also allow for contact.
+     */
+    public SpecimenDefinition setPublisher(String value) { 
+      if (Utilities.noString(value))
+        this.publisher = null;
+      else {
+        if (this.publisher == null)
+          this.publisher = new StringType();
+        this.publisher.setValue(value);
+      }
       return this;
     }
 
@@ -2830,7 +3074,7 @@ public class SpecimenDefinition extends DomainResource {
      * @param value A free text natural language description of the SpecimenDefinition from the consumer's perspective.
      */
     public SpecimenDefinition setDescription(String value) { 
-      if (value == null)
+      if (Utilities.noString(value))
         this.description = null;
       else {
         if (this.description == null)
@@ -2985,7 +3229,7 @@ public class SpecimenDefinition extends DomainResource {
      * @param value Explains why this SpecimeDefinition is needed and why it has been designed as it has.
      */
     public SpecimenDefinition setPurpose(String value) { 
-      if (value == null)
+      if (Utilities.noString(value))
         this.purpose = null;
       else {
         if (this.purpose == null)
@@ -3034,12 +3278,61 @@ public class SpecimenDefinition extends DomainResource {
      * @param value Copyright statement relating to the SpecimenDefinition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the SpecimenDefinition.
      */
     public SpecimenDefinition setCopyright(String value) { 
-      if (value == null)
+      if (Utilities.noString(value))
         this.copyright = null;
       else {
         if (this.copyright == null)
           this.copyright = new MarkdownType();
         this.copyright.setValue(value);
+      }
+      return this;
+    }
+
+    /**
+     * @return {@link #copyrightLabel} (A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').). This is the underlying object with id, value and extensions. The accessor "getCopyrightLabel" gives direct access to the value
+     */
+    public StringType getCopyrightLabelElement() { 
+      if (this.copyrightLabel == null)
+        if (Configuration.errorOnAutoCreate())
+          throw new Error("Attempt to auto-create SpecimenDefinition.copyrightLabel");
+        else if (Configuration.doAutoCreate())
+          this.copyrightLabel = new StringType(); // bb
+      return this.copyrightLabel;
+    }
+
+    public boolean hasCopyrightLabelElement() { 
+      return this.copyrightLabel != null && !this.copyrightLabel.isEmpty();
+    }
+
+    public boolean hasCopyrightLabel() { 
+      return this.copyrightLabel != null && !this.copyrightLabel.isEmpty();
+    }
+
+    /**
+     * @param value {@link #copyrightLabel} (A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').). This is the underlying object with id, value and extensions. The accessor "getCopyrightLabel" gives direct access to the value
+     */
+    public SpecimenDefinition setCopyrightLabelElement(StringType value) { 
+      this.copyrightLabel = value;
+      return this;
+    }
+
+    /**
+     * @return A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').
+     */
+    public String getCopyrightLabel() { 
+      return this.copyrightLabel == null ? null : this.copyrightLabel.getValue();
+    }
+
+    /**
+     * @param value A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').
+     */
+    public SpecimenDefinition setCopyrightLabel(String value) { 
+      if (Utilities.noString(value))
+        this.copyrightLabel = null;
+      else {
+        if (this.copyrightLabel == null)
+          this.copyrightLabel = new StringType();
+        this.copyrightLabel.setValue(value);
       }
       return this;
     }
@@ -3403,6 +3696,8 @@ public class SpecimenDefinition extends DomainResource {
         children.add(new Property("url", "uri", "An absolute URL that is used to identify this SpecimenDefinition when it is referenced in a specification, model, design or an instance. This SHALL be a URL, SHOULD be globally unique, and SHOULD be an address at which this SpecimenDefinition is (or will be) published. The URL SHOULD include the major version of the SpecimenDefinition. For more information see Technical and Business Versions.", 0, 1, url));
         children.add(new Property("identifier", "Identifier", "A business identifier assigned to this SpecimenDefinition.", 0, 1, identifier));
         children.add(new Property("version", "string", "The identifier that is used to identify this version of the SpecimenDefinition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the SpecimenDefinition author and is not expected to be globally unique.", 0, 1, version));
+        children.add(new Property("versionAlgorithm[x]", "string|Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm));
+        children.add(new Property("name", "string", "A natural language name identifying the specimen definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.", 0, 1, name));
         children.add(new Property("title", "string", "A short, descriptive, user-friendly title for the SpecimenDefinition.", 0, 1, title));
         children.add(new Property("derivedFromCanonical", "canonical(SpecimenDefinition)", "The canonical URL pointing to another FHIR-defined SpecimenDefinition that is adhered to in whole or in part by this definition.", 0, java.lang.Integer.MAX_VALUE, derivedFromCanonical));
         children.add(new Property("derivedFromUri", "uri", "The URL pointing to an externally-defined type of specimen, guideline or other definition that is adhered to in whole or in part by this definition.", 0, java.lang.Integer.MAX_VALUE, derivedFromUri));
@@ -3410,13 +3705,14 @@ public class SpecimenDefinition extends DomainResource {
         children.add(new Property("experimental", "boolean", "A flag to indicate that this SpecimenDefinition is not authored for  genuine usage.", 0, 1, experimental));
         children.add(new Property("subject[x]", "CodeableConcept|Reference(Group)", "A code or group definition that describes the intended subject  from which this kind of specimen is to be collected.", 0, 1, subject));
         children.add(new Property("date", "dateTime", "For draft definitions, indicates the date of initial creation. For active definitions, represents the date of activation. For withdrawn definitions, indicates the date of withdrawal.", 0, 1, date));
-        children.add(new Property("publisher", "Reference(Practitioner|PractitionerRole|Organization)", "Helps establish the \"authority/credibility\" of the SpecimenDefinition. May also allow for contact.", 0, 1, publisher));
+        children.add(new Property("publisher", "string", "Helps establish the \"authority/credibility\" of the SpecimenDefinition. May also allow for contact.", 0, 1, publisher));
         children.add(new Property("contact", "ContactDetail", "Contact details to assist a user in finding and communicating with the publisher.", 0, java.lang.Integer.MAX_VALUE, contact));
         children.add(new Property("description", "markdown", "A free text natural language description of the SpecimenDefinition from the consumer's perspective.", 0, 1, description));
         children.add(new Property("useContext", "UsageContext", "The content was developed with a focus and intent of supporting the contexts that are listed. These terms may be used to assist with indexing and searching of specimen definitions.", 0, java.lang.Integer.MAX_VALUE, useContext));
         children.add(new Property("jurisdiction", "CodeableConcept", "A jurisdiction in which the SpecimenDefinition is intended to be used.", 0, java.lang.Integer.MAX_VALUE, jurisdiction));
         children.add(new Property("purpose", "markdown", "Explains why this SpecimeDefinition is needed and why it has been designed as it has.", 0, 1, purpose));
         children.add(new Property("copyright", "markdown", "Copyright statement relating to the SpecimenDefinition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the SpecimenDefinition.", 0, 1, copyright));
+        children.add(new Property("copyrightLabel", "string", "A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').", 0, 1, copyrightLabel));
         children.add(new Property("approvalDate", "date", "The date on which the asset content was approved by the publisher. Approval happens once when the content is officially approved for usage.", 0, 1, approvalDate));
         children.add(new Property("lastReviewDate", "date", "The date on which the asset content was last reviewed. Review happens periodically after that, but doesn't change the original approval date.", 0, 1, lastReviewDate));
         children.add(new Property("effectivePeriod", "Period", "The period during which the SpecimenDefinition content was or is planned to be effective.", 0, 1, effectivePeriod));
@@ -3433,6 +3729,11 @@ public class SpecimenDefinition extends DomainResource {
         case 116079: /*url*/  return new Property("url", "uri", "An absolute URL that is used to identify this SpecimenDefinition when it is referenced in a specification, model, design or an instance. This SHALL be a URL, SHOULD be globally unique, and SHOULD be an address at which this SpecimenDefinition is (or will be) published. The URL SHOULD include the major version of the SpecimenDefinition. For more information see Technical and Business Versions.", 0, 1, url);
         case -1618432855: /*identifier*/  return new Property("identifier", "Identifier", "A business identifier assigned to this SpecimenDefinition.", 0, 1, identifier);
         case 351608024: /*version*/  return new Property("version", "string", "The identifier that is used to identify this version of the SpecimenDefinition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the SpecimenDefinition author and is not expected to be globally unique.", 0, 1, version);
+        case -115699031: /*versionAlgorithm[x]*/  return new Property("versionAlgorithm[x]", "string|Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
+        case 1508158071: /*versionAlgorithm*/  return new Property("versionAlgorithm[x]", "string|Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
+        case 1836908904: /*versionAlgorithmString*/  return new Property("versionAlgorithm[x]", "string", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
+        case 1373807809: /*versionAlgorithmCoding*/  return new Property("versionAlgorithm[x]", "Coding", "Indicates the mechanism used to compare versions to determine which is more current.", 0, 1, versionAlgorithm);
+        case 3373707: /*name*/  return new Property("name", "string", "A natural language name identifying the specimen definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.", 0, 1, name);
         case 110371416: /*title*/  return new Property("title", "string", "A short, descriptive, user-friendly title for the SpecimenDefinition.", 0, 1, title);
         case -978133683: /*derivedFromCanonical*/  return new Property("derivedFromCanonical", "canonical(SpecimenDefinition)", "The canonical URL pointing to another FHIR-defined SpecimenDefinition that is adhered to in whole or in part by this definition.", 0, java.lang.Integer.MAX_VALUE, derivedFromCanonical);
         case -1076333435: /*derivedFromUri*/  return new Property("derivedFromUri", "uri", "The URL pointing to an externally-defined type of specimen, guideline or other definition that is adhered to in whole or in part by this definition.", 0, java.lang.Integer.MAX_VALUE, derivedFromUri);
@@ -3443,13 +3744,14 @@ public class SpecimenDefinition extends DomainResource {
         case -1257122603: /*subjectCodeableConcept*/  return new Property("subject[x]", "CodeableConcept", "A code or group definition that describes the intended subject  from which this kind of specimen is to be collected.", 0, 1, subject);
         case 772938623: /*subjectReference*/  return new Property("subject[x]", "Reference(Group)", "A code or group definition that describes the intended subject  from which this kind of specimen is to be collected.", 0, 1, subject);
         case 3076014: /*date*/  return new Property("date", "dateTime", "For draft definitions, indicates the date of initial creation. For active definitions, represents the date of activation. For withdrawn definitions, indicates the date of withdrawal.", 0, 1, date);
-        case 1447404028: /*publisher*/  return new Property("publisher", "Reference(Practitioner|PractitionerRole|Organization)", "Helps establish the \"authority/credibility\" of the SpecimenDefinition. May also allow for contact.", 0, 1, publisher);
+        case 1447404028: /*publisher*/  return new Property("publisher", "string", "Helps establish the \"authority/credibility\" of the SpecimenDefinition. May also allow for contact.", 0, 1, publisher);
         case 951526432: /*contact*/  return new Property("contact", "ContactDetail", "Contact details to assist a user in finding and communicating with the publisher.", 0, java.lang.Integer.MAX_VALUE, contact);
         case -1724546052: /*description*/  return new Property("description", "markdown", "A free text natural language description of the SpecimenDefinition from the consumer's perspective.", 0, 1, description);
         case -669707736: /*useContext*/  return new Property("useContext", "UsageContext", "The content was developed with a focus and intent of supporting the contexts that are listed. These terms may be used to assist with indexing and searching of specimen definitions.", 0, java.lang.Integer.MAX_VALUE, useContext);
         case -507075711: /*jurisdiction*/  return new Property("jurisdiction", "CodeableConcept", "A jurisdiction in which the SpecimenDefinition is intended to be used.", 0, java.lang.Integer.MAX_VALUE, jurisdiction);
         case -220463842: /*purpose*/  return new Property("purpose", "markdown", "Explains why this SpecimeDefinition is needed and why it has been designed as it has.", 0, 1, purpose);
         case 1522889671: /*copyright*/  return new Property("copyright", "markdown", "Copyright statement relating to the SpecimenDefinition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the SpecimenDefinition.", 0, 1, copyright);
+        case 765157229: /*copyrightLabel*/  return new Property("copyrightLabel", "string", "A short string (<50 characters), suitable for inclusion in a page footer that identifies the copyright holder, effective period, and optionally whether rights are resctricted. (e.g. 'All rights reserved', 'Some rights reserved').", 0, 1, copyrightLabel);
         case 223539345: /*approvalDate*/  return new Property("approvalDate", "date", "The date on which the asset content was approved by the publisher. Approval happens once when the content is officially approved for usage.", 0, 1, approvalDate);
         case -1687512484: /*lastReviewDate*/  return new Property("lastReviewDate", "date", "The date on which the asset content was last reviewed. Review happens periodically after that, but doesn't change the original approval date.", 0, 1, lastReviewDate);
         case -403934648: /*effectivePeriod*/  return new Property("effectivePeriod", "Period", "The period during which the SpecimenDefinition content was or is planned to be effective.", 0, 1, effectivePeriod);
@@ -3469,6 +3771,8 @@ public class SpecimenDefinition extends DomainResource {
         case 116079: /*url*/ return this.url == null ? new Base[0] : new Base[] {this.url}; // UriType
         case -1618432855: /*identifier*/ return this.identifier == null ? new Base[0] : new Base[] {this.identifier}; // Identifier
         case 351608024: /*version*/ return this.version == null ? new Base[0] : new Base[] {this.version}; // StringType
+        case 1508158071: /*versionAlgorithm*/ return this.versionAlgorithm == null ? new Base[0] : new Base[] {this.versionAlgorithm}; // DataType
+        case 3373707: /*name*/ return this.name == null ? new Base[0] : new Base[] {this.name}; // StringType
         case 110371416: /*title*/ return this.title == null ? new Base[0] : new Base[] {this.title}; // StringType
         case -978133683: /*derivedFromCanonical*/ return this.derivedFromCanonical == null ? new Base[0] : this.derivedFromCanonical.toArray(new Base[this.derivedFromCanonical.size()]); // CanonicalType
         case -1076333435: /*derivedFromUri*/ return this.derivedFromUri == null ? new Base[0] : this.derivedFromUri.toArray(new Base[this.derivedFromUri.size()]); // UriType
@@ -3476,13 +3780,14 @@ public class SpecimenDefinition extends DomainResource {
         case -404562712: /*experimental*/ return this.experimental == null ? new Base[0] : new Base[] {this.experimental}; // BooleanType
         case -1867885268: /*subject*/ return this.subject == null ? new Base[0] : new Base[] {this.subject}; // DataType
         case 3076014: /*date*/ return this.date == null ? new Base[0] : new Base[] {this.date}; // DateTimeType
-        case 1447404028: /*publisher*/ return this.publisher == null ? new Base[0] : new Base[] {this.publisher}; // Reference
+        case 1447404028: /*publisher*/ return this.publisher == null ? new Base[0] : new Base[] {this.publisher}; // StringType
         case 951526432: /*contact*/ return this.contact == null ? new Base[0] : this.contact.toArray(new Base[this.contact.size()]); // ContactDetail
         case -1724546052: /*description*/ return this.description == null ? new Base[0] : new Base[] {this.description}; // MarkdownType
         case -669707736: /*useContext*/ return this.useContext == null ? new Base[0] : this.useContext.toArray(new Base[this.useContext.size()]); // UsageContext
         case -507075711: /*jurisdiction*/ return this.jurisdiction == null ? new Base[0] : this.jurisdiction.toArray(new Base[this.jurisdiction.size()]); // CodeableConcept
         case -220463842: /*purpose*/ return this.purpose == null ? new Base[0] : new Base[] {this.purpose}; // MarkdownType
         case 1522889671: /*copyright*/ return this.copyright == null ? new Base[0] : new Base[] {this.copyright}; // MarkdownType
+        case 765157229: /*copyrightLabel*/ return this.copyrightLabel == null ? new Base[0] : new Base[] {this.copyrightLabel}; // StringType
         case 223539345: /*approvalDate*/ return this.approvalDate == null ? new Base[0] : new Base[] {this.approvalDate}; // DateType
         case -1687512484: /*lastReviewDate*/ return this.lastReviewDate == null ? new Base[0] : new Base[] {this.lastReviewDate}; // DateType
         case -403934648: /*effectivePeriod*/ return this.effectivePeriod == null ? new Base[0] : new Base[] {this.effectivePeriod}; // Period
@@ -3508,6 +3813,12 @@ public class SpecimenDefinition extends DomainResource {
         case 351608024: // version
           this.version = TypeConvertor.castToString(value); // StringType
           return value;
+        case 1508158071: // versionAlgorithm
+          this.versionAlgorithm = TypeConvertor.castToType(value); // DataType
+          return value;
+        case 3373707: // name
+          this.name = TypeConvertor.castToString(value); // StringType
+          return value;
         case 110371416: // title
           this.title = TypeConvertor.castToString(value); // StringType
           return value;
@@ -3531,7 +3842,7 @@ public class SpecimenDefinition extends DomainResource {
           this.date = TypeConvertor.castToDateTime(value); // DateTimeType
           return value;
         case 1447404028: // publisher
-          this.publisher = TypeConvertor.castToReference(value); // Reference
+          this.publisher = TypeConvertor.castToString(value); // StringType
           return value;
         case 951526432: // contact
           this.getContact().add(TypeConvertor.castToContactDetail(value)); // ContactDetail
@@ -3550,6 +3861,9 @@ public class SpecimenDefinition extends DomainResource {
           return value;
         case 1522889671: // copyright
           this.copyright = TypeConvertor.castToMarkdown(value); // MarkdownType
+          return value;
+        case 765157229: // copyrightLabel
+          this.copyrightLabel = TypeConvertor.castToString(value); // StringType
           return value;
         case 223539345: // approvalDate
           this.approvalDate = TypeConvertor.castToDate(value); // DateType
@@ -3588,6 +3902,10 @@ public class SpecimenDefinition extends DomainResource {
           this.identifier = TypeConvertor.castToIdentifier(value); // Identifier
         } else if (name.equals("version")) {
           this.version = TypeConvertor.castToString(value); // StringType
+        } else if (name.equals("versionAlgorithm[x]")) {
+          this.versionAlgorithm = TypeConvertor.castToType(value); // DataType
+        } else if (name.equals("name")) {
+          this.name = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("title")) {
           this.title = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("derivedFromCanonical")) {
@@ -3604,7 +3922,7 @@ public class SpecimenDefinition extends DomainResource {
         } else if (name.equals("date")) {
           this.date = TypeConvertor.castToDateTime(value); // DateTimeType
         } else if (name.equals("publisher")) {
-          this.publisher = TypeConvertor.castToReference(value); // Reference
+          this.publisher = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("contact")) {
           this.getContact().add(TypeConvertor.castToContactDetail(value));
         } else if (name.equals("description")) {
@@ -3617,6 +3935,8 @@ public class SpecimenDefinition extends DomainResource {
           this.purpose = TypeConvertor.castToMarkdown(value); // MarkdownType
         } else if (name.equals("copyright")) {
           this.copyright = TypeConvertor.castToMarkdown(value); // MarkdownType
+        } else if (name.equals("copyrightLabel")) {
+          this.copyrightLabel = TypeConvertor.castToString(value); // StringType
         } else if (name.equals("approvalDate")) {
           this.approvalDate = TypeConvertor.castToDate(value); // DateType
         } else if (name.equals("lastReviewDate")) {
@@ -3638,12 +3958,79 @@ public class SpecimenDefinition extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("url")) {
+          this.url = null;
+        } else if (name.equals("identifier")) {
+          this.identifier = null;
+        } else if (name.equals("version")) {
+          this.version = null;
+        } else if (name.equals("versionAlgorithm[x]")) {
+          this.versionAlgorithm = null;
+        } else if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("title")) {
+          this.title = null;
+        } else if (name.equals("derivedFromCanonical")) {
+          this.getDerivedFromCanonical().remove(value);
+        } else if (name.equals("derivedFromUri")) {
+          this.getDerivedFromUri().remove(value);
+        } else if (name.equals("status")) {
+          value = new PublicationStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<PublicationStatus>
+        } else if (name.equals("experimental")) {
+          this.experimental = null;
+        } else if (name.equals("subject[x]")) {
+          this.subject = null;
+        } else if (name.equals("date")) {
+          this.date = null;
+        } else if (name.equals("publisher")) {
+          this.publisher = null;
+        } else if (name.equals("contact")) {
+          this.getContact().remove(value);
+        } else if (name.equals("description")) {
+          this.description = null;
+        } else if (name.equals("useContext")) {
+          this.getUseContext().remove(value);
+        } else if (name.equals("jurisdiction")) {
+          this.getJurisdiction().remove(value);
+        } else if (name.equals("purpose")) {
+          this.purpose = null;
+        } else if (name.equals("copyright")) {
+          this.copyright = null;
+        } else if (name.equals("copyrightLabel")) {
+          this.copyrightLabel = null;
+        } else if (name.equals("approvalDate")) {
+          this.approvalDate = null;
+        } else if (name.equals("lastReviewDate")) {
+          this.lastReviewDate = null;
+        } else if (name.equals("effectivePeriod")) {
+          this.effectivePeriod = null;
+        } else if (name.equals("typeCollected")) {
+          this.typeCollected = null;
+        } else if (name.equals("patientPreparation")) {
+          this.getPatientPreparation().remove(value);
+        } else if (name.equals("timeAspect")) {
+          this.timeAspect = null;
+        } else if (name.equals("collection")) {
+          this.getCollection().remove(value);
+        } else if (name.equals("typeTested")) {
+          this.getTypeTested().remove((SpecimenDefinitionTypeTestedComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
         case 116079:  return getUrlElement();
         case -1618432855:  return getIdentifier();
         case 351608024:  return getVersionElement();
+        case -115699031:  return getVersionAlgorithm();
+        case 1508158071:  return getVersionAlgorithm();
+        case 3373707:  return getNameElement();
         case 110371416:  return getTitleElement();
         case -978133683:  return addDerivedFromCanonicalElement();
         case -1076333435:  return addDerivedFromUriElement();
@@ -3652,13 +4039,14 @@ public class SpecimenDefinition extends DomainResource {
         case -573640748:  return getSubject();
         case -1867885268:  return getSubject();
         case 3076014:  return getDateElement();
-        case 1447404028:  return getPublisher();
+        case 1447404028:  return getPublisherElement();
         case 951526432:  return addContact(); 
         case -1724546052:  return getDescriptionElement();
         case -669707736:  return addUseContext(); 
         case -507075711:  return addJurisdiction(); 
         case -220463842:  return getPurposeElement();
         case 1522889671:  return getCopyrightElement();
+        case 765157229:  return getCopyrightLabelElement();
         case 223539345:  return getApprovalDateElement();
         case -1687512484:  return getLastReviewDateElement();
         case -403934648:  return getEffectivePeriod();
@@ -3678,6 +4066,8 @@ public class SpecimenDefinition extends DomainResource {
         case 116079: /*url*/ return new String[] {"uri"};
         case -1618432855: /*identifier*/ return new String[] {"Identifier"};
         case 351608024: /*version*/ return new String[] {"string"};
+        case 1508158071: /*versionAlgorithm*/ return new String[] {"string", "Coding"};
+        case 3373707: /*name*/ return new String[] {"string"};
         case 110371416: /*title*/ return new String[] {"string"};
         case -978133683: /*derivedFromCanonical*/ return new String[] {"canonical"};
         case -1076333435: /*derivedFromUri*/ return new String[] {"uri"};
@@ -3685,13 +4075,14 @@ public class SpecimenDefinition extends DomainResource {
         case -404562712: /*experimental*/ return new String[] {"boolean"};
         case -1867885268: /*subject*/ return new String[] {"CodeableConcept", "Reference"};
         case 3076014: /*date*/ return new String[] {"dateTime"};
-        case 1447404028: /*publisher*/ return new String[] {"Reference"};
+        case 1447404028: /*publisher*/ return new String[] {"string"};
         case 951526432: /*contact*/ return new String[] {"ContactDetail"};
         case -1724546052: /*description*/ return new String[] {"markdown"};
         case -669707736: /*useContext*/ return new String[] {"UsageContext"};
         case -507075711: /*jurisdiction*/ return new String[] {"CodeableConcept"};
         case -220463842: /*purpose*/ return new String[] {"markdown"};
         case 1522889671: /*copyright*/ return new String[] {"markdown"};
+        case 765157229: /*copyrightLabel*/ return new String[] {"string"};
         case 223539345: /*approvalDate*/ return new String[] {"date"};
         case -1687512484: /*lastReviewDate*/ return new String[] {"date"};
         case -403934648: /*effectivePeriod*/ return new String[] {"Period"};
@@ -3708,29 +4099,40 @@ public class SpecimenDefinition extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.url");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.url");
         }
         else if (name.equals("identifier")) {
           this.identifier = new Identifier();
           return this.identifier;
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.version");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.version");
+        }
+        else if (name.equals("versionAlgorithmString")) {
+          this.versionAlgorithm = new StringType();
+          return this.versionAlgorithm;
+        }
+        else if (name.equals("versionAlgorithmCoding")) {
+          this.versionAlgorithm = new Coding();
+          return this.versionAlgorithm;
+        }
+        else if (name.equals("name")) {
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.name");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.title");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.title");
         }
         else if (name.equals("derivedFromCanonical")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.derivedFromCanonical");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.derivedFromCanonical");
         }
         else if (name.equals("derivedFromUri")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.derivedFromUri");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.derivedFromUri");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.status");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.status");
         }
         else if (name.equals("experimental")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.experimental");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.experimental");
         }
         else if (name.equals("subjectCodeableConcept")) {
           this.subject = new CodeableConcept();
@@ -3741,17 +4143,16 @@ public class SpecimenDefinition extends DomainResource {
           return this.subject;
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.date");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.date");
         }
         else if (name.equals("publisher")) {
-          this.publisher = new Reference();
-          return this.publisher;
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.publisher");
         }
         else if (name.equals("contact")) {
           return addContact();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.description");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.description");
         }
         else if (name.equals("useContext")) {
           return addUseContext();
@@ -3760,16 +4161,19 @@ public class SpecimenDefinition extends DomainResource {
           return addJurisdiction();
         }
         else if (name.equals("purpose")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.purpose");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.purpose");
         }
         else if (name.equals("copyright")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.copyright");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.copyright");
+        }
+        else if (name.equals("copyrightLabel")) {
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.copyrightLabel");
         }
         else if (name.equals("approvalDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.approvalDate");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.approvalDate");
         }
         else if (name.equals("lastReviewDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.lastReviewDate");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.lastReviewDate");
         }
         else if (name.equals("effectivePeriod")) {
           this.effectivePeriod = new Period();
@@ -3783,7 +4187,7 @@ public class SpecimenDefinition extends DomainResource {
           return addPatientPreparation();
         }
         else if (name.equals("timeAspect")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SpecimenDefinition.timeAspect");
+          throw new FHIRException("Cannot call addChild on a singleton property SpecimenDefinition.timeAspect");
         }
         else if (name.equals("collection")) {
           return addCollection();
@@ -3806,11 +4210,17 @@ public class SpecimenDefinition extends DomainResource {
         return dst;
       }
 
+      public void assignValues(Base dst) {
+        copyValues((SpecimenDefinition) dst);
+      }
+
       public void copyValues(SpecimenDefinition dst) {
         super.copyValues(dst);
         dst.url = url == null ? null : url.copy();
         dst.identifier = identifier == null ? null : identifier.copy();
         dst.version = version == null ? null : version.copy();
+        dst.versionAlgorithm = versionAlgorithm == null ? null : versionAlgorithm.copy();
+        dst.name = name == null ? null : name.copy();
         dst.title = title == null ? null : title.copy();
         if (derivedFromCanonical != null) {
           dst.derivedFromCanonical = new ArrayList<CanonicalType>();
@@ -3845,6 +4255,7 @@ public class SpecimenDefinition extends DomainResource {
         };
         dst.purpose = purpose == null ? null : purpose.copy();
         dst.copyright = copyright == null ? null : copyright.copy();
+        dst.copyrightLabel = copyrightLabel == null ? null : copyrightLabel.copy();
         dst.approvalDate = approvalDate == null ? null : approvalDate.copy();
         dst.lastReviewDate = lastReviewDate == null ? null : lastReviewDate.copy();
         dst.effectivePeriod = effectivePeriod == null ? null : effectivePeriod.copy();
@@ -3879,15 +4290,17 @@ public class SpecimenDefinition extends DomainResource {
           return false;
         SpecimenDefinition o = (SpecimenDefinition) other_;
         return compareDeep(url, o.url, true) && compareDeep(identifier, o.identifier, true) && compareDeep(version, o.version, true)
-           && compareDeep(title, o.title, true) && compareDeep(derivedFromCanonical, o.derivedFromCanonical, true)
-           && compareDeep(derivedFromUri, o.derivedFromUri, true) && compareDeep(status, o.status, true) && compareDeep(experimental, o.experimental, true)
-           && compareDeep(subject, o.subject, true) && compareDeep(date, o.date, true) && compareDeep(publisher, o.publisher, true)
-           && compareDeep(contact, o.contact, true) && compareDeep(description, o.description, true) && compareDeep(useContext, o.useContext, true)
+           && compareDeep(versionAlgorithm, o.versionAlgorithm, true) && compareDeep(name, o.name, true) && compareDeep(title, o.title, true)
+           && compareDeep(derivedFromCanonical, o.derivedFromCanonical, true) && compareDeep(derivedFromUri, o.derivedFromUri, true)
+           && compareDeep(status, o.status, true) && compareDeep(experimental, o.experimental, true) && compareDeep(subject, o.subject, true)
+           && compareDeep(date, o.date, true) && compareDeep(publisher, o.publisher, true) && compareDeep(contact, o.contact, true)
+           && compareDeep(description, o.description, true) && compareDeep(useContext, o.useContext, true)
            && compareDeep(jurisdiction, o.jurisdiction, true) && compareDeep(purpose, o.purpose, true) && compareDeep(copyright, o.copyright, true)
-           && compareDeep(approvalDate, o.approvalDate, true) && compareDeep(lastReviewDate, o.lastReviewDate, true)
-           && compareDeep(effectivePeriod, o.effectivePeriod, true) && compareDeep(typeCollected, o.typeCollected, true)
-           && compareDeep(patientPreparation, o.patientPreparation, true) && compareDeep(timeAspect, o.timeAspect, true)
-           && compareDeep(collection, o.collection, true) && compareDeep(typeTested, o.typeTested, true);
+           && compareDeep(copyrightLabel, o.copyrightLabel, true) && compareDeep(approvalDate, o.approvalDate, true)
+           && compareDeep(lastReviewDate, o.lastReviewDate, true) && compareDeep(effectivePeriod, o.effectivePeriod, true)
+           && compareDeep(typeCollected, o.typeCollected, true) && compareDeep(patientPreparation, o.patientPreparation, true)
+           && compareDeep(timeAspect, o.timeAspect, true) && compareDeep(collection, o.collection, true) && compareDeep(typeTested, o.typeTested, true)
+          ;
       }
 
       @Override
@@ -3897,26 +4310,383 @@ public class SpecimenDefinition extends DomainResource {
         if (!(other_ instanceof SpecimenDefinition))
           return false;
         SpecimenDefinition o = (SpecimenDefinition) other_;
-        return compareValues(url, o.url, true) && compareValues(version, o.version, true) && compareValues(title, o.title, true)
-           && compareValues(derivedFromCanonical, o.derivedFromCanonical, true) && compareValues(derivedFromUri, o.derivedFromUri, true)
-           && compareValues(status, o.status, true) && compareValues(experimental, o.experimental, true) && compareValues(date, o.date, true)
-           && compareValues(description, o.description, true) && compareValues(purpose, o.purpose, true) && compareValues(copyright, o.copyright, true)
+        return compareValues(url, o.url, true) && compareValues(version, o.version, true) && compareValues(name, o.name, true)
+           && compareValues(title, o.title, true) && compareValues(derivedFromCanonical, o.derivedFromCanonical, true)
+           && compareValues(derivedFromUri, o.derivedFromUri, true) && compareValues(status, o.status, true) && compareValues(experimental, o.experimental, true)
+           && compareValues(date, o.date, true) && compareValues(publisher, o.publisher, true) && compareValues(description, o.description, true)
+           && compareValues(purpose, o.purpose, true) && compareValues(copyright, o.copyright, true) && compareValues(copyrightLabel, o.copyrightLabel, true)
            && compareValues(approvalDate, o.approvalDate, true) && compareValues(lastReviewDate, o.lastReviewDate, true)
            && compareValues(timeAspect, o.timeAspect, true);
       }
 
       public boolean isEmpty() {
         return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(url, identifier, version
-          , title, derivedFromCanonical, derivedFromUri, status, experimental, subject, date
-          , publisher, contact, description, useContext, jurisdiction, purpose, copyright
-          , approvalDate, lastReviewDate, effectivePeriod, typeCollected, patientPreparation
-          , timeAspect, collection, typeTested);
+          , versionAlgorithm, name, title, derivedFromCanonical, derivedFromUri, status, experimental
+          , subject, date, publisher, contact, description, useContext, jurisdiction, purpose
+          , copyright, copyrightLabel, approvalDate, lastReviewDate, effectivePeriod, typeCollected
+          , patientPreparation, timeAspect, collection, typeTested);
       }
 
   @Override
   public ResourceType getResourceType() {
     return ResourceType.SpecimenDefinition;
    }
+
+ /**
+   * Search parameter: <b>identifier</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): External identifier for the activity definition
+* [ActorDefinition](actordefinition.html): External identifier for the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): External identifier for the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): External identifier for the charge item definition
+* [Citation](citation.html): External identifier for the citation
+* [CodeSystem](codesystem.html): External identifier for the code system
+* [ConceptMap](conceptmap.html): External identifier for the concept map
+* [ConditionDefinition](conditiondefinition.html): External identifier for the condition definition
+* [EventDefinition](eventdefinition.html): External identifier for the event definition
+* [Evidence](evidence.html): External identifier for the evidence
+* [EvidenceReport](evidencereport.html): External identifier for the evidence report
+* [EvidenceVariable](evidencevariable.html): External identifier for the evidence variable
+* [ExampleScenario](examplescenario.html): External identifier for the example scenario
+* [GraphDefinition](graphdefinition.html): External identifier for the graph definition
+* [ImplementationGuide](implementationguide.html): External identifier for the implementation guide
+* [Library](library.html): External identifier for the library
+* [Measure](measure.html): External identifier for the measure
+* [MedicationKnowledge](medicationknowledge.html): Business identifier for this medication
+* [MessageDefinition](messagedefinition.html): External identifier for the message definition
+* [NamingSystem](namingsystem.html): External identifier for the naming system
+* [ObservationDefinition](observationdefinition.html): The unique identifier associated with the specimen definition
+* [OperationDefinition](operationdefinition.html): External identifier for the search parameter
+* [PlanDefinition](plandefinition.html): External identifier for the plan definition
+* [Questionnaire](questionnaire.html): External identifier for the questionnaire
+* [Requirements](requirements.html): External identifier for the requirements
+* [SearchParameter](searchparameter.html): External identifier for the search parameter
+* [SpecimenDefinition](specimendefinition.html): The unique identifier associated with the SpecimenDefinition
+* [StructureDefinition](structuredefinition.html): External identifier for the structure definition
+* [StructureMap](structuremap.html): External identifier for the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Business Identifier for SubscriptionTopic
+* [TerminologyCapabilities](terminologycapabilities.html): External identifier for the terminology capabilities
+* [TestPlan](testplan.html): An identifier for the test plan
+* [TestScript](testscript.html): External identifier for the test script
+* [ValueSet](valueset.html): External identifier for the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.identifier | ActorDefinition.identifier | CapabilityStatement.identifier | ChargeItemDefinition.identifier | Citation.identifier | CodeSystem.identifier | ConceptMap.identifier | ConditionDefinition.identifier | EventDefinition.identifier | Evidence.identifier | EvidenceReport.identifier | EvidenceVariable.identifier | ExampleScenario.identifier | GraphDefinition.identifier | ImplementationGuide.identifier | Library.identifier | Measure.identifier | MedicationKnowledge.identifier | MessageDefinition.identifier | NamingSystem.identifier | ObservationDefinition.identifier | OperationDefinition.identifier | PlanDefinition.identifier | Questionnaire.identifier | Requirements.identifier | SearchParameter.identifier | SpecimenDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | SubscriptionTopic.identifier | TerminologyCapabilities.identifier | TestPlan.identifier | TestScript.identifier | ValueSet.identifier</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="identifier", path="ActivityDefinition.identifier | ActorDefinition.identifier | CapabilityStatement.identifier | ChargeItemDefinition.identifier | Citation.identifier | CodeSystem.identifier | ConceptMap.identifier | ConditionDefinition.identifier | EventDefinition.identifier | Evidence.identifier | EvidenceReport.identifier | EvidenceVariable.identifier | ExampleScenario.identifier | GraphDefinition.identifier | ImplementationGuide.identifier | Library.identifier | Measure.identifier | MedicationKnowledge.identifier | MessageDefinition.identifier | NamingSystem.identifier | ObservationDefinition.identifier | OperationDefinition.identifier | PlanDefinition.identifier | Questionnaire.identifier | Requirements.identifier | SearchParameter.identifier | SpecimenDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | SubscriptionTopic.identifier | TerminologyCapabilities.identifier | TestPlan.identifier | TestScript.identifier | ValueSet.identifier", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): External identifier for the activity definition\r\n* [ActorDefinition](actordefinition.html): External identifier for the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): External identifier for the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): External identifier for the charge item definition\r\n* [Citation](citation.html): External identifier for the citation\r\n* [CodeSystem](codesystem.html): External identifier for the code system\r\n* [ConceptMap](conceptmap.html): External identifier for the concept map\r\n* [ConditionDefinition](conditiondefinition.html): External identifier for the condition definition\r\n* [EventDefinition](eventdefinition.html): External identifier for the event definition\r\n* [Evidence](evidence.html): External identifier for the evidence\r\n* [EvidenceReport](evidencereport.html): External identifier for the evidence report\r\n* [EvidenceVariable](evidencevariable.html): External identifier for the evidence variable\r\n* [ExampleScenario](examplescenario.html): External identifier for the example scenario\r\n* [GraphDefinition](graphdefinition.html): External identifier for the graph definition\r\n* [ImplementationGuide](implementationguide.html): External identifier for the implementation guide\r\n* [Library](library.html): External identifier for the library\r\n* [Measure](measure.html): External identifier for the measure\r\n* [MedicationKnowledge](medicationknowledge.html): Business identifier for this medication\r\n* [MessageDefinition](messagedefinition.html): External identifier for the message definition\r\n* [NamingSystem](namingsystem.html): External identifier for the naming system\r\n* [ObservationDefinition](observationdefinition.html): The unique identifier associated with the specimen definition\r\n* [OperationDefinition](operationdefinition.html): External identifier for the search parameter\r\n* [PlanDefinition](plandefinition.html): External identifier for the plan definition\r\n* [Questionnaire](questionnaire.html): External identifier for the questionnaire\r\n* [Requirements](requirements.html): External identifier for the requirements\r\n* [SearchParameter](searchparameter.html): External identifier for the search parameter\r\n* [SpecimenDefinition](specimendefinition.html): The unique identifier associated with the SpecimenDefinition\r\n* [StructureDefinition](structuredefinition.html): External identifier for the structure definition\r\n* [StructureMap](structuremap.html): External identifier for the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): Business Identifier for SubscriptionTopic\r\n* [TerminologyCapabilities](terminologycapabilities.html): External identifier for the terminology capabilities\r\n* [TestPlan](testplan.html): An identifier for the test plan\r\n* [TestScript](testscript.html): External identifier for the test script\r\n* [ValueSet](valueset.html): External identifier for the value set\r\n", type="token" )
+  public static final String SP_IDENTIFIER = "identifier";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>identifier</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): External identifier for the activity definition
+* [ActorDefinition](actordefinition.html): External identifier for the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): External identifier for the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): External identifier for the charge item definition
+* [Citation](citation.html): External identifier for the citation
+* [CodeSystem](codesystem.html): External identifier for the code system
+* [ConceptMap](conceptmap.html): External identifier for the concept map
+* [ConditionDefinition](conditiondefinition.html): External identifier for the condition definition
+* [EventDefinition](eventdefinition.html): External identifier for the event definition
+* [Evidence](evidence.html): External identifier for the evidence
+* [EvidenceReport](evidencereport.html): External identifier for the evidence report
+* [EvidenceVariable](evidencevariable.html): External identifier for the evidence variable
+* [ExampleScenario](examplescenario.html): External identifier for the example scenario
+* [GraphDefinition](graphdefinition.html): External identifier for the graph definition
+* [ImplementationGuide](implementationguide.html): External identifier for the implementation guide
+* [Library](library.html): External identifier for the library
+* [Measure](measure.html): External identifier for the measure
+* [MedicationKnowledge](medicationknowledge.html): Business identifier for this medication
+* [MessageDefinition](messagedefinition.html): External identifier for the message definition
+* [NamingSystem](namingsystem.html): External identifier for the naming system
+* [ObservationDefinition](observationdefinition.html): The unique identifier associated with the specimen definition
+* [OperationDefinition](operationdefinition.html): External identifier for the search parameter
+* [PlanDefinition](plandefinition.html): External identifier for the plan definition
+* [Questionnaire](questionnaire.html): External identifier for the questionnaire
+* [Requirements](requirements.html): External identifier for the requirements
+* [SearchParameter](searchparameter.html): External identifier for the search parameter
+* [SpecimenDefinition](specimendefinition.html): The unique identifier associated with the SpecimenDefinition
+* [StructureDefinition](structuredefinition.html): External identifier for the structure definition
+* [StructureMap](structuremap.html): External identifier for the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Business Identifier for SubscriptionTopic
+* [TerminologyCapabilities](terminologycapabilities.html): External identifier for the terminology capabilities
+* [TestPlan](testplan.html): An identifier for the test plan
+* [TestScript](testscript.html): External identifier for the test script
+* [ValueSet](valueset.html): External identifier for the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.identifier | ActorDefinition.identifier | CapabilityStatement.identifier | ChargeItemDefinition.identifier | Citation.identifier | CodeSystem.identifier | ConceptMap.identifier | ConditionDefinition.identifier | EventDefinition.identifier | Evidence.identifier | EvidenceReport.identifier | EvidenceVariable.identifier | ExampleScenario.identifier | GraphDefinition.identifier | ImplementationGuide.identifier | Library.identifier | Measure.identifier | MedicationKnowledge.identifier | MessageDefinition.identifier | NamingSystem.identifier | ObservationDefinition.identifier | OperationDefinition.identifier | PlanDefinition.identifier | Questionnaire.identifier | Requirements.identifier | SearchParameter.identifier | SpecimenDefinition.identifier | StructureDefinition.identifier | StructureMap.identifier | SubscriptionTopic.identifier | TerminologyCapabilities.identifier | TestPlan.identifier | TestScript.identifier | ValueSet.identifier</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
+
+ /**
+   * Search parameter: <b>status</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The current status of the activity definition
+* [ActorDefinition](actordefinition.html): The current status of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The current status of the charge item definition
+* [Citation](citation.html): The current status of the citation
+* [CodeSystem](codesystem.html): The current status of the code system
+* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition
+* [ConceptMap](conceptmap.html): The current status of the concept map
+* [ConditionDefinition](conditiondefinition.html): The current status of the condition definition
+* [EventDefinition](eventdefinition.html): The current status of the event definition
+* [Evidence](evidence.html): The current status of the evidence
+* [EvidenceReport](evidencereport.html): The current status of the evidence report
+* [EvidenceVariable](evidencevariable.html): The current status of the evidence variable
+* [ExampleScenario](examplescenario.html): The current status of the example scenario
+* [GraphDefinition](graphdefinition.html): The current status of the graph definition
+* [ImplementationGuide](implementationguide.html): The current status of the implementation guide
+* [Library](library.html): The current status of the library
+* [Measure](measure.html): The current status of the measure
+* [MedicationKnowledge](medicationknowledge.html): active | inactive | entered-in-error
+* [MessageDefinition](messagedefinition.html): The current status of the message definition
+* [NamingSystem](namingsystem.html): The current status of the naming system
+* [ObservationDefinition](observationdefinition.html): Publication status of the ObservationDefinition: draft, active, retired, unknown
+* [OperationDefinition](operationdefinition.html): The current status of the operation definition
+* [PlanDefinition](plandefinition.html): The current status of the plan definition
+* [Questionnaire](questionnaire.html): The current status of the questionnaire
+* [Requirements](requirements.html): The current status of the requirements
+* [SearchParameter](searchparameter.html): The current status of the search parameter
+* [SpecimenDefinition](specimendefinition.html): Publication status of the SpecimenDefinition: draft, active, retired, unknown
+* [StructureDefinition](structuredefinition.html): The current status of the structure definition
+* [StructureMap](structuremap.html): The current status of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): draft | active | retired | unknown
+* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities
+* [TestPlan](testplan.html): The current status of the test plan
+* [TestScript](testscript.html): The current status of the test script
+* [ValueSet](valueset.html): The current status of the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.status | ActorDefinition.status | CapabilityStatement.status | ChargeItemDefinition.status | Citation.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | ConditionDefinition.status | EventDefinition.status | Evidence.status | EvidenceReport.status | EvidenceVariable.status | ExampleScenario.status | GraphDefinition.status | ImplementationGuide.status | Library.status | Measure.status | MedicationKnowledge.status | MessageDefinition.status | NamingSystem.status | ObservationDefinition.status | OperationDefinition.status | PlanDefinition.status | Questionnaire.status | Requirements.status | SearchParameter.status | SpecimenDefinition.status | StructureDefinition.status | StructureMap.status | SubscriptionTopic.status | TerminologyCapabilities.status | TestPlan.status | TestScript.status | ValueSet.status</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="status", path="ActivityDefinition.status | ActorDefinition.status | CapabilityStatement.status | ChargeItemDefinition.status | Citation.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | ConditionDefinition.status | EventDefinition.status | Evidence.status | EvidenceReport.status | EvidenceVariable.status | ExampleScenario.status | GraphDefinition.status | ImplementationGuide.status | Library.status | Measure.status | MedicationKnowledge.status | MessageDefinition.status | NamingSystem.status | ObservationDefinition.status | OperationDefinition.status | PlanDefinition.status | Questionnaire.status | Requirements.status | SearchParameter.status | SpecimenDefinition.status | StructureDefinition.status | StructureMap.status | SubscriptionTopic.status | TerminologyCapabilities.status | TestPlan.status | TestScript.status | ValueSet.status", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The current status of the activity definition\r\n* [ActorDefinition](actordefinition.html): The current status of the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The current status of the charge item definition\r\n* [Citation](citation.html): The current status of the citation\r\n* [CodeSystem](codesystem.html): The current status of the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition\r\n* [ConceptMap](conceptmap.html): The current status of the concept map\r\n* [ConditionDefinition](conditiondefinition.html): The current status of the condition definition\r\n* [EventDefinition](eventdefinition.html): The current status of the event definition\r\n* [Evidence](evidence.html): The current status of the evidence\r\n* [EvidenceReport](evidencereport.html): The current status of the evidence report\r\n* [EvidenceVariable](evidencevariable.html): The current status of the evidence variable\r\n* [ExampleScenario](examplescenario.html): The current status of the example scenario\r\n* [GraphDefinition](graphdefinition.html): The current status of the graph definition\r\n* [ImplementationGuide](implementationguide.html): The current status of the implementation guide\r\n* [Library](library.html): The current status of the library\r\n* [Measure](measure.html): The current status of the measure\r\n* [MedicationKnowledge](medicationknowledge.html): active | inactive | entered-in-error\r\n* [MessageDefinition](messagedefinition.html): The current status of the message definition\r\n* [NamingSystem](namingsystem.html): The current status of the naming system\r\n* [ObservationDefinition](observationdefinition.html): Publication status of the ObservationDefinition: draft, active, retired, unknown\r\n* [OperationDefinition](operationdefinition.html): The current status of the operation definition\r\n* [PlanDefinition](plandefinition.html): The current status of the plan definition\r\n* [Questionnaire](questionnaire.html): The current status of the questionnaire\r\n* [Requirements](requirements.html): The current status of the requirements\r\n* [SearchParameter](searchparameter.html): The current status of the search parameter\r\n* [SpecimenDefinition](specimendefinition.html): Publication status of the SpecimenDefinition: draft, active, retired, unknown\r\n* [StructureDefinition](structuredefinition.html): The current status of the structure definition\r\n* [StructureMap](structuremap.html): The current status of the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): draft | active | retired | unknown\r\n* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities\r\n* [TestPlan](testplan.html): The current status of the test plan\r\n* [TestScript](testscript.html): The current status of the test script\r\n* [ValueSet](valueset.html): The current status of the value set\r\n", type="token" )
+  public static final String SP_STATUS = "status";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>status</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The current status of the activity definition
+* [ActorDefinition](actordefinition.html): The current status of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The current status of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The current status of the charge item definition
+* [Citation](citation.html): The current status of the citation
+* [CodeSystem](codesystem.html): The current status of the code system
+* [CompartmentDefinition](compartmentdefinition.html): The current status of the compartment definition
+* [ConceptMap](conceptmap.html): The current status of the concept map
+* [ConditionDefinition](conditiondefinition.html): The current status of the condition definition
+* [EventDefinition](eventdefinition.html): The current status of the event definition
+* [Evidence](evidence.html): The current status of the evidence
+* [EvidenceReport](evidencereport.html): The current status of the evidence report
+* [EvidenceVariable](evidencevariable.html): The current status of the evidence variable
+* [ExampleScenario](examplescenario.html): The current status of the example scenario
+* [GraphDefinition](graphdefinition.html): The current status of the graph definition
+* [ImplementationGuide](implementationguide.html): The current status of the implementation guide
+* [Library](library.html): The current status of the library
+* [Measure](measure.html): The current status of the measure
+* [MedicationKnowledge](medicationknowledge.html): active | inactive | entered-in-error
+* [MessageDefinition](messagedefinition.html): The current status of the message definition
+* [NamingSystem](namingsystem.html): The current status of the naming system
+* [ObservationDefinition](observationdefinition.html): Publication status of the ObservationDefinition: draft, active, retired, unknown
+* [OperationDefinition](operationdefinition.html): The current status of the operation definition
+* [PlanDefinition](plandefinition.html): The current status of the plan definition
+* [Questionnaire](questionnaire.html): The current status of the questionnaire
+* [Requirements](requirements.html): The current status of the requirements
+* [SearchParameter](searchparameter.html): The current status of the search parameter
+* [SpecimenDefinition](specimendefinition.html): Publication status of the SpecimenDefinition: draft, active, retired, unknown
+* [StructureDefinition](structuredefinition.html): The current status of the structure definition
+* [StructureMap](structuremap.html): The current status of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): draft | active | retired | unknown
+* [TerminologyCapabilities](terminologycapabilities.html): The current status of the terminology capabilities
+* [TestPlan](testplan.html): The current status of the test plan
+* [TestScript](testscript.html): The current status of the test script
+* [ValueSet](valueset.html): The current status of the value set
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>ActivityDefinition.status | ActorDefinition.status | CapabilityStatement.status | ChargeItemDefinition.status | Citation.status | CodeSystem.status | CompartmentDefinition.status | ConceptMap.status | ConditionDefinition.status | EventDefinition.status | Evidence.status | EvidenceReport.status | EvidenceVariable.status | ExampleScenario.status | GraphDefinition.status | ImplementationGuide.status | Library.status | Measure.status | MedicationKnowledge.status | MessageDefinition.status | NamingSystem.status | ObservationDefinition.status | OperationDefinition.status | PlanDefinition.status | Questionnaire.status | Requirements.status | SearchParameter.status | SpecimenDefinition.status | StructureDefinition.status | StructureMap.status | SubscriptionTopic.status | TerminologyCapabilities.status | TestPlan.status | TestScript.status | ValueSet.status</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
+
+ /**
+   * Search parameter: <b>title</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The human-friendly name of the activity definition
+* [ActorDefinition](actordefinition.html): The human-friendly name of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The human-friendly name of the charge item definition
+* [Citation](citation.html): The human-friendly name of the citation
+* [CodeSystem](codesystem.html): The human-friendly name of the code system
+* [ConceptMap](conceptmap.html): The human-friendly name of the concept map
+* [ConditionDefinition](conditiondefinition.html): The human-friendly name of the condition definition
+* [EventDefinition](eventdefinition.html): The human-friendly name of the event definition
+* [Evidence](evidence.html): The human-friendly name of the evidence
+* [EvidenceVariable](evidencevariable.html): The human-friendly name of the evidence variable
+* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide
+* [Library](library.html): The human-friendly name of the library
+* [Measure](measure.html): The human-friendly name of the measure
+* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition
+* [ObservationDefinition](observationdefinition.html): Human-friendly name of the ObservationDefinition
+* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition
+* [PlanDefinition](plandefinition.html): The human-friendly name of the plan definition
+* [Questionnaire](questionnaire.html): The human-friendly name of the questionnaire
+* [Requirements](requirements.html): The human-friendly name of the requirements
+* [SpecimenDefinition](specimendefinition.html): Human-friendly name of the SpecimenDefinition
+* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition
+* [StructureMap](structuremap.html): The human-friendly name of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Name for this SubscriptionTopic (Human friendly)
+* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities
+* [TestScript](testscript.html): The human-friendly name of the test script
+* [ValueSet](valueset.html): The human-friendly name of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.title | ActorDefinition.title | CapabilityStatement.title | ChargeItemDefinition.title | Citation.title | CodeSystem.title | ConceptMap.title | ConditionDefinition.title | EventDefinition.title | Evidence.title | EvidenceVariable.title | ImplementationGuide.title | Library.title | Measure.title | MessageDefinition.title | ObservationDefinition.title | OperationDefinition.title | PlanDefinition.title | Questionnaire.title | Requirements.title | SpecimenDefinition.title | StructureDefinition.title | StructureMap.title | SubscriptionTopic.title | TerminologyCapabilities.title | TestScript.title | ValueSet.title</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="title", path="ActivityDefinition.title | ActorDefinition.title | CapabilityStatement.title | ChargeItemDefinition.title | Citation.title | CodeSystem.title | ConceptMap.title | ConditionDefinition.title | EventDefinition.title | Evidence.title | EvidenceVariable.title | ImplementationGuide.title | Library.title | Measure.title | MessageDefinition.title | ObservationDefinition.title | OperationDefinition.title | PlanDefinition.title | Questionnaire.title | Requirements.title | SpecimenDefinition.title | StructureDefinition.title | StructureMap.title | SubscriptionTopic.title | TerminologyCapabilities.title | TestScript.title | ValueSet.title", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The human-friendly name of the activity definition\r\n* [ActorDefinition](actordefinition.html): The human-friendly name of the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The human-friendly name of the charge item definition\r\n* [Citation](citation.html): The human-friendly name of the citation\r\n* [CodeSystem](codesystem.html): The human-friendly name of the code system\r\n* [ConceptMap](conceptmap.html): The human-friendly name of the concept map\r\n* [ConditionDefinition](conditiondefinition.html): The human-friendly name of the condition definition\r\n* [EventDefinition](eventdefinition.html): The human-friendly name of the event definition\r\n* [Evidence](evidence.html): The human-friendly name of the evidence\r\n* [EvidenceVariable](evidencevariable.html): The human-friendly name of the evidence variable\r\n* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide\r\n* [Library](library.html): The human-friendly name of the library\r\n* [Measure](measure.html): The human-friendly name of the measure\r\n* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition\r\n* [ObservationDefinition](observationdefinition.html): Human-friendly name of the ObservationDefinition\r\n* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition\r\n* [PlanDefinition](plandefinition.html): The human-friendly name of the plan definition\r\n* [Questionnaire](questionnaire.html): The human-friendly name of the questionnaire\r\n* [Requirements](requirements.html): The human-friendly name of the requirements\r\n* [SpecimenDefinition](specimendefinition.html): Human-friendly name of the SpecimenDefinition\r\n* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition\r\n* [StructureMap](structuremap.html): The human-friendly name of the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): Name for this SubscriptionTopic (Human friendly)\r\n* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities\r\n* [TestScript](testscript.html): The human-friendly name of the test script\r\n* [ValueSet](valueset.html): The human-friendly name of the value set\r\n", type="string" )
+  public static final String SP_TITLE = "title";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>title</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The human-friendly name of the activity definition
+* [ActorDefinition](actordefinition.html): The human-friendly name of the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The human-friendly name of the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The human-friendly name of the charge item definition
+* [Citation](citation.html): The human-friendly name of the citation
+* [CodeSystem](codesystem.html): The human-friendly name of the code system
+* [ConceptMap](conceptmap.html): The human-friendly name of the concept map
+* [ConditionDefinition](conditiondefinition.html): The human-friendly name of the condition definition
+* [EventDefinition](eventdefinition.html): The human-friendly name of the event definition
+* [Evidence](evidence.html): The human-friendly name of the evidence
+* [EvidenceVariable](evidencevariable.html): The human-friendly name of the evidence variable
+* [ImplementationGuide](implementationguide.html): The human-friendly name of the implementation guide
+* [Library](library.html): The human-friendly name of the library
+* [Measure](measure.html): The human-friendly name of the measure
+* [MessageDefinition](messagedefinition.html): The human-friendly name of the message definition
+* [ObservationDefinition](observationdefinition.html): Human-friendly name of the ObservationDefinition
+* [OperationDefinition](operationdefinition.html): The human-friendly name of the operation definition
+* [PlanDefinition](plandefinition.html): The human-friendly name of the plan definition
+* [Questionnaire](questionnaire.html): The human-friendly name of the questionnaire
+* [Requirements](requirements.html): The human-friendly name of the requirements
+* [SpecimenDefinition](specimendefinition.html): Human-friendly name of the SpecimenDefinition
+* [StructureDefinition](structuredefinition.html): The human-friendly name of the structure definition
+* [StructureMap](structuremap.html): The human-friendly name of the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Name for this SubscriptionTopic (Human friendly)
+* [TerminologyCapabilities](terminologycapabilities.html): The human-friendly name of the terminology capabilities
+* [TestScript](testscript.html): The human-friendly name of the test script
+* [ValueSet](valueset.html): The human-friendly name of the value set
+</b><br>
+   * Type: <b>string</b><br>
+   * Path: <b>ActivityDefinition.title | ActorDefinition.title | CapabilityStatement.title | ChargeItemDefinition.title | Citation.title | CodeSystem.title | ConceptMap.title | ConditionDefinition.title | EventDefinition.title | Evidence.title | EvidenceVariable.title | ImplementationGuide.title | Library.title | Measure.title | MessageDefinition.title | ObservationDefinition.title | OperationDefinition.title | PlanDefinition.title | Questionnaire.title | Requirements.title | SpecimenDefinition.title | StructureDefinition.title | StructureMap.title | SubscriptionTopic.title | TerminologyCapabilities.title | TestScript.title | ValueSet.title</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.StringClientParam TITLE = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_TITLE);
+
+ /**
+   * Search parameter: <b>url</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The uri that identifies the activity definition
+* [ActorDefinition](actordefinition.html): The uri that identifies the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The uri that identifies the charge item definition
+* [Citation](citation.html): The uri that identifies the citation
+* [CodeSystem](codesystem.html): The uri that identifies the code system
+* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition
+* [ConceptMap](conceptmap.html): The URI that identifies the concept map
+* [ConditionDefinition](conditiondefinition.html): The uri that identifies the condition definition
+* [EventDefinition](eventdefinition.html): The uri that identifies the event definition
+* [Evidence](evidence.html): The uri that identifies the evidence
+* [EvidenceReport](evidencereport.html): The uri that identifies the evidence report
+* [EvidenceVariable](evidencevariable.html): The uri that identifies the evidence variable
+* [ExampleScenario](examplescenario.html): The uri that identifies the example scenario
+* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition
+* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide
+* [Library](library.html): The uri that identifies the library
+* [Measure](measure.html): The uri that identifies the measure
+* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition
+* [NamingSystem](namingsystem.html): The uri that identifies the naming system
+* [ObservationDefinition](observationdefinition.html): The uri that identifies the observation definition
+* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition
+* [PlanDefinition](plandefinition.html): The uri that identifies the plan definition
+* [Questionnaire](questionnaire.html): The uri that identifies the questionnaire
+* [Requirements](requirements.html): The uri that identifies the requirements
+* [SearchParameter](searchparameter.html): The uri that identifies the search parameter
+* [SpecimenDefinition](specimendefinition.html): The uri that identifies the specimen definition
+* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition
+* [StructureMap](structuremap.html): The uri that identifies the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Logical canonical URL to reference this SubscriptionTopic (globally unique)
+* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities
+* [TestPlan](testplan.html): The uri that identifies the test plan
+* [TestScript](testscript.html): The uri that identifies the test script
+* [ValueSet](valueset.html): The uri that identifies the value set
+</b><br>
+   * Type: <b>uri</b><br>
+   * Path: <b>ActivityDefinition.url | ActorDefinition.url | CapabilityStatement.url | ChargeItemDefinition.url | Citation.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | ConditionDefinition.url | EventDefinition.url | Evidence.url | EvidenceReport.url | EvidenceVariable.url | ExampleScenario.url | GraphDefinition.url | ImplementationGuide.url | Library.url | Measure.url | MessageDefinition.url | NamingSystem.url | ObservationDefinition.url | OperationDefinition.url | PlanDefinition.url | Questionnaire.url | Requirements.url | SearchParameter.url | SpecimenDefinition.url | StructureDefinition.url | StructureMap.url | SubscriptionTopic.url | TerminologyCapabilities.url | TestPlan.url | TestScript.url | ValueSet.url</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="url", path="ActivityDefinition.url | ActorDefinition.url | CapabilityStatement.url | ChargeItemDefinition.url | Citation.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | ConditionDefinition.url | EventDefinition.url | Evidence.url | EvidenceReport.url | EvidenceVariable.url | ExampleScenario.url | GraphDefinition.url | ImplementationGuide.url | Library.url | Measure.url | MessageDefinition.url | NamingSystem.url | ObservationDefinition.url | OperationDefinition.url | PlanDefinition.url | Questionnaire.url | Requirements.url | SearchParameter.url | SpecimenDefinition.url | StructureDefinition.url | StructureMap.url | SubscriptionTopic.url | TerminologyCapabilities.url | TestPlan.url | TestScript.url | ValueSet.url", description="Multiple Resources: \r\n\r\n* [ActivityDefinition](activitydefinition.html): The uri that identifies the activity definition\r\n* [ActorDefinition](actordefinition.html): The uri that identifies the Actor Definition\r\n* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement\r\n* [ChargeItemDefinition](chargeitemdefinition.html): The uri that identifies the charge item definition\r\n* [Citation](citation.html): The uri that identifies the citation\r\n* [CodeSystem](codesystem.html): The uri that identifies the code system\r\n* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition\r\n* [ConceptMap](conceptmap.html): The URI that identifies the concept map\r\n* [ConditionDefinition](conditiondefinition.html): The uri that identifies the condition definition\r\n* [EventDefinition](eventdefinition.html): The uri that identifies the event definition\r\n* [Evidence](evidence.html): The uri that identifies the evidence\r\n* [EvidenceReport](evidencereport.html): The uri that identifies the evidence report\r\n* [EvidenceVariable](evidencevariable.html): The uri that identifies the evidence variable\r\n* [ExampleScenario](examplescenario.html): The uri that identifies the example scenario\r\n* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition\r\n* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide\r\n* [Library](library.html): The uri that identifies the library\r\n* [Measure](measure.html): The uri that identifies the measure\r\n* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition\r\n* [NamingSystem](namingsystem.html): The uri that identifies the naming system\r\n* [ObservationDefinition](observationdefinition.html): The uri that identifies the observation definition\r\n* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition\r\n* [PlanDefinition](plandefinition.html): The uri that identifies the plan definition\r\n* [Questionnaire](questionnaire.html): The uri that identifies the questionnaire\r\n* [Requirements](requirements.html): The uri that identifies the requirements\r\n* [SearchParameter](searchparameter.html): The uri that identifies the search parameter\r\n* [SpecimenDefinition](specimendefinition.html): The uri that identifies the specimen definition\r\n* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition\r\n* [StructureMap](structuremap.html): The uri that identifies the structure map\r\n* [SubscriptionTopic](subscriptiontopic.html): Logical canonical URL to reference this SubscriptionTopic (globally unique)\r\n* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities\r\n* [TestPlan](testplan.html): The uri that identifies the test plan\r\n* [TestScript](testscript.html): The uri that identifies the test script\r\n* [ValueSet](valueset.html): The uri that identifies the value set\r\n", type="uri" )
+  public static final String SP_URL = "url";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>url</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [ActivityDefinition](activitydefinition.html): The uri that identifies the activity definition
+* [ActorDefinition](actordefinition.html): The uri that identifies the Actor Definition
+* [CapabilityStatement](capabilitystatement.html): The uri that identifies the capability statement
+* [ChargeItemDefinition](chargeitemdefinition.html): The uri that identifies the charge item definition
+* [Citation](citation.html): The uri that identifies the citation
+* [CodeSystem](codesystem.html): The uri that identifies the code system
+* [CompartmentDefinition](compartmentdefinition.html): The uri that identifies the compartment definition
+* [ConceptMap](conceptmap.html): The URI that identifies the concept map
+* [ConditionDefinition](conditiondefinition.html): The uri that identifies the condition definition
+* [EventDefinition](eventdefinition.html): The uri that identifies the event definition
+* [Evidence](evidence.html): The uri that identifies the evidence
+* [EvidenceReport](evidencereport.html): The uri that identifies the evidence report
+* [EvidenceVariable](evidencevariable.html): The uri that identifies the evidence variable
+* [ExampleScenario](examplescenario.html): The uri that identifies the example scenario
+* [GraphDefinition](graphdefinition.html): The uri that identifies the graph definition
+* [ImplementationGuide](implementationguide.html): The uri that identifies the implementation guide
+* [Library](library.html): The uri that identifies the library
+* [Measure](measure.html): The uri that identifies the measure
+* [MessageDefinition](messagedefinition.html): The uri that identifies the message definition
+* [NamingSystem](namingsystem.html): The uri that identifies the naming system
+* [ObservationDefinition](observationdefinition.html): The uri that identifies the observation definition
+* [OperationDefinition](operationdefinition.html): The uri that identifies the operation definition
+* [PlanDefinition](plandefinition.html): The uri that identifies the plan definition
+* [Questionnaire](questionnaire.html): The uri that identifies the questionnaire
+* [Requirements](requirements.html): The uri that identifies the requirements
+* [SearchParameter](searchparameter.html): The uri that identifies the search parameter
+* [SpecimenDefinition](specimendefinition.html): The uri that identifies the specimen definition
+* [StructureDefinition](structuredefinition.html): The uri that identifies the structure definition
+* [StructureMap](structuremap.html): The uri that identifies the structure map
+* [SubscriptionTopic](subscriptiontopic.html): Logical canonical URL to reference this SubscriptionTopic (globally unique)
+* [TerminologyCapabilities](terminologycapabilities.html): The uri that identifies the terminology capabilities
+* [TestPlan](testplan.html): The uri that identifies the test plan
+* [TestScript](testscript.html): The uri that identifies the test script
+* [ValueSet](valueset.html): The uri that identifies the value set
+</b><br>
+   * Type: <b>uri</b><br>
+   * Path: <b>ActivityDefinition.url | ActorDefinition.url | CapabilityStatement.url | ChargeItemDefinition.url | Citation.url | CodeSystem.url | CompartmentDefinition.url | ConceptMap.url | ConditionDefinition.url | EventDefinition.url | Evidence.url | EvidenceReport.url | EvidenceVariable.url | ExampleScenario.url | GraphDefinition.url | ImplementationGuide.url | Library.url | Measure.url | MessageDefinition.url | NamingSystem.url | ObservationDefinition.url | OperationDefinition.url | PlanDefinition.url | Questionnaire.url | Requirements.url | SearchParameter.url | SpecimenDefinition.url | StructureDefinition.url | StructureMap.url | SubscriptionTopic.url | TerminologyCapabilities.url | TestPlan.url | TestScript.url | ValueSet.url</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.UriClientParam URL = new ca.uhn.fhir.rest.gclient.UriClientParam(SP_URL);
 
  /**
    * Search parameter: <b>container</b>
@@ -3959,26 +4729,6 @@ public class SpecimenDefinition extends DomainResource {
   public static final ca.uhn.fhir.rest.gclient.TokenClientParam EXPERIMENTAL = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_EXPERIMENTAL);
 
  /**
-   * Search parameter: <b>identifier</b>
-   * <p>
-   * Description: <b>The unique identifier associated with the SpecimenDefinition</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>SpecimenDefinition.identifier</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="identifier", path="SpecimenDefinition.identifier", description="The unique identifier associated with the SpecimenDefinition", type="token" )
-  public static final String SP_IDENTIFIER = "identifier";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>identifier</b>
-   * <p>
-   * Description: <b>The unique identifier associated with the SpecimenDefinition</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>SpecimenDefinition.identifier</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
-
- /**
    * Search parameter: <b>is-derived</b>
    * <p>
    * Description: <b>Primary specimen (false) or derived specimen (true)</b><br>
@@ -3997,66 +4747,6 @@ public class SpecimenDefinition extends DomainResource {
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.TokenClientParam IS_DERIVED = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IS_DERIVED);
-
- /**
-   * Search parameter: <b>status</b>
-   * <p>
-   * Description: <b>Publication status of the SpecimenDefinition: draft, active, retired, unknown</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>SpecimenDefinition.status</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="status", path="SpecimenDefinition.status", description="Publication status of the SpecimenDefinition: draft, active, retired, unknown", type="token" )
-  public static final String SP_STATUS = "status";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>status</b>
-   * <p>
-   * Description: <b>Publication status of the SpecimenDefinition: draft, active, retired, unknown</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>SpecimenDefinition.status</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
-
- /**
-   * Search parameter: <b>title</b>
-   * <p>
-   * Description: <b>Human-friendly name of the SpecimenDefinition</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>SpecimenDefinition.title</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="title", path="SpecimenDefinition.title", description="Human-friendly name of the SpecimenDefinition", type="string" )
-  public static final String SP_TITLE = "title";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>title</b>
-   * <p>
-   * Description: <b>Human-friendly name of the SpecimenDefinition</b><br>
-   * Type: <b>string</b><br>
-   * Path: <b>SpecimenDefinition.title</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.StringClientParam TITLE = new ca.uhn.fhir.rest.gclient.StringClientParam(SP_TITLE);
-
- /**
-   * Search parameter: <b>type</b>
-   * <p>
-   * Description: <b>The type of collected specimen</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>SpecimenDefinition.typeCollected</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="type", path="SpecimenDefinition.typeCollected", description="The type of collected specimen", type="token" )
-  public static final String SP_TYPE = "type";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>type</b>
-   * <p>
-   * Description: <b>The type of collected specimen</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>SpecimenDefinition.typeCollected</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam TYPE = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_TYPE);
 
  /**
    * Search parameter: <b>type-tested</b>
@@ -4079,24 +4769,24 @@ public class SpecimenDefinition extends DomainResource {
   public static final ca.uhn.fhir.rest.gclient.TokenClientParam TYPE_TESTED = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_TYPE_TESTED);
 
  /**
-   * Search parameter: <b>url</b>
+   * Search parameter: <b>type</b>
    * <p>
-   * Description: <b>The uri that identifies the specimen definition</b><br>
-   * Type: <b>uri</b><br>
-   * Path: <b>SpecimenDefinition.url</b><br>
+   * Description: <b>The type of collected specimen</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>SpecimenDefinition.typeCollected</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="url", path="SpecimenDefinition.url", description="The uri that identifies the specimen definition", type="uri" )
-  public static final String SP_URL = "url";
+  @SearchParamDefinition(name="type", path="SpecimenDefinition.typeCollected", description="The type of collected specimen", type="token" )
+  public static final String SP_TYPE = "type";
  /**
-   * <b>Fluent Client</b> search parameter constant for <b>url</b>
+   * <b>Fluent Client</b> search parameter constant for <b>type</b>
    * <p>
-   * Description: <b>The uri that identifies the specimen definition</b><br>
-   * Type: <b>uri</b><br>
-   * Path: <b>SpecimenDefinition.url</b><br>
+   * Description: <b>The type of collected specimen</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>SpecimenDefinition.typeCollected</b><br>
    * </p>
    */
-  public static final ca.uhn.fhir.rest.gclient.UriClientParam URL = new ca.uhn.fhir.rest.gclient.UriClientParam(SP_URL);
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam TYPE = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_TYPE);
 
 
 }

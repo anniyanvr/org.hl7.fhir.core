@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ExtensionContextTypeEnumFactory implements EnumFactory<ExtensionContextType> {
@@ -48,21 +44,23 @@ public class ExtensionContextTypeEnumFactory implements EnumFactory<ExtensionCon
       return ExtensionContextType.ELEMENT;
     if ("extension".equals(codeString))
       return ExtensionContextType.EXTENSION;
-    throw new IllegalArgumentException("Unknown ExtensionContextType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ExtensionContextType code '" + codeString + "'");
   }
 
   public String toCode(ExtensionContextType code) {
-    if (code == ExtensionContextType.FHIRPATH)
+       if (code == ExtensionContextType.NULL)
+           return null;
+       if (code == ExtensionContextType.FHIRPATH)
       return "fhirpath";
     if (code == ExtensionContextType.ELEMENT)
       return "element";
     if (code == ExtensionContextType.EXTENSION)
       return "extension";
     return "?";
-  }
+   }
 
-    public String toSystem(ExtensionContextType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ExtensionContextType code) {
+    return code.getSystem();
+  }
 
 }

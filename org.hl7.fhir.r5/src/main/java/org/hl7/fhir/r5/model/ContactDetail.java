@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +47,7 @@ import ca.uhn.fhir.model.api.annotation.Block;
 
 import org.hl7.fhir.r5.model.ContactPoint.ContactPointSystem;
 /**
- * Base StructureDefinition for ContactDetail Type: Specifies contact information for a person or organization.
+ * ContactDetail Type: Specifies contact information for a person or organization.
  */
 @DatatypeDef(name="ContactDetail")
 public class ContactDetail extends DataType implements ICompositeType {
@@ -228,6 +228,17 @@ public class ContactDetail extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("telecom")) {
+          this.getTelecom().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -251,7 +262,7 @@ public class ContactDetail extends DataType implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ContactDetail.name");
+          throw new FHIRException("Cannot call addChild on a singleton property ContactDetail.name");
         }
         else if (name.equals("telecom")) {
           return addTelecom();
@@ -269,6 +280,10 @@ public class ContactDetail extends DataType implements ICompositeType {
         ContactDetail dst = new ContactDetail();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ContactDetail) dst);
       }
 
       public void copyValues(ContactDetail dst) {

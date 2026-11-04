@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -66,11 +62,13 @@ public class EventTimingEnumFactory implements EnumFactory<EventTiming> {
       return EventTiming.NIGHT;
     if ("PHS".equals(codeString))
       return EventTiming.PHS;
-    throw new IllegalArgumentException("Unknown EventTiming code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown EventTiming code '" + codeString + "'");
   }
 
   public String toCode(EventTiming code) {
-    if (code == EventTiming.MORN)
+       if (code == EventTiming.NULL)
+           return null;
+       if (code == EventTiming.MORN)
       return "MORN";
     if (code == EventTiming.MORN_EARLY)
       return "MORN.early";
@@ -95,10 +93,10 @@ public class EventTimingEnumFactory implements EnumFactory<EventTiming> {
     if (code == EventTiming.PHS)
       return "PHS";
     return "?";
-  }
+   }
 
-    public String toSystem(EventTiming code) {
-      return code.getSystem();
-      }
+  public String toSystem(EventTiming code) {
+    return code.getSystem();
+  }
 
 }

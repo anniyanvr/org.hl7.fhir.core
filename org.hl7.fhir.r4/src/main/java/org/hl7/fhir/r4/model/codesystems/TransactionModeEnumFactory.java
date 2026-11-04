@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class TransactionModeEnumFactory implements EnumFactory<TransactionMode> {
@@ -50,11 +46,13 @@ public class TransactionModeEnumFactory implements EnumFactory<TransactionMode> 
       return TransactionMode.TRANSACTION;
     if ("both".equals(codeString))
       return TransactionMode.BOTH;
-    throw new IllegalArgumentException("Unknown TransactionMode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown TransactionMode code '" + codeString + "'");
   }
 
   public String toCode(TransactionMode code) {
-    if (code == TransactionMode.NOTSUPPORTED)
+       if (code == TransactionMode.NULL)
+           return null;
+       if (code == TransactionMode.NOTSUPPORTED)
       return "not-supported";
     if (code == TransactionMode.BATCH)
       return "batch";
@@ -63,10 +61,10 @@ public class TransactionModeEnumFactory implements EnumFactory<TransactionMode> 
     if (code == TransactionMode.BOTH)
       return "both";
     return "?";
-  }
+   }
 
-    public String toSystem(TransactionMode code) {
-      return code.getSystem();
-      }
+  public String toSystem(TransactionMode code) {
+    return code.getSystem();
+  }
 
 }

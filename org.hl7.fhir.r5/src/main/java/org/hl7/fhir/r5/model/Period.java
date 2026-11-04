@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +46,7 @@ import ca.uhn.fhir.model.api.annotation.Block;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 /**
- * Base StructureDefinition for Period Type: A time period defined by a start and end date and optionally time.
+ * Period Type: A time period defined by a start and end date and optionally time.
  */
 @DatatypeDef(name="Period")
 public class Period extends DataType implements ICompositeType {
@@ -223,6 +223,17 @@ public class Period extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("start")) {
+          this.start = null;
+        } else if (name.equals("end")) {
+          this.end = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -246,10 +257,10 @@ public class Period extends DataType implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("start")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Period.start");
+          throw new FHIRException("Cannot call addChild on a singleton property Period.start");
         }
         else if (name.equals("end")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Period.end");
+          throw new FHIRException("Cannot call addChild on a singleton property Period.end");
         }
         else
           return super.addChild(name);
@@ -264,6 +275,10 @@ public class Period extends DataType implements ICompositeType {
         Period dst = new Period();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Period) dst);
       }
 
       public void copyValues(Period dst) {

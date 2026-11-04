@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class GroupTypeEnumFactory implements EnumFactory<GroupType> {
@@ -54,11 +50,13 @@ public class GroupTypeEnumFactory implements EnumFactory<GroupType> {
       return GroupType.MEDICATION;
     if ("substance".equals(codeString))
       return GroupType.SUBSTANCE;
-    throw new IllegalArgumentException("Unknown GroupType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown GroupType code '" + codeString + "'");
   }
 
   public String toCode(GroupType code) {
-    if (code == GroupType.PERSON)
+       if (code == GroupType.NULL)
+           return null;
+       if (code == GroupType.PERSON)
       return "person";
     if (code == GroupType.ANIMAL)
       return "animal";
@@ -71,10 +69,10 @@ public class GroupTypeEnumFactory implements EnumFactory<GroupType> {
     if (code == GroupType.SUBSTANCE)
       return "substance";
     return "?";
-  }
+   }
 
-    public String toSystem(GroupType code) {
-      return code.getSystem();
-      }
+  public String toSystem(GroupType code) {
+    return code.getSystem();
+  }
 
 }

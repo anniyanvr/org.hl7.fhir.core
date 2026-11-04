@@ -1,16 +1,18 @@
 package org.hl7.fhir.convertors.conv14_40;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_14_40;
 import org.hl7.fhir.convertors.context.ConversionContext14_40;
+import org.hl7.fhir.convertors.conv14_40.datatypes14_40.BackboneElement14_40;
 import org.hl7.fhir.convertors.conv14_40.datatypes14_40.Element14_40;
 import org.hl7.fhir.convertors.conv14_40.datatypes14_40.Type14_40;
 import org.hl7.fhir.convertors.conv14_40.resources14_40.Resource14_40;
 import org.hl7.fhir.dstu2016may.model.CodeableConcept;
 import org.hl7.fhir.exceptions.FHIRException;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -65,12 +67,15 @@ public class VersionConvertor_14_40 {
 
   private final BaseAdvisor_14_40 advisor;
   private final Element14_40 elementConvertor;
+
+  private final BackboneElement14_40 backboneElementConvertor;
   private final Resource14_40 resourceConvertor;
   private final Type14_40 typeConvertor;
 
   public VersionConvertor_14_40(@Nonnull BaseAdvisor_14_40 advisor) {
     this.advisor = advisor;
     this.elementConvertor = new Element14_40(advisor);
+    backboneElementConvertor = new BackboneElement14_40();
     this.resourceConvertor = new Resource14_40(advisor);
     this.typeConvertor = new Type14_40(advisor);
   }
@@ -97,60 +102,80 @@ public class VersionConvertor_14_40 {
   }
 
   public org.hl7.fhir.r4.model.Resource convertResource(@Nonnull org.hl7.fhir.dstu2016may.model.Resource src) throws FHIRException {
-    ConversionContext14_40.INSTANCE.init(this, src.fhirType());
+    ConversionContext14_40.INSTANCE.init(this);
     try {
       return resourceConvertor.convertResource(src);
     } finally {
-      ConversionContext14_40.INSTANCE.close(src.fhirType());
+      ConversionContext14_40.INSTANCE.close();
     }
   }
 
   public org.hl7.fhir.dstu2016may.model.Resource convertResource(@Nonnull org.hl7.fhir.r4.model.Resource src) throws FHIRException {
-    ConversionContext14_40.INSTANCE.init(this, src.fhirType());
+    ConversionContext14_40.INSTANCE.init(this);
     try {
       return resourceConvertor.convertResource(src);
     } finally {
-      ConversionContext14_40.INSTANCE.close(src.fhirType());
+      ConversionContext14_40.INSTANCE.close();
     }
   }
 
   public org.hl7.fhir.r4.model.Type convertType(@Nonnull org.hl7.fhir.dstu2016may.model.Type src) throws FHIRException {
-    ConversionContext14_40.INSTANCE.init(this, src.fhirType());
+    ConversionContext14_40.INSTANCE.init(this);
     try {
       return typeConvertor.convertType(src);
     } finally {
-      ConversionContext14_40.INSTANCE.close(src.fhirType());
+      ConversionContext14_40.INSTANCE.close();
     }
   }
 
   public org.hl7.fhir.dstu2016may.model.Type convertType(@Nonnull org.hl7.fhir.r4.model.Type src) throws FHIRException {
-    ConversionContext14_40.INSTANCE.init(this, src.fhirType());
+    ConversionContext14_40.INSTANCE.init(this);
     try {
       return typeConvertor.convertType(src);
     } finally {
-      ConversionContext14_40.INSTANCE.close(src.fhirType());
+      ConversionContext14_40.INSTANCE.close();
     }
   }
 
-  public void copyDomainResource(@Nonnull org.hl7.fhir.dstu2016may.model.DomainResource src,
-                                 @Nonnull org.hl7.fhir.r4.model.DomainResource tgt) throws FHIRException {
-    resourceConvertor.copyDomainResource(src, tgt);
+  public void copyDomainResource(
+    @Nonnull org.hl7.fhir.dstu2016may.model.DomainResource src,
+    @Nonnull org.hl7.fhir.r4.model.DomainResource tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    resourceConvertor.copyDomainResource(src, tgt, extensionUrlsToIgnore);
   }
 
-  public void copyDomainResource(@Nonnull org.hl7.fhir.r4.model.DomainResource src,
-                                 @Nonnull org.hl7.fhir.dstu2016may.model.DomainResource tgt) throws FHIRException {
-    resourceConvertor.copyDomainResource(src, tgt);
+  public void copyDomainResource(
+    @Nonnull org.hl7.fhir.r4.model.DomainResource src,
+    @Nonnull org.hl7.fhir.dstu2016may.model.DomainResource tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    resourceConvertor.copyDomainResource(src, tgt, extensionUrlsToIgnore);
   }
 
-  public void copyElement(@Nonnull org.hl7.fhir.dstu2016may.model.Element src,
-                          @Nonnull org.hl7.fhir.r4.model.Element tgt,
-                          String... var) throws FHIRException {
-    elementConvertor.copyElement(src, tgt, ConversionContext14_40.INSTANCE.path(), var);
+  public void copyElement(
+    @Nonnull org.hl7.fhir.dstu2016may.model.Element src,
+    @Nonnull org.hl7.fhir.r4.model.Element tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    elementConvertor.copyElement(src, tgt, extensionUrlsToIgnore);
   }
 
-  public void copyElement(@Nonnull org.hl7.fhir.r4.model.Element src,
-                          @Nonnull org.hl7.fhir.dstu2016may.model.Element tgt,
-                          String... var) throws FHIRException {
-    elementConvertor.copyElement(src, tgt, ConversionContext14_40.INSTANCE.path(), var);
+  public void copyElement(
+    @Nonnull org.hl7.fhir.r4.model.Element src,
+    @Nonnull org.hl7.fhir.dstu2016may.model.Element tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    elementConvertor.copyElement(src, tgt, extensionUrlsToIgnore);
+  }
+
+  public void copyBackboneElement(
+    @Nonnull org.hl7.fhir.r4.model.BackboneElement src,
+    @Nonnull org.hl7.fhir.dstu2016may.model.BackboneElement tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    backboneElementConvertor.copyBackboneElement(src, tgt, extensionUrlsToIgnore);
+  }
+
+  public void copyBackboneElement(
+    @Nonnull org.hl7.fhir.dstu2016may.model.BackboneElement src,
+    @Nonnull org.hl7.fhir.r4.model.BackboneElement tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    backboneElementConvertor.copyBackboneElement(src, tgt, extensionUrlsToIgnore);
   }
 }

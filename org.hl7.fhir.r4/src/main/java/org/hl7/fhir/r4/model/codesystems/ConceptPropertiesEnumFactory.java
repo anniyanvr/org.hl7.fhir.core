@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ConceptPropertiesEnumFactory implements EnumFactory<ConceptProperties> {
@@ -52,11 +48,13 @@ public class ConceptPropertiesEnumFactory implements EnumFactory<ConceptProperti
       return ConceptProperties.PARENT;
     if ("child".equals(codeString))
       return ConceptProperties.CHILD;
-    throw new IllegalArgumentException("Unknown ConceptProperties code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ConceptProperties code '" + codeString + "'");
   }
 
   public String toCode(ConceptProperties code) {
-    if (code == ConceptProperties.INACTIVE)
+       if (code == ConceptProperties.NULL)
+           return null;
+       if (code == ConceptProperties.INACTIVE)
       return "inactive";
     if (code == ConceptProperties.DEPRECATED)
       return "deprecated";
@@ -67,10 +65,10 @@ public class ConceptPropertiesEnumFactory implements EnumFactory<ConceptProperti
     if (code == ConceptProperties.CHILD)
       return "child";
     return "?";
-  }
+   }
 
-    public String toSystem(ConceptProperties code) {
-      return code.getSystem();
-      }
+  public String toSystem(ConceptProperties code) {
+    return code.getSystem();
+  }
 
 }

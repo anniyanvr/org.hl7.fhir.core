@@ -5,18 +5,20 @@
     <parent>
         <groupId>ca.uhn.hapi.fhir</groupId>
         <artifactId>org.hl7.fhir.core</artifactId>
-        <version>5.6.1-SNAPSHOT</version>
+        <version>7.0.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>org.hl7.fhir.report</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>pom</packaging>
+
+    <name>HL7 Core Artifact - Report</name>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <jacoco_version>0.8.5</jacoco_version>
+        <checkstyle_config_location>${project.parent.basedir}</checkstyle_config_location>
     </properties>
 
     <dependencies>
@@ -38,12 +40,27 @@
         </dependency>
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>org.hl7.fhir.model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>org.hl7.fhir.support</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>org.hl7.fhir.utilities</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>org.hl7.fhir.validation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>org.hl7.fhir.validation.cli</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -53,7 +70,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco_version}</version>
                 <executions>
                     <execution>
                         <id>report-aggregate</id>
@@ -66,9 +82,22 @@
                             <footer>Code Coverage Report for FHIR core libs ${project.version}</footer>
                             <includes>
                                 <!-- Analyze class files only to exclude shaded agent JAR from report -->
-                                <include>**/*.class</include>
+                                <include>org/hl7/fhir/**/*.class</include>
                             </includes>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>spotbugs-aggregate-report</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>spotbugs-aggregate</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -83,6 +112,14 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <configuration>
+                    <!-- -->
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -90,7 +127,7 @@
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
                     <configuration>
-                        <skip>true</skip>
+                        <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
                     </configuration>
                 </plugin>
                 <plugin>

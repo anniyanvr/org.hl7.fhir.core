@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ParticipationstatusEnumFactory implements EnumFactory<Participationstatus> {
@@ -50,11 +46,13 @@ public class ParticipationstatusEnumFactory implements EnumFactory<Participation
       return Participationstatus.TENTATIVE;
     if ("needs-action".equals(codeString))
       return Participationstatus.NEEDSACTION;
-    throw new IllegalArgumentException("Unknown Participationstatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown Participationstatus code '" + codeString + "'");
   }
 
   public String toCode(Participationstatus code) {
-    if (code == Participationstatus.ACCEPTED)
+       if (code == Participationstatus.NULL)
+           return null;
+       if (code == Participationstatus.ACCEPTED)
       return "accepted";
     if (code == Participationstatus.DECLINED)
       return "declined";
@@ -63,10 +61,10 @@ public class ParticipationstatusEnumFactory implements EnumFactory<Participation
     if (code == Participationstatus.NEEDSACTION)
       return "needs-action";
     return "?";
-  }
+   }
 
-    public String toSystem(Participationstatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(Participationstatus code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ReferralcategoryEnumFactory implements EnumFactory<Referralcategory> {
@@ -48,21 +44,23 @@ public class ReferralcategoryEnumFactory implements EnumFactory<Referralcategory
       return Referralcategory.PLAN;
     if ("request".equals(codeString))
       return Referralcategory.REQUEST;
-    throw new IllegalArgumentException("Unknown Referralcategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown Referralcategory code '" + codeString + "'");
   }
 
   public String toCode(Referralcategory code) {
-    if (code == Referralcategory.PROPOSAL)
+       if (code == Referralcategory.NULL)
+           return null;
+       if (code == Referralcategory.PROPOSAL)
       return "proposal";
     if (code == Referralcategory.PLAN)
       return "plan";
     if (code == Referralcategory.REQUEST)
       return "request";
     return "?";
-  }
+   }
 
-    public String toSystem(Referralcategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(Referralcategory code) {
+    return code.getSystem();
+  }
 
 }

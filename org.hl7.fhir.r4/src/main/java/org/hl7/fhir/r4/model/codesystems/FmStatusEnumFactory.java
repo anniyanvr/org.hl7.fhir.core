@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class FmStatusEnumFactory implements EnumFactory<FmStatus> {
@@ -50,11 +46,13 @@ public class FmStatusEnumFactory implements EnumFactory<FmStatus> {
       return FmStatus.DRAFT;
     if ("entered-in-error".equals(codeString))
       return FmStatus.ENTEREDINERROR;
-    throw new IllegalArgumentException("Unknown FmStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown FmStatus code '" + codeString + "'");
   }
 
   public String toCode(FmStatus code) {
-    if (code == FmStatus.ACTIVE)
+       if (code == FmStatus.NULL)
+           return null;
+       if (code == FmStatus.ACTIVE)
       return "active";
     if (code == FmStatus.CANCELLED)
       return "cancelled";
@@ -63,10 +61,10 @@ public class FmStatusEnumFactory implements EnumFactory<FmStatus> {
     if (code == FmStatus.ENTEREDINERROR)
       return "entered-in-error";
     return "?";
-  }
+   }
 
-    public String toSystem(FmStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(FmStatus code) {
+    return code.getSystem();
+  }
 
 }

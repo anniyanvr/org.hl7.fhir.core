@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class MessageheaderResponseRequestEnumFactory implements EnumFactory<MessageheaderResponseRequest> {
@@ -50,11 +46,13 @@ public class MessageheaderResponseRequestEnumFactory implements EnumFactory<Mess
       return MessageheaderResponseRequest.NEVER;
     if ("on-success".equals(codeString))
       return MessageheaderResponseRequest.ONSUCCESS;
-    throw new IllegalArgumentException("Unknown MessageheaderResponseRequest code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MessageheaderResponseRequest code '" + codeString + "'");
   }
 
   public String toCode(MessageheaderResponseRequest code) {
-    if (code == MessageheaderResponseRequest.ALWAYS)
+       if (code == MessageheaderResponseRequest.NULL)
+           return null;
+       if (code == MessageheaderResponseRequest.ALWAYS)
       return "always";
     if (code == MessageheaderResponseRequest.ONERROR)
       return "on-error";
@@ -63,10 +61,10 @@ public class MessageheaderResponseRequestEnumFactory implements EnumFactory<Mess
     if (code == MessageheaderResponseRequest.ONSUCCESS)
       return "on-success";
     return "?";
-  }
+   }
 
-    public String toSystem(MessageheaderResponseRequest code) {
-      return code.getSystem();
-      }
+  public String toSystem(MessageheaderResponseRequest code) {
+    return code.getSystem();
+  }
 
 }

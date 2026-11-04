@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +49,7 @@ import ca.uhn.fhir.model.api.annotation.Block;
 
 import org.hl7.fhir.instance.model.api.INarrative;
 /**
- * Base StructureDefinition for Narrative Type: A human-readable summary of the resource conveying the essential clinical and business information for the resource.
+ * Narrative Type: A human-readable summary of the resource conveying the essential clinical and business information for the resource.
  */
 @DatatypeDef(name="Narrative")
 public class Narrative extends BaseNarrative implements INarrative {
@@ -97,6 +97,7 @@ public class Narrative extends BaseNarrative implements INarrative {
             case EXTENSIONS: return "extensions";
             case ADDITIONAL: return "additional";
             case EMPTY: return "empty";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -106,6 +107,7 @@ public class Narrative extends BaseNarrative implements INarrative {
             case EXTENSIONS: return "http://hl7.org/fhir/narrative-status";
             case ADDITIONAL: return "http://hl7.org/fhir/narrative-status";
             case EMPTY: return "http://hl7.org/fhir/narrative-status";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -115,6 +117,7 @@ public class Narrative extends BaseNarrative implements INarrative {
             case EXTENSIONS: return "The contents of the narrative are entirely generated from the core elements in the content and some of the content is generated from extensions. The narrative SHALL reflect the impact of all modifier extensions.";
             case ADDITIONAL: return "The contents of the narrative may contain additional information not found in the structured data. Note that there is no computable way to determine what the extra information is, other than by human inspection.";
             case EMPTY: return "The contents of the narrative are some equivalent of \"No human-readable text provided in this case\".";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -124,6 +127,7 @@ public class Narrative extends BaseNarrative implements INarrative {
             case EXTENSIONS: return "Extensions";
             case ADDITIONAL: return "Additional";
             case EMPTY: return "Empty";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -144,26 +148,28 @@ public class Narrative extends BaseNarrative implements INarrative {
           return NarrativeStatus.EMPTY;
         throw new IllegalArgumentException("Unknown NarrativeStatus code '"+codeString+"'");
         }
-        public Enumeration<NarrativeStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<NarrativeStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<NarrativeStatus>(this);
+            return new Enumeration<NarrativeStatus>(this, NarrativeStatus.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<NarrativeStatus>(this, NarrativeStatus.NULL, code);
         if ("generated".equals(codeString))
-          return new Enumeration<NarrativeStatus>(this, NarrativeStatus.GENERATED);
+          return new Enumeration<NarrativeStatus>(this, NarrativeStatus.GENERATED, code);
         if ("extensions".equals(codeString))
-          return new Enumeration<NarrativeStatus>(this, NarrativeStatus.EXTENSIONS);
+          return new Enumeration<NarrativeStatus>(this, NarrativeStatus.EXTENSIONS, code);
         if ("additional".equals(codeString))
-          return new Enumeration<NarrativeStatus>(this, NarrativeStatus.ADDITIONAL);
+          return new Enumeration<NarrativeStatus>(this, NarrativeStatus.ADDITIONAL, code);
         if ("empty".equals(codeString))
-          return new Enumeration<NarrativeStatus>(this, NarrativeStatus.EMPTY);
+          return new Enumeration<NarrativeStatus>(this, NarrativeStatus.EMPTY, code);
         throw new FHIRException("Unknown NarrativeStatus code '"+codeString+"'");
         }
     public String toCode(NarrativeStatus code) {
-      if (code == NarrativeStatus.GENERATED)
+       if (code == NarrativeStatus.NULL)
+           return null;
+       if (code == NarrativeStatus.GENERATED)
         return "generated";
       if (code == NarrativeStatus.EXTENSIONS)
         return "extensions";
@@ -172,7 +178,7 @@ public class Narrative extends BaseNarrative implements INarrative {
       if (code == NarrativeStatus.EMPTY)
         return "empty";
       return "?";
-      }
+   }
     public String toSystem(NarrativeStatus code) {
       return code.getSystem();
       }
@@ -283,6 +289,7 @@ public class Narrative extends BaseNarrative implements INarrative {
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
         children.add(new Property("status", "code", "The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data.", 0, 1, status));
+        children.add(new Property("div", "xhtml", "The actual narrative content, a stripped down version of XHTML", 0, 1, new XhtmlType(this))); 
       }
 
       @Override
@@ -298,7 +305,7 @@ public class Narrative extends BaseNarrative implements INarrative {
       public Base[] getProperty(int hash, String name, boolean checkValid) throws FHIRException {
         switch (hash) {
         case -892481550: /*status*/ return this.status == null ? new Base[0] : new Base[] {this.status}; // Enumeration<NarrativeStatus>
-        case 99473: /*div*/ return this.div == null ? new Base[0] : new Base[] {new StringType(new org.hl7.fhir.utilities.xhtml.XhtmlComposer(true).composeEx(this.div))}; // XhtmlNode
+        case 99473: /*div*/ return this.div == null ? new Base[0] : new Base[] {new XhtmlType(this)}; // XhtmlNode
         default: return super.getProperty(hash, name, checkValid);
         }
 
@@ -313,6 +320,7 @@ public class Narrative extends BaseNarrative implements INarrative {
           return value;
         case 99473: // div
           this.div = TypeConvertor.castToXhtml(value); // XhtmlNode
+          ((XhtmlType) value).setPlace(this);
           return value;
         default: return super.setProperty(hash, name, value);
         }
@@ -329,6 +337,18 @@ public class Narrative extends BaseNarrative implements INarrative {
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("status")) {
+          value = new NarrativeStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<NarrativeStatus>
+        } else if (name.equals("div")) {
+          this.div = null;
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -357,7 +377,7 @@ public class Narrative extends BaseNarrative implements INarrative {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Narrative.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Narrative.status");
         }
         else
           return super.addChild(name);
@@ -372,6 +392,10 @@ public class Narrative extends BaseNarrative implements INarrative {
         Narrative dst = new Narrative();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Narrative) dst);
       }
 
       public void copyValues(Narrative dst) {

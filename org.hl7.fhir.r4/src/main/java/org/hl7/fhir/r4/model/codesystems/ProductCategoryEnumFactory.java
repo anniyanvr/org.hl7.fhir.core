@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ProductCategoryEnumFactory implements EnumFactory<ProductCategory> {
@@ -52,11 +48,13 @@ public class ProductCategoryEnumFactory implements EnumFactory<ProductCategory> 
       return ProductCategory.CELLS;
     if ("biologicalAgent".equals(codeString))
       return ProductCategory.BIOLOGICALAGENT;
-    throw new IllegalArgumentException("Unknown ProductCategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ProductCategory code '" + codeString + "'");
   }
 
   public String toCode(ProductCategory code) {
-    if (code == ProductCategory.ORGAN)
+       if (code == ProductCategory.NULL)
+           return null;
+       if (code == ProductCategory.ORGAN)
       return "organ";
     if (code == ProductCategory.TISSUE)
       return "tissue";
@@ -67,10 +65,10 @@ public class ProductCategoryEnumFactory implements EnumFactory<ProductCategory> 
     if (code == ProductCategory.BIOLOGICALAGENT)
       return "biologicalAgent";
     return "?";
-  }
+   }
 
-    public String toSystem(ProductCategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(ProductCategory code) {
+    return code.getSystem();
+  }
 
 }

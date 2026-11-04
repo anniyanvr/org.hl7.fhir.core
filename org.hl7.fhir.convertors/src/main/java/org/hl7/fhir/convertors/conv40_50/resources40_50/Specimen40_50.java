@@ -1,11 +1,17 @@
 package org.hl7.fhir.convertors.conv40_50.resources40_50;
 
 import org.hl7.fhir.convertors.context.ConversionContext40_50;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.*;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Annotation40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.CodeableConcept40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Duration40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Identifier40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.SimpleQuantity40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.DateTime40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.model.Enumeration;
+import org.hl7.fhir.r5.model.Specimen;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -101,60 +107,68 @@ public class Specimen40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Specimen.SpecimenStatus> convertSpecimenStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Specimen.SpecimenStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Specimen.SpecimenStatus> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Specimen.SpecimenStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case AVAILABLE:
-        tgt.setValue(org.hl7.fhir.r5.model.Specimen.SpecimenStatus.AVAILABLE);
-        break;
-      case UNAVAILABLE:
-        tgt.setValue(org.hl7.fhir.r5.model.Specimen.SpecimenStatus.UNAVAILABLE);
-        break;
-      case UNSATISFACTORY:
-        tgt.setValue(org.hl7.fhir.r5.model.Specimen.SpecimenStatus.UNSATISFACTORY);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.Specimen.SpecimenStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Specimen.SpecimenStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Specimen.SpecimenStatus> tgt = new Enumeration<>(new Specimen.SpecimenStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case AVAILABLE:
+                  tgt.setValue(Specimen.SpecimenStatus.AVAILABLE);
+                  break;
+              case UNAVAILABLE:
+                  tgt.setValue(Specimen.SpecimenStatus.UNAVAILABLE);
+                  break;
+              case UNSATISFACTORY:
+                  tgt.setValue(Specimen.SpecimenStatus.UNSATISFACTORY);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(Specimen.SpecimenStatus.ENTEREDINERROR);
+                  break;
+              default:
+                  tgt.setValue(Specimen.SpecimenStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Specimen.SpecimenStatus> convertSpecimenStatus(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Specimen.SpecimenStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Specimen.SpecimenStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Specimen.SpecimenStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case AVAILABLE:
-        tgt.setValue(org.hl7.fhir.r4.model.Specimen.SpecimenStatus.AVAILABLE);
-        break;
-      case UNAVAILABLE:
-        tgt.setValue(org.hl7.fhir.r4.model.Specimen.SpecimenStatus.UNAVAILABLE);
-        break;
-      case UNSATISFACTORY:
-        tgt.setValue(org.hl7.fhir.r4.model.Specimen.SpecimenStatus.UNSATISFACTORY);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.Specimen.SpecimenStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.Specimen.SpecimenStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Specimen.SpecimenStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Specimen.SpecimenStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case AVAILABLE:
+                  tgt.setValue(org.hl7.fhir.r4.model.Specimen.SpecimenStatus.AVAILABLE);
+                  break;
+              case UNAVAILABLE:
+                  tgt.setValue(org.hl7.fhir.r4.model.Specimen.SpecimenStatus.UNAVAILABLE);
+                  break;
+              case UNSATISFACTORY:
+                  tgt.setValue(org.hl7.fhir.r4.model.Specimen.SpecimenStatus.UNSATISFACTORY);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(org.hl7.fhir.r4.model.Specimen.SpecimenStatus.ENTEREDINERROR);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.Specimen.SpecimenStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r5.model.Specimen.SpecimenCollectionComponent convertSpecimenCollectionComponent(org.hl7.fhir.r4.model.Specimen.SpecimenCollectionComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Specimen.SpecimenCollectionComponent tgt = new org.hl7.fhir.r5.model.Specimen.SpecimenCollectionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCollector())
       tgt.setCollector(Reference40_50.convertReference(src.getCollector()));
     if (src.hasCollected())
@@ -166,7 +180,7 @@ public class Specimen40_50 {
     if (src.hasMethod())
       tgt.setMethod(CodeableConcept40_50.convertCodeableConcept(src.getMethod()));
     if (src.hasBodySite())
-      tgt.setBodySite(CodeableConcept40_50.convertCodeableConcept(src.getBodySite()));
+      tgt.getBodySite().setConcept(CodeableConcept40_50.convertCodeableConcept(src.getBodySite()));
     if (src.hasFastingStatus())
       tgt.setFastingStatus(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getFastingStatus()));
     return tgt;
@@ -176,7 +190,7 @@ public class Specimen40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Specimen.SpecimenCollectionComponent tgt = new org.hl7.fhir.r4.model.Specimen.SpecimenCollectionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCollector())
       tgt.setCollector(Reference40_50.convertReference(src.getCollector()));
     if (src.hasCollected())
@@ -187,8 +201,8 @@ public class Specimen40_50 {
       tgt.setQuantity(SimpleQuantity40_50.convertSimpleQuantity(src.getQuantity()));
     if (src.hasMethod())
       tgt.setMethod(CodeableConcept40_50.convertCodeableConcept(src.getMethod()));
-    if (src.hasBodySite())
-      tgt.setBodySite(CodeableConcept40_50.convertCodeableConcept(src.getBodySite()));
+    if (src.getBodySite().hasConcept())
+      tgt.setBodySite(CodeableConcept40_50.convertCodeableConcept(src.getBodySite().getConcept()));
     if (src.hasFastingStatus())
       tgt.setFastingStatus(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getFastingStatus()));
     return tgt;
@@ -198,11 +212,11 @@ public class Specimen40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Specimen.SpecimenProcessingComponent tgt = new org.hl7.fhir.r5.model.Specimen.SpecimenProcessingComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasDescription())
       tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
-    if (src.hasProcedure())
-      tgt.setProcedure(CodeableConcept40_50.convertCodeableConcept(src.getProcedure()));
+//    if (src.hasProcedure())
+//      tgt.setProcedure(CodeableConcept40_50.convertCodeableConcept(src.getProcedure()));
     for (org.hl7.fhir.r4.model.Reference t : src.getAdditive()) tgt.addAdditive(Reference40_50.convertReference(t));
     if (src.hasTime())
       tgt.setTime(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getTime()));
@@ -213,11 +227,11 @@ public class Specimen40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Specimen.SpecimenProcessingComponent tgt = new org.hl7.fhir.r4.model.Specimen.SpecimenProcessingComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasDescription())
       tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
-    if (src.hasProcedure())
-      tgt.setProcedure(CodeableConcept40_50.convertCodeableConcept(src.getProcedure()));
+//    if (src.hasProcedure())
+//      tgt.setProcedure(CodeableConcept40_50.convertCodeableConcept(src.getProcedure()));
     for (org.hl7.fhir.r5.model.Reference t : src.getAdditive()) tgt.addAdditive(Reference40_50.convertReference(t));
     if (src.hasTime())
       tgt.setTime(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getTime()));
@@ -228,19 +242,19 @@ public class Specimen40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Specimen.SpecimenContainerComponent tgt = new org.hl7.fhir.r5.model.Specimen.SpecimenContainerComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    for (org.hl7.fhir.r4.model.Identifier t : src.getIdentifier())
-      tgt.addIdentifier(Identifier40_50.convertIdentifier(t));
-    if (src.hasDescription())
-      tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
-    if (src.hasType())
-      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
-    if (src.hasCapacity())
-      tgt.setCapacity(SimpleQuantity40_50.convertSimpleQuantity(src.getCapacity()));
-    if (src.hasSpecimenQuantity())
-      tgt.setSpecimenQuantity(SimpleQuantity40_50.convertSimpleQuantity(src.getSpecimenQuantity()));
-    if (src.hasAdditive())
-      tgt.setAdditive(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getAdditive()));
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
+//    for (org.hl7.fhir.r4.model.Identifier t : src.getIdentifier())
+//      tgt.addIdentifier(Identifier40_50.convertIdentifier(t));
+//    if (src.hasDescription())
+//      tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
+//    if (src.hasType())
+//      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
+//    if (src.hasCapacity())
+//      tgt.setCapacity(SimpleQuantity40_50.convertSimpleQuantity(src.getCapacity()));
+//    if (src.hasSpecimenQuantity())
+//      tgt.setSpecimenQuantity(SimpleQuantity40_50.convertSimpleQuantity(src.getSpecimenQuantity()));
+//    if (src.hasAdditive())
+//      tgt.setAdditive(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getAdditive()));
     return tgt;
   }
 
@@ -248,19 +262,19 @@ public class Specimen40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Specimen.SpecimenContainerComponent tgt = new org.hl7.fhir.r4.model.Specimen.SpecimenContainerComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    for (org.hl7.fhir.r5.model.Identifier t : src.getIdentifier())
-      tgt.addIdentifier(Identifier40_50.convertIdentifier(t));
-    if (src.hasDescription())
-      tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
-    if (src.hasType())
-      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
-    if (src.hasCapacity())
-      tgt.setCapacity(SimpleQuantity40_50.convertSimpleQuantity(src.getCapacity()));
-    if (src.hasSpecimenQuantity())
-      tgt.setSpecimenQuantity(SimpleQuantity40_50.convertSimpleQuantity(src.getSpecimenQuantity()));
-    if (src.hasAdditive())
-      tgt.setAdditive(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getAdditive()));
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
+//    for (org.hl7.fhir.r5.model.Identifier t : src.getIdentifier())
+//      tgt.addIdentifier(Identifier40_50.convertIdentifier(t));
+//    if (src.hasDescription())
+//      tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
+//    if (src.hasType())
+//      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
+//    if (src.hasCapacity())
+//      tgt.setCapacity(SimpleQuantity40_50.convertSimpleQuantity(src.getCapacity()));
+//    if (src.hasSpecimenQuantity())
+//      tgt.setSpecimenQuantity(SimpleQuantity40_50.convertSimpleQuantity(src.getSpecimenQuantity()));
+//    if (src.hasAdditive())
+//      tgt.setAdditive(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getAdditive()));
     return tgt;
   }
 }

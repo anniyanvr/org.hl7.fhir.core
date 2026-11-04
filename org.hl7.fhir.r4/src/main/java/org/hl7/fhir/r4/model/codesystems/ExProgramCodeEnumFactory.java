@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ExProgramCodeEnumFactory implements EnumFactory<ExProgramCode> {
@@ -50,11 +46,13 @@ public class ExProgramCodeEnumFactory implements EnumFactory<ExProgramCode> {
       return ExProgramCode.AUSCR;
     if ("none".equals(codeString))
       return ExProgramCode.NONE;
-    throw new IllegalArgumentException("Unknown ExProgramCode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ExProgramCode code '" + codeString + "'");
   }
 
   public String toCode(ExProgramCode code) {
-    if (code == ExProgramCode.AS)
+       if (code == ExProgramCode.NULL)
+           return null;
+       if (code == ExProgramCode.AS)
       return "as";
     if (code == ExProgramCode.HD)
       return "hd";
@@ -63,10 +61,10 @@ public class ExProgramCodeEnumFactory implements EnumFactory<ExProgramCode> {
     if (code == ExProgramCode.NONE)
       return "none";
     return "?";
-  }
+   }
 
-    public String toSystem(ExProgramCode code) {
-      return code.getSystem();
-      }
+  public String toSystem(ExProgramCode code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -80,11 +76,13 @@ public class V3AddressUseEnumFactory implements EnumFactory<V3AddressUse> {
       return V3AddressUse.MC;
     if ("PG".equals(codeString))
       return V3AddressUse.PG;
-    throw new IllegalArgumentException("Unknown V3AddressUse code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3AddressUse code '" + codeString + "'");
   }
 
   public String toCode(V3AddressUse code) {
-    if (code == V3AddressUse._GENERALADDRESSUSE)
+       if (code == V3AddressUse.NULL)
+           return null;
+       if (code == V3AddressUse._GENERALADDRESSUSE)
       return "_GeneralAddressUse";
     if (code == V3AddressUse.BAD)
       return "BAD";
@@ -123,10 +121,10 @@ public class V3AddressUseEnumFactory implements EnumFactory<V3AddressUse> {
     if (code == V3AddressUse.PG)
       return "PG";
     return "?";
-  }
+   }
 
-    public String toSystem(V3AddressUse code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3AddressUse code) {
+    return code.getSystem();
+  }
 
 }

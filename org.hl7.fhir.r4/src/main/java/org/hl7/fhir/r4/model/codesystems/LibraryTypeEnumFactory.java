@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class LibraryTypeEnumFactory implements EnumFactory<LibraryType> {
@@ -50,11 +46,13 @@ public class LibraryTypeEnumFactory implements EnumFactory<LibraryType> {
       return LibraryType.ASSETCOLLECTION;
     if ("module-definition".equals(codeString))
       return LibraryType.MODULEDEFINITION;
-    throw new IllegalArgumentException("Unknown LibraryType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown LibraryType code '" + codeString + "'");
   }
 
   public String toCode(LibraryType code) {
-    if (code == LibraryType.LOGICLIBRARY)
+       if (code == LibraryType.NULL)
+           return null;
+       if (code == LibraryType.LOGICLIBRARY)
       return "logic-library";
     if (code == LibraryType.MODELDEFINITION)
       return "model-definition";
@@ -63,10 +61,10 @@ public class LibraryTypeEnumFactory implements EnumFactory<LibraryType> {
     if (code == LibraryType.MODULEDEFINITION)
       return "module-definition";
     return "?";
-  }
+   }
 
-    public String toSystem(LibraryType code) {
-      return code.getSystem();
-      }
+  public String toSystem(LibraryType code) {
+    return code.getSystem();
+  }
 
 }

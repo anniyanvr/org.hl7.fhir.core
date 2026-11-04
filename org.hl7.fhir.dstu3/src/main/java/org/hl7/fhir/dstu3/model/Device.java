@@ -170,12 +170,12 @@ public class Device extends DomainResource {
           return UDIEntryType.UNKNOWN;
         throw new IllegalArgumentException("Unknown UDIEntryType code '"+codeString+"'");
         }
-        public Enumeration<UDIEntryType> fromType(Base code) throws FHIRException {
+        public Enumeration<UDIEntryType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<UDIEntryType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("barcode".equals(codeString))
@@ -193,7 +193,9 @@ public class Device extends DomainResource {
         throw new FHIRException("Unknown UDIEntryType code '"+codeString+"'");
         }
     public String toCode(UDIEntryType code) {
-      if (code == UDIEntryType.BARCODE)
+       if (code == UDIEntryType.NULL)
+           return null;
+       if (code == UDIEntryType.BARCODE)
         return "barcode";
       if (code == UDIEntryType.RFID)
         return "rfid";
@@ -206,7 +208,7 @@ public class Device extends DomainResource {
       if (code == UDIEntryType.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(UDIEntryType code) {
       return code.getSystem();
       }
@@ -306,12 +308,12 @@ public class Device extends DomainResource {
           return FHIRDeviceStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown FHIRDeviceStatus code '"+codeString+"'");
         }
-        public Enumeration<FHIRDeviceStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<FHIRDeviceStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<FHIRDeviceStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -325,7 +327,9 @@ public class Device extends DomainResource {
         throw new FHIRException("Unknown FHIRDeviceStatus code '"+codeString+"'");
         }
     public String toCode(FHIRDeviceStatus code) {
-      if (code == FHIRDeviceStatus.ACTIVE)
+       if (code == FHIRDeviceStatus.NULL)
+           return null;
+       if (code == FHIRDeviceStatus.ACTIVE)
         return "active";
       if (code == FHIRDeviceStatus.INACTIVE)
         return "inactive";
@@ -334,7 +338,7 @@ public class Device extends DomainResource {
       if (code == FHIRDeviceStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(FHIRDeviceStatus code) {
       return code.getSystem();
       }
@@ -910,25 +914,25 @@ http://hl7.org/fhir/NamingSystem/iccbba-other-di.
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("deviceIdentifier")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.deviceIdentifier");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.deviceIdentifier");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.name");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.name");
         }
         else if (name.equals("jurisdiction")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.jurisdiction");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.jurisdiction");
         }
         else if (name.equals("carrierHRF")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.carrierHRF");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.carrierHRF");
         }
         else if (name.equals("carrierAIDC")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.carrierAIDC");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.carrierAIDC");
         }
         else if (name.equals("issuer")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.issuer");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.issuer");
         }
         else if (name.equals("entryType")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.entryType");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.entryType");
         }
         else
           return super.addChild(name);
@@ -2148,29 +2152,29 @@ http://hl7.org/fhir/NamingSystem/iccbba-other-di.
           return this.udi;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.status");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
           return this.type;
         }
         else if (name.equals("lotNumber")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.lotNumber");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.lotNumber");
         }
         else if (name.equals("manufacturer")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.manufacturer");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.manufacturer");
         }
         else if (name.equals("manufactureDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.manufactureDate");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.manufactureDate");
         }
         else if (name.equals("expirationDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.expirationDate");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.expirationDate");
         }
         else if (name.equals("model")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.model");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.model");
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.version");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.version");
         }
         else if (name.equals("patient")) {
           this.patient = new Reference();
@@ -2188,7 +2192,7 @@ http://hl7.org/fhir/NamingSystem/iccbba-other-di.
           return this.location;
         }
         else if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Device.url");
+          throw new FHIRException("Cannot call addChild on a singleton property Device.url");
         }
         else if (name.equals("note")) {
           return addNote();

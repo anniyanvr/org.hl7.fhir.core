@@ -1,16 +1,35 @@
 package org.hl7.fhir.utilities;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+import org.hl7.fhir.utilities.settings.FhirSettings;
+import org.junit.jupiter.api.Assertions;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class UtilitiesTest {
 
@@ -21,33 +40,44 @@ class UtilitiesTest {
 
   public static final String TEST_TXT = "test.txt";
 
+  private static final String getNormalizedJavaHomeDir() {
+    return System.getenv("JAVA_HOME") == null ? null : Paths.get(System.getenv("JAVA_HOME")).normalize().toString();
+  }
+
   public static final String LINUX_TEMP_DIR = "/tmp/";
   public static final String LINUX_USER_DIR = System.getProperty("user.home") + "/";
-  public static final String LINUX_JAVA_HOME = System.getenv("JAVA_HOME") + "/";
+  public static final String LINUX_JAVA_HOME = getNormalizedJavaHomeDir() + "/";
 
-  public static final String WIN_TEMP_DIR = "c:\\temp\\";
   public static final String WIN_USER_DIR = System.getProperty("user.home") + "\\";
-  public static final String WIN_JAVA_HOME = System.getenv("JAVA_HOME") + "\\";
+  public static final String WIN_JAVA_HOME = getNormalizedJavaHomeDir() + "\\";
 
   public static final String OSX_USER_DIR = System.getProperty("user.home") + "/";
-  public static final String OSX_JAVA_HOME = System.getenv("JAVA_HOME") == null ? null : Paths.get(System.getenv("JAVA_HOME")).normalize().toString() + "/";
+  public static final String OSX_JAVA_HOME = getNormalizedJavaHomeDir() + "/";
+
+  public static Stream<Arguments> getHttpParameters() {
+    return Stream.of(
+        Arguments.of("param1", "value="),
+        Arguments.of("param2", "value2"),
+        Arguments.of("param3", "value%"),
+        Arguments.of("param4", "value&"),
+        Arguments.of("param5", "value_1"),
+        Arguments.of("param6", "urn:oid:1.2.3.4.5"));
+  }
 
   @Test
   @DisplayName("Test Utilities.path maps temp directory correctly")
   public void testTempDirPath() throws IOException {
-    Assertions.assertEquals(Utilities.path("[tmp]", TEST_TXT), getTempDirectory() + TEST_TXT);
+    if (FhirSettings.hasTempPath()) {
+      assertEquals(Utilities.path("[tmp]", TEST_TXT), FhirSettings.getTempPath() +File.separator+ TEST_TXT);
+    } else {
+      assertEquals(Utilities.path("[tmp]", TEST_TXT), getTempDirectory() + TEST_TXT);
+    }
   }
 
   @Test
   @DisplayName("Test Utilities.path maps user directory correctly")
   public void testUserDirPath() throws IOException {
-    Assertions.assertEquals(Utilities.path("[user]", TEST_TXT), getUserDirectory() + TEST_TXT);
-  }
-
-  @Test
-  @DisplayName("Test Utilities.path maps JAVA_HOME correctly")
-  public void testJavaHomeDirPath() throws IOException {
-    Assertions.assertEquals(Utilities.path("[JAVA_HOME]", TEST_TXT), getJavaHomeDirectory() + TEST_TXT);
+    assertEquals(Utilities.path("[user]", TEST_TXT), getUserDirectory() + TEST_TXT);
   }
 
   private String getJavaHomeDirectory() {
@@ -83,9 +113,9 @@ class UtilitiesTest {
     } else if (os.contains(LINUX)) {
       return LINUX_TEMP_DIR;
     } else if (os.toUpperCase().contains(WINDOWS)) {
-      File tmp = new File("c:\\temp");
+      File tmp = ManagedFileAccess.file(Utilities.C_TEMP_DIR);
       if(tmp.exists()) {
-        return WIN_TEMP_DIR;
+        return Utilities.C_TEMP_DIR + '\\';
       } else {
         return System.getProperty("java.io.tmpdir");
       }
@@ -106,49 +136,523 @@ class UtilitiesTest {
     return file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('/')) + '/';
   }
 
-  public static final int BOUND = 500;
+  public static final int BOUND = 499;
   public static final Random RAND = new Random();
 
-  public static final int GB_MEASURE_JUST_OVER = (int) Math.pow(Utilities.ONE_MB, 3) + RAND.nextInt(BOUND);
+  public static int nextInt() {
+    return 1 + RAND.nextInt(BOUND);
+  }
+
+  public static final int GB_MEASURE_JUST_OVER = (int) Math.pow(Utilities.ONE_MB, 3) + nextInt();
   public static final int GB_MEASURE_EXACT = (int) Math.pow(Utilities.ONE_MB, 3);
-  public static final int GB_MEASURE_JUST_UNDER = (int) Math.pow(Utilities.ONE_MB, 3) - RAND.nextInt(BOUND);
+  public static final int GB_MEASURE_JUST_UNDER = (int) Math.pow(Utilities.ONE_MB, 3) - nextInt();
 
-  public static final int MB_MEASURE_JUST_OVER = (int) Math.pow(Utilities.ONE_MB, 2) + RAND.nextInt(BOUND);
+  public static final int MB_MEASURE_JUST_OVER = (int) Math.pow(Utilities.ONE_MB, 2) + nextInt();
   public static final int MB_MEASURE_EXACT = (int) Math.pow(Utilities.ONE_MB, 2);
-  public static final int MB_MEASURE_JUST_UNDER = (int) Math.pow(Utilities.ONE_MB, 2) - RAND.nextInt(BOUND);
+  public static final int MB_MEASURE_JUST_UNDER = (int) Math.pow(Utilities.ONE_MB, 2) - nextInt();
 
-  public static final int KB_MEASURE_JUST_OVER = Utilities.ONE_MB + RAND.nextInt(BOUND);
+  public static final int KB_MEASURE_JUST_OVER = Utilities.ONE_MB + nextInt();
   public static final int KB_MEASURE_EXACT = Utilities.ONE_MB;
-  public static final int KB_MEASURE_JUST_UNDER = Utilities.ONE_MB - RAND.nextInt(BOUND);
+  public static final int KB_MEASURE_JUST_UNDER = Utilities.ONE_MB - nextInt();
 
-  public static final int BT_MEASURE = Utilities.ONE_MB + RAND.nextInt(BOUND);
+  public static final int BT_MEASURE = Utilities.ONE_MB + nextInt();
   public static final int EMPTY = 0;
 
   public static final int BIG_NEG = Utilities.ONE_MB * -1;
 
+  private static final String buildMeasureLimitMessage(int size, String contains) {
+    return MessageFormat.format("\"{0}\" should contain \"{1}\"", size, contains);
+  }
+
+  //TODO we've witnessed at least one intermittent failure of this test. It could be refactored to run several times to
+  // trigger edge cases more often now that it provides better feedback.
   @Test
   @DisplayName("Test size bounds on file size utility.")
   void describeSizeTest() {
     Assertions.assertAll("GB Measure Limits",
-      () -> assertTrue(Utilities.describeSize(GB_MEASURE_JUST_OVER).contains(Utilities.GB)),
-      () -> assertTrue(Utilities.describeSize(GB_MEASURE_EXACT).contains(Utilities.MB)),
-      () -> assertTrue(Utilities.describeSize(GB_MEASURE_JUST_UNDER).contains(Utilities.MB))
+      () -> assertTrue(Utilities.describeSize(GB_MEASURE_JUST_OVER).contains(Utilities.GB), buildMeasureLimitMessage(GB_MEASURE_JUST_OVER, Utilities.GB)),
+      () -> assertTrue(Utilities.describeSize(GB_MEASURE_EXACT).contains(Utilities.MB), buildMeasureLimitMessage(GB_MEASURE_EXACT, Utilities.MB)),
+      () -> assertTrue(Utilities.describeSize(GB_MEASURE_JUST_UNDER).contains(Utilities.MB), buildMeasureLimitMessage(GB_MEASURE_JUST_UNDER, Utilities.MB))
     );
     Assertions.assertAll("MB Measure Limits",
-      () -> assertTrue(Utilities.describeSize(MB_MEASURE_JUST_OVER).contains(Utilities.MB)),
-      () -> assertTrue(Utilities.describeSize(MB_MEASURE_EXACT).contains(Utilities.KB)),
-      () -> assertTrue(Utilities.describeSize(MB_MEASURE_JUST_UNDER).contains(Utilities.KB))
+      () -> assertTrue(Utilities.describeSize(MB_MEASURE_JUST_OVER).contains(Utilities.MB), buildMeasureLimitMessage(MB_MEASURE_JUST_OVER, Utilities.MB)),
+      () -> assertTrue(Utilities.describeSize(MB_MEASURE_EXACT).contains(Utilities.KB), buildMeasureLimitMessage(MB_MEASURE_EXACT, Utilities.KB)),
+      () -> assertTrue(Utilities.describeSize(MB_MEASURE_JUST_UNDER).contains(Utilities.KB), buildMeasureLimitMessage(MB_MEASURE_JUST_UNDER, Utilities.KB))
     );
     Assertions.assertAll("KB Measure Limits",
-      () -> assertTrue(Utilities.describeSize(KB_MEASURE_JUST_OVER).contains(Utilities.KB)),
-      () -> assertTrue(Utilities.describeSize(KB_MEASURE_EXACT).contains(Utilities.BT)),
-      () -> assertTrue(Utilities.describeSize(KB_MEASURE_JUST_UNDER).contains(Utilities.BT))
+      () -> assertTrue(Utilities.describeSize(KB_MEASURE_JUST_OVER).contains(Utilities.KB), buildMeasureLimitMessage(KB_MEASURE_JUST_OVER, Utilities.KB)),
+      () -> assertTrue(Utilities.describeSize(KB_MEASURE_EXACT).contains(Utilities.BT), buildMeasureLimitMessage(KB_MEASURE_EXACT, Utilities.BT)),
+      () -> assertTrue(Utilities.describeSize(KB_MEASURE_JUST_UNDER).contains(Utilities.BT), buildMeasureLimitMessage(KB_MEASURE_JUST_UNDER, Utilities.BT))
     );
     Assertions.assertAll("BT Measure Limits",
-      () -> assertTrue(Utilities.describeSize(BT_MEASURE).contains(Utilities.BT)),
-      () -> assertTrue(Utilities.describeSize(EMPTY).contains(Utilities.BT))
+      () -> assertTrue(Utilities.describeSize(BT_MEASURE).contains(Utilities.BT), buildMeasureLimitMessage(BT_MEASURE, Utilities.BT)),
+      () -> assertTrue(Utilities.describeSize(EMPTY).contains(Utilities.BT), buildMeasureLimitMessage(EMPTY,  Utilities.BT))
     );
     Assertions.assertThrows(IllegalArgumentException.class, () -> Utilities.describeSize(BIG_NEG));
   }
+  
+  @Test
+  @DisplayName("Decimal Reasoning Tests")
+  void testDecimalRoutines() {
+    assertEquals("-0.500000", Utilities.lowBoundaryForDecimal("0", 6));
+    assertEquals("0.50000000", Utilities.lowBoundaryForDecimal("1", 8));
+    assertEquals("0.950000", Utilities.lowBoundaryForDecimal("1.0", 6));
+    assertEquals("0.95", Utilities.lowBoundaryForDecimal("1.0", 2));
+    assertEquals("-1.05000000", Utilities.lowBoundaryForDecimal("-1.0", 8));
+    assertEquals("1.23", Utilities.lowBoundaryForDecimal("1.234", 2));
+    assertEquals("1.56", Utilities.lowBoundaryForDecimal("1.567", 2));
 
+    assertEquals("0.50000000", Utilities.highBoundaryForDecimal("0", 8));
+    assertEquals("1.500000", Utilities.highBoundaryForDecimal("1", 6));
+    assertEquals("1.0500000000", Utilities.highBoundaryForDecimal("1.0", 10));
+    assertEquals("-0.9500", Utilities.highBoundaryForDecimal("-1.0", 4));
+
+    assertEquals(0, Utilities.getDecimalPrecision("0"));
+    assertEquals(0, Utilities.getDecimalPrecision("1"));
+    assertEquals(1, Utilities.getDecimalPrecision("1.0"));
+    assertEquals(1, Utilities.getDecimalPrecision("-1.0"));
+    assertEquals(4, Utilities.getDecimalPrecision("-1.0200"));
+  }
+
+  @ParameterizedTest(name = "unescapeJson({0}) = {1}")
+  @CsvSource(delimiter = '|', quoteCharacter = '\'', value = {
+    "\\\"a\\\" | \"a\"",
+    "\\u0041B | AB",
+    "x\\u00e9y | xéy",
+    "a\\\\b | a\\b",
+    "tab\\there | 'tab\there'",
+    "\\uD83D\\uDE00 | \uD83D\uDE00",
+  })
+  void testUnescapeJson(String json, String expected) {
+    assertEquals(expected, Utilities.unescapeJson(json));
+  }
+
+  @Test
+  void testUnescapeJsonReversesEscapeJson() {
+    String value = "say \"hi\"\\now";
+    assertEquals(value, Utilities.unescapeJson(Utilities.escapeJson(value)));
+  }
+
+  @ParameterizedTest
+  @CsvSource({"a\\", "\\u00", "\\uZZZZ", "\\u+041", "\\u-041"})
+  void testUnescapeJsonInvalidEscape(String json) {
+    Assertions.assertThrows(FHIRException.class, () -> Utilities.unescapeJson(json));
+  }
+
+  @ParameterizedTest(name = "highBoundary({0}, {1}) = {2}")
+  @CsvSource({
+    "9.95, 1, 10.0",
+    "0.994, 1, 1.0",
+    "0.996, 1, 1.0",
+    "99.96, 1, 100.0",
+    "9, 0, 10",
+    "-9.96, 1, -9.9",
+    "0.55, 1, 0.6",
+    "1.587, 2, 1.59",
+    "0.0034, 1, 0.0"
+  })
+  void testHighBoundaryForDecimalCarry(String value, int precision, String expected) {
+    assertEquals(expected, Utilities.highBoundaryForDecimal(value, precision));
+  }
+
+  @ParameterizedTest(name = "lowBoundary({0}, {1}) = {2}")
+  @CsvSource({
+    // a negative low boundary is the negated high boundary of the magnitude, so it carries too
+    "-9.96, 1, -10.0",
+    "-9.95, 1, -10.0",
+    "-99.96, 1, -100.0",
+    "-9, 0, -10",
+    // borrowing from the first digit must not leave a leading zero
+    "10, 0, 9",
+    "10, 1, 9.5",
+    "100, 2, 99.50",
+    "1000, 0, 999",
+    "9.95, 1, 9.9"
+  })
+  void testLowBoundaryForDecimalCarry(String value, int precision, String expected) {
+    assertEquals(expected, Utilities.lowBoundaryForDecimal(value, precision));
+  }
+
+  @ParameterizedTest(name = "{0}Boundary({1}, {2}) = {3}")
+  @CsvSource({
+    // the precision is in the mantissa; the result has no exponent
+    "high, 9.5e2, 0, 955",
+    "low, 9.5e2, 0, 945",
+    "high, 9.5e2, 8, 955.00000000",
+    "low, 9.5e2, 8, 945.00000000",
+    "high, -9.5e2, 0, -945",
+    "low, -9.5e2, 0, -955",
+    "high, 1e2, 0, 150",
+    "low, 1e2, 0, 50",
+    "high, 1.5e-3, 8, 0.00155000",
+    "low, 1.5e-3, 8, 0.00145000",
+    "high, -1.5e-3, 8, -0.00145000",
+    "high, 1.5E2, 1, 155.0",
+    "low, 1.5E2, 1, 145.0",
+    "high, 1.5e+2, 0, 155",
+    "high, 9.95e1, 1, 99.6",
+    "high, 9.95e-1, 1, 1.0",
+    "low, 1.0e0, 1, 0.9",
+    "high, 1.0e0, 1, 1.1"
+  })
+  void testBoundaryForDecimalWithExponent(String boundary, String value, int precision, String expected) {
+    assertEquals(expected, "high".equals(boundary) ? Utilities.highBoundaryForDecimal(value, precision) : Utilities.lowBoundaryForDecimal(value, precision));
+  }
+  
+  public static Stream<Arguments> windowsRootPaths() {
+    return Stream.of(
+      Arguments.of((Object)new String[]{"C:"}),
+      Arguments.of((Object)new String[]{"D:"}),
+      Arguments.of((Object)new String[]{"C:", "anything"}),
+      Arguments.of((Object)new String[]{"D:", "anything"}),
+      Arguments.of((Object)new String[]{"C:/", "anything"}),
+      Arguments.of((Object)new String[]{"C:/.", "anything"}),
+      Arguments.of((Object)new String[]{"C:\\"}),
+      Arguments.of((Object)new String[]{"D:\\"}),
+      Arguments.of((Object)new String[]{"C:/child/.."}),
+      Arguments.of((Object)new String[]{"C:/child/..", "anything"}),
+      Arguments.of((Object)new String[]{"C:/child/../child/.."}),
+      Arguments.of((Object)new String[]{"C:/child/../child/..", "anything"}),
+      Arguments.of((Object)new String[]{"C:/child/second/../.."}),
+      Arguments.of((Object)new String[]{"C:/child/second/../..", "anything"}),
+      Arguments.of((Object)new String[]{"C:\\child\\.."}),
+      Arguments.of((Object)new String[]{"C:\\child\\..", "anything"}),
+      Arguments.of((Object)new String[]{"C:\\child\\..\\child/.."}),
+      Arguments.of((Object)new String[]{"C:\\child\\..\\child\\..", "anything"}),
+      Arguments.of((Object)new String[]{"C:\\child\\second\\..\\.."}),
+      Arguments.of((Object)new String[]{"C:\\child\\second\\..\\..", "anything"})
+    );
+  }
+  @ParameterizedTest
+  @MethodSource("windowsRootPaths")
+  @EnabledOnOs({OS.WINDOWS})
+  public void testPathCantStartWithRootWindows(String[] pathStrings) {
+    testCantStartWithRoot(pathStrings);
+  }
+
+  public static Stream<Arguments> macAndLinuxRootPaths() {
+    return Stream.of(
+      Arguments.of((Object)new String[]{"/"}),
+      Arguments.of((Object)new String[]{"/", "anything"}),
+      Arguments.of((Object)new String[]{"//"}),
+      Arguments.of((Object)new String[]{"//", "anything"}),
+      Arguments.of((Object)new String[]{"//child/.."}),
+      Arguments.of((Object)new String[]{"//child/..", "anything"}),
+      Arguments.of((Object)new String[]{"//child/../child/.."}),
+      Arguments.of((Object)new String[]{"//child/../child/..", "anything"}),
+      Arguments.of((Object)new String[]{"//child/second/../.."}),
+      Arguments.of((Object)new String[]{"//child/second/../..", "anything"})
+    );
+  }
+  @ParameterizedTest
+  @MethodSource("macAndLinuxRootPaths")
+  @EnabledOnOs({OS.MAC, OS.LINUX})
+  public void testPathCantStartWithRootMacAndLinux(String[] pathStrings) {
+    testCantStartWithRoot(pathStrings);
+  }
+
+  private static void testCantStartWithRoot(String[] pathStrings) {
+    RuntimeException thrown = Assertions.assertThrows(RuntimeException.class, () -> {
+      Utilities.path(pathStrings);
+    });
+    assertTrue(thrown.getMessage().endsWith(pathStrings[0]+", full path = "+String.join(", ", pathStrings)));
+  }
+
+  public static Stream<Arguments> macAndLinuxNonFirstElementStartPaths() {
+    return Stream.of(
+      Arguments.of((Object)new String[]{"/root", ".."}),
+      Arguments.of((Object)new String[]{"/root", "child/../.."}),
+      Arguments.of((Object)new String[]{"/root", "child", "/../.."}),
+      Arguments.of((Object)new String[]{"/root", "child", "../.."}),
+      Arguments.of((Object)new String[]{"/root/a", "../.."}),
+      Arguments.of((Object)new String[]{"/root/a", "child/../.."}),
+      Arguments.of((Object)new String[]{"/root/a", "child", "/../../.."}),
+      Arguments.of((Object)new String[]{"/root/a", "child", "../../.."})
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("macAndLinuxNonFirstElementStartPaths")
+  @EnabledOnOs({OS.MAC, OS.LINUX})
+  public void testPathMustStartWithFirstElementMacAndLinux(String[] pathStrings) {
+    testPathMustStartWithFirstElement(pathStrings);
+  }
+
+  private static void testPathMustStartWithFirstElement(String[] pathStrings) {
+    RuntimeException thrown = Assertions.assertThrows(RuntimeException.class, () -> {
+      Utilities.path(pathStrings);
+    });
+    assertTrue(thrown.getMessage().startsWith("Computed path does not start with first element: " + pathStrings[0]));
+  }
+
+  public static Stream<Arguments> macAndLinuxValidPaths() {
+    return Stream.of(
+      Arguments.of((Object) new String[]{"/root"}, "/root"),
+      Arguments.of( (Object) new String[]{"/root", "child"}, "/root/child"),
+      Arguments.of((Object) new String[]{"/root", "../root/child"}, "/root/child"),
+      Arguments.of((Object) new String[]{"/root", "child", "anotherchild"}, "/root/child/anotherchild")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("macAndLinuxValidPaths")
+  @EnabledOnOs({OS.MAC, OS.LINUX})
+  public void testValidPathsMacAndLinux(String[] pathStrings, String expectedPath) throws IOException {
+    testValidPath(pathStrings,expectedPath);
+  }
+
+  public static Stream<Arguments> windowsValidPaths() {
+    return Stream.of(
+      Arguments.of((Object) new String[]{"C://root"}, "C:\\\\root"),
+      Arguments.of( (Object) new String[]{"C://root", "child"}, "C:\\\\root\\child"),
+      Arguments.of((Object) new String[]{"C://root", "../root/child"}, "C:\\\\root\\child"),
+      Arguments.of((Object) new String[]{"C://root", "child", "anotherchild"}, "C:\\\\root\\child\\anotherchild"),
+      Arguments.of((Object) new String[]{"C:\\\\root"}, "C:\\\\root"),
+      Arguments.of( (Object) new String[]{"C:\\\\root", "child"}, "C:\\\\root\\child"),
+      Arguments.of((Object) new String[]{"C:\\\\root", "..\\root\\child"}, "C:\\\\root\\child"),
+      Arguments.of((Object) new String[]{"C:\\\\root", "child", "anotherchild"}, "C:\\\\root\\child\\anotherchild")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("windowsValidPaths")
+  @EnabledOnOs({OS.WINDOWS})
+  public void testValidPathsWindows(String[] pathStrings, String expectedPath) throws IOException {
+    testValidPath(pathStrings,expectedPath);
+  }
+
+  private static void testValidPath(String[] pathsStrings, String expectedPath) throws IOException {
+    String actualPath = Utilities.path(pathsStrings);
+    assertEquals(expectedPath, actualPath);
+  }
+
+  public static Stream<Arguments> nullOrEmptyFirstEntryPaths() {
+    return Stream.of(
+      Arguments.of((Object)new String[]{null, "child"}),
+      Arguments.of((Object)new String[]{null, "child/otherchild"}),
+      Arguments.of((Object)new String[]{null, "child", "otherchild"}),
+      Arguments.of((Object)new String[]{"", "child"}),
+      Arguments.of((Object)new String[]{"", "child/otherchild"}),
+      Arguments.of((Object)new String[]{"", "child", "otherchild"}),
+      Arguments.of((Object)new String[]{"  ", "child"}),
+      Arguments.of((Object)new String[]{"  ", "child/otherchild"}),
+      Arguments.of((Object)new String[]{"  ", "child", "otherchild"})
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("nullOrEmptyFirstEntryPaths")
+  public void testNullOrEmptyFirstPathEntryFails(String[] pathsStrings) {
+    RuntimeException thrown = Assertions.assertThrows(RuntimeException.class, () -> {
+      Utilities.path(pathsStrings);
+    });
+    assertEquals("First entry in file path cannot be null or empty, full path = "+String.join(", ", pathsStrings),thrown.getMessage());
+  }
+
+  @Test
+  @DisplayName("trimWS tests")
+  void testTrimWS() {
+    Assertions.assertEquals("", Utilities.trimWS(""));
+    Assertions.assertEquals("", Utilities.trimWS(" "));
+    Assertions.assertEquals("t", Utilities.trimWS(" t "));
+    Assertions.assertEquals(".", Utilities.trimWS("\r."));
+    Assertions.assertEquals("# %", Utilities.trimWS("# %"));
+    Assertions.assertEquals("", Utilities.trimWS("\u0009\n\u000B\u000C\r\u0020\u0085\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000"));
+  }
+
+  @Test
+  @DisplayName("regex tests")
+  void testRegex() {
+    Assertions.assertFalse("".matches(".+"));
+    Assertions.assertTrue(".".matches(".+"));
+    Assertions.assertTrue(" t ".matches(".+"));
+    Assertions.assertTrue(" ".matches(".+"));
+    Assertions.assertFalse("".matches("^.+$"));
+    Assertions.assertTrue(".".matches("^.+$"));
+    Assertions.assertTrue(" t ".matches("^.+$"));
+    Assertions.assertTrue(" ".matches("^.+$"));
+    Assertions.assertFalse("".matches("[\\s\\S]+"));
+    Assertions.assertTrue(".".matches("[\\s\\S]+"));
+    Assertions.assertTrue(" t ".matches("[\\s\\S]+"));
+    Assertions.assertTrue(" ".matches("[\\s\\S]+"));
+    Assertions.assertFalse("".matches("^[\\s\\S]+$"));
+    Assertions.assertTrue(".".matches("^[\\s\\S]+$"));
+    Assertions.assertTrue(" t ".matches("^[\\s\\S]+$"));
+    Assertions.assertTrue(" ".matches("^[\\s\\S]+$"));
+    Assertions.assertTrue("Example Requirements Set 2".matches("^[\\s\\S]+$"));
+    Assertions.assertTrue("\u0009\n\u000B\u000C\r\u0020\u0085\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000".matches("^[\\s\\S]+$"));
+    Assertions.assertFalse("\u0009\n\u000B\u000C\r\u0020\u0085\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000".matches(".+"));
+    Assertions.assertFalse("\u0009\n\u000B\u000C\r\u0020\u0085\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000".matches("^.+$"));
+  }
+
+  @Test
+  void testSimpleSplit() {
+    checkEquals(new String[] {}, Utilities.simpleSplit(null, ","));
+    checkEquals(new String[] {""}, Utilities.simpleSplit("", ","));
+    checkEquals(new String[] {"", ""}, Utilities.simpleSplit(",", ","));
+    checkEquals(new String[] {"A"}, Utilities.simpleSplit("A", ","));
+    checkEquals(new String[] {"A", "B"}, Utilities.simpleSplit("A,B", ","));
+    checkEquals(new String[] {"", "A", "", "B", ""}, Utilities.simpleSplit(",A,,B,", ","));
+    checkEquals(new String[] {"", "ONE", "", "TWO", "", "", "THREE", "", ""}, Utilities.simpleSplit("[stop]ONE[stop][stop]TWO[stop][stop][stop]THREE[stop][stop]", "[stop]"));
+  }
+
+  private void checkEquals(String[] left, String[] right) {
+    for (int i =0; i < Integer.min(left.length, right.length); i++) {
+      Assertions.assertEquals(left[i], right[i], "String["+i+"] differs");
+    }
+    Assertions.assertEquals(left.length, right.length, "String[].length() differs");
+  }
+
+  @ParameterizedTest
+  @MethodSource("getHttpParameters")
+  void testEncodeUriParam(String key, String value) {
+    String encoded = Utilities.encodeUriParam(key, value);
+    List<NameValuePair> actual = URLEncodedUtils.parse(encoded, StandardCharsets.UTF_8);
+    assertThat(actual).hasSize(1);
+    assertThat(actual.get(0).getName()).isEqualTo(key);
+    assertThat(actual.get(0).getValue()).isEqualTo(value);
+  }
+
+  static Stream<Arguments> pathTailArguments() {
+    return Stream.of(
+      Arguments.of("Patient.name.given", "given"),
+      Arguments.of("Patient.name", "name"),
+      Arguments.of("Patient", "Patient"),
+      Arguments.of("value[x]", "value[x]"),
+      Arguments.of("Patient.value[x]", "value[x]")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("pathTailArguments")
+  void testPathTail(String input, String expected) {
+    assertEquals(expected, Utilities.pathTail(input));
+  }
+
+  static Stream<Arguments> makeNameFromCodeArguments() {
+    return Stream.of(
+      // plain names pass through unchanged
+      Arguments.of("simple", "simple"),
+      Arguments.of("Simple", "Simple"),
+      Arguments.of("alreadyCamelCase", "alreadyCamelCase"),
+      Arguments.of("code123", "code123"),
+      // non-name characters are stripped and the next letter is capitalised
+      Arguments.of("blood-pressure", "bloodPressure"),
+      Arguments.of("blood pressure", "bloodPressure"),
+      Arguments.of("blood_pressure", "bloodPressure"),
+      Arguments.of("blood.pressure.systolic", "bloodPressureSystolic"),
+      Arguments.of("a-b-c", "aBC"),
+      // consecutive separators collapse to a single capitalisation
+      Arguments.of("blood--pressure", "bloodPressure"),
+      Arguments.of("blood - pressure", "bloodPressure"),
+      // uppercase letters and digits after a separator are kept as-is
+      Arguments.of("blood-Pressure", "bloodPressure"),
+      Arguments.of("code-1a", "code1a"),
+      // leading separators capitalise the first letter; trailing ones are dropped
+      Arguments.of("-code", "Code"),
+      Arguments.of("code-", "code"),
+      Arguments.of(" code ", "Code"),
+      // unicode/symbol characters are stripped too
+      Arguments.of("http://example.org/code", "httpExampleOrgCode"),
+      Arguments.of("50%-done", "50Done"),
+      // nothing usable left -> "name"
+      Arguments.of("", "name"),
+      Arguments.of("---", "name"),
+      Arguments.of("!@#$", "name")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("makeNameFromCodeArguments")
+  void testMakeNameFromCode(String code, String expected) {
+    assertEquals(expected, Utilities.makeNameFromCode(code));
+  }
+
+  @Test
+  void testAppendStringArray() {
+    String[] a = new String[] {"A", "B"};
+    String[] b = new String[] {"C", "D", "E"};
+    String[] result = Utilities.concatStringArray(a, b);
+    assertThat(result).hasSize(5);
+    assertThat(result[0]).isEqualTo("A");
+    assertThat(result[1]).isEqualTo("B");
+    assertThat(result[2]).isEqualTo("C");
+    assertThat(result[3]).isEqualTo("D");
+    assertThat(result[4]).isEqualTo("E");
+  }
+
+  @ParameterizedTest
+  @MethodSource("decodeBase64Valid")
+  void testDecodeBase64Valid(String input, String expected) {
+    assertEquals(expected, new String(Utilities.decodeBase64(input, false), StandardCharsets.UTF_8));
+    // anything that decodes when only whitespace is stripped decodes the same when invalid characters are too
+    assertEquals(expected, new String(Utilities.decodeBase64(input, true), StandardCharsets.UTF_8));
+  }
+
+  private static Stream<Arguments> decodeBase64Valid() {
+    return Stream.of(
+      Arguments.of("SGVsbG8=", "Hello"),
+      Arguments.of("", ""),
+      Arguments.of("SGVs\nbG8=", "Hello"),
+      Arguments.of("SGVs\r\nbG8=", "Hello"),
+      Arguments.of(" SGVs bG8= ", "Hello"),
+      Arguments.of("\tSGVs\tbG8=\n", "Hello"),
+      Arguments.of("S G V s b G 8 =", "Hello"),
+      Arguments.of("SGVsbG8gV29y\nbGQ=\n", "Hello World")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("decodeBase64Invalid")
+  void testDecodeBase64Invalid(String input) {
+    Assertions.assertThrows(IllegalArgumentException.class, () -> Utilities.decodeBase64(input, false));
+  }
+
+  private static Stream<Arguments> decodeBase64Invalid() {
+    return Stream.of(
+      Arguments.of("not valid base64!!"),
+      Arguments.of("SGV!sbG8="),
+      Arguments.of("SGV!\nsbG8="),
+      Arguments.of("SGVsbG8=SGVsbG8="),
+      Arguments.of("SGVsbG8=\nSGVsbG8="),
+      Arguments.of("SGVsbG8=!!"),
+      Arguments.of("SGVs\u00a0bG8="), // NBSP is not base64 whitespace
+      Arguments.of("\u0141AAA\n") // must not truncate to 'A' (which would make "AAAA", valid)
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("decodeBase64StripInvalid")
+  void testDecodeBase64StripInvalid(String input, String expected) {
+    Assertions.assertThrows(IllegalArgumentException.class, () -> Utilities.decodeBase64(input, false));
+    assertEquals(expected, new String(Utilities.decodeBase64(input, true), StandardCharsets.UTF_8));
+  }
+
+  private static Stream<Arguments> decodeBase64StripInvalid() {
+    return Stream.of(
+      Arguments.of("SGV!sbG8=", "Hello"),
+      Arguments.of("SGV!\nsbG8=", "Hello"),
+      Arguments.of("SGVsbG8=!!", "Hello"),
+      Arguments.of("SGVs\u00a0bG8=", "Hello"),
+      Arguments.of("\"SGVsbG8=\"", "Hello"),
+      Arguments.of("SGVs-bG8_=", "Hello"), // URL safe characters are not valid here, so they're skipped too
+      Arguments.of("\u0141SGVsbG8=", "Hello")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("decodeBase64StripInvalidStillInvalid")
+  void testDecodeBase64StripInvalidStillInvalid(String input) {
+    Assertions.assertThrows(IllegalArgumentException.class, () -> Utilities.decodeBase64(input, true));
+  }
+
+  private static Stream<Arguments> decodeBase64StripInvalidStillInvalid() {
+    return Stream.of(
+      Arguments.of("SGVsbG8=SGVsbG8="), // content after padding
+      Arguments.of("SGVsbG8=\nSGVsbG8="),
+      Arguments.of("S=GVsbG8"), // padding in the wrong place
+      Arguments.of("SGVsbG8==!"), // too much padding
+      Arguments.of("SGVsb!") // a lone character in the last unit once the '!' is gone
+    );
+  }
 }

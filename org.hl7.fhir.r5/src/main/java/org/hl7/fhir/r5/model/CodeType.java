@@ -54,12 +54,23 @@ public class CodeType extends StringType implements Comparable<CodeType>, ICodin
 		setValue(theCode);
 	}
 
+  public CodeType(String theCode, Element source) {
+    setValue(theCode);
+    setId(source.getId());
+    getExtension().addAll(source.getExtension());
+  }
+
+
 	public int compareTo(CodeType theCode) {
 		if (theCode == null) {
 			return 1;
 		}
 		return defaultString(getValue()).compareTo(defaultString(theCode.getValue()));
-	}	
+	}
+
+  public boolean equals(CodeType theCode) {
+    return this.getCode().equals(theCode.getCode());
+  }
 
 	@Override
 	protected String parse(String theValue) {
@@ -97,6 +108,19 @@ public class CodeType extends StringType implements Comparable<CodeType>, ICodin
   public CodeType setSystem(String system) {
     this.system = system;
     return this;
+  }
+
+  @Override
+  public void assignValues(Base dst) {
+    copyValues((CodeType) dst);
+  }
+
+  /**
+   * system is ICoding state on this class, and copy() never carried it across at all
+   */
+  public void copyValues(CodeType dst) {
+    super.copyValues(dst);
+    dst.system = system;
   }
 
   @Override

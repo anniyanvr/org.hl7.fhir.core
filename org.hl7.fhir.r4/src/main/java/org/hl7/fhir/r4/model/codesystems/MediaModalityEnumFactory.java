@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class MediaModalityEnumFactory implements EnumFactory<MediaModality> {
@@ -58,11 +54,13 @@ public class MediaModalityEnumFactory implements EnumFactory<MediaModality> {
       return MediaModality.PALM;
     if ("face".equals(codeString))
       return MediaModality.FACE;
-    throw new IllegalArgumentException("Unknown MediaModality code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MediaModality code '" + codeString + "'");
   }
 
   public String toCode(MediaModality code) {
-    if (code == MediaModality.DIAGRAM)
+       if (code == MediaModality.NULL)
+           return null;
+       if (code == MediaModality.DIAGRAM)
       return "diagram";
     if (code == MediaModality.FAX)
       return "fax";
@@ -79,10 +77,10 @@ public class MediaModalityEnumFactory implements EnumFactory<MediaModality> {
     if (code == MediaModality.FACE)
       return "face";
     return "?";
-  }
+   }
 
-    public String toSystem(MediaModality code) {
-      return code.getSystem();
-      }
+  public String toSystem(MediaModality code) {
+    return code.getSystem();
+  }
 
 }

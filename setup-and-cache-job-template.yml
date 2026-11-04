@@ -1,0 +1,41 @@
+jobs:
+  - job: setup
+    displayName: Cache Maven Artifacts and Build Targets
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - checkout: self
+        fetchDepth: 1
+      - task: Cache@2
+        displayName: Cache maven artifacts
+        inputs:
+          key: maven | $(Build.BuildId) | artifacts
+          path: $(MAVEN_CACHE_FOLDER)
+      - template: cache-target-tasks-template.yml
+        parameters:
+          modules:
+            ${{ parameters.modulesToCache }}
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: mkdir -p $(MAVEN_CACHE_FOLDER); pwd; ls -al $(MAVEN_CACHE_FOLDER)
+      - ${{ if eq(parameters.signArtifacts, true) }}:
+        - template: setup-signing-tasks-template.yml
+      - task: Maven@4
+        inputs:
+          mavenPomFile: 'pom.xml'
+          ${{ if eq(parameters.signArtifacts, true) }}:
+            options: '--settings $(Agent.TempDirectory)/settings.xml -Dmaven.repo.local=$(MAVEN_CACHE_FOLDER) -DskipTests -DdeployToMavenCentral -P CHECKSTYLE -Djacoco.skip=true'
+          ${{ else }}:
+            options: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER) -DskipTests -P CHECKSTYLE -Djacoco.skip=true'
+          mavenOptions: '-Xmx1G'
+          javaHomeOption: 'JDKVersion'
+          jdkVersionOption: '1.17'
+          jdkArchitectureOption: 'x64'
+          publishJUnitResults: false
+          goals: 'install'
+      - task: Bash@3
+        displayName: Report free disk space
+        inputs:
+          targetType: 'inline'
+          script: df -H .

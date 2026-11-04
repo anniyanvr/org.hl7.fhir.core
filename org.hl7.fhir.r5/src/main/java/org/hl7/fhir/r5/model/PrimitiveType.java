@@ -59,6 +59,23 @@ public abstract class PrimitiveType<T> extends DataType implements IPrimitiveTyp
 	public abstract DataType copy();
 
 	/**
+	 * the primitive value is state on this class, but historically every subclass carried it across
+	 * in the constructor argument of its own copy(), so copyValues() never touched it - which meant
+	 * copyValues(), and anything routed through it such as assignValues(), produced a valueless copy
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void assignValues(Base dst) {
+		copyValues((PrimitiveType<T>) dst);
+	}
+
+	public void copyValues(PrimitiveType<T> dst) {
+		super.copyValues(dst);
+		dst.myCoercedValue = myCoercedValue;
+		dst.myStringValue = myStringValue;
+	}
+
+	/**
 	 * Subclasses must override to convert a "coerced" value into an encoded one.
 	 * 
 	 * @param theValue
@@ -125,13 +142,13 @@ public abstract class PrimitiveType<T> extends DataType implements IPrimitiveTyp
 	}
 
 	public boolean hasValue() {
-  	  return !StringUtils.isBlank(getValueAsString());
+  	  return !StringUtils.isEmpty(getValueAsString());
 	}
-	
-	@Override
-	public boolean isEmpty() {
-		return super.isEmpty() && StringUtils.isBlank(getValueAsString());
-	}
+
+  @Override
+  public boolean isEmpty() {
+    return super.isEmpty() && StringUtils.isEmpty(getValueAsString());
+  }
 
 	public boolean isPrimitive() {
 		return true;
@@ -209,6 +226,15 @@ public abstract class PrimitiveType<T> extends DataType implements IPrimitiveTyp
   }
 
   @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+    if (name.equals("value"))
+      setValueAsString(value.toString()); 
+    else
+      super.removeChild(name, value);
+    
+  }
+
+  @Override
   public Base makeProperty(int hash, String name) throws FHIRException {
     if (hash == 111972721) {
       return this; 
@@ -237,7 +263,7 @@ public abstract class PrimitiveType<T> extends DataType implements IPrimitiveTyp
   }
 
   /*
-   * this is a work around for representation issues with Bigdecimal. So comments in DecimaType. 
+   * this is a workaround for representation issues with BigDecimal. So comments in DecimalType.
    * Yes, you can cut yourself with this method... 
    */
   protected void forceStringValue(String value) {
@@ -248,8 +274,18 @@ public abstract class PrimitiveType<T> extends DataType implements IPrimitiveTyp
   public boolean hasPrimitiveValue() {
     return StringUtils.isNotBlank(getValueAsString());
   }
+
+  public boolean canHavePrimitiveValue() {
+    return true;
+  }
+  
   
   public String fpValue() {
     return primitiveValue();
   }
+  
+  public boolean matches(String other) {
+    return other != null && other.equals(asStringValue());
+  }
+  
 }

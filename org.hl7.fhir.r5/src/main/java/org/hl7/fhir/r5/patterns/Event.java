@@ -201,34 +201,36 @@ public interface Event extends PatternBase {
           return EventStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown EventStatus code '"+codeString+"'");
         }
-        public Enumeration<EventStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<EventStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<EventStatus>(this);
+            return new Enumeration<EventStatus>(this, EventStatus.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<EventStatus>(this, EventStatus.NULL, code);
         if ("preparation".equals(codeString))
-          return new Enumeration<EventStatus>(this, EventStatus.PREPARATION);
+          return new Enumeration<EventStatus>(this, EventStatus.PREPARATION, code);
         if ("in-progress".equals(codeString))
-          return new Enumeration<EventStatus>(this, EventStatus.INPROGRESS);
+          return new Enumeration<EventStatus>(this, EventStatus.INPROGRESS, code);
         if ("not-done".equals(codeString))
-          return new Enumeration<EventStatus>(this, EventStatus.NOTDONE);
+          return new Enumeration<EventStatus>(this, EventStatus.NOTDONE, code);
         if ("on-hold".equals(codeString))
-          return new Enumeration<EventStatus>(this, EventStatus.ONHOLD);
+          return new Enumeration<EventStatus>(this, EventStatus.ONHOLD, code);
         if ("stopped".equals(codeString))
-          return new Enumeration<EventStatus>(this, EventStatus.STOPPED);
+          return new Enumeration<EventStatus>(this, EventStatus.STOPPED, code);
         if ("completed".equals(codeString))
-          return new Enumeration<EventStatus>(this, EventStatus.COMPLETED);
+          return new Enumeration<EventStatus>(this, EventStatus.COMPLETED, code);
         if ("entered-in-error".equals(codeString))
-          return new Enumeration<EventStatus>(this, EventStatus.ENTEREDINERROR);
+          return new Enumeration<EventStatus>(this, EventStatus.ENTEREDINERROR, code);
         if ("unknown".equals(codeString))
-          return new Enumeration<EventStatus>(this, EventStatus.UNKNOWN);
+          return new Enumeration<EventStatus>(this, EventStatus.UNKNOWN, code);
         throw new FHIRException("Unknown EventStatus code '"+codeString+"'");
         }
     public String toCode(EventStatus code) {
-      if (code == EventStatus.PREPARATION)
+       if (code == EventStatus.NULL)
+           return null;
+       if (code == EventStatus.PREPARATION)
         return "preparation";
       if (code == EventStatus.INPROGRESS)
         return "in-progress";
@@ -245,7 +247,7 @@ public interface Event extends PatternBase {
       if (code == EventStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(EventStatus code) {
       return code.getSystem();
       }

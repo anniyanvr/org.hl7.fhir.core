@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class QicoreAdverseeventCategoryEnumFactory implements EnumFactory<QicoreAdverseeventCategory> {
@@ -62,11 +58,13 @@ public class QicoreAdverseeventCategoryEnumFactory implements EnumFactory<Qicore
       return QicoreAdverseeventCategory.EMBOLISM;
     if ("other".equals(codeString))
       return QicoreAdverseeventCategory.OTHER;
-    throw new IllegalArgumentException("Unknown QicoreAdverseeventCategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown QicoreAdverseeventCategory code '" + codeString + "'");
   }
 
   public String toCode(QicoreAdverseeventCategory code) {
-    if (code == QicoreAdverseeventCategory.BLOOD)
+       if (code == QicoreAdverseeventCategory.NULL)
+           return null;
+       if (code == QicoreAdverseeventCategory.BLOOD)
       return "blood";
     if (code == QicoreAdverseeventCategory.DEVICE)
       return "device";
@@ -87,10 +85,10 @@ public class QicoreAdverseeventCategoryEnumFactory implements EnumFactory<Qicore
     if (code == QicoreAdverseeventCategory.OTHER)
       return "other";
     return "?";
-  }
+   }
 
-    public String toSystem(QicoreAdverseeventCategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(QicoreAdverseeventCategory code) {
+    return code.getSystem();
+  }
 
 }

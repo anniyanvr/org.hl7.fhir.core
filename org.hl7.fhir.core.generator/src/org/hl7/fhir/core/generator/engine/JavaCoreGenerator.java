@@ -1,179 +1,178 @@
 package org.hl7.fhir.core.generator.engine;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.hl7.fhir.core.generator.analysis.Analyser;
 import org.hl7.fhir.core.generator.analysis.Analysis;
+import org.hl7.fhir.core.generator.analysis.AnalysisElementInfo;
 import org.hl7.fhir.core.generator.codegen.Configuration;
 import org.hl7.fhir.core.generator.codegen.JavaConstantsGenerator;
+import org.hl7.fhir.core.generator.codegen.JavaCoreResourceNameListGenerator;
+import org.hl7.fhir.core.generator.codegen.JavaConverterGenerator;
 import org.hl7.fhir.core.generator.codegen.JavaEnumerationsGenerator;
 import org.hl7.fhir.core.generator.codegen.JavaFactoryGenerator;
 import org.hl7.fhir.core.generator.codegen.JavaParserJsonGenerator;
 import org.hl7.fhir.core.generator.codegen.JavaParserRdfGenerator;
 import org.hl7.fhir.core.generator.codegen.JavaParserXmlGenerator;
 import org.hl7.fhir.core.generator.codegen.JavaResourceGenerator;
-import org.hl7.fhir.core.generator.codegen.JavaTypeGenerator;
-import org.hl7.fhir.r5.model.ValueSet;
-import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
-import org.hl7.fhir.r5.model.StructureDefinition.TypeDerivationRule;
-import org.hl7.fhir.r5.model.CodeType;
+import org.hl7.fhir.core.generator.codegen.extensions.JavaExtensionsGenerator;
+import org.hl7.fhir.r5.conformance.profile.ProfileUtilities;
+import org.hl7.fhir.r5.formats.JsonParser;
+import org.hl7.fhir.r5.model.CanonicalResource;
+import org.hl7.fhir.r5.model.CodeSystem;
+import org.hl7.fhir.r5.model.CodeSystem.ConceptDefinitionComponent;
 import org.hl7.fhir.r5.model.ElementDefinition;
 import org.hl7.fhir.r5.model.Enumerations.BindingStrength;
-import org.hl7.fhir.r5.model.SearchParameter;
+import org.hl7.fhir.r5.model.Enumerations.CodeSystemContentMode;
 import org.hl7.fhir.r5.model.StructureDefinition;
-import org.hl7.fhir.utilities.TextFile;
+import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
+import org.hl7.fhir.r5.model.StructureDefinition.TypeDerivationRule;
+import org.hl7.fhir.r5.model.ValueSet;
+import org.hl7.fhir.r5.model.ValueSet.ConceptReferenceComponent;
+import org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent;
+import org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionComponent;
+import org.hl7.fhir.r5.terminologies.CodeSystemUtilities;
+import org.hl7.fhir.utilities.UserDataNames;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.VersionUtilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
 import org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager;
 import org.hl7.fhir.utilities.npm.NpmPackage;
-import org.hl7.fhir.utilities.npm.ToolsVersion;
 
 public class JavaCoreGenerator {
+
+  private JavaConverterGenerator cvgen;
 
   // C:\work\org.hl7.fhir\org.hl7.fhir.core\org.hl7.fhir.r5
   // C:\work\org.hl7.fhir\org.hl7.fhir.core\org.hl7.fhir.r5.new
   
   public static void main(String[] args) throws Exception {
     System.out.println("HAPI CORE Code Generator");
-    if (args.length != 3) {
-      System.out.println("Usage: invoke with 3 command line parameters to generate HAPI R5 code");
+    if (args.length < 3 || args.length > 4) {
+      System.out.println("Usage: invoke with 3 or 4 command line parameters to generate the model code");
       System.out.println("1: fhir version to generate from (e.g. 4.2.0 or 'current'");
-      System.out.println("2: project directory to read java-adorment from - e.g. C:\\work\\org.hl7.fhir\\org.hl7.fhir.core\\org.hl7.fhir.r5");
+      System.out.println("2: project directory to read java-adorment from - e.g. /Users/grahame/work/core/org.hl7.fhir.core.generator/configuration");
       System.out.println("3: project directory to generate code into - e.g. C:\\work\\org.hl7.fhir\\org.hl7.fhir.core\\org.hl7.fhir.r5.new");
+      System.out.println("4: (optional) conv50_N folder in the convertors project to generate R5 <-> R6 conversion code into - e.g. .../org.hl7.fhir.convertors/src/main/java/org/hl7/fhir/convertors/conv50_N");
     } else {
       String version = args[0];
       String src = args[1];
       String dest = args[2];
-      new JavaCoreGenerator().generate(version, src, dest);
+      String convDest = args.length > 3 ? args[3] : null;
+      new JavaCoreGenerator().generate(version, src, dest, convDest);
     }
   }
 
   private void generate(String version, String src, String dest) throws Exception {
+    generate(version, src, dest, null);
+  }
+
+  /**
+   * @param convDest if not null, the conv50_N folder in the convertors project - the R5 <-> R6 
+   *   conversion code is generated there (see JavaConverterGenerator)
+   */
+  private void generate(String version, String src, String dest, String convDest) throws Exception {
     long start = System.currentTimeMillis();
-    Date date = new Date();
+    Map<String, AnalysisElementInfo> elementInfo = new HashMap<>();
+    Set<String> genClassList = new HashSet<>();
     
     String ap = Utilities.path(src);
     System.out.println("Load Configuration from "+ap);
     Configuration config = new Configuration(ap);
-    String pid = "r5";
-    String jid = "r5";
+    String pid = "r6";
+    String jid = "model"; // the output package family: org.hl7.fhir.model.core / .formats / .extensions / .utilities
+    Date ddate = new Date();
+    String date = config.DATE_FORMAT().format(ddate);
     
-    FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
+    FilesystemPackageCacheManager pcm = new org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager.Builder().build();
     System.out.println("Cache: "+pcm.getFolder());
     System.out.println("Load hl7.fhir."+pid+".core");
     NpmPackage npm = pcm.loadPackage("hl7.fhir."+pid+".core", version);
-    Definitions master = DefinitionsLoader.load(npm); 
-    
+    Definitions master = VersionUtilities.isR4BVer(version) ? DefinitionsLoaderR4B.load(npm) : DefinitionsLoaderR5.load(npm); 
+    master.getPackages().add(npm.name()+"#"+npm.version());
+    master.fix();
     markValueSets(master, config);
     
     System.out.println("Load hl7.fhir."+pid+".expansions");
-    Definitions expansions = DefinitionsLoader.load(pcm.loadPackage("hl7.fhir."+pid+".expansions", version));
+    Definitions expansions = DefinitionsLoaderR5.load(pcm.loadPackage("hl7.fhir."+pid+".expansions", version));
     
     System.out.println("Process Expansions");
     updateExpansions(master, expansions);
     
-    System.out.println("Generate Model");   
+    System.out.println("Generate Model in "+dest);   
     System.out.println(" .. Constants");
-    JavaConstantsGenerator cgen = new JavaConstantsGenerator(new FileOutputStream(Utilities.path(dest, "src", "org", "hl7", "fhir", "r5", "model", "Constants.java")), master, config, date, npm.version());
+    JavaConstantsGenerator cgen = new JavaConstantsGenerator(ManagedFileAccess.outStream(Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", "model", "core", "Constants.java")), master, config, date, npm.version(), jid);
     cgen.generate();
     cgen.close();
+    System.out.println(" .. CoreResourceNameList");
+    JavaCoreResourceNameListGenerator crgen = new JavaCoreResourceNameListGenerator(ManagedFileAccess.outStream(Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", "model", "core", "CoreResourceNameList.java")), master, config, date, npm.version(), jid);
+    crgen.generate();
+    crgen.close();
     System.out.println(" .. Enumerations");
-    JavaEnumerationsGenerator egen = new JavaEnumerationsGenerator(new FileOutputStream(Utilities.path(dest, "src", "org", "hl7", "fhir", "r5", "model", "Enumerations.java")), master, config, date, npm.version());
+    JavaEnumerationsGenerator egen = new JavaEnumerationsGenerator(ManagedFileAccess.outStream(Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", "model", "core", "Enumerations.java")), master, config, date, npm.version(), jid);
     egen.generate();
     egen.close();
     
-    JavaFactoryGenerator fgen = new JavaFactoryGenerator(new FileOutputStream(Utilities.path(dest, "src", "org", "hl7", "fhir", "r5", "model", "ResourceFactory.java")), master, config, date, npm.version());
-    JavaTypeGenerator tgen = new JavaTypeGenerator(new FileOutputStream(Utilities.path(dest, "src", "org", "hl7", "fhir", "r5", "model", "ResourceType.java")), master, config, date, npm.version());
-    JavaParserJsonGenerator jgen = new JavaParserJsonGenerator(new FileOutputStream(Utilities.path(dest, "src", "org", "hl7", "fhir", "r5", "formats", "JsonParser.java")), master, config, date, npm.version());
-    JavaParserXmlGenerator xgen = new JavaParserXmlGenerator(new FileOutputStream(Utilities.path(dest, "src", "org", "hl7", "fhir", "r5", "formats", "XmlParser.java")), master, config, date, npm.version());
-    JavaParserRdfGenerator rgen = new JavaParserRdfGenerator(new FileOutputStream(Utilities.path(dest, "src", "org", "hl7", "fhir", "r5", "formats", "RdfParser.java")), master, config, date, npm.version());
+    JavaFactoryGenerator fgen = new JavaFactoryGenerator(ManagedFileAccess.outStream(Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", "model", "core", "ResourceFactory.java")), master, config, date, npm.version(), jid);
+    JavaParserJsonGenerator jgen = new JavaParserJsonGenerator(ManagedFileAccess.outStream(Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", "model", "core", "formats", "JsonParser.java")), master, config, date, npm.version(), jid);
+    JavaParserXmlGenerator xgen = new JavaParserXmlGenerator(ManagedFileAccess.outStream(Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", "model", "core", "formats", "XmlParser.java")), master, config, date, npm.version(), jid);
+    JavaParserRdfGenerator rgen = new JavaParserRdfGenerator(ManagedFileAccess.outStream(Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", "model", "core", "formats", "RdfParser.java")), master, config, date, npm.version(), jid);
+    cvgen = convDest == null ? null : new JavaConverterGenerator(convDest, master, config, date, npm.version());
     
+    if (VersionUtilities.isR4BVer(version)) {
+      StructureDefinition sd = master.getStructures().get("http://hl7.org/fhir/StructureDefinition/Element");
+      genClassList.add(genClass(version, dest, date, config, jid, npm, master, jgen, xgen, rgen, sd, elementInfo));      
+    }
+    for (StructureDefinition sd : master.getStructures().getList()) {
+      if (sd.getDerivation() == TypeDerivationRule.SPECIALIZATION && sd.getKind() == StructureDefinitionKind.PRIMITIVETYPE) {
+        genClassList.add(Utilities.capitalize(sd.getType())+"Type");
+      }
+    }
+
     for (StructureDefinition sd : master.getStructures().getList()) {
       if (sd.getDerivation() == TypeDerivationRule.SPECIALIZATION && sd.getKind() == StructureDefinitionKind.COMPLEXTYPE) {
         if (!Utilities.existsInList(sd.getName(), "Base", "PrimitiveType") && !sd.getName().contains(".") && sd.getAbstract()) {
-          String name = javaName(sd.getName());
-
-          System.out.println(" .. "+name);
-          Analyser jca = new Analyser(master, config);
-          Analysis analysis = jca.analyse(sd);
-          
-          String fn = Utilities.path(dest, "src", "org", "hl7", "fhir", "r5", "model", name+".java");
-          JavaResourceGenerator gen = new JavaResourceGenerator(new FileOutputStream(fn), master, config, date, npm.version());
-          gen.generate(analysis); 
-          gen.close();
-          jgen.seeClass(analysis);
-          xgen.seeClass(analysis);
-          rgen.seeClass(analysis);
+          genClassList.add(genClass(version, dest, date, config, jid, npm, master, jgen, xgen, rgen, sd, elementInfo));
         }
       }
     }
     for (StructureDefinition sd : master.getStructures().getList()) {
       if (sd.getDerivation() == TypeDerivationRule.SPECIALIZATION && sd.getKind() == StructureDefinitionKind.COMPLEXTYPE) {
         if (!Utilities.existsInList(sd.getName(), "Base", "PrimitiveType") && !sd.getName().contains(".") && !sd.getAbstract()) {
-          String name = javaName(sd.getName());
-
-          System.out.println(" .. "+name);
-          Analyser jca = new Analyser(master, config);
-          Analysis analysis = jca.analyse(sd);
-          String fn = Utilities.path(dest, "src", "org", "hl7", "fhir", "r5", "model", name+".java");
-          JavaResourceGenerator gen = new JavaResourceGenerator(new FileOutputStream(fn), master, config, date, npm.version());
-          gen.generate(analysis); 
-          gen.close();
-          jgen.seeClass(analysis);
-          xgen.seeClass(analysis);
-          rgen.seeClass(analysis);
+          genClassList.add(genClass(version, dest, date, config, jid, npm, master, jgen, xgen, rgen, sd, elementInfo));
         }
       }
+    }
+    if (VersionUtilities.isR4BVer(version)) {
+      StructureDefinition sd = master.getStructures().get("http://hl7.org/fhir/StructureDefinition/Resource");
+      genClassList.add(genClass(version, dest, date, config, jid, npm, master, jgen, xgen, rgen, sd, elementInfo));      
     }
     for (StructureDefinition sd : master.getStructures().getList()) {
       if (sd.getDerivation() == TypeDerivationRule.SPECIALIZATION && sd.getKind() == StructureDefinitionKind.RESOURCE) {
         if (!Utilities.existsInList(sd.getName(), "Base", "PrimitiveType") && !sd.getName().contains(".") && sd.getAbstract()) {
-          String name = javaName(sd.getName());
-
-          System.out.println(" .. "+name);
-          Analyser jca = new Analyser(master, config);
-          Analysis analysis = jca.analyse(sd);
-          
-          String fn = Utilities.path(dest, "src", "org", "hl7", "fhir", "r5", "model", name+".java");
-          JavaResourceGenerator gen = new JavaResourceGenerator(new FileOutputStream(fn), master, config, date, npm.version());
-          gen.generate(analysis); 
-          gen.close();
-          jgen.seeClass(analysis);
-          xgen.seeClass(analysis);
-          rgen.seeClass(analysis);
+          genClassList.add(genClass(version, dest, date, config, jid, npm, master, jgen, xgen, rgen, sd, elementInfo));
         }
       }
     }
     for (StructureDefinition sd : master.getStructures().getList()) {
       if (sd.getDerivation() == TypeDerivationRule.SPECIALIZATION && sd.getKind() == StructureDefinitionKind.RESOURCE) {
         if (!Utilities.existsInList(sd.getName(), "Base", "PrimitiveType") && !sd.getName().contains(".") && !sd.getAbstract()) {
-          String name = javaName(sd.getName());
-
-          System.out.println(" .. "+name);
-          Analyser jca = new Analyser(master, config);
-          Analysis analysis = jca.analyse(sd);
-          String fn = Utilities.path(dest, "src", "org", "hl7", "fhir", "r5", "model", name+".java");
-          JavaResourceGenerator gen = new JavaResourceGenerator(new FileOutputStream(fn), master, config, date, npm.version());
-          gen.generate(analysis); 
-          gen.close();
-          jgen.seeClass(analysis);
-          xgen.seeClass(analysis);
-          rgen.seeClass(analysis);
+          genClassList.add(genClass(version, dest, date, config, jid, npm, master, jgen, xgen, rgen, sd, elementInfo));
         }
       }
     }
     System.out.println(" .. Factory");
     fgen.generate();
     fgen.close();
-    System.out.println(" .. Types");
-    tgen.generate();
-    tgen.close();
     System.out.println(" .. JsonParser");
     jgen.generate();
     jgen.close();
@@ -183,8 +182,88 @@ public class JavaCoreGenerator {
     System.out.println(" .. RdfParser");
     rgen.generate();
     rgen.close();
+    if (cvgen != null) {
+      // resources that have moved out of R6 core (to the fml / testing / api logical model 
+      // packages) still get 50_N converters - generated from the R5 definitions, targeting 
+      // the logical model classes (see N_HOME_OVERRIDES in JavaConverterGenerator)
+      System.out.println(" .. Converters (50_N): resources moved out of core");
+      NpmPackage npm5 = pcm.loadPackage("hl7.fhir.r5.core");
+      Definitions r5defs = DefinitionsLoaderR5.load(npm5);
+      r5defs.fix();
+      updateExpansions(r5defs, DefinitionsLoaderR5.load(pcm.loadPackage("hl7.fhir.r5.expansions", npm5.version())));
+      markValueSets(r5defs, config);
+      Map<String, AnalysisElementInfo> ei5 = new HashMap<>();
+      for (String n : new String[] {"GraphDefinition", "StructureMap", "TestReport", "TestScript"}) {
+        StructureDefinition msd = r5defs.getStructures().get("http://hl7.org/fhir/StructureDefinition/"+n);
+        if (msd == null) {
+          System.out.println(" .. conv "+n+" - not found in R5!");
+        } else {
+          System.out.println(" .. conv "+n);
+          cvgen.seeClass(new Analyser(r5defs, config, npm5.fhirVersion()).analyse(msd, ei5));
+        }
+      }
+      System.out.println(" .. Converters (50_N)");
+      cvgen.finish();
+    }
+    Map<String, StructureDefinition> extensions = new HashMap<>();
+    for (StructureDefinition sd : master.getStructures().getList()) {
+      if (ProfileUtilities.isExtensionDefinition(sd)) {
+        sd.setUserData("source", "core");
+        extensions.put(sd.getUrl(), sd);
+      }
+    }
+    loadPackageforExtensions(pcm, master, extensions, "hl7.fhir.uv.extensions", "");
+    loadPackageforExtensions(pcm, master, extensions, "hl7.terminology.r5", "tx");
+    loadPackageforExtensions(pcm, master, extensions, "hl7.fhir.uv.tools#current", "tools");
+    JavaExtensionsGenerator exgen = new JavaExtensionsGenerator(Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", jid, "extensions"), master, config, date, npm.version(), jid, elementInfo, genClassList);
+    exgen.generate(extensions);
     System.out.println("Done ("+Long.toString(System.currentTimeMillis()-start)+"ms)");   
     
+  }
+
+  private void loadPackageforExtensions(FilesystemPackageCacheManager pcm, Definitions master,
+      Map<String, StructureDefinition> extensions, String id, String source) throws IOException {
+    NpmPackage npm;
+    npm = pcm.loadPackage(id);
+    master.getPackages().add(npm.name()+"#"+npm.version());
+    for (String p : npm.listResources("StructureDefinition", "ValueSet", "CodeSystem")) {
+      CanonicalResource cr = (CanonicalResource) new JsonParser().parse(npm.load(p));
+      cr.setUserData("source", source);
+      if (cr instanceof StructureDefinition) {
+        StructureDefinition sd = (StructureDefinition) cr;
+        if (ProfileUtilities.isExtensionDefinition(sd)) {
+          extensions.put(sd.getUrl(), sd);
+        }
+      } else if (cr instanceof ValueSet) {
+        master.getValuesets().see((ValueSet) cr, null);
+      } else if (cr instanceof CodeSystem) {
+        master.getCodeSystems().see((CodeSystem) cr, null);
+      }
+    }
+  }
+
+  public String genClass(String version, String dest, String date, Configuration config, String jid, NpmPackage npm, Definitions master,
+      JavaParserJsonGenerator jgen, JavaParserXmlGenerator xgen, JavaParserRdfGenerator rgen, StructureDefinition sd, Map<String, AnalysisElementInfo> elementInfo)
+      throws Exception, IOException, UnsupportedEncodingException, FileNotFoundException {
+    // the name comes from the loaded package and becomes the output file name
+    org.hl7.fhir.core.generator.codegen.JavaBaseGenerator.checkJavaIdentifier(sd.getName(), "the name of "+sd.getVersionedUrl());
+    String name = javaName(sd.getName());
+
+    System.out.println(" .. "+name);
+    Analyser jca = new Analyser(master, config, version);
+    Analysis analysis = jca.analyse(sd, elementInfo);
+    
+    String fn = Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", "model", "core", name+".java");
+    JavaResourceGenerator gen = new JavaResourceGenerator(ManagedFileAccess.outStream(fn), master, config, date, npm.version(), jid);
+    gen.generate(analysis); 
+    gen.close();
+    jgen.seeClass(analysis);
+    xgen.seeClass(analysis);
+    rgen.seeClass(analysis);
+    if (cvgen != null) {
+      cvgen.seeClass(analysis);
+    }
+    return name;
   }
 
   @SuppressWarnings("unchecked")
@@ -231,9 +310,65 @@ public class JavaCoreGenerator {
     for (ValueSet vs: master.getValuesets().getList()) {
       ValueSet vse = expansions.getValuesets().get(vs.getUrl());
       if (vse != null) {
-        vs.setUserData("expansion", vse);
+        vs.setUserData(UserDataNames.EXPANSION, vse);
+      } else if (vs.hasUserData("usages")) {
+        // a required binding in the core definitions, but the expansions package has no expansion
+        // for it. The expansions package holds one ValueSet-[id].json per id, so when a THO value set
+        // shares an id with a core one, one of them is lost (e.g. 6.0.0-snapshot1 lost the core
+        // variable-role and conformance-expectation to their THO namesakes). Without an expansion
+        // the enum is never generated, but the element is still typed as Enumeration<X>, so the
+        // model doesn't compile. If it's a simple value set, expand it here instead
+        vse = simpleExpansion(master, vs);
+        if (vse != null) {
+          System.out.println("  .. no expansion for "+vs.getVersionedUrl()+" in the expansions package - expanded locally ("+vse.getExpansion().getContains().size()+" codes)");
+          vs.setUserData(UserDataNames.EXPANSION, vse);
+        } else {
+          System.out.println("  .. no expansion for "+vs.getVersionedUrl()+" in the expansions package, and it can't be expanded locally");
+        }
       }
     }    
+  }
+
+  /**
+   * expand a value set that only includes whole code systems or enumerated codes from complete
+   * code systems in the definitions. Returns null for anything more complicated than that
+   */
+  private ValueSet simpleExpansion(Definitions defns, ValueSet vs) {
+    if (!vs.hasCompose() || vs.getCompose().hasExclude()) {
+      return null;
+    }
+    ValueSet vse = vs.copy();
+    ValueSetExpansionComponent exp = vse.getExpansion();
+    exp.setTimestamp(new Date());
+    for (ConceptSetComponent inc : vs.getCompose().getInclude()) {
+      if (!inc.hasSystem() || inc.hasValueSet() || inc.hasFilter()) {
+        return null;
+      }
+      CodeSystem cs = defns.getCodeSystems().get(inc.getSystem());
+      if (cs == null || cs.getContent() != CodeSystemContentMode.COMPLETE) {
+        return null;
+      }
+      if (inc.hasConcept()) {
+        for (ConceptReferenceComponent cr : inc.getConcept()) {
+          ConceptDefinitionComponent cd = CodeSystemUtilities.findCode(cs.getConcept(), cr.getCode());
+          if (cd == null) {
+            return null;
+          }
+          exp.addContains().setSystem(cs.getUrl()).setCode(cd.getCode()).setDisplay(cr.hasDisplay() ? cr.getDisplay() : cd.getDisplay());
+        }
+      } else {
+        addConcepts(exp, cs, cs.getConcept());
+      }
+    }
+    exp.setTotal(exp.getContains().size());
+    return vse;
+  }
+
+  private void addConcepts(ValueSetExpansionComponent exp, CodeSystem cs, List<ConceptDefinitionComponent> list) {
+    for (ConceptDefinitionComponent cd : list) {
+      exp.addContains().setSystem(cs.getUrl()).setCode(cd.getCode()).setDisplay(cd.getDisplay());
+      addConcepts(exp, cs, cd.getConcept()); // flat, like the excludeNested expansions in the package
+    }
   }
 
 

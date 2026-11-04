@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class AccountStatusEnumFactory implements EnumFactory<AccountStatus> {
@@ -46,19 +42,21 @@ public class AccountStatusEnumFactory implements EnumFactory<AccountStatus> {
       return AccountStatus.ACTIVE;
     if ("inactive".equals(codeString))
       return AccountStatus.INACTIVE;
-    throw new IllegalArgumentException("Unknown AccountStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown AccountStatus code '" + codeString + "'");
   }
 
   public String toCode(AccountStatus code) {
-    if (code == AccountStatus.ACTIVE)
+       if (code == AccountStatus.NULL)
+           return null;
+       if (code == AccountStatus.ACTIVE)
       return "active";
     if (code == AccountStatus.INACTIVE)
       return "inactive";
     return "?";
-  }
+   }
 
-    public String toSystem(AccountStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(AccountStatus code) {
+    return code.getSystem();
+  }
 
 }

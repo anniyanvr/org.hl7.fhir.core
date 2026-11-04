@@ -32,19 +32,24 @@ package org.hl7.fhir.r5.utils;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
-import org.hl7.fhir.utilities.Utilities;
+
+import org.hl7.fhir.utilities.VersionUtilities;
+
 
 
 public class TypesUtilities {
+  private static final HashSet<String> primitiveTypes = new HashSet<>(Arrays.asList("boolean", "integer", "integer64", "string", "decimal", "uri", "url", "canonical", "base64Binary", "instant", "date", "dateTime", "time", "code", "oid", "id", "uuid", "markdown", "unsignedInt", "positiveInt", "xhtml"));
 
   public enum TypeClassification {
     PRIMITIVE, DATATYPE, METADATATYPE, SPECIAL;
 
     public String toDisplay() {
       switch (this) {
-      case DATATYPE: return "Data Type";
+      case DATATYPE: return "Datatype";
       case METADATATYPE: return "MetaDataType";
       case PRIMITIVE: return "Primitive Type";
       case SPECIAL: return "Special Type";
@@ -111,7 +116,7 @@ public class TypesUtilities {
     res.add(new WildcardInformation("id", TypeClassification.PRIMITIVE));
     res.add(new WildcardInformation("instant", TypeClassification.PRIMITIVE));
     res.add(new WildcardInformation("integer", TypeClassification.PRIMITIVE));
-    if (!version.startsWith("4.1")) {
+    if (!VersionUtilities.isR4BVer(version)) {
       res.add(new WildcardInformation("integer64", TypeClassification.PRIMITIVE));
     }
     res.add(new WildcardInformation("markdown", TypeClassification.PRIMITIVE));
@@ -130,6 +135,7 @@ public class TypesUtilities {
     res.add(new WildcardInformation("Annotation", TypeClassification.DATATYPE));
     res.add(new WildcardInformation("Attachment", TypeClassification.DATATYPE));
     res.add(new WildcardInformation("CodeableConcept", TypeClassification.DATATYPE));
+    res.add(new WildcardInformation("CodeableReference", TypeClassification.DATATYPE));
     res.add(new WildcardInformation("Coding", TypeClassification.DATATYPE));
     res.add(new WildcardInformation("ContactPoint", TypeClassification.DATATYPE));
     res.add(new WildcardInformation("Count", TypeClassification.DATATYPE));
@@ -142,6 +148,7 @@ public class TypesUtilities {
     res.add(new WildcardInformation("Quantity", TypeClassification.DATATYPE));
     res.add(new WildcardInformation("Range", TypeClassification.DATATYPE));
     res.add(new WildcardInformation("Ratio", TypeClassification.DATATYPE));
+    res.add(new WildcardInformation("RatioRange", TypeClassification.DATATYPE));
     res.add(new WildcardInformation("Reference", " - a reference to another resource", TypeClassification.DATATYPE));
     res.add(new WildcardInformation("SampledData", TypeClassification.DATATYPE));
     res.add(new WildcardInformation("Signature", TypeClassification.DATATYPE));
@@ -149,21 +156,25 @@ public class TypesUtilities {
     
     // metadata types
     res.add(new WildcardInformation("ContactDetail", TypeClassification.METADATATYPE));
-    res.add(new WildcardInformation("Contributor", TypeClassification.METADATATYPE));
     res.add(new WildcardInformation("DataRequirement", TypeClassification.METADATATYPE));
     res.add(new WildcardInformation("Expression", TypeClassification.METADATATYPE));
     res.add(new WildcardInformation("ParameterDefinition", TypeClassification.METADATATYPE));
     res.add(new WildcardInformation("RelatedArtifact", TypeClassification.METADATATYPE));
     res.add(new WildcardInformation("TriggerDefinition", TypeClassification.METADATATYPE));
     res.add(new WildcardInformation("UsageContext", TypeClassification.METADATATYPE));
-    
+    res.add(new WildcardInformation("Availability", TypeClassification.METADATATYPE));
+    res.add(new WildcardInformation("ExtendedContactDetail", TypeClassification.METADATATYPE));
+    res.add(new WildcardInformation("VirtualServiceDetail", TypeClassification.METADATATYPE));
+
     // special cases
     res.add(new WildcardInformation("Dosage", TypeClassification.SPECIAL));
-    res.add(new WildcardInformation("Meta", TypeClassification.SPECIAL));
+    if (!VersionUtilities.isR4BVer(version)) {
+      res.add(new WildcardInformation("Meta", TypeClassification.SPECIAL));
+    }
     return res;
   }
 
   public static boolean isPrimitive(String code) {
-    return Utilities.existsInList(code, "boolean", "integer", "integer64", "string", "decimal", "uri", "url", "canonical", "base64Binary", "instant", "date", "dateTime", "time", "code", "oid", "id", "markdown", "unsignedInt", "positiveInt", "xhtml");
+    return primitiveTypes.contains(code);
   }
 }

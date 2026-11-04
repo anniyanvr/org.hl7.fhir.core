@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class SearchParamTypeEnumFactory implements EnumFactory<SearchParamType> {
@@ -60,11 +56,13 @@ public class SearchParamTypeEnumFactory implements EnumFactory<SearchParamType> 
       return SearchParamType.URI;
     if ("special".equals(codeString))
       return SearchParamType.SPECIAL;
-    throw new IllegalArgumentException("Unknown SearchParamType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown SearchParamType code '" + codeString + "'");
   }
 
   public String toCode(SearchParamType code) {
-    if (code == SearchParamType.NUMBER)
+       if (code == SearchParamType.NULL)
+           return null;
+       if (code == SearchParamType.NUMBER)
       return "number";
     if (code == SearchParamType.DATE)
       return "date";
@@ -83,10 +81,10 @@ public class SearchParamTypeEnumFactory implements EnumFactory<SearchParamType> 
     if (code == SearchParamType.SPECIAL)
       return "special";
     return "?";
-  }
+   }
 
-    public String toSystem(SearchParamType code) {
-      return code.getSystem();
-      }
+  public String toSystem(SearchParamType code) {
+    return code.getSystem();
+  }
 
 }

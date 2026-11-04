@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ParticipantrequiredEnumFactory implements EnumFactory<Participantrequired> {
@@ -48,21 +44,23 @@ public class ParticipantrequiredEnumFactory implements EnumFactory<Participantre
       return Participantrequired.OPTIONAL;
     if ("information-only".equals(codeString))
       return Participantrequired.INFORMATIONONLY;
-    throw new IllegalArgumentException("Unknown Participantrequired code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown Participantrequired code '" + codeString + "'");
   }
 
   public String toCode(Participantrequired code) {
-    if (code == Participantrequired.REQUIRED)
+       if (code == Participantrequired.NULL)
+           return null;
+       if (code == Participantrequired.REQUIRED)
       return "required";
     if (code == Participantrequired.OPTIONAL)
       return "optional";
     if (code == Participantrequired.INFORMATIONONLY)
       return "information-only";
     return "?";
-  }
+   }
 
-    public String toSystem(Participantrequired code) {
-      return code.getSystem();
-      }
+  public String toSystem(Participantrequired code) {
+    return code.getSystem();
+  }
 
 }

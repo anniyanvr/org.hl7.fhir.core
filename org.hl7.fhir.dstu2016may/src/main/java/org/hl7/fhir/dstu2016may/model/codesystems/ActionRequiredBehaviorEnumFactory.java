@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ActionRequiredBehaviorEnumFactory implements EnumFactory<ActionRequiredBehavior> {
@@ -48,21 +44,23 @@ public class ActionRequiredBehaviorEnumFactory implements EnumFactory<ActionRequ
       return ActionRequiredBehavior.COULD;
     if ("must-unless-documented".equals(codeString))
       return ActionRequiredBehavior.MUSTUNLESSDOCUMENTED;
-    throw new IllegalArgumentException("Unknown ActionRequiredBehavior code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ActionRequiredBehavior code '" + codeString + "'");
   }
 
   public String toCode(ActionRequiredBehavior code) {
-    if (code == ActionRequiredBehavior.MUST)
+       if (code == ActionRequiredBehavior.NULL)
+           return null;
+       if (code == ActionRequiredBehavior.MUST)
       return "must";
     if (code == ActionRequiredBehavior.COULD)
       return "could";
     if (code == ActionRequiredBehavior.MUSTUNLESSDOCUMENTED)
       return "must-unless-documented";
     return "?";
-  }
+   }
 
-    public String toSystem(ActionRequiredBehavior code) {
-      return code.getSystem();
-      }
+  public String toSystem(ActionRequiredBehavior code) {
+    return code.getSystem();
+  }
 
 }

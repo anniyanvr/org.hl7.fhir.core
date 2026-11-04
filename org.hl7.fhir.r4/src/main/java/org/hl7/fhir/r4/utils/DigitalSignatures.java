@@ -29,8 +29,6 @@ package org.hl7.fhir.r4.utils;
   
  */
 
-
-
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -60,17 +58,21 @@ import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+
+import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+import org.hl7.fhir.utilities.xml.XMLUtil;
 import org.hl7.fhir.utilities.xml.XmlGenerator;
 import org.w3c.dom.Document;
 
+@Deprecated(forRemoval = true)
 public class DigitalSignatures {
 
   public static PrivateKey getPrivateKey(String filename) throws Exception {
 
     byte[] keyBytes = Files.readAllBytes(Paths.get(filename));
 
-    PKCS8EncodedKeySpec spec =
-        new PKCS8EncodedKeySpec(keyBytes);
+    PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
     KeyFactory kf = KeyFactory.getInstance("RSA");
     return kf.generatePrivate(spec);
   }
@@ -89,32 +91,35 @@ public class DigitalSignatures {
     //
     byte[] inputXml = "<Envelope xmlns=\"urn:envelope\">\r\n</Envelope>\r\n".getBytes();
     // load the document that's going to be signed
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance(); 
+    DocumentBuilderFactory dbf = XMLUtil.newXXEProtectedDocumentBuilderFactory();
     dbf.setNamespaceAware(true);
-    DocumentBuilder builder = dbf.newDocumentBuilder();  
-    Document doc = builder.parse(new ByteArrayInputStream(inputXml)); 
-    
+    DocumentBuilder builder = dbf.newDocumentBuilder();
+    Document doc = builder.parse(new ByteArrayInputStream(inputXml));
+
 //    // create a key pair
 //    KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
 //    kpg.initialize(512);
 //    KeyPair kp = kpg.generateKeyPair(); 
     PublicKey pub = getPublicKey("C:\\work\\fhirserver\\tests\\signatures\\public_key.der");
     PrivateKey priv = getPrivateKey("C:\\work\\fhirserver\\tests\\signatures\\private_key.der");
-    
+
     // sign the document
-    DOMSignContext dsc = new DOMSignContext(priv, doc.getDocumentElement()); 
-    XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM"); 
-   
-    Reference ref = fac.newReference("", fac.newDigestMethod(DigestMethod.SHA1, null), Collections.singletonList(fac.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null)), null, null);
-    SignedInfo si = fac.newSignedInfo(fac.newCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null), fac.newSignatureMethod(SignatureMethod.RSA_SHA1, null), Collections.singletonList(ref));
-    
-    KeyInfoFactory kif = fac.getKeyInfoFactory(); 
+    DOMSignContext dsc = new DOMSignContext(priv, doc.getDocumentElement());
+    XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
+
+    Reference ref = fac.newReference("", fac.newDigestMethod(DigestMethod.SHA1, null),
+        Collections.singletonList(fac.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null)), null, null);
+    SignedInfo si = fac.newSignedInfo(
+        fac.newCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null),
+        fac.newSignatureMethod(SignatureMethod.RSA_SHA1, null), Collections.singletonList(ref));
+
+    KeyInfoFactory kif = fac.getKeyInfoFactory();
     KeyValue kv = kif.newKeyValue(pub);
     KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
-    XMLSignature signature = fac.newXMLSignature(si, ki); 
+    XMLSignature signature = fac.newXMLSignature(si, ki);
     signature.sign(dsc);
-    
-    OutputStream os = new FileOutputStream("c:\\temp\\java-digsig.xml");
+
+    OutputStream os = ManagedFileAccess.outStream(Utilities.path("[tmp]", "java-digsig.xml"));
     new XmlGenerator().generate(doc.getDocumentElement(), os);
   }
 }

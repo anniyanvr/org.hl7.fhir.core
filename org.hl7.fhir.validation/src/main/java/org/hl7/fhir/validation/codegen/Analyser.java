@@ -1,0 +1,434 @@
+package org.hl7.fhir.validation.codegen;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.hl7.fhir.model.core.*;
+import org.hl7.fhir.services.conformance.profile.ProfileUtilities;
+import org.hl7.fhir.services.context.IWorkerContext;
+import org.hl7.fhir.model.extensions.ExtensionDefinitions;
+import org.hl7.fhir.model.core.ElementDefinition.ElementDefinitionBindingComponent;
+import org.hl7.fhir.model.core.ElementDefinition.TypeRefComponent;
+import org.hl7.fhir.model.core.Enumerations.BindingStrength;
+import org.hl7.fhir.model.core.StructureDefinition.StructureDefinitionKind;
+import org.hl7.fhir.model.core.ValueSet.ConceptSetComponent;
+import org.hl7.fhir.utilities.UserDataNames;
+
+import org.hl7.fhir.utilities.Utilities;
+
+public class Analyser {
+
+  private Definitions definitions;
+  private Configuration config;
+  private String version;
+  private IWorkerContext context;
+  private ProfileUtilities pu;
+
+  public Analyser(Definitions definitions, Configuration config, String version, IWorkerContext context) {
+    this.definitions = definitions;
+    this.config = config;
+    this.version = version;
+    this.context = context;
+    this.pu = new ProfileUtilities(null, null, null);
+  }
+
+  public Analysis analyse(StructureDefinition sd, Map<String, AnalysisElementInfo> elementInfo) throws Exception {
+    Analysis res = new Analysis(definitions, sd);
+
+    StructureDefinition sdb = definitions.getStructures().get(sd.getBaseDefinition());
+   
+    if (sdb == null && sd.hasBaseDefinition()) {
+      sdb = definitions.getContext().fetchTypeDefinition(sd.getBaseDefinition());
+    }
+    res.setAncestor(sdb);
+    res.setAbstract(sd.getAbstract());
+    // not a good idea?
+    // res.setInterface(sd.hasExtension("http://hl7.org/fhir/StructureDefinition/structuredefinition-interface"));
+    // the name is package-supplied, and becomes the name of the generated class - and, in
+    // LogicalModelCodeGenerator, the name of the file it is written to - so it is checked before
+    // anything is derived from it
+    JavaBaseGenerator.checkJavaIdentifier(sd.getName(), "the name of "+sd.getVersionedUrl());
+    res.setClassName(sd.getName().equals("List") ? "ListResource" : sd.getName());
+    
+    TypeInfo type = new TypeInfo();
+    type.setName(res.getClassName());
+    if (res.getAncestor() != null) {
+      // becomes the extends clause of the generated class
+      JavaBaseGenerator.checkJavaIdentifier(res.getAncestor().getName(), "the name of the base definition of "+sd.getVersionedUrl());
+      type.setAncestorName(res.getAncestor().getName());
+    }
+    res.getTypes().put(type.getName(), type);
+    res.setRootType(type);
+    sd.setUserData("java.type.info", type);
+    
+    type.setDefn(sd.getSnapshot().getElementFirstRep());
+    type.setChildren(filterChildren(pu.getChildList(sd, type.getDefn())));
+    if (res.getAncestor() != null) {
+      type.setInheritedChildren(getAbstractChildren(res.getAncestor()));
+    }
+    
+    for (ElementDefinition e : type.getChildren()) {
+      scanNestedTypes(res, type, type.getName(), e);
+    }
+    
+    if (sd.getKind() == StructureDefinitionKind.RESOURCE) {
+      res.setSearchParams(getSearchParams(sd.getName()));
+    }
+
+    for (ElementDefinition e : type.getChildren()) {
+      String nn = e.getUserString("java.type");
+      if (nn.startsWith("@")) {
+        ElementDefinition er = getElementForPath(sd, nn.substring(1));
+        if (!er.hasUserData("java.type")) {
+          throw new Exception("not found: "+er); 
+        }
+        String nnn = er.getUserString("java.type");
+        e.setUserData("java.type", nnn);
+        e.setUserData("java.type.info", er.getUserData("java.type.info"));
+      } 
+      elementInfo.put(e.getPath(), new AnalysisElementInfo(res.getClassName(), e.getUserString("java.type")));
+    }
+    return res;
+  }
+  
+  private String getR4bAncestor(StructureDefinition sd) {
+    switch (sd.getKind()) {
+    case COMPLEXTYPE: return "http://hl7.org/fhir/StructureDefinition/DataType";
+    case LOGICAL: return "http://hl7.org/fhir/StructureDefinition/Element";
+    case PRIMITIVETYPE: return "http://hl7.org/fhir/StructureDefinition/PrimitiveType";
+    case RESOURCE: return sd.getBaseDefinition();
+    default: return null;
+    }
+  }
+
+  protected List<ElementDefinition> filterChildren(List<ElementDefinition> childList) {
+    List<ElementDefinition> res = new ArrayList<>();
+    res.addAll(childList);
+    for (ElementDefinition t : childList) {
+      // every child becomes a field, and the name of its accessors. This is the one place they are
+      // all seen, so the name is checked here rather than at the (many) points it is written out.
+      // The 'alone' form is checked because that is the one used bare as a field name, and because
+      // it is the form that suffixes a java reserved word - which is legal input, not an error
+      JavaBaseGenerator.checkJavaIdentifier(JavaBaseGenerator.getElementName(t.getName(), true), "the name of "+t.getPath());
+    }
+    List<ElementDefinition> r = new ArrayList<>();
+    for (ElementDefinition t : childList) {
+      if (!t.getPath().equals(t.getBase().getPath()) && !hasInterfaceBase(t)) {
+        r.add(t);
+      }
+    }
+    res.removeAll(r);
+    return res;
+  }
+
+  /**
+   * true if the element is inherited from an ancestor that is marked as an interface 
+   * (e.g. CanonicalResource). Such elements are retained in the child list so that they are 
+   * generated concretely on the resource (implementing the interface's abstract accessors), 
+   * while elements inherited from the concrete base hierarchy (Resource, DomainResource etc) 
+   * are filtered out because they are inherited from the java base class
+   */
+  private boolean hasInterfaceBase(ElementDefinition t) {
+    if (!t.hasBase() || !t.getBase().hasPath() || !t.getBase().getPath().contains(".")) {
+      return false;
+    }
+    String tn = t.getBase().getPath().substring(0, t.getBase().getPath().indexOf("."));
+    StructureDefinition sd = definitions.getStructures().get("http://hl7.org/fhir/StructureDefinition/"+tn);
+    if (sd == null) {
+      sd = definitions.getContext().fetchTypeDefinition(tn);
+    }
+    return sd != null && sd.hasExtension("http://hl7.org/fhir/StructureDefinition/structuredefinition-interface");
+  }
+
+  private boolean hasCoreEnum(String name) {
+    if (!JavaBaseGenerator.isSafeJavaIdentifier(name)) {
+      // the name is package-supplied and is about to be used to look up a class by reflection
+      return false;
+    }
+    try {
+      Class.forName((config.isR6() ? "org.hl7.fhir.model.core" : "org.hl7.fhir.model.core")+".Enumerations$"+name);
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+
+  private List<ElementDefinition> getAbstractChildren(StructureDefinition structure) {
+    if (!structure.hasExtension("http://hl7.org/fhir/StructureDefinition/structuredefinition-interface")) {
+      return new ArrayList<>();
+    }
+    List<ElementDefinition> res = new ArrayList<>();
+    StructureDefinition sdb = definitions.getStructures().get(structure.getBaseDefinition());
+    if (sdb == null) {
+      sdb = definitions.getContext().fetchTypeDefinition(structure.getBaseDefinition());
+    }
+    res.addAll(getAbstractChildren(sdb));
+    res.addAll(filterChildren(new ProfileUtilities(null, null, null).getChildList(structure, structure.getSnapshot().getElementFirstRep())));
+    return res;
+  }
+
+  private void scanNestedTypes(Analysis analysis, TypeInfo type, String path, ElementDefinition e) throws Exception {
+    String tn = null;
+    if (e.typeSummary().equals("code") && e.hasBinding()) {
+      ElementDefinitionBindingComponent cd = e.getBinding();
+      if (isEnum(cd)) {
+        ValueSet vs = definitions.getValuesets().get(cd.getValueSet());   
+        if (vs == null) {
+          // the value set is not defined in the packages being generated - possibly it's a binding to a 
+          // value set defined in the base model (e.g. on an element inherited from an interface like 
+          // CanonicalResource). If the base model Enumerations class defines the matching enum, use it 
+          // rather than generating a local one, so that the generated accessors match the signatures of 
+          // any abstract methods on the base classes (and round-trip with the base model generally)
+          ValueSet cvs = definitions.getContext().fetchResource(ValueSet.class, cd.getValueSet());
+          if (cvs != null && hasCoreEnum(getCodeListType(cvs.getName()))) {
+            String en = getCodeListType(cvs.getName());
+            EnumInfo ei = new EnumInfo(en); // note: not registered in analysis.getEnums() - no local enum is generated
+            ei.setValueSet(cvs);
+            cvs.setUserData("java.core.enum", true);
+            tn = (config.isR6() ? "org.hl7.fhir.model.core" : "org.hl7.fhir.model.core")+".Enumerations."+en;
+            e.setUserData("java.type", "Enumeration<"+tn+">");
+            e.setUserData("java.enum", ei);
+          }
+        } else if (vs != null) {
+          tn = getCodeListType(vs.getName());
+          // becomes the name of the generated enum, and of its EnumFactory class
+          JavaBaseGenerator.checkJavaIdentifier(tn, "the enum name derived from the name of "+vs.getVersionedUrl());
+          EnumInfo ei = analysis.getEnums().get(tn);
+          if (ei == null) {
+            ei = new EnumInfo(tn);
+            analysis.getEnums().put(tn,  ei);
+            ei.setValueSet(vs);
+          }
+          if (tn.equals("SubscriptionStatus")) { // work around cause there's a Resource with the same name
+            tn = "org.hl7.fhir.r4b.model.Enumerations."+tn;
+          }
+          e.setUserData("java.type", "Enumeration<"+tn+">");
+          e.setUserData("java.enum", ei);
+        }
+      }
+    }
+    
+    if (tn == null) {
+      if (e.hasExtension(ExtensionDefinitions.EXT_EXTENSION_STYLE_NEW, ExtensionDefinitions.EXT_EXTENSION_STYLE_DEPRECATED) &&
+        "named-elements".equals(e.getExtensionString(ExtensionDefinitions.EXT_EXTENSION_STYLE_NEW, ExtensionDefinitions.EXT_EXTENSION_STYLE_DEPRECATED))) {
+        tn = "NamedElementExtension";
+        e.setUserData("java.type", tn);
+      } else if (e.getTypeList().size() > 0 && !e.hasContentReference() && pu.getChildList(analysis.getStructure(), e).isEmpty()) { // !isAbstractType(e.getType().get(0).getCode())
+        tn = getTypeName(e);
+        if (e.typeSummary().equals("xml:lang"))
+          tn = "CodeType";
+        if (e.typeSummary().equals("xhtml")) 
+          tn = "XhtmlNode";
+        else if (e.getTypeList().size() > 1)
+          tn ="DataType";
+        else if (definitions.hasPrimitiveType(tn))
+          tn = upFirst(tn)+"Type";
+        if (tn.contains("-")) {
+          tn = tn.replace("-", "_");
+        }
+        // becomes the declared java type of the generated field and its accessors
+        JavaBaseGenerator.checkJavaIdentifier(tn, "the type name derived for "+e.getPath());
+        e.setUserData("java.type", tn);
+      } else {
+        if (e.hasContentReference()) {
+          ElementDefinition er = getElementForPath(analysis.getStructure(), e.getContentReference().substring(e.getContentReference().indexOf("#")+1));
+          tn = er.getUserString("java.type");
+          if (Utilities.noString(tn)) {
+            e.setUserData("java.type", "@"+er.getPath()); // have to resolve this later
+          } else {
+            e.setUserData("java.type", tn);
+          }
+        } else {
+          String cpath;
+          if (e.hasExtension("http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name")) { 
+            tn = upFirst(e.getExtensionString("http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name"))+"Component";
+            cpath = e.getExtensionString("http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name");
+          } else if (config.getIni().hasProperty("typenames", e.getPath())) {
+            tn = upFirst(config.getIni().getStringProperty("typenames", e.getPath()))+"Component";
+            cpath = config.getIni().getStringProperty("typenames", e.getPath());
+          } else {
+            tn = path+upFirst(getTitle(e.getName()))+"Component";
+            cpath = path+getTitle(e.getName());
+          }
+          if (tn.equals("Element"))
+            tn = "Element_";
+          if (analysis.getTypes().containsKey(tn)) {
+            char i = 'A';
+            while (analysis.getTypes().containsKey(tn+i)) {
+              i++;
+            }
+            tn = tn + i;
+          }
+          // becomes the name of a generated nested (component) class
+          JavaBaseGenerator.checkJavaIdentifier(tn, "the type name derived for "+e.getPath());
+          e.setUserData("java.type", tn);
+
+          tn = upFirst(tn);
+          
+          TypeInfo ctype = new TypeInfo();
+          ctype.setName(tn);
+          analysis.getTypes().put(ctype.getName(), ctype);
+          analysis.getTypeList().add(ctype);          
+          ctype.setDefn(e);
+          ctype.setAncestorName(e.typeSummary());
+          ctype.setChildren(filterChildren(new ProfileUtilities(null, null, null).getChildList(analysis.getStructure(), ctype.getDefn())));
+          
+          for (ElementDefinition c : ctype.getChildren()) {
+            scanNestedTypes(analysis, ctype, cpath, c);
+          }
+        }
+      }
+    }
+  }
+
+  private boolean isAbstractType(String code) {
+    StructureDefinition sd = context.fetchTypeDefinition(code);
+    if (sd != null && sd.getAbstract()) {
+      return true;
+    }
+
+    return Utilities.existsInList(code, "Element", "BackboneElement");
+  }
+
+  protected boolean isEnum(ElementDefinitionBindingComponent cd) {
+    boolean ok = cd != null && cd.getStrength() == BindingStrength.REQUIRED;
+    if (ok) {
+      if (cd.getValueSet() != null) {
+        ValueSet vs = definitions.getValuesets().get(cd.getValueSet()); 
+        if (vs == null) {
+          // not defined in the packages being generated - maybe it's defined in the base model (e.g. the binding on an interface element)
+          vs = definitions.getContext().fetchResource(ValueSet.class, cd.getValueSet());
+        }
+        if (vs != null && vs.hasName() && vs.getName().contains("ColorCodesOrRGB")) {
+          return false;
+        }
+        if (vs != null && vs.hasCompose() && vs.getCompose().getIncludeList().size() == 1) {
+          ConceptSetComponent inc = vs.getCompose().getIncludeFirstRep();
+          if (inc.hasSystem() && !inc.hasFilter() && !inc.hasConcept() && !(inc.getSystem().startsWith("http://hl7.org/fhir") || inc.getSystem().startsWith("http://terminology.hl7.org")))
+            ok = false;
+        }
+        if (vs == null) {
+          ok = false;
+        } else if (config.getIni().getBooleanProperty("no-enum", vs.getUrl())) {
+          ok = false;
+        }
+      }
+    }
+    return ok;
+  }
+  
+  protected String getCodeListType(String binding) {
+    StringBuilder b = new StringBuilder();
+    boolean up = true;
+    for (char ch: binding.toCharArray()) {
+      if (ch == '-' || ch == ' ' || ch == '.')
+        up = true;
+      else if (up) {
+        b.append(Character.toUpperCase(ch));
+        up = false;
+      }
+      else        
+        b.append(ch);
+    }
+    return "ResourceType".equals(b.toString()) ? "ResourceTypeEnum" : b.toString();
+  }
+  
+  protected String getTypeName(ElementDefinition e) throws Exception {
+    if (e.getTypeList().size() > 1) {
+      boolean allPrimitive = true;
+      for (TypeRefComponent tr : e.getTypeList()) {
+        allPrimitive = allPrimitive && Utilities.existsInList(tr.getWorkingCode(), "string", "boolean", "integer", "decimal");
+      }
+      if (allPrimitive) {
+        e.setUserData(UserDataNames.JGEN_ALL_PRIMITIVE, true);
+      }
+      return "DataType";
+    } else if (e.getTypeList().size() == 0) {
+      throw new Exception("not supported");
+    } else {
+      TypeRefComponent tr = e.getTypeList().get(0);
+      if (tr.hasExtension(ExtensionDefinitions.EXT_FHIR_TYPE)) {
+        return tr.getExtensionString(ExtensionDefinitions.EXT_FHIR_TYPE);
+      } else {
+        String type = tr.getCode();
+        if (Utilities.isAbsoluteUrl(type)) {
+          return Utilities.urlTail(type);
+        } else {
+          return type;
+        }
+      }
+    }
+  }
+
+
+  protected String getTypeName(String tn) {
+    if (tn.equals("string")) {
+      return "StringType";
+    } else if (tn.equals("Any")) {
+      return "Reference";
+    } else if (tn.equals("SimpleQuantity")) {
+      return "Quantity";
+    } else if (isPrimitive(tn)) {
+      return getTitle(tn)+"Type";
+    } else {
+      return getTitle(tn);
+    }
+  }
+  
+  protected String getTitle(String name) {
+    return Utilities.noString(name) ? "Value" : name.substring(0, 1).toUpperCase()+ name.substring(1);
+  }
+
+  protected boolean isPrimitive(String name) {
+    return definitions.getStructures().has(typeNs(name)) && definitions.getStructures().get(typeNs(name)).getKind() == StructureDefinitionKind.PRIMITIVETYPE;
+  }
+
+  private String upFirst(String name) {
+    return name.substring(0,1).toUpperCase()+name.substring(1);
+  }
+  private String typeNs(String name) {
+    return "http://hl7.org/fhir/StructureDefinition/"+name;
+  }
+  private ElementDefinition getElementForPath(StructureDefinition structure, String pathname) throws Exception {
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //single literal character split
+    String[] path = pathname.split("\\.");
+    if (!path[0].equals(structure.getName()))
+      throw new Exception("Element Path '"+pathname+"' is not legal in this context ("+structure.getName()+")");
+    ElementDefinition res = null;
+    for (ElementDefinition t : structure.getSnapshot().getElementList()) {
+      if (t.getPath().equals(pathname)) {
+        res = t;
+      }
+    }
+    if (res == null) {
+      throw new Exception("unable to resolve "+pathname);
+    }
+
+    return res;
+
+  }
+
+
+  private List<SearchParameter> getSearchParams(String name) {
+    List<SearchParameter> res = new ArrayList<>();
+    if (!Utilities.existsInList(name, "Resource")) {
+      for (SearchParameter sp : definitions.getSearchParams().getList()) {
+        boolean relevant = false;
+        for (UriType c : sp.getBaseList()) {
+          if (c.primitiveValue().equals(name)) {
+            relevant = true;
+            break;
+          }
+        }
+        if (relevant) {
+          res.add(sp);
+        }
+      }
+    }
+    return res;
+  }
+
+
+}

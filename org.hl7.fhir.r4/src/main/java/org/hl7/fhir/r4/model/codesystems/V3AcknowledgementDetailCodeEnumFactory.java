@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -98,11 +94,13 @@ public class V3AcknowledgementDetailCodeEnumFactory implements EnumFactory<V3Ack
       return V3AcknowledgementDetailCode.SYN111;
     if ("SYN113".equals(codeString))
       return V3AcknowledgementDetailCode.SYN113;
-    throw new IllegalArgumentException("Unknown V3AcknowledgementDetailCode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3AcknowledgementDetailCode code '" + codeString + "'");
   }
 
   public String toCode(V3AcknowledgementDetailCode code) {
-    if (code == V3AcknowledgementDetailCode._ACKNOWLEDGEMENTDETAILNOTSUPPORTEDCODE)
+       if (code == V3AcknowledgementDetailCode.NULL)
+           return null;
+       if (code == V3AcknowledgementDetailCode._ACKNOWLEDGEMENTDETAILNOTSUPPORTEDCODE)
       return "_AcknowledgementDetailNotSupportedCode";
     if (code == V3AcknowledgementDetailCode.NS200)
       return "NS200";
@@ -159,10 +157,10 @@ public class V3AcknowledgementDetailCodeEnumFactory implements EnumFactory<V3Ack
     if (code == V3AcknowledgementDetailCode.SYN113)
       return "SYN113";
     return "?";
-  }
+   }
 
-    public String toSystem(V3AcknowledgementDetailCode code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3AcknowledgementDetailCode code) {
+    return code.getSystem();
+  }
 
 }

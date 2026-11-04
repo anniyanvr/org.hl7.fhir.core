@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class MedAdminPerformFunctionEnumFactory implements EnumFactory<MedAdminPerformFunction> {
@@ -48,21 +44,23 @@ public class MedAdminPerformFunctionEnumFactory implements EnumFactory<MedAdminP
       return MedAdminPerformFunction.VERIFIER;
     if ("witness".equals(codeString))
       return MedAdminPerformFunction.WITNESS;
-    throw new IllegalArgumentException("Unknown MedAdminPerformFunction code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MedAdminPerformFunction code '" + codeString + "'");
   }
 
   public String toCode(MedAdminPerformFunction code) {
-    if (code == MedAdminPerformFunction.PERFORMER)
+       if (code == MedAdminPerformFunction.NULL)
+           return null;
+       if (code == MedAdminPerformFunction.PERFORMER)
       return "performer";
     if (code == MedAdminPerformFunction.VERIFIER)
       return "verifier";
     if (code == MedAdminPerformFunction.WITNESS)
       return "witness";
     return "?";
-  }
+   }
 
-    public String toSystem(MedAdminPerformFunction code) {
-      return code.getSystem();
-      }
+  public String toSystem(MedAdminPerformFunction code) {
+    return code.getSystem();
+  }
 
 }

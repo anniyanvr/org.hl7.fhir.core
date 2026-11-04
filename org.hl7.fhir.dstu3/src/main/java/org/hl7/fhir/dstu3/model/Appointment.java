@@ -193,12 +193,12 @@ public class Appointment extends DomainResource {
           return AppointmentStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown AppointmentStatus code '"+codeString+"'");
         }
-        public Enumeration<AppointmentStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<AppointmentStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<AppointmentStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("proposed".equals(codeString))
@@ -220,7 +220,9 @@ public class Appointment extends DomainResource {
         throw new FHIRException("Unknown AppointmentStatus code '"+codeString+"'");
         }
     public String toCode(AppointmentStatus code) {
-      if (code == AppointmentStatus.PROPOSED)
+       if (code == AppointmentStatus.NULL)
+           return null;
+       if (code == AppointmentStatus.PROPOSED)
         return "proposed";
       if (code == AppointmentStatus.PENDING)
         return "pending";
@@ -237,7 +239,7 @@ public class Appointment extends DomainResource {
       if (code == AppointmentStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(AppointmentStatus code) {
       return code.getSystem();
       }
@@ -325,12 +327,12 @@ public class Appointment extends DomainResource {
           return ParticipantRequired.INFORMATIONONLY;
         throw new IllegalArgumentException("Unknown ParticipantRequired code '"+codeString+"'");
         }
-        public Enumeration<ParticipantRequired> fromType(Base code) throws FHIRException {
+        public Enumeration<ParticipantRequired> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ParticipantRequired>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("required".equals(codeString))
@@ -342,14 +344,16 @@ public class Appointment extends DomainResource {
         throw new FHIRException("Unknown ParticipantRequired code '"+codeString+"'");
         }
     public String toCode(ParticipantRequired code) {
-      if (code == ParticipantRequired.REQUIRED)
+       if (code == ParticipantRequired.NULL)
+           return null;
+       if (code == ParticipantRequired.REQUIRED)
         return "required";
       if (code == ParticipantRequired.OPTIONAL)
         return "optional";
       if (code == ParticipantRequired.INFORMATIONONLY)
         return "information-only";
       return "?";
-      }
+   }
     public String toSystem(ParticipantRequired code) {
       return code.getSystem();
       }
@@ -449,12 +453,12 @@ public class Appointment extends DomainResource {
           return ParticipationStatus.NEEDSACTION;
         throw new IllegalArgumentException("Unknown ParticipationStatus code '"+codeString+"'");
         }
-        public Enumeration<ParticipationStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ParticipationStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ParticipationStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("accepted".equals(codeString))
@@ -468,7 +472,9 @@ public class Appointment extends DomainResource {
         throw new FHIRException("Unknown ParticipationStatus code '"+codeString+"'");
         }
     public String toCode(ParticipationStatus code) {
-      if (code == ParticipationStatus.ACCEPTED)
+       if (code == ParticipationStatus.NULL)
+           return null;
+       if (code == ParticipationStatus.ACCEPTED)
         return "accepted";
       if (code == ParticipationStatus.DECLINED)
         return "declined";
@@ -477,7 +483,7 @@ public class Appointment extends DomainResource {
       if (code == ParticipationStatus.NEEDSACTION)
         return "needs-action";
       return "?";
-      }
+   }
     public String toSystem(ParticipationStatus code) {
       return code.getSystem();
       }
@@ -829,10 +835,10 @@ public class Appointment extends DomainResource {
           return this.actor;
         }
         else if (name.equals("required")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Appointment.required");
+          throw new FHIRException("Cannot call addChild on a singleton property Appointment.required");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Appointment.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Appointment.status");
         }
         else
           return super.addChild(name);
@@ -1427,16 +1433,6 @@ public class Appointment extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getIndicationTarget() { 
-      if (this.indicationTarget == null)
-        this.indicationTarget = new ArrayList<Resource>();
-      return this.indicationTarget;
-    }
-
-    /**
      * @return {@link #priority} (The priority of the appointment. Can be used to make informed decisions if needing to re-prioritize appointments. (The iCal Standard specifies 0 as undefined, 1 as highest, 9 as lowest priority).). This is the underlying object with id, value and extensions. The accessor "getPriority" gives direct access to the value
      */
     public UnsignedIntType getPriorityElement() { 
@@ -1581,16 +1577,6 @@ public class Appointment extends DomainResource {
         addSupportingInformation();
       }
       return getSupportingInformation().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getSupportingInformationTarget() { 
-      if (this.supportingInformationTarget == null)
-        this.supportingInformationTarget = new ArrayList<Resource>();
-      return this.supportingInformationTarget;
     }
 
     /**
@@ -1790,28 +1776,6 @@ public class Appointment extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Slot> getSlotTarget() { 
-      if (this.slotTarget == null)
-        this.slotTarget = new ArrayList<Slot>();
-      return this.slotTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Slot addSlotTarget() { 
-      Slot r = new Slot();
-      if (this.slotTarget == null)
-        this.slotTarget = new ArrayList<Slot>();
-      this.slotTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #created} (The date that this appointment was initially created. This could be different to the meta.lastModified value on the initial entry, as this could have been before the resource was created on the FHIR server, and should remain unchanged over the lifespan of the appointment.). This is the underlying object with id, value and extensions. The accessor "getCreated" gives direct access to the value
      */
     public DateTimeType getCreatedElement() { 
@@ -1960,28 +1924,6 @@ public class Appointment extends DomainResource {
         addIncomingReferral();
       }
       return getIncomingReferral().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<ReferralRequest> getIncomingReferralTarget() { 
-      if (this.incomingReferralTarget == null)
-        this.incomingReferralTarget = new ArrayList<ReferralRequest>();
-      return this.incomingReferralTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public ReferralRequest addIncomingReferralTarget() { 
-      ReferralRequest r = new ReferralRequest();
-      if (this.incomingReferralTarget == null)
-        this.incomingReferralTarget = new ArrayList<ReferralRequest>();
-      this.incomingReferralTarget.add(r);
-      return r;
     }
 
     /**
@@ -2349,7 +2291,7 @@ public class Appointment extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Appointment.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Appointment.status");
         }
         else if (name.equals("serviceCategory")) {
           this.serviceCategory = new CodeableConcept();
@@ -2372,31 +2314,31 @@ public class Appointment extends DomainResource {
           return addIndication();
         }
         else if (name.equals("priority")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Appointment.priority");
+          throw new FHIRException("Cannot call addChild on a singleton property Appointment.priority");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Appointment.description");
+          throw new FHIRException("Cannot call addChild on a singleton property Appointment.description");
         }
         else if (name.equals("supportingInformation")) {
           return addSupportingInformation();
         }
         else if (name.equals("start")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Appointment.start");
+          throw new FHIRException("Cannot call addChild on a singleton property Appointment.start");
         }
         else if (name.equals("end")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Appointment.end");
+          throw new FHIRException("Cannot call addChild on a singleton property Appointment.end");
         }
         else if (name.equals("minutesDuration")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Appointment.minutesDuration");
+          throw new FHIRException("Cannot call addChild on a singleton property Appointment.minutesDuration");
         }
         else if (name.equals("slot")) {
           return addSlot();
         }
         else if (name.equals("created")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Appointment.created");
+          throw new FHIRException("Cannot call addChild on a singleton property Appointment.created");
         }
         else if (name.equals("comment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Appointment.comment");
+          throw new FHIRException("Cannot call addChild on a singleton property Appointment.comment");
         }
         else if (name.equals("incomingReferral")) {
           return addIncomingReferral();

@@ -1,20 +1,20 @@
 package org.hl7.fhir.r5.renderers.spreadsheets;
 
-import java.io.FileOutputStream;
-
 import org.apache.poi.ss.usermodel.Sheet;
 import org.hl7.fhir.r5.context.IWorkerContext;
-import org.hl7.fhir.r5.context.SimpleWorkerContext;
 import org.hl7.fhir.r5.model.ConceptMap;
 import org.hl7.fhir.r5.model.ConceptMap.ConceptMapGroupComponent;
 import org.hl7.fhir.r5.model.ConceptMap.SourceElementComponent;
 import org.hl7.fhir.r5.model.ConceptMap.TargetElementComponent;
+import org.hl7.fhir.r5.renderers.RendererFactory;
+
+
 
 public class ConceptMapSpreadsheetGenerator extends CanonicalSpreadsheetGenerator {
 
   
-  public ConceptMapSpreadsheetGenerator(IWorkerContext context) {
-    super(context);
+  public ConceptMapSpreadsheetGenerator(IWorkerContext context, RendererFactory renderer) {
+    super(context, renderer);
   }
 
   public boolean canGenerate(ConceptMap cm) {
@@ -22,7 +22,7 @@ public class ConceptMapSpreadsheetGenerator extends CanonicalSpreadsheetGenerato
   }
 
   public ConceptMapSpreadsheetGenerator renderConceptMap(ConceptMap cm) {
-    addConceptMapMetadata(renderCanonicalResource(cm), cm);
+    addConceptMapMetadata(renderCanonicalResource(cm, false), cm);
     int i = 0;
     for (ConceptMapGroupComponent grp : cm.getGroup()) {
       renderGroup(grp, i);
@@ -32,11 +32,11 @@ public class ConceptMapSpreadsheetGenerator extends CanonicalSpreadsheetGenerato
   }
 
   private void addConceptMapMetadata(Sheet sheet, ConceptMap cm) {
-    if (cm.hasSource()) {
-      addMetadataRow(sheet, "Source", cm.getSource().primitiveValue());
+    if (cm.hasSourceScope()) {
+      addMetadataRow(sheet, "Source", cm.getSourceScope().primitiveValue());
     }
-    if (cm.hasTarget()) {
-      addMetadataRow(sheet, "Target", cm.getTarget().primitiveValue());
+    if (cm.hasTargetScope()) {
+      addMetadataRow(sheet, "Target", cm.getTargetScope().primitiveValue());
     }    
   }
 

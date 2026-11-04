@@ -30,14 +30,20 @@ package org.hl7.fhir.dstu3.model;
   POSSIBILITY OF SUCH DAMAGE.
 
 */
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import org.apache.commons.lang3.*;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hl7.fhir.instance.model.api.*;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.instance.model.api.IIdType;
+import org.hl7.fhir.instance.model.api.IPrimitiveType;
 
 import ca.uhn.fhir.model.api.annotation.DatatypeDef;
 
@@ -230,15 +236,6 @@ public final class IdType extends UriType implements IPrimitiveType<String>, IId
     }
   }
 
-  /**
-   * @deprecated Use {@link #getIdPartAsBigDecimal()} instead (this method was
-   *             deprocated because its name is ambiguous)
-   */
-  @Deprecated
-  public BigDecimal asBigDecimal() {
-    return getIdPartAsBigDecimal();
-  }
-
   @Override
   public IdType copy() {
     return new IdType(getValue());
@@ -381,6 +378,11 @@ public final class IdType extends UriType implements IPrimitiveType<String>, IId
 
   @Override
   public String getValueAsString() {
+    return getValue();
+  }
+
+  @Override
+  public String asStringValue() {
     return getValue();
   }
 

@@ -173,12 +173,12 @@ public class DataElement extends MetadataResource {
           return DataElementStringency.FLEXIBLE;
         throw new IllegalArgumentException("Unknown DataElementStringency code '"+codeString+"'");
         }
-        public Enumeration<DataElementStringency> fromType(Base code) throws FHIRException {
+        public Enumeration<DataElementStringency> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DataElementStringency>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("comparable".equals(codeString))
@@ -196,7 +196,9 @@ public class DataElement extends MetadataResource {
         throw new FHIRException("Unknown DataElementStringency code '"+codeString+"'");
         }
     public String toCode(DataElementStringency code) {
-      if (code == DataElementStringency.COMPARABLE)
+       if (code == DataElementStringency.NULL)
+           return null;
+       if (code == DataElementStringency.COMPARABLE)
         return "comparable";
       if (code == DataElementStringency.FULLYSPECIFIED)
         return "fully-specified";
@@ -209,7 +211,7 @@ public class DataElement extends MetadataResource {
       if (code == DataElementStringency.FLEXIBLE)
         return "flexible";
       return "?";
-      }
+   }
     public String toSystem(DataElementStringency code) {
       return code.getSystem();
       }
@@ -548,16 +550,16 @@ public class DataElement extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("identity")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.identity");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.identity");
         }
         else if (name.equals("uri")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.uri");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.uri");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.name");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.name");
         }
         else if (name.equals("comment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.comment");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.comment");
         }
         else
           return super.addChild(name);
@@ -1678,31 +1680,31 @@ public class DataElement extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.url");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.url");
         }
         else if (name.equals("identifier")) {
           return addIdentifier();
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.version");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.version");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.status");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.status");
         }
         else if (name.equals("experimental")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.experimental");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.experimental");
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.date");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.date");
         }
         else if (name.equals("publisher")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.publisher");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.publisher");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.name");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.name");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.title");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.title");
         }
         else if (name.equals("contact")) {
           return addContact();
@@ -1714,10 +1716,10 @@ public class DataElement extends MetadataResource {
           return addJurisdiction();
         }
         else if (name.equals("copyright")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.copyright");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.copyright");
         }
         else if (name.equals("stringency")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DataElement.stringency");
+          throw new FHIRException("Cannot call addChild on a singleton property DataElement.stringency");
         }
         else if (name.equals("mapping")) {
           return addMapping();

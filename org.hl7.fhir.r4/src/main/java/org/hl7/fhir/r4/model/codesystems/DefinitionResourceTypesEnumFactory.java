@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class DefinitionResourceTypesEnumFactory implements EnumFactory<DefinitionResourceTypes> {
@@ -54,11 +50,13 @@ public class DefinitionResourceTypesEnumFactory implements EnumFactory<Definitio
       return DefinitionResourceTypes.PLANDEFINITION;
     if ("Questionnaire".equals(codeString))
       return DefinitionResourceTypes.QUESTIONNAIRE;
-    throw new IllegalArgumentException("Unknown DefinitionResourceTypes code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown DefinitionResourceTypes code '" + codeString + "'");
   }
 
   public String toCode(DefinitionResourceTypes code) {
-    if (code == DefinitionResourceTypes.ACTIVITYDEFINITION)
+       if (code == DefinitionResourceTypes.NULL)
+           return null;
+       if (code == DefinitionResourceTypes.ACTIVITYDEFINITION)
       return "ActivityDefinition";
     if (code == DefinitionResourceTypes.EVENTDEFINITION)
       return "EventDefinition";
@@ -71,10 +69,10 @@ public class DefinitionResourceTypesEnumFactory implements EnumFactory<Definitio
     if (code == DefinitionResourceTypes.QUESTIONNAIRE)
       return "Questionnaire";
     return "?";
-  }
+   }
 
-    public String toSystem(DefinitionResourceTypes code) {
-      return code.getSystem();
-      }
+  public String toSystem(DefinitionResourceTypes code) {
+    return code.getSystem();
+  }
 
 }

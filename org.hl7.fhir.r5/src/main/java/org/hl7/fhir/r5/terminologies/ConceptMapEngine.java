@@ -32,6 +32,7 @@ package org.hl7.fhir.r5.terminologies;
 
 
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.context.SimpleWorkerContext;
 import org.hl7.fhir.r5.model.Coding;
 import org.hl7.fhir.r5.model.ConceptMap;
@@ -40,6 +41,8 @@ import org.hl7.fhir.r5.model.ConceptMap.SourceElementComponent;
 import org.hl7.fhir.r5.model.ConceptMap.TargetElementComponent;
 import org.hl7.fhir.r5.model.Enumerations.ConceptMapRelationship;
 import org.hl7.fhir.utilities.CanonicalPair;
+
+
 
 public class ConceptMapEngine {
 
@@ -50,7 +53,7 @@ public class ConceptMapEngine {
   }
 
   public Coding translate(Coding source, String url) throws FHIRException {
-    ConceptMap cm = context.fetchResource(ConceptMap.class, url);
+    ConceptMap cm = context.fetchResource(ConceptMap.class, url, IWorkerContext.VersionResolutionRules.defaultRule());
     if (cm == null)
       throw new FHIRException("Unable to find ConceptMap '"+url+"'");
     if (source.hasSystem()) 
@@ -65,7 +68,7 @@ public class ConceptMapEngine {
     for (ConceptMapGroupComponent g : cm.getGroup()) {
       for (SourceElementComponent e : g.getElement()) {
         if (code.equals(e.getCode())) {
-          if (e != null)
+          if (ct != null)
             throw new FHIRException("Unable to process translate "+code+" because multiple candidate matches were found in concept map "+cm.getUrl());
           ct = e;
           cg = g;

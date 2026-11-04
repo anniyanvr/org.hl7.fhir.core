@@ -39,7 +39,6 @@ import java.util.List;
 import org.hl7.fhir.dstu3.model.Enumerations.PublicationStatus;
 import org.hl7.fhir.dstu3.model.Enumerations.PublicationStatusEnumFactory;
 // added from java-adornments.txt:
-import org.hl7.fhir.dstu3.utils.StructureMapUtilities;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
 import org.hl7.fhir.instance.model.api.IBaseBackboneElement;
@@ -154,12 +153,12 @@ public class StructureMap extends MetadataResource {
           return StructureMapModelMode.PRODUCED;
         throw new IllegalArgumentException("Unknown StructureMapModelMode code '"+codeString+"'");
         }
-        public Enumeration<StructureMapModelMode> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapModelMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<StructureMapModelMode>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("source".equals(codeString))
@@ -173,7 +172,9 @@ public class StructureMap extends MetadataResource {
         throw new FHIRException("Unknown StructureMapModelMode code '"+codeString+"'");
         }
     public String toCode(StructureMapModelMode code) {
-      if (code == StructureMapModelMode.SOURCE)
+       if (code == StructureMapModelMode.NULL)
+           return null;
+       if (code == StructureMapModelMode.SOURCE)
         return "source";
       if (code == StructureMapModelMode.QUERIED)
         return "queried";
@@ -182,7 +183,7 @@ public class StructureMap extends MetadataResource {
       if (code == StructureMapModelMode.PRODUCED)
         return "produced";
       return "?";
-      }
+   }
     public String toSystem(StructureMapModelMode code) {
       return code.getSystem();
       }
@@ -270,12 +271,12 @@ public class StructureMap extends MetadataResource {
           return StructureMapGroupTypeMode.TYPEANDTYPES;
         throw new IllegalArgumentException("Unknown StructureMapGroupTypeMode code '"+codeString+"'");
         }
-        public Enumeration<StructureMapGroupTypeMode> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapGroupTypeMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<StructureMapGroupTypeMode>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("none".equals(codeString))
@@ -287,14 +288,16 @@ public class StructureMap extends MetadataResource {
         throw new FHIRException("Unknown StructureMapGroupTypeMode code '"+codeString+"'");
         }
     public String toCode(StructureMapGroupTypeMode code) {
-      if (code == StructureMapGroupTypeMode.NONE)
+       if (code == StructureMapGroupTypeMode.NULL)
+           return null;
+       if (code == StructureMapGroupTypeMode.NONE)
         return "none";
       if (code == StructureMapGroupTypeMode.TYPES)
         return "types";
       if (code == StructureMapGroupTypeMode.TYPEANDTYPES)
         return "type-and-types";
       return "?";
-      }
+   }
     public String toSystem(StructureMapGroupTypeMode code) {
       return code.getSystem();
       }
@@ -370,12 +373,12 @@ public class StructureMap extends MetadataResource {
           return StructureMapInputMode.TARGET;
         throw new IllegalArgumentException("Unknown StructureMapInputMode code '"+codeString+"'");
         }
-        public Enumeration<StructureMapInputMode> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapInputMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<StructureMapInputMode>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("source".equals(codeString))
@@ -385,12 +388,14 @@ public class StructureMap extends MetadataResource {
         throw new FHIRException("Unknown StructureMapInputMode code '"+codeString+"'");
         }
     public String toCode(StructureMapInputMode code) {
-      if (code == StructureMapInputMode.SOURCE)
+       if (code == StructureMapInputMode.NULL)
+           return null;
+       if (code == StructureMapInputMode.SOURCE)
         return "source";
       if (code == StructureMapInputMode.TARGET)
         return "target";
       return "?";
-      }
+   }
     public String toSystem(StructureMapInputMode code) {
       return code.getSystem();
       }
@@ -502,12 +507,12 @@ public class StructureMap extends MetadataResource {
           return StructureMapSourceListMode.ONLYONE;
         throw new IllegalArgumentException("Unknown StructureMapSourceListMode code '"+codeString+"'");
         }
-        public Enumeration<StructureMapSourceListMode> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapSourceListMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<StructureMapSourceListMode>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("first".equals(codeString))
@@ -523,7 +528,9 @@ public class StructureMap extends MetadataResource {
         throw new FHIRException("Unknown StructureMapSourceListMode code '"+codeString+"'");
         }
     public String toCode(StructureMapSourceListMode code) {
-      if (code == StructureMapSourceListMode.FIRST)
+       if (code == StructureMapSourceListMode.NULL)
+           return null;
+       if (code == StructureMapSourceListMode.FIRST)
         return "first";
       if (code == StructureMapSourceListMode.NOTFIRST)
         return "not_first";
@@ -534,7 +541,7 @@ public class StructureMap extends MetadataResource {
       if (code == StructureMapSourceListMode.ONLYONE)
         return "only_one";
       return "?";
-      }
+   }
     public String toSystem(StructureMapSourceListMode code) {
       return code.getSystem();
       }
@@ -610,12 +617,12 @@ public class StructureMap extends MetadataResource {
           return StructureMapContextType.VARIABLE;
         throw new IllegalArgumentException("Unknown StructureMapContextType code '"+codeString+"'");
         }
-        public Enumeration<StructureMapContextType> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapContextType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<StructureMapContextType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("type".equals(codeString))
@@ -625,12 +632,14 @@ public class StructureMap extends MetadataResource {
         throw new FHIRException("Unknown StructureMapContextType code '"+codeString+"'");
         }
     public String toCode(StructureMapContextType code) {
-      if (code == StructureMapContextType.TYPE)
+       if (code == StructureMapContextType.NULL)
+           return null;
+       if (code == StructureMapContextType.TYPE)
         return "type";
       if (code == StructureMapContextType.VARIABLE)
         return "variable";
       return "?";
-      }
+   }
     public String toSystem(StructureMapContextType code) {
       return code.getSystem();
       }
@@ -730,12 +739,12 @@ public class StructureMap extends MetadataResource {
           return StructureMapTargetListMode.COLLATE;
         throw new IllegalArgumentException("Unknown StructureMapTargetListMode code '"+codeString+"'");
         }
-        public Enumeration<StructureMapTargetListMode> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapTargetListMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<StructureMapTargetListMode>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("first".equals(codeString))
@@ -749,7 +758,9 @@ public class StructureMap extends MetadataResource {
         throw new FHIRException("Unknown StructureMapTargetListMode code '"+codeString+"'");
         }
     public String toCode(StructureMapTargetListMode code) {
-      if (code == StructureMapTargetListMode.FIRST)
+       if (code == StructureMapTargetListMode.NULL)
+           return null;
+       if (code == StructureMapTargetListMode.FIRST)
         return "first";
       if (code == StructureMapTargetListMode.SHARE)
         return "share";
@@ -758,7 +769,7 @@ public class StructureMap extends MetadataResource {
       if (code == StructureMapTargetListMode.COLLATE)
         return "collate";
       return "?";
-      }
+   }
     public String toSystem(StructureMapTargetListMode code) {
       return code.getSystem();
       }
@@ -1014,12 +1025,12 @@ public class StructureMap extends MetadataResource {
           return StructureMapTransform.CP;
         throw new IllegalArgumentException("Unknown StructureMapTransform code '"+codeString+"'");
         }
-        public Enumeration<StructureMapTransform> fromType(Base code) throws FHIRException {
+        public Enumeration<StructureMapTransform> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<StructureMapTransform>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("create".equals(codeString))
@@ -1059,7 +1070,9 @@ public class StructureMap extends MetadataResource {
         throw new FHIRException("Unknown StructureMapTransform code '"+codeString+"'");
         }
     public String toCode(StructureMapTransform code) {
-      if (code == StructureMapTransform.CREATE)
+       if (code == StructureMapTransform.NULL)
+           return null;
+       if (code == StructureMapTransform.CREATE)
         return "create";
       if (code == StructureMapTransform.COPY)
         return "copy";
@@ -1094,7 +1107,7 @@ public class StructureMap extends MetadataResource {
       if (code == StructureMapTransform.CP)
         return "cp";
       return "?";
-      }
+   }
     public String toSystem(StructureMapTransform code) {
       return code.getSystem();
       }
@@ -1433,16 +1446,16 @@ public class StructureMap extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.url");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.url");
         }
         else if (name.equals("mode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.mode");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.mode");
         }
         else if (name.equals("alias")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.alias");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.alias");
         }
         else if (name.equals("documentation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.documentation");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.documentation");
         }
         else
           return super.addChild(name);
@@ -1965,16 +1978,16 @@ public class StructureMap extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.name");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.name");
         }
         else if (name.equals("extends")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.extends");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.extends");
         }
         else if (name.equals("typeMode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.typeMode");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.typeMode");
         }
         else if (name.equals("documentation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.documentation");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.documentation");
         }
         else if (name.equals("input")) {
           return addInput();
@@ -2039,14 +2052,6 @@ public class StructureMap extends MetadataResource {
 
   }
 
-// added from java-adornments.txt:
-
-  public String toString() {
-    return StructureMapUtilities.groupToString(this);
-  }
-
-
-// end addition
   }
 
     @Block()
@@ -2382,16 +2387,16 @@ public class StructureMap extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.name");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.name");
         }
         else if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.type");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.type");
         }
         else if (name.equals("mode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.mode");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.mode");
         }
         else if (name.equals("documentation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.documentation");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.documentation");
         }
         else
           return super.addChild(name);
@@ -2922,7 +2927,7 @@ public class StructureMap extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.name");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.name");
         }
         else if (name.equals("source")) {
           return addSource();
@@ -2937,7 +2942,7 @@ public class StructureMap extends MetadataResource {
           return addDependent();
         }
         else if (name.equals("documentation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.documentation");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.documentation");
         }
         else
           return super.addChild(name);
@@ -3003,14 +3008,6 @@ public class StructureMap extends MetadataResource {
 
   }
 
-// added from java-adornments.txt:
-
-  public String toString() {
-    return StructureMapUtilities.ruleToString(this);
-  }
-
-
-// end addition
   }
 
     @Block()
@@ -3749,16 +3746,16 @@ public class StructureMap extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("context")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.context");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.context");
         }
         else if (name.equals("min")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.min");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.min");
         }
         else if (name.equals("max")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.max");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.max");
         }
         else if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.type");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.type");
         }
         else if (name.equals("defaultValueBoolean")) {
           this.defaultValue = new BooleanType();
@@ -3893,19 +3890,19 @@ public class StructureMap extends MetadataResource {
           return this.defaultValue;
         }
         else if (name.equals("element")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.element");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.element");
         }
         else if (name.equals("listMode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.listMode");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.listMode");
         }
         else if (name.equals("variable")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.variable");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.variable");
         }
         else if (name.equals("condition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.condition");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.condition");
         }
         else if (name.equals("check")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.check");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.check");
         }
         else
           return super.addChild(name);
@@ -3963,14 +3960,6 @@ public class StructureMap extends MetadataResource {
 
   }
 
-// added from java-adornments.txt:
-
-  public String toString() {
-    return StructureMapUtilities.sourceToString(this);
-  }
-
-
-// end addition
   }
 
     @Block()
@@ -4591,25 +4580,25 @@ public class StructureMap extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("context")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.context");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.context");
         }
         else if (name.equals("contextType")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.contextType");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.contextType");
         }
         else if (name.equals("element")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.element");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.element");
         }
         else if (name.equals("variable")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.variable");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.variable");
         }
         else if (name.equals("listMode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.listMode");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.listMode");
         }
         else if (name.equals("listRuleId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.listRuleId");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.listRuleId");
         }
         else if (name.equals("transform")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.transform");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.transform");
         }
         else if (name.equals("parameter")) {
           return addParameter();
@@ -4674,14 +4663,7 @@ public class StructureMap extends MetadataResource {
 
   }
 
-// added from java-adornments.txt:
 
-  public String toString() {
-    return StructureMapUtilities.targetToString(this);
-  }
-
-
-// end addition
   }
 
     @Block()
@@ -4728,8 +4710,8 @@ public class StructureMap extends MetadataResource {
           return (IdType) this.value;
         }
 
-        public boolean hasValueIdType() { 
-          return this != null && this.value instanceof IdType;
+        public boolean hasValueIdType() {
+            return this.value instanceof IdType;
         }
 
         /**
@@ -4743,8 +4725,8 @@ public class StructureMap extends MetadataResource {
           return (StringType) this.value;
         }
 
-        public boolean hasValueStringType() { 
-          return this != null && this.value instanceof StringType;
+        public boolean hasValueStringType() {
+            return this.value instanceof StringType;
         }
 
         /**
@@ -4758,8 +4740,8 @@ public class StructureMap extends MetadataResource {
           return (BooleanType) this.value;
         }
 
-        public boolean hasValueBooleanType() { 
-          return this != null && this.value instanceof BooleanType;
+        public boolean hasValueBooleanType() {
+            return this.value instanceof BooleanType;
         }
 
         /**
@@ -4773,8 +4755,8 @@ public class StructureMap extends MetadataResource {
           return (IntegerType) this.value;
         }
 
-        public boolean hasValueIntegerType() { 
-          return this != null && this.value instanceof IntegerType;
+        public boolean hasValueIntegerType() {
+            return this.value instanceof IntegerType;
         }
 
         /**
@@ -4788,8 +4770,8 @@ public class StructureMap extends MetadataResource {
           return (DecimalType) this.value;
         }
 
-        public boolean hasValueDecimalType() { 
-          return this != null && this.value instanceof DecimalType;
+        public boolean hasValueDecimalType() {
+            return this.value instanceof DecimalType;
         }
 
         public boolean hasValue() { 
@@ -5160,10 +5142,10 @@ public class StructureMap extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.name");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.name");
         }
         else if (name.equals("variable")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.variable");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.variable");
         }
         else
           return super.addChild(name);
@@ -6411,37 +6393,37 @@ public class StructureMap extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.url");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.url");
         }
         else if (name.equals("identifier")) {
           return addIdentifier();
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.version");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.version");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.name");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.name");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.title");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.title");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.status");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.status");
         }
         else if (name.equals("experimental")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.experimental");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.experimental");
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.date");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.date");
         }
         else if (name.equals("publisher")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.publisher");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.publisher");
         }
         else if (name.equals("contact")) {
           return addContact();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.description");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.description");
         }
         else if (name.equals("useContext")) {
           return addUseContext();
@@ -6450,16 +6432,16 @@ public class StructureMap extends MetadataResource {
           return addJurisdiction();
         }
         else if (name.equals("purpose")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.purpose");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.purpose");
         }
         else if (name.equals("copyright")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.copyright");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.copyright");
         }
         else if (name.equals("structure")) {
           return addStructure();
         }
         else if (name.equals("import")) {
-          throw new FHIRException("Cannot call addChild on a primitive type StructureMap.import");
+          throw new FHIRException("Cannot call addChild on a singleton property StructureMap.import");
         }
         else if (name.equals("group")) {
           return addGroup();
@@ -6762,13 +6744,5 @@ public class StructureMap extends MetadataResource {
    */
   public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
 
-// added from java-adornments.txt:
-
-  public String toString() {
-    return StructureMapUtilities.render(this);
-  }
-
-
-// end addition
 
 }

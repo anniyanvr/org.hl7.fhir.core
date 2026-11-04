@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class VerificationresultCanPushUpdatesEnumFactory implements EnumFactory<VerificationresultCanPushUpdates> {
@@ -48,21 +44,23 @@ public class VerificationresultCanPushUpdatesEnumFactory implements EnumFactory<
       return VerificationresultCanPushUpdates.NO;
     if ("undetermined".equals(codeString))
       return VerificationresultCanPushUpdates.UNDETERMINED;
-    throw new IllegalArgumentException("Unknown VerificationresultCanPushUpdates code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown VerificationresultCanPushUpdates code '" + codeString + "'");
   }
 
   public String toCode(VerificationresultCanPushUpdates code) {
-    if (code == VerificationresultCanPushUpdates.YES)
+       if (code == VerificationresultCanPushUpdates.NULL)
+           return null;
+       if (code == VerificationresultCanPushUpdates.YES)
       return "yes";
     if (code == VerificationresultCanPushUpdates.NO)
       return "no";
     if (code == VerificationresultCanPushUpdates.UNDETERMINED)
       return "undetermined";
     return "?";
-  }
+   }
 
-    public String toSystem(VerificationresultCanPushUpdates code) {
-      return code.getSystem();
-      }
+  public String toSystem(VerificationresultCanPushUpdates code) {
+    return code.getSystem();
+  }
 
 }

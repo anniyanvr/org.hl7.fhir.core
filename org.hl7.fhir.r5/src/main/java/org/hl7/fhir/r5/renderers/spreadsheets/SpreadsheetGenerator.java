@@ -21,6 +21,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.renderers.DataRenderer;
+import org.hl7.fhir.r5.renderers.RendererFactory;
+
 
 import com.microsoft.schemas.office.visio.x2012.main.ShapeSheetType;
 
@@ -55,6 +57,7 @@ import com.microsoft.schemas.office.visio.x2012.main.ShapeSheetType;
 
 
 
+
 public class SpreadsheetGenerator {
     
   private static final int MAX_SENSITIVE_SHEET_NAME_LEN = 31;
@@ -65,13 +68,13 @@ public class SpreadsheetGenerator {
   protected Map<String, CellStyle> styles;
 
   protected DataRenderer dr;
-  private List<String> sheetNames = new ArrayList<>();
+  private Map<String, Sheet> sheetNames = new HashMap<>();
   
-  public SpreadsheetGenerator(IWorkerContext context) {
+  public SpreadsheetGenerator(IWorkerContext context, RendererFactory rendererFactory) {
     super();
     this.context = context;
     styles = createStyles(wb);
-    dr = new DataRenderer(context);
+    dr = new DataRenderer(context, rendererFactory);
   }
 
   public void finish(OutputStream outStream) throws IOException {
@@ -80,20 +83,38 @@ public class SpreadsheetGenerator {
     outStream.close();
   }
   
-  protected Sheet makeSheet(String name) {
+  protected boolean hasSheet(String name) {
     if (name.length() > MAX_SENSITIVE_SHEET_NAME_LEN - 2) {
       name = name.substring(0, MAX_SENSITIVE_SHEET_NAME_LEN - 2);
     }
     String s = fixSheetNameChars(name);
-    if (sheetNames.contains(s)) {
+    return sheetNames.containsKey(s);
+  }
+
+  protected Sheet getSheet(String name) {
+    if (name.length() > MAX_SENSITIVE_SHEET_NAME_LEN - 2) {
+      name = name.substring(0, MAX_SENSITIVE_SHEET_NAME_LEN - 2);
+    }
+    String s = fixSheetNameChars(name);
+    return sheetNames.get(s);
+  }
+
+  protected Sheet makeSheet(String name) {
+    if (name.length() > MAX_SENSITIVE_SHEET_NAME_LEN - 2) {
+      name = name.substring(0, MAX_SENSITIVE_SHEET_NAME_LEN - 2);
+    }
+    name = fixSheetNameChars(name);
+    String s = name;
+    if (sheetNames.containsKey(s)) {
       int i = 1;
       do {
         i++;
         s = name+" "+Integer.toString(i);
-      } while (sheetNames.contains(s));
+      } while (sheetNames.containsKey(s));
     }
-    sheetNames.add(s);
-    return wb.createSheet(s);
+    Sheet res = wb.createSheet(s); 
+    sheetNames.put(s, res);
+    return res;
   }
 
   private String fixSheetNameChars(String name) {
@@ -192,5 +213,11 @@ public class SpreadsheetGenerator {
       addCell(row, i, values[i], styles.get("body"));
     }
   }
-  
+
+  public void dump() {
+    wb = null;
+    styles = null;
+    dr = null;
+    sheetNames = null;
+  }
 }

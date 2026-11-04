@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.extensions.ExtensionDefinitions;
 import org.hl7.fhir.r5.formats.IParser.OutputStyle;
 import org.hl7.fhir.r5.formats.JsonParser;
 import org.hl7.fhir.r5.model.CanonicalResource;
@@ -34,8 +35,11 @@ import org.hl7.fhir.r5.model.StructureMap.StructureMapTransform;
 import org.hl7.fhir.r5.model.UrlType;
 import org.hl7.fhir.r5.utils.structuremap.StructureMapUtilities;
 import org.hl7.fhir.utilities.CSVReader;
-import org.hl7.fhir.utilities.TextFile;
+import org.hl7.fhir.utilities.FileUtilities;
+
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+
 
 public class MappingSheetParser {
 
@@ -70,10 +74,16 @@ public class MappingSheetParser {
       return cardinality;
     }
     public int getCardinalityMin() {
-      return Integer.parseInt(cardinality.split("\\.")[0]);
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //single literal character split
+      String[] parts = cardinality.split("\\.");
+      return Integer.parseInt(parts[0]);
     }
     public String getCardinalityMax() {
-      return cardinality.split("\\.")[2];
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //single literal character split
+      String[] parts = cardinality.split("\\.");
+      return parts[2];
     }
     public String getCondition() {
       return condition;
@@ -162,6 +172,8 @@ public class MappingSheetParser {
     mr.vocabMapping = csv.value(11);
     mr.derived = csv.value(12);
     if (!Utilities.noString(mr.derived)) {
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //single literal character split
       String[] s = mr.derived.split("\\=");
       mr.derived = s[0].trim();
       mr.derivedMapping = s[1].trim();
@@ -186,21 +198,21 @@ public class MappingSheetParser {
       element.setCode(row.getIdentifier());
       element.setId(row.getSequence());
       element.setDisplay(row.getName()+" : "+row.getDataType()+" ["+row.getCardinality()+"]");
-      element.addExtension(ToolingExtensions.EXT_MAPPING_NAME, new StringType(row.getName()));
-      element.addExtension(ToolingExtensions.EXT_MAPPING_TYPE, new StringType(row.getDataType()));
-      element.addExtension(ToolingExtensions.EXT_MAPPING_CARD, new StringType(row.getCardinality()));
+      element.addExtension(ExtensionDefinitions.EXT_MAPPING_NAME, new StringType(row.getName()));
+      element.addExtension(ExtensionDefinitions.EXT_MAPPING_TYPE, new StringType(row.getDataType()));
+      element.addExtension(ExtensionDefinitions.EXT_MAPPING_CARD, new StringType(row.getCardinality()));
       if ("N/A".equals(row.getAttribute()))
         element.setNoMap(true);
       else {
         element.getTargetFirstRep().setRelationship(ConceptMapRelationship.RELATEDTO);
         if (row.getCondition() != null)
-          element.getTargetFirstRep().addDependsOn().setProperty("http://hl7.org/fhirpath").setValue(processCondition(row.getCondition()));
+          element.getTargetFirstRep().addDependsOn().setAttribute("http://hl7.org/fhirpath").setValue(new StringType(processCondition(row.getCondition())));
         element.getTargetFirstRep().setCode(row.getAttribute());
         element.getTargetFirstRep().setDisplay(row.getType()+" : ["+row.getMinMax()+"]");
-        element.getTargetFirstRep().addExtension(ToolingExtensions.EXT_MAPPING_TGTTYPE, new StringType(row.getType()));
-        element.getTargetFirstRep().addExtension(ToolingExtensions.EXT_MAPPING_TGTCARD, new StringType(row.getMinMax()));
+        element.getTargetFirstRep().addExtension(ExtensionDefinitions.EXT_MAPPING_TGTTYPE, new StringType(row.getType()));
+        element.getTargetFirstRep().addExtension(ExtensionDefinitions.EXT_MAPPING_TGTCARD, new StringType(row.getMinMax()));
         if (row.getDerived() != null) 
-          element.getTargetFirstRep().getProductFirstRep().setProperty(row.getDerived()).setValue(row.getDerivedMapping());
+          element.getTargetFirstRep().getProductFirstRep().setAttribute(row.getDerived()).setValue(new StringType(row.getDerivedMapping()));
         if (row.getComments() != null)
           element.getTargetFirstRep().setComment(row.getComments());
         if (row.getDtMapping() != null)
@@ -256,23 +268,23 @@ public class MappingSheetParser {
       src.setMin(row.getCardinalityMin());
       src.setMax(row.getCardinalityMax());
       src.setType(row.getDataType());
-      src.addExtension(ToolingExtensions.EXT_MAPPING_NAME, new StringType(row.getName()));
+      src.addExtension(ExtensionDefinitions.EXT_MAPPING_NAME, new StringType(row.getName()));
       if (row.getCondition() != null) {
         src.setCheck(processCondition(row.getCondition()));
       }
       StructureMapGroupRuleTargetComponent tgt = rule.getTargetFirstRep();
       tgt.setContext("tgt");
       tgt.setElement(row.getAttribute());
-      tgt.addExtension(ToolingExtensions.EXT_MAPPING_TGTTYPE, new StringType(row.getType()));
-      tgt.addExtension(ToolingExtensions.EXT_MAPPING_TGTCARD, new StringType(row.getMinMax()));
+      tgt.addExtension(ExtensionDefinitions.EXT_MAPPING_TGTTYPE, new StringType(row.getType()));
+      tgt.addExtension(ExtensionDefinitions.EXT_MAPPING_TGTCARD, new StringType(row.getMinMax()));
       if (row.getDtMapping() != null) {
         src.setVariable("s");
         tgt.setVariable("t");
         tgt.setTransform(StructureMapTransform.CREATE);
         StructureMapGroupRuleDependentComponent dep = rule.addDependent();
         dep.setName(row.getDtMapping());
-        dep.addVariable("s");
-        dep.addVariable("t");
+        dep.addParameter().setValue(new IdType("s"));
+        dep.addParameter().setValue(new IdType("t"));
       } else if (row.getVocabMapping() != null) {
         tgt.setTransform(StructureMapTransform.TRANSLATE);
         tgt.addParameter().setValue(new StringType(row.getVocabMapping()));
@@ -297,7 +309,7 @@ public class MappingSheetParser {
       return false;
     ConceptMapGroupComponent grp = cm.getGroupFirstRep();
     for (SourceElementComponent e : grp.getElement()) {
-      if (!e.hasExtension(ToolingExtensions.EXT_MAPPING_TYPE))
+      if (!e.hasExtension(ExtensionDefinitions.EXT_MAPPING_TYPE))
         return false;
     }
     return true;
@@ -371,28 +383,28 @@ public class MappingSheetParser {
   private void readConceptMap(ConceptMap cm) throws FHIRException {
     for (ConceptMapGroupComponent g : cm.getGroup()) {
       for (SourceElementComponent e : g.getElement()) {
-        if (e.hasId() && e.getTarget().size() == 1 && e.hasExtension(ToolingExtensions.EXT_MAPPING_TYPE)) {
+        if (e.hasId() && e.getTarget().size() == 1 && e.hasExtension(ExtensionDefinitions.EXT_MAPPING_TYPE)) {
           TargetElementComponent t = e.getTargetFirstRep();
           MappingRow row = new MappingRow();
           row.sequence = e.getId();
           row.identifier = e.getCode();
-          row.name = e.getExtensionString(ToolingExtensions.EXT_MAPPING_NAME);
-          row.dataType = e.getExtensionString(ToolingExtensions.EXT_MAPPING_TYPE);
-          row.cardinality = e.getExtensionString(ToolingExtensions.EXT_MAPPING_CARD);
+          row.name = e.getExtensionString(ExtensionDefinitions.EXT_MAPPING_NAME);
+          row.dataType = e.getExtensionString(ExtensionDefinitions.EXT_MAPPING_TYPE);
+          row.cardinality = e.getExtensionString(ExtensionDefinitions.EXT_MAPPING_CARD);
           if (e.getNoMap() == true) {
             row.attribute = "N/A";            
           } else {
             OtherElementComponent dep = getDependency(t, "http://hl7.org/fhirpath");
             if (dep != null)
-              row.condition = dep.getValue();
+              row.condition = dep.getValue().primitiveValue();
             row.attribute = t.getCode();
-            row.type = t.getExtensionString(ToolingExtensions.EXT_MAPPING_TGTTYPE);
-            row.minMax = t.getExtensionString(ToolingExtensions.EXT_MAPPING_TGTCARD);
+            row.type = t.getExtensionString(ExtensionDefinitions.EXT_MAPPING_TGTTYPE);
+            row.minMax = t.getExtensionString(ExtensionDefinitions.EXT_MAPPING_TGTCARD);
             row.dtMapping = t.getExtensionString("http://hl7.org/fhir/StructureDefinition/ConceptMap-type-mapping");
             row.vocabMapping = t.getExtensionString("http://hl7.org/fhir/StructureDefinition/ConceptMap-vocab-mapping");
             if (t.getProduct().size() > 0) {
-              row.derived = t.getProductFirstRep().getProperty();
-              row.derivedMapping = t.getProductFirstRep().getValue();
+              row.derived = t.getProductFirstRep().getAttribute();
+              row.derivedMapping = t.getProductFirstRep().getValue().primitiveValue();
             }
           }
           row.comments = t.getComment();
@@ -405,23 +417,23 @@ public class MappingSheetParser {
 
   private OtherElementComponent getDependency(TargetElementComponent t, String prop) {
     for (OtherElementComponent dep : t.getDependsOn()) {
-      if (prop.equals(dep.getProperty()))
+      if (prop.equals(dep.getAttribute()))
         return dep;
     }
     return null;
   }
 
-  private static final String PFX = "<html><link rel=\"stylesheet\" href=\"file:c:\\work\\org.hl7.fhir\\build\\publish\\fhir.css\"/></head><body>\r\n";
+  private static final String PFX = "<html lang=\"en\"><link rel=\"stylesheet\" href=\"file:c:\\work\\org.hl7.fhir\\build\\publish\\fhir.css\"/></head><body>\r\n";
   private static final String SFX = "<body></html>";
   public static void main(String[] args) throws FileNotFoundException, IOException, FHIRException {
     MappingSheetParser parser = new MappingSheetParser();
-    parser.parse(new FileInputStream("c:\\temp\\v2-pid.csv"), "v2-pid.csv");
+    parser.parse(ManagedFileAccess.inStream(Utilities.path("[tmp]", "v2-pid.csv")), "v2-pid.csv");
     ConceptMap cm = parser.getConceptMap();
     StructureMap sm = parser.getStructureMap();
-    new JsonParser().setOutputStyle(OutputStyle.PRETTY).compose(new FileOutputStream("c:\\temp\\sm.json"), sm);
-    new JsonParser().setOutputStyle(OutputStyle.PRETTY).compose(new FileOutputStream("c:\\temp\\cm.json"), cm);
-    TextFile.stringToFile(StructureMapUtilities.render(sm), "c:\\temp\\sm.txt");
-    TextFile.stringToFile(PFX+parser.genSheet(cm)+SFX, "c:\\temp\\map.html");
+    new JsonParser().setOutputStyle(OutputStyle.PRETTY).compose(ManagedFileAccess.outStream(Utilities.path("[tmp]", "sm.json")), sm);
+    new JsonParser().setOutputStyle(OutputStyle.PRETTY).compose(ManagedFileAccess.outStream(Utilities.path("[tmp]", "cm.json")), cm);
+    FileUtilities.stringToFile(StructureMapUtilities.render(sm), Utilities.path("[tmp]", "sm.txt"));
+    FileUtilities.stringToFile(PFX+parser.genSheet(cm)+SFX, Utilities.path("[tmp]", "map.html"));
   }
 
 }

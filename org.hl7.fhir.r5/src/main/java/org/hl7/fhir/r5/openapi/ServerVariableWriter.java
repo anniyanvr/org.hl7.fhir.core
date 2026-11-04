@@ -33,9 +33,12 @@ package org.hl7.fhir.r5.openapi;
 
 import java.util.List;
 
+
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
 
 public class ServerVariableWriter extends BaseWriter {
 

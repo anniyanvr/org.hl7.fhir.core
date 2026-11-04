@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -96,11 +92,13 @@ public class Iso21089LifecycleEnumFactory implements EnumFactory<Iso21089Lifecyc
       return Iso21089Lifecycle.UNMERGE;
     if ("verify".equals(codeString))
       return Iso21089Lifecycle.VERIFY;
-    throw new IllegalArgumentException("Unknown Iso21089Lifecycle code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown Iso21089Lifecycle code '" + codeString + "'");
   }
 
   public String toCode(Iso21089Lifecycle code) {
-    if (code == Iso21089Lifecycle.ACCESS)
+       if (code == Iso21089Lifecycle.NULL)
+           return null;
+       if (code == Iso21089Lifecycle.ACCESS)
       return "access";
     if (code == Iso21089Lifecycle.HOLD)
       return "hold";
@@ -155,10 +153,10 @@ public class Iso21089LifecycleEnumFactory implements EnumFactory<Iso21089Lifecyc
     if (code == Iso21089Lifecycle.VERIFY)
       return "verify";
     return "?";
-  }
+   }
 
-    public String toSystem(Iso21089Lifecycle code) {
-      return code.getSystem();
-      }
+  public String toSystem(Iso21089Lifecycle code) {
+    return code.getSystem();
+  }
 
 }

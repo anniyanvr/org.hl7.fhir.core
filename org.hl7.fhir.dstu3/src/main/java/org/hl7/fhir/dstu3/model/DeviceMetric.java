@@ -144,12 +144,12 @@ public class DeviceMetric extends DomainResource {
           return DeviceMetricOperationalStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown DeviceMetricOperationalStatus code '"+codeString+"'");
         }
-        public Enumeration<DeviceMetricOperationalStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<DeviceMetricOperationalStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DeviceMetricOperationalStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("on".equals(codeString))
@@ -163,7 +163,9 @@ public class DeviceMetric extends DomainResource {
         throw new FHIRException("Unknown DeviceMetricOperationalStatus code '"+codeString+"'");
         }
     public String toCode(DeviceMetricOperationalStatus code) {
-      if (code == DeviceMetricOperationalStatus.ON)
+       if (code == DeviceMetricOperationalStatus.NULL)
+           return null;
+       if (code == DeviceMetricOperationalStatus.ON)
         return "on";
       if (code == DeviceMetricOperationalStatus.OFF)
         return "off";
@@ -172,7 +174,7 @@ public class DeviceMetric extends DomainResource {
       if (code == DeviceMetricOperationalStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(DeviceMetricOperationalStatus code) {
       return code.getSystem();
       }
@@ -320,12 +322,12 @@ public class DeviceMetric extends DomainResource {
           return DeviceMetricColor.WHITE;
         throw new IllegalArgumentException("Unknown DeviceMetricColor code '"+codeString+"'");
         }
-        public Enumeration<DeviceMetricColor> fromType(Base code) throws FHIRException {
+        public Enumeration<DeviceMetricColor> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DeviceMetricColor>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("black".equals(codeString))
@@ -347,7 +349,9 @@ public class DeviceMetric extends DomainResource {
         throw new FHIRException("Unknown DeviceMetricColor code '"+codeString+"'");
         }
     public String toCode(DeviceMetricColor code) {
-      if (code == DeviceMetricColor.BLACK)
+       if (code == DeviceMetricColor.NULL)
+           return null;
+       if (code == DeviceMetricColor.BLACK)
         return "black";
       if (code == DeviceMetricColor.RED)
         return "red";
@@ -364,7 +368,7 @@ public class DeviceMetric extends DomainResource {
       if (code == DeviceMetricColor.WHITE)
         return "white";
       return "?";
-      }
+   }
     public String toSystem(DeviceMetricColor code) {
       return code.getSystem();
       }
@@ -464,12 +468,12 @@ public class DeviceMetric extends DomainResource {
           return DeviceMetricCategory.UNSPECIFIED;
         throw new IllegalArgumentException("Unknown DeviceMetricCategory code '"+codeString+"'");
         }
-        public Enumeration<DeviceMetricCategory> fromType(Base code) throws FHIRException {
+        public Enumeration<DeviceMetricCategory> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DeviceMetricCategory>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("measurement".equals(codeString))
@@ -483,7 +487,9 @@ public class DeviceMetric extends DomainResource {
         throw new FHIRException("Unknown DeviceMetricCategory code '"+codeString+"'");
         }
     public String toCode(DeviceMetricCategory code) {
-      if (code == DeviceMetricCategory.MEASUREMENT)
+       if (code == DeviceMetricCategory.NULL)
+           return null;
+       if (code == DeviceMetricCategory.MEASUREMENT)
         return "measurement";
       if (code == DeviceMetricCategory.SETTING)
         return "setting";
@@ -492,7 +498,7 @@ public class DeviceMetric extends DomainResource {
       if (code == DeviceMetricCategory.UNSPECIFIED)
         return "unspecified";
       return "?";
-      }
+   }
     public String toSystem(DeviceMetricCategory code) {
       return code.getSystem();
       }
@@ -592,12 +598,12 @@ public class DeviceMetric extends DomainResource {
           return DeviceMetricCalibrationType.TWOPOINT;
         throw new IllegalArgumentException("Unknown DeviceMetricCalibrationType code '"+codeString+"'");
         }
-        public Enumeration<DeviceMetricCalibrationType> fromType(Base code) throws FHIRException {
+        public Enumeration<DeviceMetricCalibrationType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DeviceMetricCalibrationType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("unspecified".equals(codeString))
@@ -611,7 +617,9 @@ public class DeviceMetric extends DomainResource {
         throw new FHIRException("Unknown DeviceMetricCalibrationType code '"+codeString+"'");
         }
     public String toCode(DeviceMetricCalibrationType code) {
-      if (code == DeviceMetricCalibrationType.UNSPECIFIED)
+       if (code == DeviceMetricCalibrationType.NULL)
+           return null;
+       if (code == DeviceMetricCalibrationType.UNSPECIFIED)
         return "unspecified";
       if (code == DeviceMetricCalibrationType.OFFSET)
         return "offset";
@@ -620,7 +628,7 @@ public class DeviceMetric extends DomainResource {
       if (code == DeviceMetricCalibrationType.TWOPOINT)
         return "two-point";
       return "?";
-      }
+   }
     public String toSystem(DeviceMetricCalibrationType code) {
       return code.getSystem();
       }
@@ -720,12 +728,12 @@ public class DeviceMetric extends DomainResource {
           return DeviceMetricCalibrationState.UNSPECIFIED;
         throw new IllegalArgumentException("Unknown DeviceMetricCalibrationState code '"+codeString+"'");
         }
-        public Enumeration<DeviceMetricCalibrationState> fromType(Base code) throws FHIRException {
+        public Enumeration<DeviceMetricCalibrationState> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DeviceMetricCalibrationState>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("not-calibrated".equals(codeString))
@@ -739,7 +747,9 @@ public class DeviceMetric extends DomainResource {
         throw new FHIRException("Unknown DeviceMetricCalibrationState code '"+codeString+"'");
         }
     public String toCode(DeviceMetricCalibrationState code) {
-      if (code == DeviceMetricCalibrationState.NOTCALIBRATED)
+       if (code == DeviceMetricCalibrationState.NULL)
+           return null;
+       if (code == DeviceMetricCalibrationState.NOTCALIBRATED)
         return "not-calibrated";
       if (code == DeviceMetricCalibrationState.CALIBRATIONREQUIRED)
         return "calibration-required";
@@ -748,7 +758,7 @@ public class DeviceMetric extends DomainResource {
       if (code == DeviceMetricCalibrationState.UNSPECIFIED)
         return "unspecified";
       return "?";
-      }
+   }
     public String toSystem(DeviceMetricCalibrationState code) {
       return code.getSystem();
       }
@@ -1023,13 +1033,13 @@ public class DeviceMetric extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.type");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.type");
         }
         else if (name.equals("state")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.state");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.state");
         }
         else if (name.equals("time")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.time");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.time");
         }
         else
           return super.addChild(name);
@@ -1741,13 +1751,13 @@ public class DeviceMetric extends DomainResource {
           return this.parent;
         }
         else if (name.equals("operationalStatus")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.operationalStatus");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.operationalStatus");
         }
         else if (name.equals("color")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.color");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.color");
         }
         else if (name.equals("category")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.category");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.category");
         }
         else if (name.equals("measurementPeriod")) {
           this.measurementPeriod = new Timing();

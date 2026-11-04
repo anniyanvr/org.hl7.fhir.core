@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ContractDefinitionSubtypeEnumFactory implements EnumFactory<ContractDefinitionSubtype> {
@@ -44,17 +40,19 @@ public class ContractDefinitionSubtypeEnumFactory implements EnumFactory<Contrac
       return null;
     if ("temp".equals(codeString))
       return ContractDefinitionSubtype.TEMP;
-    throw new IllegalArgumentException("Unknown ContractDefinitionSubtype code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ContractDefinitionSubtype code '" + codeString + "'");
   }
 
   public String toCode(ContractDefinitionSubtype code) {
-    if (code == ContractDefinitionSubtype.TEMP)
+       if (code == ContractDefinitionSubtype.NULL)
+           return null;
+       if (code == ContractDefinitionSubtype.TEMP)
       return "temp";
     return "?";
-  }
+   }
 
-    public String toSystem(ContractDefinitionSubtype code) {
-      return code.getSystem();
-      }
+  public String toSystem(ContractDefinitionSubtype code) {
+    return code.getSystem();
+  }
 
 }

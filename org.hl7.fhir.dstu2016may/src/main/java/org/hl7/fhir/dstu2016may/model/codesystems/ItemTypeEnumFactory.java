@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -78,11 +74,13 @@ public class ItemTypeEnumFactory implements EnumFactory<ItemType> {
       return ItemType.REFERENCE;
     if ("quantity".equals(codeString))
       return ItemType.QUANTITY;
-    throw new IllegalArgumentException("Unknown ItemType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ItemType code '" + codeString + "'");
   }
 
   public String toCode(ItemType code) {
-    if (code == ItemType.GROUP)
+       if (code == ItemType.NULL)
+           return null;
+       if (code == ItemType.GROUP)
       return "group";
     if (code == ItemType.DISPLAY)
       return "display";
@@ -119,10 +117,10 @@ public class ItemTypeEnumFactory implements EnumFactory<ItemType> {
     if (code == ItemType.QUANTITY)
       return "quantity";
     return "?";
-  }
+   }
 
-    public String toSystem(ItemType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ItemType code) {
+    return code.getSystem();
+  }
 
 }

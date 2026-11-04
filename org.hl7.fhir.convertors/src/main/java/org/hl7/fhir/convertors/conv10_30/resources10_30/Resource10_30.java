@@ -1,5 +1,7 @@
 package org.hl7.fhir.convertors.conv10_30.resources10_30;
 
+import java.util.Arrays;
+
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_10_30;
 import org.hl7.fhir.convertors.conv10_30.datatypes10_30.Extension10_30;
 import org.hl7.fhir.convertors.conv10_30.datatypes10_30.Meta10_30;
@@ -14,26 +16,34 @@ public class Resource10_30 {
     this.advisor = advisor;
   }
 
-  public void copyDomainResource(org.hl7.fhir.dstu2.model.DomainResource src,
-                                 org.hl7.fhir.dstu3.model.DomainResource tgt) throws FHIRException {
+  public void copyDomainResource(
+    org.hl7.fhir.dstu2.model.DomainResource src,
+    org.hl7.fhir.dstu3.model.DomainResource tgt,
+    String ... extensionUrlsToIgnore) throws FHIRException {
     copyResource(src, tgt);
     tgt.setText(Narrative10_30.convertNarrative(src.getText()));
-    for (org.hl7.fhir.dstu2.model.Resource t : src.getContained()) tgt.addContained(convertResource(t));
-    for (org.hl7.fhir.dstu2.model.Extension t : src.getExtension())
-      tgt.addExtension(Extension10_30.convertExtension(t));
-    for (org.hl7.fhir.dstu2.model.Extension t : src.getModifierExtension())
-      tgt.addModifierExtension(Extension10_30.convertExtension(t));
+    for (org.hl7.fhir.dstu2.model.Resource containedResource : src.getContained()) tgt.addContained(convertResource(containedResource));
+    for (org.hl7.fhir.dstu2.model.Extension extension : src.getExtension())
+      if (!Arrays.asList(extensionUrlsToIgnore).contains(extension.getUrl()))
+        tgt.addExtension(Extension10_30.convertExtension(extension));
+
+    for (org.hl7.fhir.dstu2.model.Extension modifierExtension : src.getModifierExtension())
+      tgt.addModifierExtension(Extension10_30.convertExtension(modifierExtension));
   }
 
-  public void copyDomainResource(org.hl7.fhir.dstu3.model.DomainResource src,
-                                 org.hl7.fhir.dstu2.model.DomainResource tgt) throws FHIRException {
+  public void copyDomainResource(
+    org.hl7.fhir.dstu3.model.DomainResource src,
+    org.hl7.fhir.dstu2.model.DomainResource tgt,
+    String ... extensionUrlsToIgnore
+    ) throws FHIRException {
     copyResource(src, tgt);
     tgt.setText(Narrative10_30.convertNarrative(src.getText()));
-    for (org.hl7.fhir.dstu3.model.Resource t : src.getContained()) tgt.addContained(convertResource(t));
-    for (org.hl7.fhir.dstu3.model.Extension t : src.getExtension())
-      tgt.addExtension(Extension10_30.convertExtension(t));
-    for (org.hl7.fhir.dstu3.model.Extension t : src.getModifierExtension())
-      tgt.addModifierExtension(Extension10_30.convertExtension(t));
+    for (org.hl7.fhir.dstu3.model.Resource containedResource : src.getContained()) tgt.addContained(convertResource(containedResource));
+    for (org.hl7.fhir.dstu3.model.Extension extension : src.getExtension())
+      if (!Arrays.asList(extensionUrlsToIgnore).contains(extension.getUrl()))
+      tgt.addExtension(Extension10_30.convertExtension(extension));
+    for (org.hl7.fhir.dstu3.model.Extension modifierExtension : src.getModifierExtension())
+      tgt.addModifierExtension(Extension10_30.convertExtension(modifierExtension));
   }
 
   public void copyResource(org.hl7.fhir.dstu2.model.Resource src, org.hl7.fhir.dstu3.model.Resource tgt) throws FHIRException {
@@ -199,7 +209,7 @@ public class Resource10_30 {
     if (src instanceof org.hl7.fhir.dstu2.model.ValueSet)
       return ValueSet10_30.convertValueSet((org.hl7.fhir.dstu2.model.ValueSet) src, advisor);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown resource " + src.fhirType());
+      throw new FHIRException("The resource " + src.fhirType()+" cannot be converted from R2 to R3");
     } else {
       return null;
     }
@@ -350,7 +360,7 @@ public class Resource10_30 {
     if (src instanceof org.hl7.fhir.dstu3.model.ValueSet)
       return ValueSet10_30.convertValueSet((org.hl7.fhir.dstu3.model.ValueSet) src, advisor);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown resource " + src.fhirType());
+      throw new FHIRException("The resource " + src.fhirType()+" cannot be converted from R3 to R2");
     } else {
       return null;
     }

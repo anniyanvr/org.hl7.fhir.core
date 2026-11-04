@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class NehtaNehtaStainTypeEnumFactory implements EnumFactory<NehtaNehtaStainType> {
@@ -48,21 +44,23 @@ public class NehtaNehtaStainTypeEnumFactory implements EnumFactory<NehtaNehtaSta
       return NehtaNehtaStainType.NORMALSTAINING;
     if ("loss_of_staining".equals(codeString))
       return NehtaNehtaStainType.LOSSOFSTAINING;
-    throw new IllegalArgumentException("Unknown NehtaNehtaStainType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown NehtaNehtaStainType code '" + codeString + "'");
   }
 
   public String toCode(NehtaNehtaStainType code) {
-    if (code == NehtaNehtaStainType.NOTTESTED)
+       if (code == NehtaNehtaStainType.NULL)
+           return null;
+       if (code == NehtaNehtaStainType.NOTTESTED)
       return "not_tested";
     if (code == NehtaNehtaStainType.NORMALSTAINING)
       return "normal_staining";
     if (code == NehtaNehtaStainType.LOSSOFSTAINING)
       return "loss_of_staining";
     return "?";
-  }
+   }
 
-    public String toSystem(NehtaNehtaStainType code) {
-      return code.getSystem();
-      }
+  public String toSystem(NehtaNehtaStainType code) {
+    return code.getSystem();
+  }
 
 }

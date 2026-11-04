@@ -2,19 +2,21 @@ package org.hl7.fhir.validation.instance.utils;
 
 import java.util.List;
 
-import org.hl7.fhir.r5.elementmodel.Element;
-import org.hl7.fhir.r5.model.ElementDefinition;
+import org.hl7.fhir.services.elementmodel.Element;
+import org.hl7.fhir.model.core.ElementDefinition;
+import org.hl7.fhir.model.core.StructureDefinition;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 
 public class ElementInfo {
 
-  public List<ValidationMessage> sliceInfo;
-  public int index; // order of definition in overall order. all slices get the index of the slicing definition
-  public int sliceindex; // order of the definition in the slices (if slice != null)
-  public int count;
-  public ElementDefinition definition;
-  public ElementDefinition slice;
-  public boolean additionalSlice; // If true, indicates that this element is an additional slice
+  private List<ValidationMessage> sliceInfo;
+  private int index; // order of definition in overall order. all slices get the index of the slicing definition
+  private int sliceindex; // order of the definition in the slices (if slice != null)
+  private int count;
+  private StructureDefinition structure;
+  private ElementDefinition definition;
+  private ElementDefinition slice;
+  private boolean additionalSlice; // If true, indicates that this element is an additional slice
   private Element element;
   private String name;
   private String path;
@@ -26,92 +28,97 @@ public class ElementInfo {
     this.count = count;
   }
 
-    public List<ValidationMessage> getSliceInfo() {
-        return sliceInfo;
-    }
+  public List<ValidationMessage> getSliceInfo() {
+    return sliceInfo;
+  }
 
-    public ElementInfo setSliceInfo(List<ValidationMessage> sliceInfo) {
-        this.sliceInfo = sliceInfo;
-        return this;
-    }
+  public ElementInfo setSliceInfo(List<ValidationMessage> sliceInfo) {
+    this.sliceInfo = sliceInfo;
+    return this;
+  }
 
-    public int getIndex() {
-        return index;
-    }
+  public int getIndex() {
+    return index;
+  }
 
-    public ElementInfo setIndex(int index) {
-        this.index = index;
-        return this;
-    }
+  public ElementInfo setIndex(int index) {
+    this.index = index;
+    return this;
+  }
 
-    public int getSliceindex() {
-        return sliceindex;
-    }
+  public int getSliceindex() {
+    return sliceindex;
+  }
 
-    public ElementInfo setSliceindex(int sliceindex) {
-        this.sliceindex = sliceindex;
-        return this;
-    }
+  public ElementInfo setSliceindex(int sliceindex) {
+    this.sliceindex = sliceindex;
+    return this;
+  }
 
-    public int getCount() {
-        return count;
-    }
+  public int getCount() {
+    return count;
+  }
 
-    public ElementInfo setCount(int count) {
-        this.count = count;
-        return this;
-    }
+  public ElementInfo setCount(int count) {
+    this.count = count;
+    return this;
+  }
 
-    public ElementDefinition getDefinition() {
-        return definition;
-    }
+  public ElementDefinition getDefinition() {
+    return definition;
+  }
 
-    public ElementInfo setDefinition(ElementDefinition definition) {
-        this.definition = definition;
-        return this;
-    }
+  public StructureDefinition getStructure() {
+    return structure;
+  }
 
-    public ElementDefinition getSlice() {
-        return slice;
-    }
+  public ElementInfo setDefinition(StructureDefinition sd, ElementDefinition definition) {
+    this.structure = sd;
+    this.definition = definition;
+    return this;
+  }
 
-    public ElementInfo setSlice(ElementDefinition slice) {
-        this.slice = slice;
-        return this;
-    }
+  public ElementDefinition getSlice() {
+    return slice;
+  }
 
-    public boolean isAdditionalSlice() {
-        return additionalSlice;
-    }
+  public ElementInfo setSlice(ElementDefinition slice) {
+    this.slice = slice;
+    return this;
+  }
 
-    public ElementInfo setAdditionalSlice(boolean additionalSlice) {
-        this.additionalSlice = additionalSlice;
-        return this;
-    }
+  public boolean isAdditionalSlice() {
+    return additionalSlice;
+  }
 
-    public Element getElement() {
-        return element;
-    }
+  public ElementInfo setAdditionalSlice(boolean additionalSlice) {
+    this.additionalSlice = additionalSlice;
+    return this;
+  }
 
-    public ElementInfo setElement(Element element) {
-        this.element = element;
-        return this;
-    }
+  public Element getElement() {
+    return element;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public ElementInfo setElement(Element element) {
+    this.element = element;
+    return this;
+  }
 
-    public ElementInfo setName(String name) {
-        this.name = name;
-        return this;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getPath() {
-        return path;
-    }
+  public ElementInfo setName(String name) {
+    this.name = name;
+    return this;
+  }
 
-    public int col() {
+  public String getPath() {
+    return path;
+  }
+
+  public int col() {
     return element.col();
   }
 
@@ -123,4 +130,6 @@ public class ElementInfo {
   public String toString() {
     return path;
   }
+  
+  
 }

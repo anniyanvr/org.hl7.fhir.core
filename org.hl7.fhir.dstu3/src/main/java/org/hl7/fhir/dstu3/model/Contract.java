@@ -281,12 +281,12 @@ public class Contract extends DomainResource {
           return ContractStatus.TERMINATED;
         throw new IllegalArgumentException("Unknown ContractStatus code '"+codeString+"'");
         }
-        public Enumeration<ContractStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ContractStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ContractStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("amended".equals(codeString))
@@ -322,7 +322,9 @@ public class Contract extends DomainResource {
         throw new FHIRException("Unknown ContractStatus code '"+codeString+"'");
         }
     public String toCode(ContractStatus code) {
-      if (code == ContractStatus.AMENDED)
+       if (code == ContractStatus.NULL)
+           return null;
+       if (code == ContractStatus.AMENDED)
         return "amended";
       if (code == ContractStatus.APPENDED)
         return "appended";
@@ -353,7 +355,7 @@ public class Contract extends DomainResource {
       if (code == ContractStatus.TERMINATED)
         return "terminated";
       return "?";
-      }
+   }
     public String toSystem(ContractStatus code) {
       return code.getSystem();
       }
@@ -1008,8 +1010,8 @@ public class Contract extends DomainResource {
           return (CodeableConcept) this.entity;
         }
 
-        public boolean hasEntityCodeableConcept() { 
-          return this != null && this.entity instanceof CodeableConcept;
+        public boolean hasEntityCodeableConcept() {
+          return this.entity instanceof CodeableConcept;
         }
 
         /**
@@ -1023,8 +1025,8 @@ public class Contract extends DomainResource {
           return (Reference) this.entity;
         }
 
-        public boolean hasEntityReference() { 
-          return this != null && this.entity instanceof Reference;
+        public boolean hasEntityReference() {
+          return this.entity instanceof Reference;
         }
 
         public boolean hasEntity() { 
@@ -1470,7 +1472,7 @@ public class Contract extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("effectiveTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.effectiveTime");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.effectiveTime");
         }
         else if (name.equals("quantity")) {
           this.quantity = new SimpleQuantity();
@@ -1481,10 +1483,10 @@ public class Contract extends DomainResource {
           return this.unitPrice;
         }
         else if (name.equals("factor")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.factor");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.factor");
         }
         else if (name.equals("points")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.points");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.points");
         }
         else if (name.equals("net")) {
           this.net = new Money();
@@ -1851,16 +1853,6 @@ public class Contract extends DomainResource {
             addTopic();
           }
           return getTopic().get(0);
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Resource> getTopicTarget() { 
-          if (this.topicTarget == null)
-            this.topicTarget = new ArrayList<Resource>();
-          return this.topicTarget;
         }
 
         /**
@@ -2418,7 +2410,7 @@ public class Contract extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("issued")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.issued");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.issued");
         }
         else if (name.equals("applies")) {
           this.applies = new Period();
@@ -2448,7 +2440,7 @@ public class Contract extends DomainResource {
           return addAgent();
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.text");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.text");
         }
         else if (name.equals("valuedItem")) {
           return addValuedItem();
@@ -2887,8 +2879,8 @@ public class Contract extends DomainResource {
           return (CodeableConcept) this.entity;
         }
 
-        public boolean hasEntityCodeableConcept() { 
-          return this != null && this.entity instanceof CodeableConcept;
+        public boolean hasEntityCodeableConcept() {
+          return this.entity instanceof CodeableConcept;
         }
 
         /**
@@ -2902,8 +2894,8 @@ public class Contract extends DomainResource {
           return (Reference) this.entity;
         }
 
-        public boolean hasEntityReference() { 
-          return this != null && this.entity instanceof Reference;
+        public boolean hasEntityReference() {
+          return this.entity instanceof Reference;
         }
 
         public boolean hasEntity() { 
@@ -3349,7 +3341,7 @@ public class Contract extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("effectiveTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.effectiveTime");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.effectiveTime");
         }
         else if (name.equals("quantity")) {
           this.quantity = new SimpleQuantity();
@@ -3360,10 +3352,10 @@ public class Contract extends DomainResource {
           return this.unitPrice;
         }
         else if (name.equals("factor")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.factor");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.factor");
         }
         else if (name.equals("points")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.points");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.points");
         }
         else if (name.equals("net")) {
           this.net = new Money();
@@ -3466,8 +3458,8 @@ public class Contract extends DomainResource {
           return (Attachment) this.content;
         }
 
-        public boolean hasContentAttachment() { 
-          return this != null && this.content instanceof Attachment;
+        public boolean hasContentAttachment() {
+          return this.content instanceof Attachment;
         }
 
         /**
@@ -3481,8 +3473,8 @@ public class Contract extends DomainResource {
           return (Reference) this.content;
         }
 
-        public boolean hasContentReference() { 
-          return this != null && this.content instanceof Reference;
+        public boolean hasContentReference() {
+          return this.content instanceof Reference;
         }
 
         public boolean hasContent() { 
@@ -3660,8 +3652,8 @@ public class Contract extends DomainResource {
           return (Attachment) this.content;
         }
 
-        public boolean hasContentAttachment() { 
-          return this != null && this.content instanceof Attachment;
+        public boolean hasContentAttachment() {
+          return this.content instanceof Attachment;
         }
 
         /**
@@ -3675,8 +3667,8 @@ public class Contract extends DomainResource {
           return (Reference) this.content;
         }
 
-        public boolean hasContentReference() { 
-          return this != null && this.content instanceof Reference;
+        public boolean hasContentReference() {
+          return this.content instanceof Reference;
         }
 
         public boolean hasContent() { 
@@ -3854,8 +3846,8 @@ public class Contract extends DomainResource {
           return (Attachment) this.content;
         }
 
-        public boolean hasContentAttachment() { 
-          return this != null && this.content instanceof Attachment;
+        public boolean hasContentAttachment() {
+          return this.content instanceof Attachment;
         }
 
         /**
@@ -3869,8 +3861,8 @@ public class Contract extends DomainResource {
           return (Reference) this.content;
         }
 
-        public boolean hasContentReference() { 
-          return this != null && this.content instanceof Reference;
+        public boolean hasContentReference() {
+          return this.content instanceof Reference;
         }
 
         public boolean hasContent() { 
@@ -4402,16 +4394,6 @@ public class Contract extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getSubjectTarget() { 
-      if (this.subjectTarget == null)
-        this.subjectTarget = new ArrayList<Resource>();
-      return this.subjectTarget;
-    }
-
-    /**
      * @return {@link #topic} (The matter of concern in the context of this agreement.)
      */
     public List<Reference> getTopic() { 
@@ -4462,16 +4444,6 @@ public class Contract extends DomainResource {
         addTopic();
       }
       return getTopic().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getTopicTarget() { 
-      if (this.topicTarget == null)
-        this.topicTarget = new ArrayList<Resource>();
-      return this.topicTarget;
     }
 
     /**
@@ -4528,28 +4500,6 @@ public class Contract extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Organization> getAuthorityTarget() { 
-      if (this.authorityTarget == null)
-        this.authorityTarget = new ArrayList<Organization>();
-      return this.authorityTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Organization addAuthorityTarget() { 
-      Organization r = new Organization();
-      if (this.authorityTarget == null)
-        this.authorityTarget = new ArrayList<Organization>();
-      this.authorityTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #domain} (Recognized governance framework or system operating with a circumscribed scope in accordance with specified principles, policies, processes or procedures for managing rights, actions, or behaviors of parties or principals relative to resources.)
      */
     public List<Reference> getDomain() { 
@@ -4600,28 +4550,6 @@ public class Contract extends DomainResource {
         addDomain();
       }
       return getDomain().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Location> getDomainTarget() { 
-      if (this.domainTarget == null)
-        this.domainTarget = new ArrayList<Location>();
-      return this.domainTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Location addDomainTarget() { 
-      Location r = new Location();
-      if (this.domainTarget == null)
-        this.domainTarget = new ArrayList<Location>();
-      this.domainTarget.add(r);
-      return r;
     }
 
     /**
@@ -5138,8 +5066,8 @@ public class Contract extends DomainResource {
       return (Attachment) this.binding;
     }
 
-    public boolean hasBindingAttachment() { 
-      return this != null && this.binding instanceof Attachment;
+    public boolean hasBindingAttachment() {
+      return this.binding instanceof Attachment;
     }
 
     /**
@@ -5153,8 +5081,8 @@ public class Contract extends DomainResource {
       return (Reference) this.binding;
     }
 
-    public boolean hasBindingReference() { 
-      return this != null && this.binding instanceof Reference;
+    public boolean hasBindingReference() {
+      return this.binding instanceof Reference;
     }
 
     public boolean hasBinding() { 
@@ -5624,10 +5552,10 @@ public class Contract extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.status");
         }
         else if (name.equals("issued")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.issued");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.issued");
         }
         else if (name.equals("applies")) {
           this.applies = new Period();

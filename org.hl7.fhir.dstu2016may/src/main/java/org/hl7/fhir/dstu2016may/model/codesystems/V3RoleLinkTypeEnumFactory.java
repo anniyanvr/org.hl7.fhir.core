@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3RoleLinkTypeEnumFactory implements EnumFactory<V3RoleLinkType> {
@@ -58,11 +54,13 @@ public class V3RoleLinkTypeEnumFactory implements EnumFactory<V3RoleLinkType> {
       return V3RoleLinkType.PART;
     if ("REPL".equals(codeString))
       return V3RoleLinkType.REPL;
-    throw new IllegalArgumentException("Unknown V3RoleLinkType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3RoleLinkType code '" + codeString + "'");
   }
 
   public String toCode(V3RoleLinkType code) {
-    if (code == V3RoleLinkType.REL)
+       if (code == V3RoleLinkType.NULL)
+           return null;
+       if (code == V3RoleLinkType.REL)
       return "REL";
     if (code == V3RoleLinkType.BACKUP)
       return "BACKUP";
@@ -79,10 +77,10 @@ public class V3RoleLinkTypeEnumFactory implements EnumFactory<V3RoleLinkType> {
     if (code == V3RoleLinkType.REPL)
       return "REPL";
     return "?";
-  }
+   }
 
-    public String toSystem(V3RoleLinkType code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3RoleLinkType code) {
+    return code.getSystem();
+  }
 
 }

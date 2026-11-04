@@ -1,7 +1,8 @@
 package org.hl7.fhir.convertors.conv10_50.resources10_50;
 
+import java.util.Arrays;
+
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_10_50;
-import org.hl7.fhir.convertors.context.ConversionContext10_50;
 import org.hl7.fhir.convertors.conv10_50.datatypes10_50.Extension10_50;
 import org.hl7.fhir.convertors.conv10_50.datatypes10_50.Meta10_50;
 import org.hl7.fhir.convertors.conv10_50.datatypes10_50.Narrative10_50;
@@ -143,7 +144,7 @@ public class Resource10_50 {
     if (src instanceof org.hl7.fhir.dstu2.model.ValueSet)
       return ValueSet10_50.convertValueSet((org.hl7.fhir.dstu2.model.ValueSet) src, advisor);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown resource " + src.fhirType());
+      throw new FHIRException("The resource " + src.fhirType()+" cannot be converted from R2 to R5");
     } else {
       return null;
     }
@@ -212,8 +213,8 @@ public class Resource10_50 {
       return Location10_50.convertLocation((org.hl7.fhir.r5.model.Location) src);
     if (src instanceof org.hl7.fhir.r5.model.MedicationDispense)
       return MedicationDispense10_50.convertMedicationDispense((org.hl7.fhir.r5.model.MedicationDispense) src);
-    if (src instanceof org.hl7.fhir.r5.model.MedicationUsage)
-      return MedicationStatement10_50.convertMedicationStatement((org.hl7.fhir.r5.model.MedicationUsage) src);
+    if (src instanceof org.hl7.fhir.r5.model.MedicationStatement)
+      return MedicationStatement10_50.convertMedicationStatement((org.hl7.fhir.r5.model.MedicationStatement) src);
     if (src instanceof org.hl7.fhir.r5.model.MessageHeader)
       return MessageHeader10_50.convertMessageHeader((org.hl7.fhir.r5.model.MessageHeader) src);
     if (src instanceof org.hl7.fhir.r5.model.NamingSystem)
@@ -258,50 +259,56 @@ public class Resource10_50 {
     if (src instanceof org.hl7.fhir.r5.model.ValueSet)
       return ValueSet10_50.convertValueSet((org.hl7.fhir.r5.model.ValueSet) src, advisor);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown resource " + src.fhirType());
+      throw new FHIRException("The resource " + src.fhirType()+" cannot be converted from R5 to R2");
     } else {
       return null;
     }
   }
 
-  public void copyDomainResource(org.hl7.fhir.dstu2.model.DomainResource src, org.hl7.fhir.r5.model.DomainResource tgt) throws FHIRException {
+  public void copyDomainResource(
+    org.hl7.fhir.dstu2.model.DomainResource src,
+    org.hl7.fhir.r5.model.DomainResource tgt,
+    String ... extensionUrlsToIgnore) throws FHIRException {
     copyResource(src, tgt);
     if (src.hasText()) tgt.setText(Narrative10_50.convertNarrative(src.getText()));
     src.getContained().stream()
       .map(this::convertResource)
       .forEach(tgt::addContained);
     src.getExtension().forEach(extension -> {
-      if (advisor.useAdvisorForExtension(ConversionContext10_50.INSTANCE.path(), extension)) {
+      if (advisor.useAdvisorForExtension(extension)) {
         org.hl7.fhir.r5.model.Extension convertExtension = new org.hl7.fhir.r5.model.Extension();
-        advisor.handleExtension(ConversionContext10_50.INSTANCE.path(), extension, convertExtension);
+        advisor.handleExtension(extension, convertExtension);
         tgt.addExtension(convertExtension);
-      } else if (!advisor.ignoreExtension(ConversionContext10_50.INSTANCE.path(), extension)) {
+      } else if (!advisor.ignoreExtension(extension) && !Arrays.asList(extensionUrlsToIgnore).contains(extension.getUrl())) {
         tgt.addExtension(Extension10_50.convertExtension(extension));
       }
     });
     src.getModifierExtension().stream()
-      .filter(extension -> !advisor.ignoreExtension(ConversionContext10_50.INSTANCE.path(), extension))
+      .filter(extension -> !advisor.ignoreExtension(extension))
       .map(Extension10_50::convertExtension)
       .forEach(tgt::addModifierExtension);
   }
 
-  public void copyDomainResource(org.hl7.fhir.r5.model.DomainResource src, org.hl7.fhir.dstu2.model.DomainResource tgt) throws FHIRException {
+  public void copyDomainResource(
+    org.hl7.fhir.r5.model.DomainResource src,
+    org.hl7.fhir.dstu2.model.DomainResource tgt,
+    String ... extensionUrlsToIgnore) throws FHIRException {
     copyResource(src, tgt);
     if (src.hasText()) tgt.setText(Narrative10_50.convertNarrative(src.getText()));
     src.getContained().stream()
       .map(this::convertResource)
       .forEach(tgt::addContained);
     src.getExtension().forEach(extension -> {
-      if (advisor.useAdvisorForExtension(ConversionContext10_50.INSTANCE.path(), extension)) {
+      if (advisor.useAdvisorForExtension(extension)) {
         Extension convertExtension = new Extension();
-        advisor.handleExtension(ConversionContext10_50.INSTANCE.path(), extension, convertExtension);
+        advisor.handleExtension(extension, convertExtension);
         tgt.addExtension(convertExtension);
-      } else if (!advisor.ignoreExtension(ConversionContext10_50.INSTANCE.path(), extension)) {
+      } else if (!advisor.ignoreExtension(extension) && !Arrays.asList(extensionUrlsToIgnore).contains(extension.getUrl())) {
         tgt.addExtension(Extension10_50.convertExtension(extension));
       }
     });
     src.getModifierExtension().stream()
-      .filter(extension -> !advisor.ignoreExtension(ConversionContext10_50.INSTANCE.path(), extension))
+      .filter(extension -> !advisor.ignoreExtension(extension))
       .map(Extension10_50::convertExtension)
       .forEach(tgt::addModifierExtension);
   }

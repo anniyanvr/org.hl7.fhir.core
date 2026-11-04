@@ -85,16 +85,34 @@ public class ResourceUtilities {
 		StringBuilder b = new StringBuilder();
 		for (OperationOutcomeIssueComponent t : error.getIssue())
 			if (t.getSeverity() == IssueSeverity.ERROR)
-				b.append("Error:" +t.getDetails()+"\r\n");
+				b.append("Error: " +gen(t.getDetails())+"\r\n");
 			else if (t.getSeverity() == IssueSeverity.FATAL)
-				b.append("Fatal:" +t.getDetails()+"\r\n");
+				b.append("Fatal: " +gen(t.getDetails())+"\r\n");
 			else if (t.getSeverity() == IssueSeverity.WARNING)
-				b.append("Warning:" +t.getDetails()+"\r\n");
+				b.append("Warning: " +gen(t.getDetails())+"\r\n");
 			else if (t.getSeverity() == IssueSeverity.INFORMATION)
-				b.append("Information:" +t.getDetails()+"\r\n");
+				b.append("Information: " +gen(t.getDetails())+"\r\n");
 		return b.toString();
   }
 
+
+  private static String gen(CodeableConcept details) {
+    if (details.hasText()) {
+      return details.getText();
+    }
+    for (Coding c : details.getCoding()) {
+      if (c.hasDisplay()) {
+        return c.getDisplay();
+      }
+    }
+    for (Coding c : details.getCoding()) {
+      if (c.hasCode()) {
+        return c.getCode();
+      }
+    }
+    return "(no details supplied)";   
+  }
+  
   public static Resource getById(Bundle feed, ResourceType type, String reference) {
     for (BundleEntryComponent item : feed.getEntry()) {
       if (item.getResource().getId().equals(reference) && item.getResource().getResourceType() == type)
@@ -153,17 +171,17 @@ public class ResourceUtilities {
       } else if (col.equals("DataElement.type")) {
         v = dee.hasType() ? Utilities.escapeXml(dee.getType().get(0).getCode()) : "";
       } else if (col.equals("DataElement.units")) {
-        v = renderDEUnits(ToolingExtensions.getAllowedUnits(dee));
+        v = renderDEUnits(ExtensionUtilities.getAllowedUnits(dee));
       } else if (col.equals("DataElement.binding")) {
         v = renderBinding(dee.getBinding());
       } else if (col.equals("DataElement.minValue")) {
-        v = ToolingExtensions.hasExtension(de, "http://hl7.org/fhir/StructureDefinition/minValue") ? Utilities.escapeXml(ToolingExtensions.readPrimitiveExtension(de, "http://hl7.org/fhir/StructureDefinition/minValue").asStringValue()) : "";
+        v = ExtensionUtilities.hasExtension(de, "http://hl7.org/fhir/StructureDefinition/minValue") ? Utilities.escapeXml(ExtensionUtilities.readPrimitiveExtension(de, "http://hl7.org/fhir/StructureDefinition/minValue").asStringValue()) : "";
       } else if (col.equals("DataElement.maxValue")) {
-        v = ToolingExtensions.hasExtension(de, "http://hl7.org/fhir/StructureDefinition/maxValue") ? Utilities.escapeXml(ToolingExtensions.readPrimitiveExtension(de, "http://hl7.org/fhir/StructureDefinition/maxValue").asStringValue()) : "";
+        v = ExtensionUtilities.hasExtension(de, "http://hl7.org/fhir/StructureDefinition/maxValue") ? Utilities.escapeXml(ExtensionUtilities.readPrimitiveExtension(de, "http://hl7.org/fhir/StructureDefinition/maxValue").asStringValue()) : "";
       } else if (col.equals("DataElement.maxLength")) {
-        v = ToolingExtensions.hasExtension(de, "http://hl7.org/fhir/StructureDefinition/maxLength") ? Utilities.escapeXml(ToolingExtensions.readPrimitiveExtension(de, "http://hl7.org/fhir/StructureDefinition/maxLength").asStringValue()) : "";
+        v = ExtensionUtilities.hasExtension(de, "http://hl7.org/fhir/StructureDefinition/maxLength") ? Utilities.escapeXml(ExtensionUtilities.readPrimitiveExtension(de, "http://hl7.org/fhir/StructureDefinition/maxLength").asStringValue()) : "";
       } else if (col.equals("DataElement.mask")) {
-        v = ToolingExtensions.hasExtension(de, "http://hl7.org/fhir/StructureDefinition/mask") ? Utilities.escapeXml(ToolingExtensions.readPrimitiveExtension(de, "http://hl7.org/fhir/StructureDefinition/mask").asStringValue()) : "";
+        v = ExtensionUtilities.hasExtension(de, "http://hl7.org/fhir/StructureDefinition/mask") ? Utilities.escapeXml(ExtensionUtilities.readPrimitiveExtension(de, "http://hl7.org/fhir/StructureDefinition/mask").asStringValue()) : "";
       } else 
         throw new Error("Unknown column name: "+col);
 
@@ -171,8 +189,8 @@ public class ResourceUtilities {
     }
     if (profileLink) {
       b.append("<td><a href=\""+linkBase+"-"+de.getId()+".html\">Profile</a>, <a href=\"http://www.opencem.org/#/20140917/Intermountain/"+de.getId()+"\">CEM</a>");
-      if (ToolingExtensions.hasExtension(de, ToolingExtensions.EXT_CIMI_REFERENCE)) 
-        b.append(", <a href=\""+ToolingExtensions.readStringExtension(de, ToolingExtensions.EXT_CIMI_REFERENCE)+"\">CIMI</a>");
+      if (ExtensionUtilities.hasExtension(de, ExtensionUtilities.EXT_CIMI_REFERENCE))
+        b.append(", <a href=\""+ ExtensionUtilities.readStringExtension(de, ExtensionUtilities.EXT_CIMI_REFERENCE)+"\">CIMI</a>");
       b.append("</td>");
     }
     b.append("</tr>\r\n");
@@ -268,7 +286,7 @@ public class ResourceUtilities {
   private static boolean hasExtension(Bundle bundle, String url) {
     for (BundleEntryComponent e : bundle.getEntry()) {
       DataElement de = (DataElement) e.getResource();
-      if (ToolingExtensions.hasExtension(de, url))
+      if (ExtensionUtilities.hasExtension(de, url))
         return true;
     }
     return false;
@@ -304,7 +322,7 @@ public class ResourceUtilities {
   private static boolean hasUnits(Bundle bundle) {
     for (BundleEntryComponent e : bundle.getEntry()) {
       DataElement de = (DataElement) e.getResource();
-      if (ToolingExtensions.getAllowedUnits(de.getElement().get(0)) != null)
+      if (ExtensionUtilities.getAllowedUnits(de.getElement().get(0)) != null)
         return true;
     }
     return false;

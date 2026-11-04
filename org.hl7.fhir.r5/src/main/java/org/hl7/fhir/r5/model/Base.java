@@ -1,24 +1,140 @@
 package org.hl7.fhir.r5.model;
 
+/*
+  Copyright (c) 2011+, HL7, Inc.
+  All rights reserved.
+  
+  Redistribution and use in source and binary forms, with or without modification, \
+  are permitted provided that the following conditions are met:
+  
+   * Redistributions of source code must retain the above copyright notice, this \
+     list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above copyright notice, \
+     this list of conditions and the following disclaimer in the documentation \
+     and/or other materials provided with the distribution.
+   * Neither the name of HL7 nor the names of its contributors may be used to 
+     endorse or promote products derived from this software without specific 
+     prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND \
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED \
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. \
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, \
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT \
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR \
+  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, \
+  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) \
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE \
+  POSSIBILITY OF SUCH DAMAGE.
+  */
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.instance.model.api.IBase;
+import org.hl7.fhir.r5.fhirpath.FHIRPathEngine;
+import org.hl7.fhir.utilities.FhirPublication;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 
 import ca.uhn.fhir.model.api.IElement;
 
 public abstract class Base implements Serializable, IBase, IElement {
 
+  public enum ValidationReason {
+    Validation, MatchingSlice, Expression    
+  }
+  
+  public enum ProfileSource {
+    BaseDefinition, ConfigProfile, MetaProfile, ProfileDependency, FromExpression,  GlobalProfile
+  }
+  
+  public static class ValidationMode {
+    private ValidationReason reason;
+    private ProfileSource source;
+    public ValidationMode(ValidationReason reason, ProfileSource source) {
+      super();
+      this.reason = reason;
+      this.source = source;
+    }
+    public ValidationReason getReason() {
+      return reason;
+    }
+    public ProfileSource getSource() {
+      return source;
+    }
+    public ValidationMode withSource(ProfileSource source) {
+      ValidationMode res = new ValidationMode(reason, source);
+      return res;
+    }
+    public ValidationMode withReason(ValidationReason reason) {
+      ValidationMode res = new ValidationMode(reason, source);
+      return res;
+    }
+  }
+  
+  public class ValidationInfo {
+    private StructureDefinition structure;
+    private ElementDefinition definition;
+    private ValidationReason reason;
+    private ProfileSource source;
+    private boolean valid;
+    
+    public ValidationInfo(StructureDefinition structure, ElementDefinition definition, ValidationMode mode) {
+      super();
+      this.structure = structure;
+      this.definition = definition;
+      this.reason = mode.reason;
+      this.source = mode.source;
+    }
+    
+    public StructureDefinition getStructure() {
+      return structure;
+    }
+    
+    public ElementDefinition getDefinition() {
+      return definition;
+    }
+    
+    public ValidationReason getReason() {
+      return reason;
+    }
+
+    public ProfileSource getSource() {
+      return source;
+    }
+
+    public boolean isValid() {
+      return valid;
+    }
+    public void setValid(boolean valid) {
+      this.valid = valid;
+    }
+
+  }
+
+  private static ThreadLocal<Boolean> copyUserData = new ThreadLocal<>();
+  
+  public static boolean isCopyUserData() {
+    Boolean res = copyUserData.get();
+    return res != null && res;
+  }
+  
+  public static void setCopyUserData(boolean value) {
+    copyUserData.set(value);
+  }
+  
   /**
    * User appended data items - allow users to add extra information to the class
    */
-private Map<String, Object> userData; 
+  private transient Map<String, Object> userData; 
+
+  /**
+   * Post Validation Definition information
+   */
+  private transient List<ValidationInfo> validationInfo;
 
   /**
    * Round tracking xml comments for testing convenience
@@ -28,7 +144,9 @@ private Map<String, Object> userData;
   /**
    * Round tracking xml comments for testing convenience
    */
-  private List<String> formatCommentsPost; 
+  private List<String> formatCommentsPost;
+
+  private List<ValidationMessage> validationMessages; 
    
   
   public Object getUserData(String name) {
@@ -47,7 +165,15 @@ private Map<String, Object> userData;
     if (userData != null)
       userData.remove(name);
   }
-  
+
+  /**
+   * Clear all user Data
+   */
+  public void clearUserData() {
+    userData  = null;
+  }
+
+
   public void setUserDataINN(String name, Object value) {
     if (value == null)
       return;
@@ -61,7 +187,7 @@ private Map<String, Object> userData;
     if (userData == null)
       return false;
     else
-      return userData.containsKey(name);
+      return userData.containsKey(name) && (userData.get(name) != null);
   }
 
 	public String getUserString(String name) {
@@ -86,10 +212,26 @@ private Map<String, Object> userData;
       }
       userData.putAll(other.userData);
     }
-  }      
+  }
+
+  public Set<String> getUserDataNames() {
+    if (userData == null) {
+      return new HashSet<>();
+    } else {
+      return userData.keySet();
+    }
+  }
 
   public boolean hasFormatComment() {
-  	return (formatCommentsPre != null && !formatCommentsPre.isEmpty()) || (formatCommentsPost != null && !formatCommentsPost.isEmpty());
+    return hasFormatCommentPre() || hasFormatCommentPost();
+  }
+  
+  public boolean hasFormatCommentPre() {
+    return formatCommentsPre != null && !formatCommentsPre.isEmpty();
+  }
+  
+  public boolean hasFormatCommentPost() {
+    return formatCommentsPost != null && !formatCommentsPost.isEmpty();
   }
   
   public List<String> getFormatCommentsPre() {
@@ -104,38 +246,107 @@ private Map<String, Object> userData;
     return formatCommentsPost;
   }  
   
+
+  public void copyFormatComments(Base other) {
+    if (other.hasFormatComment()) {
+      formatCommentsPre = new ArrayList<>();
+      formatCommentsPre.addAll(other.formatCommentsPre);      
+    } else {
+      formatCommentsPre = null;
+    }
+  }
+  
+
+  public void addFormatCommentsPre(List<String> comments) {
+    if (comments != null && !comments.isEmpty()) {
+      getFormatCommentsPre().addAll(comments); 
+    }    
+  }
+
+  public void addFormatCommentsPost(List<String> comments) {
+    if (comments != null && !comments.isEmpty()) {
+      getFormatCommentsPost().addAll(comments); 
+    }    
+  }
+
 	// these 3 allow evaluation engines to get access to primitive values
+  
+  /**
+   * @return true if the data type is a primitive type and might have a primitive value 
+   *   (which will be accessed as a string, irrespective of the stated value)
+   */
 	public boolean isPrimitive() {
 		return false;
 	}
 	
+	/**
+	 * @return true if the type is boolean, and the primitive value can only be 'true' or 'false'
+	 */
   public boolean isBooleanPrimitive() {
     return false;
   }
 
-	public boolean hasPrimitiveValue() {
-		return isPrimitive();
-	}
-	
+  /**
+   * @return true if the type is primitive, and there's value (e.g. no Data-Absent-Reason extension etc)
+   */
+  public boolean hasPrimitiveValue() {
+    return primitiveValue() != null;
+  }
+  
+  /**
+   * @return true if the type is primitive, and there could be a value (irrespective of whether it's present e.g. no Data-Absent-Reason extension etc)
+   */
+  public boolean canHavePrimitiveValue() {
+    return false;
+  }
+  
+	/**
+	 * @return the primitive value if there is one, as a string irrespective of the actual type (e.g. dates converted to their FHIR string representation)
+	 *    return null if the value is not a primitive or there is no value (might be extensions instead)
+	 */
 	public String primitiveValue() {
 		return null;
 	}
 	
+  /**
+   * @return true if the type is date|dateTime|instant, and the primitive value is a date/time of some precision
+   */
   public boolean isDateTime() {
     return false;
   }
 
+  /**
+   * @return the date/time value if there is one, or null
+   */
   public BaseDateTimeType dateTimeValue() {
     return null;
   }
-  
+
+  /**
+   * @return the FHIR type name of the instance (not the java class name)
+   */
 	public abstract String fhirType() ;
-	
+
+	/**
+	 * Note that this is potentially misleading on ElementDefinition that has a 'type' 
+	 * property - don't mistakenly use this thinking it's going to look at ElementDefinition.type
+   *
+	 * @param name - fhir type name
+	 * @return- true if it 'has' this type (including by specialization)
+	 */
 	public boolean hasType(String... name) {
 		String t = fhirType();
-		for (String n : name)
+		for (String n : name) {
 		  if (n.equalsIgnoreCase(t))
 		  	return true;
+		  if (n.contains(".")) {
+		    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+		    //single literal character split
+		    String[] p = n.split("\\.");
+		    if (p.length == 2 && Utilities.existsInList(p[0], "FHIR", "CDA") && p[1].equalsIgnoreCase(t))
+	        return true;
+		  }
+		}
 		return false;
 	}
 	
@@ -151,6 +362,9 @@ private Map<String, Object> userData;
     throw new FHIRException("Attempt to add child with unknown name "+name);
   }
 
+	public void removeChild(String name, Base value) throws FHIRException {
+    throw new FHIRException("Attempt to remove child with unknown name "+name);
+	}
   /**
    * Supports iterating the children elements in some generic processor or browser
    * All defined children will be listed, even if they have no value on this instance
@@ -185,6 +399,18 @@ private Map<String, Object> userData;
     return result;
   }
 
+  public Base getChildValueByName(String name) {
+    Property p = getChildByName(name);
+    if (p != null && p.hasValues()) {
+      if (p.getValues().size() > 1) {
+        throw new Error("Too manye values for "+name+" found");
+      } else {
+        return p.getValues().get(0);        
+      }
+    }
+    return null;
+  }
+  
   public Base[] listChildrenByName(String name, boolean checkValid) throws FHIRException {
   	if (name.equals("*")) {
   		List<Property> children = new ArrayList<Property>();
@@ -339,7 +565,24 @@ private Map<String, Object> userData;
     return null; 
   }
 
-  public void copyValues(Base dst) {   
+  public abstract Base copy();
+  
+  /**
+   * Copy this object's content onto dst, the same as copyValues, but with one signature all the
+   * way down the hierarchy so that a call made through a Base reference reaches the leaf type.
+   * copyValues takes a different argument type at every level, so a call bound through Base
+   * would stop at Base.copyValues; each override of this casts dst to its own type to pick the
+   * right one
+   */
+  public void assignValues(Base dst) {
+    copyValues((Base) dst);
+  }
+
+  public void copyValues(Base dst) {  
+    if (isCopyUserData() && userData != null) {
+      dst.userData = new HashMap<>();
+      dst.userData.putAll(userData);
+    }
   }
 
   /**
@@ -351,4 +594,102 @@ private Map<String, Object> userData;
     return null;
   }
 
+
+  /**
+   * return set XHTML if this is an XHTML node, else error
+   * 
+   * @return
+   */
+  public Base setXhtml(XhtmlNode node) {
+    throw new Error("This node does not support xhtml");
+  }
+
+  public boolean hasValidationInfo() {
+    return validationInfo != null;
+  }
+
+  /**
+   * A list of definitions that the validator matched this element to.
+   * Note that the element doesn't have to conform to these definitions - check whether they're valid 
+   * Some of the definitions will be noted because of slice matching
+   * 
+   * @return
+   */
+  public List<ValidationInfo> getValidationInfo() {
+    return validationInfo;
+  }
+
+  public List<ValidationInfo>  getValidationInfoForProfile(StructureDefinition profile) {
+    List<ValidationInfo> ret = new ArrayList<ValidationInfo>();
+    for (ValidationInfo v : getValidationInfo()) {
+      if (v.getStructure() == profile) {
+        ret.add(v);
+      }
+    }
+    return ret;
+  }
+
+  public ValidationInfo addDefinition(StructureDefinition structure, ElementDefinition defn, ValidationMode mode) {
+    if (validationInfo == null) {
+      validationInfo = new ArrayList<>();
+    }
+    for (ValidationInfo t : validationInfo) {
+      if (t.structure == structure && t.definition == defn && t.reason == mode.reason && t.source == mode.source) {
+        return t;
+      }
+    }
+    ValidationInfo vi = new ValidationInfo(structure, defn, mode);
+    this.validationInfo.add(vi);
+    return vi;
+  }
+
+  public boolean isValid() {
+    if (hasValidationInfo()) {
+      return false;
+    } else {
+      boolean valid = true;
+      for (ValidationInfo t : validationInfo) {
+        if (!t.isValid()) {
+          valid = false;
+        }
+      }
+      return valid;
+    }
+  }
+
+  public boolean hasValidated(StructureDefinition sd, ElementDefinition ed) {
+    if (validationInfo != null) {
+      for (ValidationInfo vi : validationInfo) {
+        if (vi.definition == ed && vi.structure == sd) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  // validation messages: the validator does not populate these (yet)
+  public Base addValidationMessage(ValidationMessage msg) {
+    if (validationMessages == null) {
+      validationMessages = new ArrayList<>();
+    }
+    validationMessages.add(msg);
+    return this;
+  }
+
+  public boolean hasValidationMessages() {
+    return validationMessages != null && !validationMessages.isEmpty();
+  }
+  
+  public List<ValidationMessage> getValidationMessages() {
+    return validationMessages != null ? validationMessages : new ArrayList<>();
+  }
+
+  public abstract FhirPublication getFHIRPublicationVersion();
+  
+  public List<Base> executeFunction(FHIRPathEngine engine, Object appContext, List<Base> focus, String functionName, List<List<Base>> parameters) {
+    return new ArrayList<>();
+  }
+
+  
 }

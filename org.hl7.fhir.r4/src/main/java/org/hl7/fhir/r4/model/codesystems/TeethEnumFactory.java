@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -106,11 +102,13 @@ public class TeethEnumFactory implements EnumFactory<Teeth> {
       return Teeth._47;
     if ("48".equals(codeString))
       return Teeth._48;
-    throw new IllegalArgumentException("Unknown Teeth code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown Teeth code '" + codeString + "'");
   }
 
   public String toCode(Teeth code) {
-    if (code == Teeth._11)
+       if (code == Teeth.NULL)
+           return null;
+       if (code == Teeth._11)
       return "11";
     if (code == Teeth._12)
       return "12";
@@ -175,10 +173,10 @@ public class TeethEnumFactory implements EnumFactory<Teeth> {
     if (code == Teeth._48)
       return "48";
     return "?";
-  }
+   }
 
-    public String toSystem(Teeth code) {
-      return code.getSystem();
-      }
+  public String toSystem(Teeth code) {
+    return code.getSystem();
+  }
 
 }

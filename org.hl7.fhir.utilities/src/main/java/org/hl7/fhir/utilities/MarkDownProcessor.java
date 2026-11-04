@@ -33,13 +33,17 @@ package org.hl7.fhir.utilities;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
+import org.commonmark.renderer.text.TextContentRenderer;
 
+import com.github.rjeschke.txtmark.Configuration;
 import com.github.rjeschke.txtmark.Processor;
 
 public class MarkDownProcessor {
@@ -63,17 +67,180 @@ public class MarkDownProcessor {
       return "";
     }
     switch (dialect) {
-    case DARING_FIREBALL : return Processor.process(source); 
-    case COMMON_MARK : return processCommonMark(source); 
+    case DARING_FIREBALL : 
+      return Processor.process(source, Configuration.builder().enableSafeMode().enablePanicMode().build()); 
+    case COMMON_MARK : return processCommonMark(preProcess(source)); 
     default: throw new Error("Unknown Markdown Dialect: "+dialect.toString()+" at "+context); 
     }
+  }
+
+  /**
+   * Returns true if this is intended to be processed as markdown
+   * 
+   * this is guess, based on textual analysis of the content. 
+   * 
+   * Uses of this routine:
+   *   In general, the main use of this is to decide to escape the string so erroneous markdown processing doesn't munge characters
+   *   If it's a plain string, and it's being put into something that's markdown, then you should escape the content
+   *   If it's markdown, but you're not sure whether to process it as markdown
+   *   
+   * The underlying problem is that markdown processing plain strings is problematic because some technical characters might 
+   * get lost. So it's good to escape them... but if it's meant to be markdown, then it'll get trashed. 
+   * 
+   * This method works by looking for character patterns that are unlikely to occur outside markdown - but it's still only unlikely
+   *  
+   * @param content
+   * @return
+   */
+  // todo: dialect dependency?
+  public boolean isProbablyMarkdown(String content, boolean mdIfParagrapghs) {
+    if (content == null) {
+      return false;
+    }
+    if (mdIfParagrapghs && content.contains("\n")) {
+      return true;
+    }
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //simple character class split; safe
+    String[] lines = content.split("\\r?\\n");
+    for (String s : lines) {
+      if (s.startsWith("* ") || isHeading(s) || s.startsWith("1. ") || s.startsWith("    ")) {
+        return true;
+      }
+      if (s.contains("```") || s.contains("~~~") || s.contains("[[[")) {
+        return true;
+      }
+      if (hasLink(s)) {
+        return true;
+      }
+      if (hasTextSpecial(s, '*') || hasTextSpecial(s, '_') ) {
+        return true;
+      }
+    }
+      
+    return false;
+  }
+  
+  private boolean isHeading(String s) {
+    if (s.length() > 7 && s.startsWith("###### ") && !Character.isWhitespace(s.charAt(7))) {
+      return true;
+    }
+    if (s.length() > 6 && s.startsWith("##### ") && !Character.isWhitespace(s.charAt(6))) {
+      return true;
+    }
+    if (s.length() > 5 && s.startsWith("#### ") && !Character.isWhitespace(s.charAt(5))) {
+      return true;
+    }
+    if (s.length() > 4 && s.startsWith("### ") && !Character.isWhitespace(s.charAt(4))) {
+      return true;
+    }
+    if (s.length() > 3 && s.startsWith("## ") && !Character.isWhitespace(s.charAt(3))) {
+      return true;
+    }
+    //
+    // not sure about this one. # [string] is something that could easily arise in non-markdown, 
+    // so this appearing isn't enough to call it markdown
+    //
+//    if (s.length() > 2 && s.startsWith("# ") && !Character.isWhitespace(s.charAt(2))) {
+//      return true;
+//    }
+    return false;
+  }
+
+
+  private boolean hasLink(String s) {
+    int left = -1;
+    int mid = -1;
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if (c == '[') {
+        mid = -1;
+        left = i;
+      } else if (left > -1 && i < s.length()-1 && c == ']' && s.charAt(i+1) == '(') {
+        mid = i;
+      } else if (left > -1 && c == ']') {
+        left = -1;
+      } else if (left > -1 && mid > -1 && c == ')') {
+        return true;
+      } else if (mid > -1 && c == '[' || c == ']' || (c == '(' && i > mid+1)) {
+        left = -1;
+        mid = -1;
+      }
+    }
+
+    // Detect autolinks, which should start with a scheme, followed by a colon, followed by some content. Whitespace
+    // is not allowed and for practical purposes, the scheme is considered to consist of lowercase ASCII characters
+    // only.
+    @SuppressWarnings("checkstyle:patternUsage")
+    // Pattern <[a-z]+:\S+> is safe for use
+    Pattern autolinkPattern = Pattern.compile("<[a-z]+:\\S+>");
+    Matcher autolinkMatcher = autolinkPattern.matcher(s);
+    return autolinkMatcher.find();
+  }
+
+
+  private boolean hasTextSpecial(String s, char c) {
+    boolean second = false;
+    for (int i = 0; i < s.length(); i++) {
+      char prev = i == 0 ? ' ' : s.charAt(i-1);
+      char next = i < s.length() - 1 ? s.charAt(i+1) : ' ';
+      if (s.charAt(i) != c) {
+        // nothing
+      } else if (second) {
+        if (Character.isWhitespace(next) && (isPunctation(prev) || Character.isLetterOrDigit(prev))) {
+          return true;
+        }
+        second = false;        
+      } else {
+        if (Character.isWhitespace(prev) && (isPunctation(next) || Character.isLetterOrDigit(next))) {
+          second = true;
+        }            
+      }
+    }
+    return false;
+  }
+
+
+  private boolean isPunctation(char ch) {
+    return Utilities.existsInList(ch, '.', ',', '!', '?');
+  }
+
+
+  /**
+   * This deals with a painful problem created by the intersection of previous publishing processes 
+   * and the way commonmark specifies that < is handled in content. For control reasons, the FHIR specification does 
+   * not allow raw html tags in the markdown 
+   * 
+   * This check finds any raw html tag and prepends \ to it so that it renders as a < (e.g. gets escaped in the output
+   * HTML)
+   * 
+   * This is public to enable testing (not for direct use otherwise)
+   * 
+   * @param source
+   * @return
+   */
+  public static String preProcess(String source) {
+    // Escape all unescaped open and closing tags ('<' or '</', followed by an ASCII letter, followed by ASCII 
+    // letters, digits and/or hyphens).
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //non-overlapping character classes, safe
+    String processed = source.replaceAll("(?<!\\\\)<(\\/)?([A-Za-z][A-Za-z0-9-]*[\\s>])", "\\\\<$1$2");
+
+    // Escape all other HTML tags: HTML comments, processing instructions, declarations and CDATA sections --
+    // everything starting with '<?' or '<!'.
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //non-overlapping alternation, safe
+    String processed2 = processed.replaceAll("<(!|\\?)", "\\\\<$1");
+    processed = processed2;
+
+    return processed;
   }
 
   private String processCommonMark(String source) {
     Set<Extension> extensions = Collections.singleton(TablesExtension.create());
     Parser parser = Parser.builder().extensions(extensions).build();
     Node document = parser.parse(source);
-    HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions).build();
+    HtmlRenderer renderer = HtmlRenderer.builder().escapeHtml(true).extensions(extensions).build();
     String html = renderer.render(document);
     html = html.replace("<table>", "<table class=\"grid\">");
     return html;  
@@ -84,4 +251,52 @@ public class MarkDownProcessor {
     return !description.contains("\n");
   }
   
+  public static String makeStringSafeAsMarkdown(String content) {
+    StringBuilder b = new StringBuilder();
+    for (char c : content.toCharArray()) {
+      if (isEscableMarkdownChar(c)) {
+        b.append('\\');
+      }
+      b.append(c);
+    }
+    return b.toString();
+  }
+  
+  private static boolean isEscableMarkdownChar(char c) {
+    switch (c) {
+    case '*':
+    case '&':
+    case '#':
+    case '[':
+    case '>':
+    case '<':
+    case '`':
+      return true;  
+    default: 
+      return false;
+    }
+  }
+
+  public static String makeMarkdownForString(String content) {
+    StringBuilder b = new StringBuilder();
+    for (int i = 0; i < content.length(); i++) {
+      char c = content.charAt(i);
+      if (c != '\\' || i == content.length() - 1 || !isEscableMarkdownChar(content.charAt(i+1))) {
+        b.append(c);
+      }
+    }
+    return b.toString();
+  }
+
+  public static String markdownToPlainText(String source) {
+    if (source == null) {
+      return "";
+    }
+    Set<Extension> extensions = Collections.singleton(TablesExtension.create());
+    Parser parser = Parser.builder().extensions(extensions).build();
+    Node document = parser.parse(source);
+    TextContentRenderer renderer = TextContentRenderer.builder().stripNewlines(true).extensions(extensions).build();
+    String text = renderer.render(document);
+    return text;  
+  }
 }

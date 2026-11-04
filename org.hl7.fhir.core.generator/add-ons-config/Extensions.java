@@ -1,0 +1,19 @@
+{{startMark}}
+package {{pid}};
+
+import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.model.*;
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
+import java.util.List;
+import java.math.BigDecimal;
+
+{{license}}
+
+
+
+{{generated}}
+public class Extensions {
+  
+{{code}}
+
+}

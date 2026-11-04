@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -96,11 +92,13 @@ public class V3EntityNamePartQualifierR2EnumFactory implements EnumFactory<V3Ent
       return V3EntityNamePartQualifierR2.NB;
     if ("PR".equals(codeString))
       return V3EntityNamePartQualifierR2.PR;
-    throw new IllegalArgumentException("Unknown V3EntityNamePartQualifierR2 code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3EntityNamePartQualifierR2 code '" + codeString + "'");
   }
 
   public String toCode(V3EntityNamePartQualifierR2 code) {
-    if (code == V3EntityNamePartQualifierR2.AD)
+       if (code == V3EntityNamePartQualifierR2.NULL)
+           return null;
+       if (code == V3EntityNamePartQualifierR2.AD)
       return "AD";
     if (code == V3EntityNamePartQualifierR2.SP)
       return "SP";
@@ -155,10 +153,10 @@ public class V3EntityNamePartQualifierR2EnumFactory implements EnumFactory<V3Ent
     if (code == V3EntityNamePartQualifierR2.PR)
       return "PR";
     return "?";
-  }
+   }
 
-    public String toSystem(V3EntityNamePartQualifierR2 code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3EntityNamePartQualifierR2 code) {
+    return code.getSystem();
+  }
 
 }

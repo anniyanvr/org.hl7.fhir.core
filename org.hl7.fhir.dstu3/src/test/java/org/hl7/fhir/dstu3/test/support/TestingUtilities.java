@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,10 +15,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.dstu3.context.IWorkerContext;
-import org.hl7.fhir.utilities.CSFile;
-import org.hl7.fhir.utilities.TextFile;
+import org.hl7.fhir.utilities.FileUtilities;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.CSFile;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
 import org.hl7.fhir.utilities.tests.BaseTestingUtilities;
+import org.hl7.fhir.utilities.xml.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -38,7 +41,7 @@ public class TestingUtilities extends BaseTestingUtilities {
 
 	static public String fixedpath;
 
-  public static String home() {
+  public static String home() throws IOException {
     if (fixedpath != null)
      return fixedpath;
     String s = System.getenv("FHIR_HOME");
@@ -48,7 +51,7 @@ public class TestingUtilities extends BaseTestingUtilities {
 	  if (!Utilities.noString(s))
 		  return s;
     s = "C:\\work\\org.hl7.fhir\\build";
-    if (new File(s).exists())
+    if (ManagedFileAccess.file(s).exists())
       return s;
     throw new Error("FHIR Home directory not configured");
   }
@@ -66,7 +69,7 @@ public class TestingUtilities extends BaseTestingUtilities {
 	    command.add("\"" + diff + "\" \"" + f1 + "\" \"" + f2 + "\"");
 
 	    ProcessBuilder builder = new ProcessBuilder(command);
-	    builder.directory(new CSFile("c:\\temp"));
+	    builder.directory(ManagedFileAccess.csfile(Utilities.path("[tmp]")));
 	    builder.start();
 			
 		}
@@ -138,8 +141,8 @@ public class TestingUtilities extends BaseTestingUtilities {
 	      if (ta == null) 
 	        return "Attributes differ at "+path+": missing attribute "+sn;
 	      if (!normalise(sa.getTextContent()).equals(normalise(ta.getTextContent()))) {
-	        byte[] b1 = unBase64(sa.getTextContent());
-	        byte[] b2 = unBase64(ta.getTextContent());
+	        byte[] b1 = unBase64(sa.getTextContent(), true, false);
+	        byte[] b2 = unBase64(ta.getTextContent(), true, false);
 	        if (!sameBytes(b1, b2))
 	          return "Attributes differ at "+path+": value "+normalise(sa.getTextContent()) +"/"+ normalise(ta.getTextContent());
 	      }
@@ -159,22 +162,18 @@ public class TestingUtilities extends BaseTestingUtilities {
 		return true;
 	}
 
-	private static byte[] unBase64(String text) {
-		return Base64.decodeBase64(text);
-	}
-
 	private static Node skipBlankText(Node node) {
-	  while (node != null && (((node.getNodeType() == Node.TEXT_NODE) && Utilities.isWhitespace(node.getTextContent())) || (node.getNodeType() == Node.COMMENT_NODE))) 
+	  while (node != null && (((node.getNodeType() == Node.TEXT_NODE) && Utilities.isAllWhitespace(node.getTextContent())) || (node.getNodeType() == Node.COMMENT_NODE))) 
 	    node = node.getNextSibling();
 	  return node;
 	}
 
   private static Document loadXml(String fn) throws Exception {
-    return loadXml(new FileInputStream(fn));
+    return loadXml(ManagedFileAccess.inStream(fn));
   }
 
   private static Document loadXml(InputStream fn) throws Exception {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory factory = XMLUtil.newXXEProtectedDocumentBuilderFactory();
       factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
       factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
       factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
@@ -195,7 +194,7 @@ public class TestingUtilities extends BaseTestingUtilities {
 	    command.add("\"" + diff + "\" \"" + f1 + "\" \"" + f2 + "\"");
 
 	    ProcessBuilder builder = new ProcessBuilder(command);
-	    builder.directory(new CSFile("c:\\temp"));
+	    builder.directory(ManagedFileAccess.csfile(Utilities.path("[tmp]")));
 	    builder.start();
 			
 		}
@@ -203,8 +202,8 @@ public class TestingUtilities extends BaseTestingUtilities {
 	}
 
 	private static String compareJson(String f1, String f2) throws JsonSyntaxException, FileNotFoundException, IOException {
-		JsonObject o1 = (JsonObject) new com.google.gson.JsonParser().parse(TextFile.fileToString(f1));
-		JsonObject o2 = (JsonObject) new com.google.gson.JsonParser().parse(TextFile.fileToString(f2));
+		JsonObject o1 = (JsonObject) new com.google.gson.JsonParser().parse(FileUtilities.fileToString(f1));
+		JsonObject o2 = (JsonObject) new com.google.gson.JsonParser().parse(FileUtilities.fileToString(f2));
 		return compareObjects("", o1, o2);
 	}
 
@@ -245,7 +244,7 @@ public class TestingUtilities extends BaseTestingUtilities {
 				String s2 = p2.getAsString();
 				if (!(s1.contains("<div") && s2.contains("<div")))
 					if (!s1.equals(s2))
-						if (!sameBytes(unBase64(s1), unBase64(s2)))
+						if (!sameBytes(unBase64(s1, true, false), unBase64(s2, true, false)))
 							return "string property values differ at "+path+": type "+s1+"/"+s2;
 			} else if (p1.isNumber() && p2.isNumber()) {
 	    if (!p1.getAsString().equals(p2.getAsString()))
@@ -276,5 +275,7 @@ public class TestingUtilities extends BaseTestingUtilities {
 		return null;
 	}
 
-
+  public static boolean runningAsSurefire() {
+    return "true".equals(System.getProperty("runningAsSurefire") != null ? System.getProperty("runningAsSurefire").toLowerCase(Locale.ENGLISH) : "");
+  }
 }

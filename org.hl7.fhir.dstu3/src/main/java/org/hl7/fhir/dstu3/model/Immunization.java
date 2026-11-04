@@ -121,12 +121,12 @@ public class Immunization extends DomainResource {
           return ImmunizationStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown ImmunizationStatus code '"+codeString+"'");
         }
-        public Enumeration<ImmunizationStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ImmunizationStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ImmunizationStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("completed".equals(codeString))
@@ -136,12 +136,14 @@ public class Immunization extends DomainResource {
         throw new FHIRException("Unknown ImmunizationStatus code '"+codeString+"'");
         }
     public String toCode(ImmunizationStatus code) {
-      if (code == ImmunizationStatus.COMPLETED)
+       if (code == ImmunizationStatus.NULL)
+           return null;
+       if (code == ImmunizationStatus.COMPLETED)
         return "completed";
       if (code == ImmunizationStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(ImmunizationStatus code) {
       return code.getSystem();
       }
@@ -901,14 +903,14 @@ public class Immunization extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.date");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.date");
         }
         else if (name.equals("detail")) {
           this.detail = new Reference();
           return this.detail;
         }
         else if (name.equals("reported")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.reported");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.reported");
         }
         else
           return super.addChild(name);
@@ -1505,20 +1507,20 @@ public class Immunization extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("doseSequence")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.doseSequence");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.doseSequence");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.description");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.description");
         }
         else if (name.equals("authority")) {
           this.authority = new Reference();
           return this.authority;
         }
         else if (name.equals("series")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.series");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.series");
         }
         else if (name.equals("seriesDoses")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.seriesDoses");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.seriesDoses");
         }
         else if (name.equals("targetDisease")) {
           return addTargetDisease();
@@ -2918,10 +2920,10 @@ public class Immunization extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.status");
         }
         else if (name.equals("notGiven")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.notGiven");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.notGiven");
         }
         else if (name.equals("vaccineCode")) {
           this.vaccineCode = new CodeableConcept();
@@ -2936,10 +2938,10 @@ public class Immunization extends DomainResource {
           return this.encounter;
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.date");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.date");
         }
         else if (name.equals("primarySource")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.primarySource");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.primarySource");
         }
         else if (name.equals("reportOrigin")) {
           this.reportOrigin = new CodeableConcept();
@@ -2954,10 +2956,10 @@ public class Immunization extends DomainResource {
           return this.manufacturer;
         }
         else if (name.equals("lotNumber")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.lotNumber");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.lotNumber");
         }
         else if (name.equals("expirationDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Immunization.expirationDate");
+          throw new FHIRException("Cannot call addChild on a singleton property Immunization.expirationDate");
         }
         else if (name.equals("site")) {
           this.site = new CodeableConcept();

@@ -158,12 +158,12 @@ public class Provenance extends DomainResource {
           return ProvenanceEntityRole.REMOVAL;
         throw new IllegalArgumentException("Unknown ProvenanceEntityRole code '"+codeString+"'");
         }
-        public Enumeration<ProvenanceEntityRole> fromType(Base code) throws FHIRException {
+        public Enumeration<ProvenanceEntityRole> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ProvenanceEntityRole>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("derivation".equals(codeString))
@@ -179,7 +179,9 @@ public class Provenance extends DomainResource {
         throw new FHIRException("Unknown ProvenanceEntityRole code '"+codeString+"'");
         }
     public String toCode(ProvenanceEntityRole code) {
-      if (code == ProvenanceEntityRole.DERIVATION)
+       if (code == ProvenanceEntityRole.NULL)
+           return null;
+       if (code == ProvenanceEntityRole.DERIVATION)
         return "derivation";
       if (code == ProvenanceEntityRole.REVISION)
         return "revision";
@@ -190,7 +192,7 @@ public class Provenance extends DomainResource {
       if (code == ProvenanceEntityRole.REMOVAL)
         return "removal";
       return "?";
-      }
+   }
     public String toSystem(ProvenanceEntityRole code) {
       return code.getSystem();
       }
@@ -316,8 +318,8 @@ public class Provenance extends DomainResource {
           return (UriType) this.who;
         }
 
-        public boolean hasWhoUriType() { 
-          return this != null && this.who instanceof UriType;
+        public boolean hasWhoUriType() {
+            return this.who instanceof UriType;
         }
 
         /**
@@ -331,8 +333,8 @@ public class Provenance extends DomainResource {
           return (Reference) this.who;
         }
 
-        public boolean hasWhoReference() { 
-          return this != null && this.who instanceof Reference;
+        public boolean hasWhoReference() {
+            return this.who instanceof Reference;
         }
 
         public boolean hasWho() { 
@@ -367,8 +369,8 @@ public class Provenance extends DomainResource {
           return (UriType) this.onBehalfOf;
         }
 
-        public boolean hasOnBehalfOfUriType() { 
-          return this != null && this.onBehalfOf instanceof UriType;
+        public boolean hasOnBehalfOfUriType() {
+            return this.onBehalfOf instanceof UriType;
         }
 
         /**
@@ -382,8 +384,8 @@ public class Provenance extends DomainResource {
           return (Reference) this.onBehalfOf;
         }
 
-        public boolean hasOnBehalfOfReference() { 
-          return this != null && this.onBehalfOf instanceof Reference;
+        public boolean hasOnBehalfOfReference() {
+            return this.onBehalfOf instanceof Reference;
         }
 
         public boolean hasOnBehalfOf() { 
@@ -704,8 +706,8 @@ public class Provenance extends DomainResource {
           return (UriType) this.what;
         }
 
-        public boolean hasWhatUriType() { 
-          return this != null && this.what instanceof UriType;
+        public boolean hasWhatUriType() {
+            return this.what instanceof UriType;
         }
 
         /**
@@ -719,8 +721,8 @@ public class Provenance extends DomainResource {
           return (Reference) this.what;
         }
 
-        public boolean hasWhatReference() { 
-          return this != null && this.what instanceof Reference;
+        public boolean hasWhatReference() {
+            return this.what instanceof Reference;
         }
 
         /**
@@ -734,8 +736,8 @@ public class Provenance extends DomainResource {
           return (Identifier) this.what;
         }
 
-        public boolean hasWhatIdentifier() { 
-          return this != null && this.what instanceof Identifier;
+        public boolean hasWhatIdentifier() {
+            return this.what instanceof Identifier;
         }
 
         public boolean hasWhat() { 
@@ -896,7 +898,7 @@ public class Provenance extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("role")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Provenance.role");
+          throw new FHIRException("Cannot call addChild on a singleton property Provenance.role");
         }
         else if (name.equals("whatUri")) {
           this.what = new UriType();
@@ -1112,16 +1114,6 @@ public class Provenance extends DomainResource {
         addTarget();
       }
       return getTarget().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getTargetTarget() { 
-      if (this.targetTarget == null)
-        this.targetTarget = new ArrayList<Resource>();
-      return this.targetTarget;
     }
 
     /**
@@ -1695,10 +1687,10 @@ public class Provenance extends DomainResource {
           return this.period;
         }
         else if (name.equals("recorded")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Provenance.recorded");
+          throw new FHIRException("Cannot call addChild on a singleton property Provenance.recorded");
         }
         else if (name.equals("policy")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Provenance.policy");
+          throw new FHIRException("Cannot call addChild on a singleton property Provenance.policy");
         }
         else if (name.equals("location")) {
           this.location = new Reference();

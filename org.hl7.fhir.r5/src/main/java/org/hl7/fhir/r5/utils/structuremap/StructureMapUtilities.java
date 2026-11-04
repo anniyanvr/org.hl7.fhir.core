@@ -33,15 +33,26 @@ package org.hl7.fhir.r5.utils.structuremap;
 // remember group resolution
 // trace - account for which wasn't transformed in the source
 
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.exceptions.DefinitionException;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
-import org.hl7.fhir.r5.conformance.ProfileUtilities;
-import org.hl7.fhir.r5.conformance.ProfileUtilities.ProfileKnowledgeProvider;
+import org.hl7.fhir.r5.conformance.profile.ProfileKnowledgeProvider;
+import org.hl7.fhir.r5.conformance.profile.ProfileUtilities;
+import org.hl7.fhir.r5.context.ContextUtilities;
 import org.hl7.fhir.r5.context.IWorkerContext;
-import org.hl7.fhir.r5.context.IWorkerContext.ValidationResult;
 import org.hl7.fhir.r5.elementmodel.Element;
+import org.hl7.fhir.r5.elementmodel.Manager;
 import org.hl7.fhir.r5.elementmodel.Property;
+import org.hl7.fhir.r5.extensions.ExtensionDefinitions;
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
+import org.hl7.fhir.r5.fhirpath.ExpressionNode;
+import org.hl7.fhir.r5.fhirpath.FHIRLexer;
+import org.hl7.fhir.r5.fhirpath.FHIRPathEngine;
+import org.hl7.fhir.r5.fhirpath.TypeDetails;
+import org.hl7.fhir.r5.fhirpath.ExpressionNode.CollectionStatus;
+import org.hl7.fhir.r5.fhirpath.FHIRLexer.FHIRLexerException;
+import org.hl7.fhir.r5.fhirpath.TypeDetails.ProfiledType;
 import org.hl7.fhir.r5.model.*;
 import org.hl7.fhir.r5.model.ConceptMap.ConceptMapGroupComponent;
 import org.hl7.fhir.r5.model.ConceptMap.ConceptMapGroupUnmappedMode;
@@ -53,20 +64,18 @@ import org.hl7.fhir.r5.model.ElementDefinition.TypeRefComponent;
 import org.hl7.fhir.r5.model.Enumerations.ConceptMapRelationship;
 import org.hl7.fhir.r5.model.Enumerations.FHIRVersion;
 import org.hl7.fhir.r5.model.Enumerations.PublicationStatus;
-import org.hl7.fhir.r5.model.ExpressionNode.CollectionStatus;
 import org.hl7.fhir.r5.model.Narrative.NarrativeStatus;
 import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionMappingComponent;
 import org.hl7.fhir.r5.model.StructureDefinition.TypeDerivationRule;
 import org.hl7.fhir.r5.model.StructureMap.*;
-import org.hl7.fhir.r5.model.TypeDetails.ProfiledType;
 import org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionContainsComponent;
-import org.hl7.fhir.r5.renderers.TerminologyRenderer;
-import org.hl7.fhir.r5.terminologies.ValueSetExpander.ValueSetExpansionOutcome;
-import org.hl7.fhir.r5.utils.FHIRLexer;
-import org.hl7.fhir.r5.utils.FHIRLexer.FHIRLexerException;
-import org.hl7.fhir.r5.utils.FHIRPathEngine;
-import org.hl7.fhir.r5.utils.ToolingExtensions;
+import org.hl7.fhir.r5.terminologies.expansion.ValueSetExpansionOutcome;
+import org.hl7.fhir.r5.terminologies.utilities.ValidationResult;
+
+import org.hl7.fhir.utilities.UserDataNames;
 import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
+import org.hl7.fhir.utilities.FhirPublication;
+
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.validation.ValidationOptions;
 import org.hl7.fhir.utilities.xhtml.NodeType;
@@ -83,73 +92,268 @@ import java.util.*;
  * getTargetType(map) - return the definition for the type to create to hand in
  * transform(appInfo, source, map, target) - transform from source to target following the map
  * analyse(appInfo, map) - generate profiles and other analysis artifacts for the targets of the transform
- * map generateMapFromMappings(StructureDefinition) - build a mapping from a structure definition with loigcal mappings
+ * map generateMapFromMappings(StructureDefinition) - build a mapping from a structure definition with logical mappings
+ *
+ * See also: documentation/structuremap-and-fhirpath-constants.md
  *
  * @author Grahame Grieve
  */
+
+@Slf4j
 public class StructureMapUtilities {
 
   public static final String MAP_WHERE_CHECK = "map.where.check";
   public static final String MAP_WHERE_LOG = "map.where.log";
   public static final String MAP_WHERE_EXPRESSION = "map.where.expression";
   public static final String MAP_SEARCH_EXPRESSION = "map.search.expression";
+  public static final String MAP_DEFAULT_EXPRESSION = "map.default.expression";
   public static final String MAP_EXPRESSION = "map.transform.expression";
-  private static final boolean RENDER_MULTIPLE_TARGETS_ONELINE = true;
-  private static final String AUTO_VAR_NAME = "vvv";
-
+  private static final boolean MULTIPLE_TARGETS_ONELINE = true;
+  public static final String AUTO_VAR_NAME = "vvv";
+  public static final String DEF_GROUP_NAME = "DefaultMappingGroupAnonymousAlias";
+  public static final String SOURCE_ELEMENT_EXTENSION = "http://hl7.org/fhir/6.0/StructureDefinition/extension-StructureMap.group.rule.source.element";
+  public static final String TARGET_ELEMENT_EXTENSION = "http://hl7.org/fhir/6.0/StructureDefinition/extension-StructureMap.group.rule.target.element";
+  // Sentinel prefix used by the "Simple Form: Identity Transform" batch parser
+  // when the source FML did not supply an explicit ruleName. Stored as the
+  // rule-name prefix (e.g. element `a` becomes `unnameda`) so that the renderer
+  // can distinguish batch-form rules from singly-written `src.x -> tgt.x;`
+  // rules — without the sentinel both shapes are indistinguishable in memory
+  // and the renderer cannot tell whether to re-collapse into batch form.
+  public static final String BATCH_IDENTITY_UNNAMED_NAME = "unnamed";
+  
   private final IWorkerContext worker;
   private final FHIRPathEngine fpe;
   private ITransformerServices services;
   private ProfileKnowledgeProvider pkp;
   private final Map<String, Integer> ids = new HashMap<String, Integer>();
-  private ValidationOptions terminologyServiceOptions = new ValidationOptions();
+  private ValidationOptions terminologyServiceOptions = new ValidationOptions(FhirPublication.R5);
   private final ProfileUtilities profileUtilities;
+  private boolean exceptionsForChecks = true;
+  private boolean debug;
 
   public StructureMapUtilities(IWorkerContext worker, ITransformerServices services, ProfileKnowledgeProvider pkp) {
     super();
     this.worker = worker;
     this.services = services;
     this.pkp = pkp;
-    fpe = new FHIRPathEngine(worker);
-    fpe.setHostServices(new FFHIRPathHostServices(this));
-    profileUtilities = new ProfileUtilities(worker, null, null);
+    if (worker != null) {
+      fpe = new FHIRPathEngine(worker);
+      fpe.setHostServices(new FHIRPathHostServices(this));
+      profileUtilities = new ProfileUtilities(worker, null, null);
+    } else {
+      fpe = null;
+      profileUtilities = null;
+    }
   }
 
   public StructureMapUtilities(IWorkerContext worker, ITransformerServices services) {
     super();
     this.worker = worker;
     this.services = services;
-    fpe = new FHIRPathEngine(worker);
-    fpe.setHostServices(new FFHIRPathHostServices(this));
-    profileUtilities = new ProfileUtilities(worker, null, null);
+    if (worker != null) {
+      fpe = new FHIRPathEngine(worker);
+      fpe.setHostServices(new FHIRPathHostServices(this));
+      profileUtilities = new ProfileUtilities(worker, null, null);
+    } else {
+      fpe = null;
+      profileUtilities = null;
+    }
   }
 
   public StructureMapUtilities(IWorkerContext worker) {
     super();
     this.worker = worker;
-    fpe = new FHIRPathEngine(worker);
-    fpe.setHostServices(new FFHIRPathHostServices(this));
-    profileUtilities = new ProfileUtilities(worker, null, null);
-
+    if (worker != null) {
+      fpe = new FHIRPathEngine(worker);
+      fpe.setHostServices(new FHIRPathHostServices(this));
+      profileUtilities = new ProfileUtilities(worker, null, null);
+    } else {
+      fpe = null;
+      profileUtilities = null;
+    }
   }
 
   public static String render(StructureMap map) {
     StringBuilder b = new StringBuilder();
-    b.append("map \"");
-    b.append(map.getUrl());
-    b.append("\" = \"");
-    b.append(Utilities.escapeJson(map.getName()));
-    b.append("\"\r\n\r\n");
-    if (map.getDescription() != null) {
-      renderMultilineDoco(b, map.getDescription(), 0);
-      b.append("\r\n");
+    b.append("/// url = '"+Utilities.escapeFhirPathString(map.getUrl())+"'\r\n");
+    if (map.hasVersion()) {
+      b.append("/// version = '"+Utilities.escapeFhirPathString(map.getVersion())+"'\r\n");
     }
+    b.append("/// name = '"+Utilities.escapeFhirPathString(map.getName())+"'\r\n");
+    if (map.hasTitle()) {
+      b.append("/// title = '"+Utilities.escapeFhirPathString(map.getTitle())+"'\r\n");
+    }
+    b.append("/// status = '"+Utilities.escapeFhirPathString(map.getStatus().toCode())+"'\r\n");
+    if (map.hasDescription() && !map.getDescription().equals(map.getTitle())) {
+      String desc = map.getDescription();
+      // Use triple-quoted markdown form when the description spans multiple lines so
+      // the source remains human-readable. Falls back to the single-line escaped
+      // form when: the description has no line breaks; it contains """ (which cannot
+      // be represented inside a verbatim triple-quoted block); or it ends with a "
+      // (which would be greedily merged into the closing """ by the parser).
+      if ((desc.indexOf('\n') >= 0 || desc.indexOf('\r') >= 0) && !desc.contains("\"\"\"") && !desc.endsWith("\"")) {
+        b.append("/// description = \"\"\"");
+        b.append(desc);
+        b.append("\"\"\"\r\n");
+      } else {
+        b.append("/// description = '"+Utilities.escapeFhirPathString(desc)+"'\r\n");
+      }
+    }
+    if (map.hasExperimental()) {
+      b.append("/// experimental = "+map.getExperimental()+"\r\n");
+    }
+    b.append("\r\n");
     renderConceptMaps(b, map);
     renderUses(b, map);
     renderImports(b, map);
+    renderConsts(b, map);
     for (StructureMapGroupComponent g : map.getGroup())
       renderGroup(b, g);
     return b.toString();
+  }
+
+  // === Simple Form: Identity Transform batch detection =================================
+  // The "Simple Form: Identity Transform" syntax `src -> tgt: e1, e2, e3 [ruleName];`
+  // (https://hl7.org/fhir/R5/mapping-language.html#simple) is parsed into N sibling
+  // rules. To round-trip back to the compact form on render without relying on out-of-
+  // band user data, the parser names each generated rule `makeId(ruleName + element)`
+  // (with ruleName defaulting to ""). On render, runs of consecutive sibling rules that
+  // (a) look structurally like a simple identity rule (context+element on source AND
+  // target with everything matching, no transform/variable/condition/etc), (b) share
+  // the same source/target context, and (c) have names of the form `<prefix>` +
+  // `makeId(element)` for one common `prefix`, are emitted as a single batch line.
+  // A run of length 1 falls back to the normal renderRule path.
+
+  private static boolean isSimpleIdentityRule(StructureMapGroupRuleComponent r) {
+    if (r.getSource().size() != 1 || r.getTarget().size() != 1)
+      return false;
+    if (r.hasRule() || r.hasDependent())
+      return false;
+    StructureMapGroupRuleSourceComponent s = r.getSourceFirstRep();
+    StructureMapGroupRuleTargetComponent t = r.getTargetFirstRep();
+    if (!s.hasContext() || !s.hasElement())
+      return false;
+    if (!t.hasContext() || !t.hasElement())
+      return false;
+    if (s.hasType() || s.hasMin() || s.hasListMode() || s.hasDefaultValue()
+        || s.hasCondition() || s.hasCheck() || s.hasLogMessage())
+      return false;
+    if (!t.getParameter().isEmpty() || !t.getListMode().isEmpty())
+      return false;
+    // Accept the executable simple-form shape: vvv variable on both sides plus a
+    // CREATE transform on target with no params (matches both the non-batch
+    // isSimpleSyntax branch and the batch-form rules produced just above). A
+    // bare shape (no variable, no transform) is also accepted to stay tolerant
+    // of programmatically-built rules.
+    if (s.hasVariable() && !AUTO_VAR_NAME.equals(s.getVariable()))
+      return false;
+    if (t.hasVariable() && !AUTO_VAR_NAME.equals(t.getVariable()))
+      return false;
+    if (t.hasTransform() && t.getTransform() != StructureMapTransform.CREATE)
+      return false;
+    List<String> sourcePath = elementPath(s);
+    List<String> targetPath = elementPath(t);
+    return sourcePath.size() == 1 && targetPath.size() == 1 && sourcePath.equals(targetPath);
+  }
+
+  /**
+   * If {@code r} is a simple identity rule whose name matches the
+   * {@code <prefix> + makeId(element)} pattern (with a non-empty prefix),
+   * returns the prefix part. A bare name with no prefix is not a batch (those
+   * come from singly-written {@code src.x -> tgt.x;} rules that share the
+   * shape but were never grouped) so {@code null} is returned in that case.
+   * Returns {@code null} when {@code r} is not a simple identity rule.
+   */
+  private static String identityBatchPrefix(StructureMapGroupRuleComponent r) {
+    if (!isSimpleIdentityRule(r) || !r.hasName())
+      return null;
+    String suffix = Utilities.makeId(r.getSourceFirstRep().getElement());
+    String name = r.getName();
+    if (suffix.isEmpty() || !name.endsWith(suffix))
+      return null;
+    String prefix = name.substring(0, name.length() - suffix.length());
+    if (prefix.isEmpty())
+      return null;
+    return prefix;
+  }
+
+  /**
+   * Returns the inclusive end index of an identity-transform batch starting at
+   * {@code start}, or {@code start} itself if there's no batch (no batch is
+   * emitted unless at least 2 consecutive rules match).
+   */
+  private static int detectIdentityBatchEnd(List<StructureMapGroupRuleComponent> rules, int start) {
+    // Trailing `// comment` on the batch terminator is preserved on the first
+    // rule by the parser, so a trailing comment on rules[start] doesn't prevent
+    // batching. Trailing comments on subsequent rules WOULD be lost, so the loop
+    // below stops if it sees one.
+    StructureMapGroupRuleComponent first = rules.get(start);
+    String prefix = identityBatchPrefix(first);
+    if (prefix == null)
+      return start;
+    String srcCtx = first.getSourceFirstRep().getContext();
+    String tgtCtx = first.getTargetFirstRep().getContext();
+    int end = start;
+    for (int j = start + 1; j < rules.size(); j++) {
+      StructureMapGroupRuleComponent r = rules.get(j);
+      // Don't swallow subsequent rules that have their own documentation or
+      // trailing format comments — those would be silently lost in a batch.
+      if (r.hasDocumentation() || r.hasFormatCommentPost())
+        break;
+      String p = identityBatchPrefix(r);
+      if (p == null || !prefix.equals(p))
+        break;
+      if (!srcCtx.equals(r.getSourceFirstRep().getContext())
+          || !tgtCtx.equals(r.getTargetFirstRep().getContext()))
+        break;
+      end = j;
+    }
+    return end;
+  }
+
+  private static void renderIdentityBatch(StringBuilder b, List<StructureMapGroupRuleComponent> rules,
+      int start, int end, int indent) {
+    StructureMapGroupRuleComponent first = rules.get(start);
+    if (first.hasDocumentation()) {
+      renderMultilineDoco(b, first.getDocumentation(), indent);
+    }
+    for (int i = 0; i < indent; i++)
+      b.append(' ');
+    b.append(first.getSourceFirstRep().getContext());
+    b.append(" -> ");
+    b.append(first.getTargetFirstRep().getContext());
+    b.append(": ");
+    for (int j = start; j <= end; j++) {
+      if (j > start)
+        b.append(", ");
+      b.append(rules.get(j).getSourceFirstRep().getElement());
+    }
+    String prefix = identityBatchPrefix(first);
+    if (prefix != null && !BATCH_IDENTITY_UNNAMED_NAME.equals(prefix)) {
+      b.append(" \"");
+      b.append(prefix);
+      b.append("\"");
+    }
+    b.append(";");
+    if (first.hasFormatCommentPost()) {
+      b.append(" // ");
+      b.append(first.getFormatCommentsPost().get(0));
+    }
+    b.append("\r\n");
+  }
+
+  private static void renderRules(StringBuilder b, List<StructureMapGroupRuleComponent> rules, int indent) {
+    int i = 0;
+    while (i < rules.size()) {
+      int end = detectIdentityBatchEnd(rules, i);
+      if (end > i) {
+        renderIdentityBatch(b, rules, i, end, indent);
+        i = end + 1;
+      } else {
+        renderRule(b, rules.get(i), indent);
+        i++;
+      }
+    }
   }
 
   private static void renderConceptMaps(StringBuilder b, StructureMap map) {
@@ -247,6 +451,9 @@ public class StructureMapUtilities {
 
   private static void renderUses(StringBuilder b, StructureMap map) {
     for (StructureMapStructureComponent s : map.getStructure()) {
+      if (s.hasDocumentation()) {
+        renderMultilineDoco(b, s.getDocumentation(), 0);
+      }
       b.append("uses \"");
       b.append(s.getUrl());
       b.append("\" ");
@@ -257,7 +464,13 @@ public class StructureMapUtilities {
       }
       b.append("as ");
       b.append(s.getMode().toCode());
-      renderDoco(b, s.getDocumentation());
+      // Same-line trailing `//` comment captured in formatCommentsPost is
+      // emitted after the mode keyword, mirroring how renderRule handles
+      // trailing-on-`;` comments.
+      if (s.hasFormatCommentPost()) {
+        b.append(" // ");
+        b.append(s.getFormatCommentsPost().get(0));
+      }
       b.append("\r\n");
     }
     if (map.hasStructure())
@@ -271,6 +484,18 @@ public class StructureMapUtilities {
       b.append("\"\r\n");
     }
     if (map.hasImport())
+      b.append("\r\n");
+  }
+
+  private static void renderConsts(StringBuilder b, StructureMap map) {
+    for (StructureMapConstComponent c : map.getConst()) {
+      b.append("let ");
+      b.append(c.getName());
+      b.append(" = ");
+      b.append(c.getValue());
+      b.append(";\r\n");
+    }
+    if (map.hasConst())
       b.append("\r\n");
   }
 
@@ -319,9 +544,8 @@ public class StructureMapUtilities {
       }
     }
     b.append(" {\r\n");
-    for (StructureMapGroupRuleComponent r : g.getRule()) {
-      renderRule(b, r, 2);
-    }
+    renderRules(b, g.getRule(), 2);
+    renderMultilineDoco(b, g.getFormatCommentsPost(), 2);
     b.append("}\r\n\r\n");
   }
 
@@ -332,30 +556,31 @@ public class StructureMapUtilities {
   }
 
   private static void renderRule(StringBuilder b, StructureMapGroupRuleComponent r, int indent) {
-    if (r.getDocumentation() != null) {
+    if (r.hasDocumentation()) {
       renderMultilineDoco(b, r.getDocumentation(), indent);
     }
     for (int i = 0; i < indent; i++)
       b.append(' ');
     boolean canBeAbbreviated = checkisSimple(r);
-
-    boolean first = true;
-    for (StructureMapGroupRuleSourceComponent rs : r.getSource()) {
-      if (first)
-        first = false;
-      else
-        b.append(", ");
-      renderSource(b, rs, canBeAbbreviated);
-    }
-    if (r.getTarget().size() > 1) {
-      b.append(" -> ");
-      first = true;
-      for (StructureMapGroupRuleTargetComponent rt : r.getTarget()) {
+    {
+      boolean first = true;
+      for (StructureMapGroupRuleSourceComponent rs : r.getSource()) {
         if (first)
           first = false;
         else
           b.append(", ");
-        if (RENDER_MULTIPLE_TARGETS_ONELINE)
+        renderSource(b, rs, canBeAbbreviated);
+      }
+    }
+    if (r.getTarget().size() > 1) {
+      b.append(" ->");
+      boolean first = true;
+      for (StructureMapGroupRuleTargetComponent rt : r.getTarget()) {
+        if (first)
+          first = false;
+        else
+          b.append(",");
+        if (MULTIPLE_TARGETS_ONELINE)
           b.append(' ');
         else {
           b.append("\r\n");
@@ -370,16 +595,14 @@ public class StructureMapUtilities {
     }
     if (r.hasRule()) {
       b.append(" then {\r\n");
-      for (StructureMapGroupRuleComponent ir : r.getRule()) {
-        renderRule(b, ir, indent + 2);
-      }
+      renderRules(b, r.getRule(), indent + 2);
       for (int i = 0; i < indent; i++)
         b.append(' ');
       b.append("}");
-    } else {
+    } else if (!canBeAbbreviated) {
       if (r.hasDependent()) {
         b.append(" then ");
-        first = true;
+        boolean first = true;
         for (StructureMapGroupRuleDependentComponent rd : r.getDependent()) {
           if (first)
             first = false;
@@ -388,27 +611,36 @@ public class StructureMapUtilities {
           b.append(rd.getName());
           b.append("(");
           boolean ifirst = true;
-          for (StringType rdp : rd.getVariable()) {
+          for (StructureMapGroupRuleTargetParameterComponent rdp : rd.getParameter()) {
             if (ifirst)
               ifirst = false;
             else
               b.append(", ");
-            b.append(rdp.asStringValue());
+            renderTransformParam(b, rdp);
           }
           b.append(")");
         }
       }
     }
     if (r.hasName()) {
-      String n = ntail(r.getName());
-      if (!n.startsWith("\""))
-        n = "\"" + n + "\"";
-      if (!matchesName(n, r.getSource())) {
-        b.append(" ");
-        b.append(n);
+      // only put the name in if it wasn't auto-generated
+      String autoGeneratedName = elementPathString(r.getSourceFirstRep());
+      if (r.getSourceFirstRep().hasType())
+        autoGeneratedName += Utilities.capitalize(r.getSourceFirstRep().getType());
+      
+      String ruleName = r.getName();
+      if (!ruleName.equals(autoGeneratedName))
+      {
+        b.append(" \"");
+        b.append(ruleName);
+        b.append("\"");
       }
     }
     b.append(";");
+    if (r.hasFormatCommentPost()) {
+      b.append(" // ");
+      b.append(r.getFormatCommentsPost().get(0));
+    }
     b.append("\r\n");
   }
 
@@ -417,11 +649,11 @@ public class StructureMapUtilities {
       return false;
     if (!source.get(0).hasElement())
       return false;
-    String s = source.get(0).getElement();
+    String s = elementPathString(source.get(0));
     if (n.equals(s) || n.equals("\"" + s + "\""))
       return true;
     if (source.get(0).hasType()) {
-      s = source.get(0).getElement() + "-" + source.get(0).getType();
+      s = elementPathString(source.get(0)) + "-" + source.get(0).getType();
       return n.equals(s) || n.equals("\"" + s + "\"");
     }
     return false;
@@ -441,13 +673,50 @@ public class StructureMapUtilities {
     return
       (r.getSource().size() == 1 && r.getSourceFirstRep().hasElement() && r.getSourceFirstRep().hasVariable()) &&
         (r.getTarget().size() == 1 && r.getTargetFirstRep().hasVariable() && (r.getTargetFirstRep().getTransform() == null || r.getTargetFirstRep().getTransform() == StructureMapTransform.CREATE) && r.getTargetFirstRep().getParameter().size() == 0) &&
-        (r.getDependent().size() == 0) && (r.getRule().size() == 0);
+        (r.getDependent().size() == 0 || (r.getDependent().size() == 1 && StructureMapUtilities.DEF_GROUP_NAME.equals(r.getDependentFirstRep().getName()))) && (r.getRule().size() == 0);
   }
 
   public static String sourceToString(StructureMapGroupRuleSourceComponent r) {
     StringBuilder b = new StringBuilder();
     renderSource(b, r, false);
     return b.toString();
+  }
+
+  public static List<String> elementPath(StructureMapGroupRuleSourceComponent source) {
+    return elementPath(source.getElement(), source, SOURCE_ELEMENT_EXTENSION);
+  }
+
+  public static List<String> elementPath(StructureMapGroupRuleTargetComponent target) {
+    return elementPath(target.getElement(), target, TARGET_ELEMENT_EXTENSION);
+  }
+
+  private static List<String> elementPath(String element, BackboneElement component, String extensionUrl) {
+    List<String> result = new ArrayList<>();
+    if (element != null) {
+      result.add(element);
+    }
+    for (Extension extension : component.getExtensionsByUrl(extensionUrl)) {
+      if (extension.hasValue() && extension.getValue().primitiveValue() != null) {
+        result.add(extension.getValue().primitiveValue());
+      }
+    }
+    return result;
+  }
+
+  public static String elementPathString(StructureMapGroupRuleSourceComponent source) {
+    return String.join(".", elementPath(source));
+  }
+
+  public static String elementPathString(StructureMapGroupRuleTargetComponent target) {
+    return String.join(".", elementPath(target));
+  }
+
+  public static String renderElementPath(List<String> elements) {
+    List<String> result = new ArrayList<>();
+    for (String element : elements) {
+      result.add(renderElementName(element));
+    }
+    return String.join(".", result);
   }
 
   private static void renderSource(StringBuilder b, StructureMapGroupRuleSourceComponent rs, boolean abbreviate) {
@@ -458,17 +727,17 @@ public class StructureMapUtilities {
       b.append(')');
     } else if (rs.hasElement()) {
       b.append('.');
-      b.append(rs.getElement());
+      b.append(renderElementPath(elementPath(rs)));
     }
     if (rs.hasType()) {
       b.append(" : ");
       b.append(rs.getType());
-      if (rs.hasMin()) {
-        b.append(" ");
-        b.append(rs.getMin());
-        b.append("..");
-        b.append(rs.getMax());
-      }
+    }
+    if (rs.hasMin()) {
+      b.append(" ");
+      b.append(rs.getMin());
+      b.append("..");
+      b.append(rs.getMax());
     }
 
     if (rs.hasListMode()) {
@@ -476,25 +745,28 @@ public class StructureMapUtilities {
       b.append(rs.getListMode().toCode());
     }
     if (rs.hasDefaultValue()) {
-      b.append(" default ");
-      assert rs.getDefaultValue() instanceof StringType;
-      b.append("\"" + Utilities.escapeJson(((StringType) rs.getDefaultValue()).asStringValue()) + "\"");
+      b.append(" default (");
+      b.append(rs.getDefaultValue());
+      b.append(")");
     }
     if (!abbreviate && rs.hasVariable()) {
       b.append(" as ");
       b.append(rs.getVariable());
     }
     if (rs.hasCondition()) {
-      b.append(" where ");
+      b.append(" where (");
       b.append(rs.getCondition());
+      b.append(")");
     }
     if (rs.hasCheck()) {
-      b.append(" check ");
+      b.append(" check (");
       b.append(rs.getCheck());
+      b.append(")");
     }
     if (rs.hasLogMessage()) {
-      b.append(" log ");
+      b.append(" log (");
       b.append(rs.getLogMessage());
+      b.append(")");
     }
   }
 
@@ -504,12 +776,25 @@ public class StructureMapUtilities {
     return b.toString();
   }
 
+  /** if the element name is NOT a valid token then it needs backticks */
+  public static String renderElementName(String name) {
+    // if the name isn't a simple identifier, then escaping is required (\w is `A-Za-z0-9_`)
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    // one anchored character class [A-Za-z_] followed by \w*, anchored at both ends with ^ and $
+    boolean matches = name.matches("^[A-Za-z_]\\w*$");
+    if (matches)
+      return name;
+    // Inside backticks the lexer treats \ as an escape and ` as the terminator,
+    // so both must be escaped to round-trip through FHIRLexer.processConstant.
+    return "`" + name.replace("\\", "\\\\").replace("`", "\\`") + "`";
+  }
+
   private static void renderTarget(StringBuilder b, StructureMapGroupRuleTargetComponent rt, boolean abbreviate) {
     if (rt.hasContext()) {
       b.append(rt.getContext());
       if (rt.hasElement()) {
         b.append('.');
-        b.append(rt.getElement());
+        b.append(renderElementPath(elementPath(rt)));
       }
     }
     if (!abbreviate && rt.hasTransform()) {
@@ -525,6 +810,7 @@ public class StructureMapUtilities {
         b.append(rt.getTransform().toCode());
         b.append("(");
         b.append(((IdType) rt.getParameter().get(0).getValue()).asStringValue());
+        b.append(", ");
         b.append(((StringType) rt.getParameter().get(1).getValue()).asStringValue());
         b.append(")");
       } else {
@@ -545,7 +831,7 @@ public class StructureMapUtilities {
       b.append(" as ");
       b.append(rt.getVariable());
     }
-    for (Enumeration<StructureMapTargetListMode> lm : rt.getListMode()) {
+    for (org.hl7.fhir.r5.model.Enumeration<StructureMapTargetListMode> lm : rt.getListMode()) {
       b.append(" ");
       b.append(lm.getValue().toCode());
       if (lm.getValue() == StructureMapTargetListMode.SHARE) {
@@ -569,12 +855,10 @@ public class StructureMapUtilities {
         b.append(rtp.getValueDecimalType().asStringValue());
       else if (rtp.hasValueIdType())
         b.append(rtp.getValueIdType().asStringValue());
-      else if (rtp.hasValueDecimalType())
-        b.append(rtp.getValueDecimalType().asStringValue());
       else if (rtp.hasValueIntegerType())
         b.append(rtp.getValueIntegerType().asStringValue());
       else
-        b.append("'" + Utilities.escapeJava(rtp.getValueStringType().asStringValue()) + "'");
+        b.append("'" + Utilities.escapeFhirPathString(rtp.getValueStringType().asStringValue()) + "'");
     } catch (FHIRException e) {
       e.printStackTrace();
       b.append("error!");
@@ -594,8 +878,20 @@ public class StructureMapUtilities {
   private static void renderMultilineDoco(StringBuilder b, String doco, int indent) {
     if (Utilities.noString(doco))
       return;
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //simple character class split; safe
     String[] lines = doco.split("\\r?\\n");
     for (String line : lines) {
+      for (int i = 0; i < indent; i++)
+        b.append(' ');
+      renderDoco(b, line);
+      b.append("\r\n");
+    }
+  }
+  private static void renderMultilineDoco(StringBuilder b, List<String> doco, int indent) {
+    if (doco == null || doco.isEmpty())
+      return;
+    for (String line : doco) {
       for (int i = 0; i < indent; i++)
         b.append(' ');
       renderDoco(b, line);
@@ -611,16 +907,149 @@ public class StructureMapUtilities {
     return worker;
   }
 
+  // === FML FHIRPath canonicalisation ===================================================
+  // Several FML clauses (`where`, `check`, `log`) wrap their expressions in `( ... )`
+  // per the grammar, but the wrapping parens belong to the clause syntax, NOT to the
+  // FHIRPath expression itself. Other clauses (`default`, `@search`, EVALUATE) consume
+  // the outer parens explicitly before invoking `fpe.parse(lexer)`. The hand-rolled
+  // parser is permissive about missing parens on `where`/`check`/`log`, which means
+  // the FHIRPath sub-parser can swallow a leading `(` and produce an AST whose root
+  // is a redundant Group node. Storing that string verbatim and re-wrapping with `(`
+  // on render would cause parens to grow on each round-trip.
+  //
+  // To avoid this we strip any redundant outer Group from the parsed AST before
+  // stringifying. The render side can then unconditionally wrap with `( ... )` to
+  // produce grammar-conformant output for the wrap-on-render clauses, and the stored
+  // strings stay canonical (useful for equality, diff, and dedupe).
+
+  /**
+   * Strip redundant outer Group nodes from a freshly parsed FHIRPath expression.
+   * A Group is "redundant" only when it forms the entire root expression — i.e.
+   * it has no inner invocation chain (`(foo).bar` keeps its parens, because the
+   * Group has an inner `.bar`) and is not the left operand of a binary operation
+   * (`(a or b) and c` keeps its parens, because the Group has an operation).
+   */
+  private static ExpressionNode stripOuterGroup(ExpressionNode n) {
+    while (n != null
+        && n.getKind() == ExpressionNode.Kind.Group
+        && n.getInner() == null
+        && n.getOperation() == null) {
+      n = n.getGroup();
+    }
+    return n;
+  }
+
+  /**
+   * Parse an FML-embedded FHIRPath expression, canonicalise the AST by stripping
+   * any redundant outer Group, and return the stringified form.
+   *
+   * @param lexer         current lexer positioned at the start of the expression
+   * @param clause        the FML clause keyword (e.g. "where", "default") — used
+   *                      only for the validation warning
+   * @param requireParens when true, emit a soft warning if the original input did
+   *                      not enclose the expression in parentheses (i.e. the AST
+   *                      root is not a Group). Use true only for clauses where
+   *                      the FML grammar requires `<clause> ( fpExpression )`.
+   */
+  private String parseFhirPathToCanonical(FHIRLexer lexer, String clause, boolean requireParens) throws FHIRLexerException {
+    return parseFhirPathToCanonicalNode(lexer, clause, requireParens).toString();
+  }
+
+  /**
+   * As {@link #parseFhirPathToCanonical} but also returns the canonicalised AST
+   * so callers can stash it in userdata for later evaluation. Storing the
+   * stripped node is safe because Group is a pure passthrough wrapper in
+   * FHIRPath evaluation.
+   */
+  private ExpressionNode parseFhirPathToCanonicalNode(FHIRLexer lexer, String clause, boolean requireParens) throws FHIRLexerException {
+    ExpressionNode raw = fpe.parse(lexer);
+    if (requireParens) {
+      warnIfNonCanonicalFmlExpression(lexer, clause, raw);
+    }
+    return stripOuterGroup(raw);
+  }
+
+  private void warnIfNonCanonicalFmlExpression(FHIRLexer lexer, String clause, ExpressionNode raw) {
+    if (raw == null) {
+      return;
+    }
+    if (raw.getKind() != ExpressionNode.Kind.Group
+        || raw.getInner() != null
+        || raw.getOperation() != null) {
+      // The FML grammar requires `<clause> ( fpExpression )`. The engine accepts
+      // unparenthesised forms for backwards compatibility, but downstream strict
+      // parsers (e.g. ANTLR-generated tooling) will reject them. Warn so authors
+      // can update their source; output will be canonicalised regardless.
+      log.warn("FML: '{}' clause at {} is not enclosed in parentheses; the FML grammar requires `{} ( ... )`. Output will be canonicalised.",
+          clause, lexer.getCurrentLocation(), clause);
+    }
+  }
+
   public StructureMap parse(String text, String srcName) throws FHIRException {
-    FHIRLexer lexer = new FHIRLexer(text, srcName);
+    FHIRLexer lexer = new FHIRLexer(Utilities.stripBOM(text), srcName, true, true);
     if (lexer.done())
       throw lexer.error("Map Input cannot be empty");
-    lexer.token("map");
     StructureMap result = new StructureMap();
-    result.setUrl(lexer.readConstant("url"));
-    lexer.token("=");
-    result.setName(lexer.readConstant("name"));
-    result.setDescription(lexer.getAllComments());
+    if (lexer.hasToken("map")) { 
+      lexer.token("map");
+      result.setUrl(lexer.readConstant("url"));
+      lexer.token("=");
+      result.setName(lexer.readConstant("name"));
+      result.setDescription(lexer.getAllComments());
+      result.setStatus(PublicationStatus.DRAFT);
+    } 
+    while (lexer.hasToken("///")) {
+      lexer.next();
+      String fid = lexer.takeDottedToken();
+      lexer.token("=");
+      switch (fid) {
+      case "url" :
+        result.setUrl(lexer.readConstant("url"));
+        break;
+      case "name" :
+        result.setName(lexer.readConstant("name"));
+        break;
+      case "title" : 
+        result.setTitle(lexer.readConstant("title"));
+        break;
+      case "version" :
+        result.setVersion(lexer.readConstant("version"));
+        break;
+      case "description" : 
+        result.setDescription(lexer.readMarkdown("description"));
+        break;
+      case "status" : 
+        result.setStatus(PublicationStatus.fromCode(lexer.readConstant("status")));
+        break;
+      case "experimental" : 
+        if (lexer.isStringConstant()) {
+          result.setExperimental(lexer.readConstant("experimental").equals("true"));
+        } else if (lexer.hasToken("true")) {
+          lexer.token("true");
+          result.setExperimental(true);
+        } else {
+          lexer.token("false");
+          result.setExperimental(false);
+        }
+        break;
+      default:
+        lexer.readConstant("nothing");
+        // nothing
+      }
+    }
+    if (!result.hasId() && result.hasName()) {
+      String id = Utilities.makeId(result.getName());
+      if (!Utilities.noString(id)) {
+        result.setId(id);
+      }
+    }
+    if (!result.hasStatus()) {
+      result.setStatus(PublicationStatus.DRAFT);
+    }
+    if (!result.hasDescription() && result.hasTitle()) {
+      result.setDescription(result.getTitle());
+    }
+
     while (lexer.hasToken("conceptmap"))
       parseConceptMap(result, lexer);
 
@@ -629,6 +1058,12 @@ public class StructureMapUtilities {
     while (lexer.hasToken("imports"))
       parseImports(result, lexer);
 
+    while (lexer.hasToken("conceptmap"))
+      parseConceptMap(result, lexer);
+    
+    while (lexer.hasToken("let"))
+      parseConst(result, lexer);
+
     while (!lexer.done()) {
       parseGroup(result, lexer);
     }
@@ -636,14 +1071,16 @@ public class StructureMapUtilities {
     return result;
   }
 
+  
   private void parseConceptMap(StructureMap result, FHIRLexer lexer) throws FHIRLexerException {
-    lexer.token("conceptmap");
     ConceptMap map = new ConceptMap();
+    map.addFormatCommentsPre(lexer.getComments());
+    lexer.token("conceptmap");
     String id = lexer.readConstant("map id");
     if (id.startsWith("#"))
       throw lexer.error("Concept Map identifier must start with #");
     map.setId(id);
-    map.setStatus(PublicationStatus.DRAFT); // todo: how to add this to the text format
+    map.setStatus(result.getStatus()); // Just use the status of the SMap itself
     result.getContained().add(map);
     lexer.token("{");
     //	  lexer.token("source");
@@ -659,18 +1096,21 @@ public class StructureMapUtilities {
       prefixes.put(n, v);
     }
     while (lexer.hasToken("unmapped")) {
+      List<String> comments = lexer.cloneComments();
       lexer.token("unmapped");
       lexer.token("for");
       String n = readPrefix(prefixes, lexer);
       ConceptMapGroupComponent g = getGroup(map, n, null);
+      g.addFormatCommentsPre(comments);
       lexer.token("=");
       String v = lexer.take();
       if (v.equals("provided")) {
-        g.getUnmapped().setMode(ConceptMapGroupUnmappedMode.PROVIDED);
+        g.getUnmapped().setMode(ConceptMapGroupUnmappedMode.USESOURCECODE);
       } else
         throw lexer.error("Only unmapped mode PROVIDED is supported at this time");
     }
     while (!lexer.hasToken("}")) {
+      List<String> comments = lexer.cloneComments();
       String srcs = readPrefix(prefixes, lexer);
       lexer.token(":");
       String sc = lexer.getCurrent().startsWith("\"") ? lexer.readConstant("code") : lexer.take();
@@ -678,19 +1118,25 @@ public class StructureMapUtilities {
       String tgts = readPrefix(prefixes, lexer);
       ConceptMapGroupComponent g = getGroup(map, srcs, tgts);
       SourceElementComponent e = g.addElement();
+      e.addFormatCommentsPre(comments);
       e.setCode(sc);
-      if (e.getCode().startsWith("\""))
+      if (e.getCode().startsWith("\"")) {
         e.setCode(lexer.processConstant(e.getCode()));
+      }
       TargetElementComponent tgt = e.addTarget();
       tgt.setRelationship(rel);
       lexer.token(":");
       tgt.setCode(lexer.take());
-      if (tgt.getCode().startsWith("\""))
+      if (tgt.getCode().startsWith("\"")) {
         tgt.setCode(lexer.processConstant(tgt.getCode()));
-      tgt.setComment(lexer.getFirstComment());
+      }
+      // tgt.setComment(lexer.getAllComments());
     }
+    map.addFormatCommentsPost(lexer.getComments());
     lexer.token("}");
   }
+
+ 
 
   private ConceptMapGroupComponent getGroup(ConceptMap map, String srcs, String tgts) {
     for (ConceptMapGroupComponent grp : map.getGroup()) {
@@ -706,7 +1152,8 @@ public class StructureMapUtilities {
     grp.setTarget(tgts);
     return grp;
   }
-
+  
+ 
 
   private String readPrefix(Map<String, String> prefixes, FHIRLexer lexer) throws FHIRLexerException {
     String prefix = lexer.take();
@@ -733,26 +1180,59 @@ public class StructureMapUtilities {
 
 
   private void parseUses(StructureMap result, FHIRLexer lexer) throws FHIRException {
+    // Capture any comments that appeared on the lines IMMEDIATELY before this
+    // `uses` keyword. This mirrors how parseGroup treats pre-group comments and
+    // makes `// doc \n uses "..." as source` populate structure.documentation
+    // in addition to the inline `uses "..." as source // doc` form.
+    String preComment = lexer.getAllComments();
     lexer.token("uses");
-    int currentLine = lexer.getCurrentLocation().getLine();
     StructureMapStructureComponent st = result.addStructure();
     st.setUrl(lexer.readConstant("url"));
     if (lexer.hasToken("alias")) {
       lexer.token("alias");
       st.setAlias(lexer.take());
     }
+    if (!Utilities.noString(preComment)) {
+      st.setDocumentation(preComment);
+    }
     lexer.token("as");
-    st.setMode(StructureMapModelMode.fromCode(lexer.take()));
-    lexer.skipToken(";");
-    st.setDocumentation(lexer.getFirstComment());
+    String doco;
+    if (lexer.getCurrent().equals("source")) {
+      st.setMode(StructureMapModelMode.SOURCE);
+      doco = lexer.tokenWithTrailingComment("source");
+    } else if (lexer.getCurrent().equals("queried")) {
+      st.setMode(StructureMapModelMode.QUERIED);
+      doco = lexer.tokenWithTrailingComment("queried");
+    } else if (lexer.getCurrent().equals("target")) {
+      st.setMode(StructureMapModelMode.TARGET);
+      doco = lexer.tokenWithTrailingComment("target");
+    } else if (lexer.getCurrent().equals("produced")) {
+      st.setMode(StructureMapModelMode.PRODUCED);
+      doco = lexer.tokenWithTrailingComment("produced");
+    } else {
+      throw lexer.error("Found '"+lexer.getCurrent()+"' expecting 'source', 'queried', 'target' or 'produced'");
+    }
+    if (doco != null) {
+      st.getFormatCommentsPost().add(doco);
+    }
   }
+  
+  
 
   private void parseImports(StructureMap result, FHIRLexer lexer) throws FHIRException {
     lexer.token("imports");
-    int currentLine = lexer.getCurrentLocation().getLine();
     result.addImport(lexer.readConstant("url"));
     lexer.skipToken(";");
-    lexer.getFirstComment();
+  }
+
+  private void parseConst(StructureMap result, FHIRLexer lexer) throws FHIRException {
+    lexer.token("let");
+    StructureMapConstComponent cmp = result.addConst();
+    cmp.setName(lexer.take());
+    lexer.token("=");
+    // `let` does not require parens in the grammar, so no warning — just canonicalise.
+    cmp.setValue(parseFhirPathToCanonical(lexer, "let", false));
+    lexer.skipToken(";");
   }
 
   private void parseGroup(StructureMap result, FHIRLexer lexer) throws FHIRException {
@@ -822,11 +1302,14 @@ public class StructureMapUtilities {
         parseRule(result, group.getRule(), lexer, false);
       }
     }
+    group.addFormatCommentsPost(lexer.getComments());
     lexer.next();
     if (newFmt && lexer.hasToken(";"))
       lexer.next();
   }
 
+ 
+  
   private void parseInput(StructureMapGroupComponent group, FHIRLexer lexer, boolean newFmt) throws FHIRException {
     StructureMapGroupInputComponent input = group.addInput();
     if (newFmt) {
@@ -841,10 +1324,11 @@ public class StructureMapUtilities {
     if (!newFmt) {
       lexer.token("as");
       input.setMode(StructureMapInputMode.fromCode(lexer.take()));
-      input.setDocumentation(lexer.getFirstComment());
+      input.setDocumentation(lexer.getAllComments());
       lexer.skipToken(";");
     }
   }
+
 
   private void parseRule(StructureMap map, List<StructureMapGroupRuleComponent> list, FHIRLexer lexer, boolean newFmt) throws FHIRException {
     StructureMapGroupRuleComponent rule = new StructureMapGroupRuleComponent();
@@ -853,7 +1337,9 @@ public class StructureMapUtilities {
       lexer.token(":");
       lexer.token("for");
     } else {
-      rule.setDocumentation(lexer.getFirstComment());
+      if (lexer.hasComments()) {
+        rule.setDocumentation(lexer.getAllComments());
+      }
     }
     list.add(rule);
     boolean done = false;
@@ -873,52 +1359,121 @@ public class StructureMapUtilities {
           lexer.next();
       }
     }
-    if (lexer.hasToken("then")) {
-      lexer.token("then");
-      if (lexer.hasToken("{")) {
-        lexer.token("{");
-        while (!lexer.hasToken("}")) {
-          if (lexer.done())
-            throw lexer.error("premature termination expecting '}' in nested group");
-          parseRule(map, rule.getRule(), lexer, newFmt);
-        }
-        lexer.token("}");
-      } else {
-        done = false;
-        while (!done) {
-          parseRuleReference(rule, lexer);
-          done = !lexer.hasToken(",");
-          if (!done)
-            lexer.next();
-        }
-      }
-    }
-    if (!rule.hasDocumentation() && lexer.hasComments()) {
-      rule.setDocumentation(lexer.getFirstComment());
-    }
-    if (isSimpleSyntax(rule)) {
+
+    if (lexer.hasToken(":")) {
+      lexer.take();
+      // Batch form that will produce a list of simple rules, comma separated ("Simple Form: Identity Transform" heading in the specification)
+      // https://hl7.org/fhir/R5/mapping-language.html#simple
+      // Each generated rule is filled with the same executable shape that the
+      // non-batch isSimpleSyntax branch produces (vvv on both sides, CREATE on
+      // target, no params) so the transformer's "simple inferred, map by type"
+      // fallback in executeRule recognizes them. Without this, batch rules were
+      // structurally bare and silently no-op at runtime.
+      Queue<String> elements = new ArrayDeque<String>();
+      String elementName = lexer.take();
+      rule.getSourceFirstRep().setElement(elementName);
       rule.getSourceFirstRep().setVariable(AUTO_VAR_NAME);
+      rule.getTargetFirstRep().setElement(elementName);
       rule.getTargetFirstRep().setVariable(AUTO_VAR_NAME);
-      rule.getTargetFirstRep().setTransform(StructureMapTransform.CREATE); // with no parameter - e.g. imply what is to be created
-      // no dependencies - imply what is to be done based on types
-    }
-    if (newFmt) {
+      rule.getTargetFirstRep().setTransform(StructureMapTransform.CREATE);
+      while (lexer.hasToken(",")) {
+        lexer.token(",");
+        elements.add(lexer.take());
+      }
+
+      // Optionally followed by an explicit ruleName. Each rule produced by this
+      // batch (including the first) is named `makeId(ruleName + element)`. When
+      // the source omits the ruleName the BATCH_IDENTITY_UNNAMED_NAME sentinel
+      // is used as the prefix so the renderer can distinguish a batch from a
+      // run of singly-written `src.x -> tgt.x;` rules (which carry the bare
+      // element name with no prefix). The render side strips the sentinel back
+      // out when emitting the compact form.
+      String ruleName = null;
       if (lexer.isConstant()) {
         if (lexer.isStringConstant()) {
-          rule.setName(lexer.readConstant("ruleName"));
+          ruleName = fixName(lexer.readConstant("ruleName"));
         } else {
-          rule.setName(lexer.take());
+          ruleName = lexer.take();
         }
-      } else {
-        if (rule.getSource().size() != 1 || !rule.getSourceFirstRep().hasElement())
-          throw lexer.error("Complex rules must have an explicit name");
-        if (rule.getSourceFirstRep().hasType())
-          rule.setName(rule.getSourceFirstRep().getElement() + "-" + rule.getSourceFirstRep().getType());
-        else
-          rule.setName(rule.getSourceFirstRep().getElement());
       }
-      lexer.token(";");
+      String namePrefix = ruleName != null ? ruleName : BATCH_IDENTITY_UNNAMED_NAME;
+      rule.setName(Utilities.makeId(namePrefix + elementName));
+      String doco = lexer.tokenWithTrailingComment(";");
+      if (doco != null) {
+        rule.getFormatCommentsPost().add(doco);
+      }
+
+      // Now scan the list of elements and create new rules for each
+      String sourceContext = rule.getSourceFirstRep().getContext();
+      String targetContext = rule.getTargetFirstRep().getContext();
+      for (String element : elements) {
+        StructureMapGroupRuleComponent newRule = new StructureMapGroupRuleComponent();
+        list.add(newRule);
+        newRule.setName(Utilities.makeId(namePrefix + element));
+        newRule.getSourceFirstRep().setContext(sourceContext);
+        newRule.getSourceFirstRep().setElement(element);
+        newRule.getSourceFirstRep().setVariable(AUTO_VAR_NAME);
+        newRule.getTargetFirstRep().setContext(targetContext);
+        newRule.getTargetFirstRep().setElement(element);
+        newRule.getTargetFirstRep().setVariable(AUTO_VAR_NAME);
+        newRule.getTargetFirstRep().setTransform(StructureMapTransform.CREATE);
+      }
+
+    } else {
+
+      if (lexer.hasToken("then")) {
+        lexer.token("then");
+        if (lexer.hasToken("{")) {
+          lexer.token("{");
+          while (!lexer.hasToken("}")) {
+            if (lexer.done())
+              throw lexer.error("premature termination expecting '}' in nested group");
+            parseRule(map, rule.getRule(), lexer, newFmt);
+          }
+          lexer.token("}");
+        } else {
+          done = false;
+          while (!done) {
+            parseRuleReference(rule, lexer);
+            done = !lexer.hasToken(",");
+            if (!done)
+              lexer.next();
+          }
+        }
+      }
+      if (isSimpleSyntax(rule)) {
+        rule.getSourceFirstRep().setVariable(AUTO_VAR_NAME);
+        rule.getTargetFirstRep().setVariable(AUTO_VAR_NAME);
+        rule.getTargetFirstRep().setTransform(StructureMapTransform.CREATE); // with no parameter - e.g. imply what is to be created
+        // no dependencies - imply what is to be done based on types
+      }
+      if (newFmt) {
+        if (lexer.isConstant()) {
+          if (lexer.isStringConstant()) {
+            rule.setName(fixName(lexer.readConstant("ruleName")));
+          } else {
+            rule.setName(lexer.take());
+          }
+        } else {
+          if (rule.getSource().size() != 1 || !rule.getSourceFirstRep().hasElement() && exceptionsForChecks )
+            throw lexer.error("Complex rules must have an explicit name");
+          // Auto-generate a custom rule name
+          if (rule.getSourceFirstRep().hasType())
+            rule.setName(elementPathString(rule.getSourceFirstRep()) + Utilities.capitalize(rule.getSourceFirstRep().getType()));
+          else
+            rule.setName(elementPathString(rule.getSourceFirstRep()));
+        }
+        String doco = lexer.tokenWithTrailingComment(";");
+        if (doco != null) {
+          rule.getFormatCommentsPost().add(doco);
+        }
+      }
     }
+  }
+
+  /** Remove characters that are not supported in the name: - */
+  private String fixName(String c) {
+    return c.replace("-", "");
   }
 
   private boolean isSimpleSyntax(StructureMapGroupRuleComponent rule) {
@@ -928,13 +1483,15 @@ public class StructureMapUtilities {
         (rule.getDependent().size() == 0 && rule.getRule().size() == 0);
   }
 
+
+ 
   private void parseRuleReference(StructureMapGroupRuleComponent rule, FHIRLexer lexer) throws FHIRLexerException {
     StructureMapGroupRuleDependentComponent ref = rule.addDependent();
     ref.setName(lexer.take());
     lexer.token("(");
     boolean done = false;
     while (!done) {
-      ref.addVariable(lexer.take());
+      parseParameter(ref, lexer);
       done = !lexer.hasToken(",");
       if (!done)
         lexer.next();
@@ -942,33 +1499,47 @@ public class StructureMapUtilities {
     lexer.token(")");
   }
 
+ 
   private void parseSource(StructureMapGroupRuleComponent rule, FHIRLexer lexer) throws FHIRException {
     StructureMapGroupRuleSourceComponent source = rule.addSource();
     source.setContext(lexer.take());
     if (source.getContext().equals("search") && lexer.hasToken("(")) {
       source.setContext("@search");
       lexer.take();
-      ExpressionNode node = fpe.parse(lexer);
+      // Outer `(` already consumed above, so the FML grammar's required parens are
+      // structurally present. Canonicalise to collapse any redundant inner wrapping.
+      ExpressionNode node = parseFhirPathToCanonicalNode(lexer, "@search", false);
       source.setUserData(MAP_SEARCH_EXPRESSION, node);
       source.setElement(node.toString());
       lexer.token(")");
-    } else if (lexer.hasToken(".")) {
-      lexer.token(".");
-      source.setElement(lexer.take());
+    } else {
+      while (lexer.hasToken(".")) {
+        lexer.token(".");
+        addSourceElement(source, readAsStringOrProcessedConstant(lexer.take(), lexer));
+      }
     }
     if (lexer.hasToken(":")) {
       // type and cardinality
       lexer.token(":");
       source.setType(lexer.takeDottedToken());
-      if (!lexer.hasToken("as", "first", "last", "not_first", "not_last", "only_one", "default")) {
-        source.setMin(lexer.takeInt());
-        lexer.token("..");
-        source.setMax(lexer.take());
-      }
+    }
+    if (Utilities.isInteger(lexer.getCurrent())) {
+      source.setMin(lexer.takeInt());
+      lexer.token("..");
+      source.setMax(lexer.take());
     }
     if (lexer.hasToken("default")) {
       lexer.token("default");
-      source.setDefaultValue(new StringType(lexer.readConstant("default value")));
+      if (lexer.hasToken("(")) {
+        lexer.token("(");
+        // Outer `(` already consumed above. Canonicalise the inner expression.
+        source.setDefaultValue(parseFhirPathToCanonical(lexer, "default", false));
+        lexer.token(")");
+      } else {
+        // legacy double-quoted format: convert to single-quoted FHIRPath string literal
+        String s = lexer.readConstant("default value");
+        source.setDefaultValue("'" + Utilities.escapeFhirPathString(s) + "'");
+      }
     }
     if (Utilities.existsInList(lexer.getCurrent(), "first", "last", "not_first", "not_last", "only_one"))
       source.setListMode(StructureMapSourceListMode.fromCode(lexer.take()));
@@ -979,33 +1550,61 @@ public class StructureMapUtilities {
     }
     if (lexer.hasToken("where")) {
       lexer.take();
-      ExpressionNode node = fpe.parse(lexer);
+      // Grammar requires `where ( ... )`; warn on unparenthesised input and canonicalise.
+      ExpressionNode node = parseFhirPathToCanonicalNode(lexer, "where", true);
       source.setUserData(MAP_WHERE_EXPRESSION, node);
       source.setCondition(node.toString());
     }
     if (lexer.hasToken("check")) {
       lexer.take();
-      ExpressionNode node = fpe.parse(lexer);
+      // Grammar requires `check ( ... )`; warn on unparenthesised input and canonicalise.
+      ExpressionNode node = parseFhirPathToCanonicalNode(lexer, "check", true);
       source.setUserData(MAP_WHERE_CHECK, node);
       source.setCheck(node.toString());
     }
     if (lexer.hasToken("log")) {
       lexer.take();
-      ExpressionNode node = fpe.parse(lexer);
-      source.setUserData(MAP_WHERE_CHECK, node);
+      // Grammar requires `log ( ... )`; warn on unparenthesised input and canonicalise.
+      ExpressionNode node = parseFhirPathToCanonicalNode(lexer, "log", true);
+      source.setUserData(MAP_WHERE_LOG, node);
       source.setLogMessage(node.toString());
     }
   }
 
+  private String readAsStringOrProcessedConstant(String s, FHIRLexer lexer) throws FHIRLexerException {
+    if (s.startsWith("\"") || s.startsWith("`"))
+      return lexer.processConstant(s);
+    else
+      return s;
+  }
+
+  private void addSourceElement(StructureMapGroupRuleSourceComponent source, String element) {
+    if (!source.hasElement()) {
+      source.setElement(element);
+    } else {
+      source.addExtension(SOURCE_ELEMENT_EXTENSION, new StringType(element));
+    }
+  }
+
+  private void addTargetElement(StructureMapGroupRuleTargetComponent target, String element) {
+    if (!target.hasElement()) {
+      target.setElement(element);
+    } else {
+      target.addExtension(TARGET_ELEMENT_EXTENSION, new StringType(element));
+    }
+  }
+ 
   private void parseTarget(StructureMapGroupRuleComponent rule, FHIRLexer lexer) throws FHIRException {
     StructureMapGroupRuleTargetComponent target = rule.addTarget();
     String start = lexer.take();
     if (lexer.hasToken(".")) {
       target.setContext(start);
       start = null;
-      lexer.token(".");
-      target.setElement(lexer.take());
-    }
+      while (lexer.hasToken(".")) {
+        lexer.token(".");
+        addTargetElement(target, readAsStringOrProcessedConstant(lexer.take(), lexer));
+      }
+    } 
     String name;
     boolean isConstant = false;
     if (lexer.hasToken("=")) {
@@ -1018,9 +1617,9 @@ public class StructureMapUtilities {
       name = start;
 
     if ("(".equals(name)) {
-      // inline fluentpath expression
+      // inline fluentpath expression — outer `(` already consumed as `name`.
       target.setTransform(StructureMapTransform.EVALUATE);
-      ExpressionNode node = fpe.parse(lexer);
+      ExpressionNode node = parseFhirPathToCanonicalNode(lexer, "evaluate", false);
       target.setUserData(MAP_EXPRESSION, node);
       target.addParameter().setValue(new StringType(node.toString()));
       lexer.token(")");
@@ -1030,9 +1629,11 @@ public class StructureMapUtilities {
       if (target.getTransform() == StructureMapTransform.EVALUATE) {
         parseParameter(target, lexer);
         lexer.token(",");
-        ExpressionNode node = fpe.parse(lexer);
-        target.setUserData(MAP_EXPRESSION, node);
-        target.addParameter().setValue(new StringType(node.toString()));
+        ExpressionNode node = parseFhirPathToCanonicalNode(lexer, "evaluate", false);
+        if (node != null) {
+          target.setUserData(MAP_EXPRESSION, node);
+          target.addParameter().setValue(new StringType(node.toString()));
+        }
       } else {
         while (!lexer.hasToken(")")) {
           parseParameter(target, lexer);
@@ -1042,46 +1643,74 @@ public class StructureMapUtilities {
       }
       lexer.token(")");
     } else if (name != null) {
-      target.setTransform(StructureMapTransform.COPY);
-      if (!isConstant) {
-        String id = name;
-        while (lexer.hasToken(".")) {
-          id = id + lexer.take() + lexer.take();
-        }
-        target.addParameter().setValue(new IdType(id));
-      } else
-        target.addParameter().setValue(readConstant(name, lexer));
+      if (target.getContext() != null) {
+        target.setTransform(StructureMapTransform.COPY);
+        if (!isConstant) {
+          String id = name;
+          while (lexer.hasToken(".")) {
+            id = id + lexer.take() + lexer.take();
+          }
+          target.addParameter().setValue(new IdType(id));
+        } else
+          target.addParameter().setValue(readConstant(name, lexer));
+      } else {
+        target.setContext(name);
+      }
     }
     if (lexer.hasToken("as")) {
       lexer.take();
       target.setVariable(lexer.take());
     }
-    while (Utilities.existsInList(lexer.getCurrent(), "first", "last", "share", "collate")) {
-      if (lexer.getCurrent().equals("share")) {
+    if (Utilities.existsInList(lexer.getCurrent(), "first", "last", "share", "single")) {
+      String mode = lexer.getCurrent();
+      lexer.next();
+      if (mode.equals("share")) {
         target.addListMode(StructureMapTargetListMode.SHARE);
-        lexer.next();
+        if (lexer.done() || Utilities.existsInList(lexer.getCurrent(), ";", ",", "then", "}", "first", "last", "share", "single")) {
+          throw lexer.error("'share' target list mode requires a listRuleId (e.g. 'share myId')");
+        }
         target.setListRuleId(lexer.take());
-      } else {
-        if (lexer.getCurrent().equals("first"))
-          target.addListMode(StructureMapTargetListMode.FIRST);
-        else
-          target.addListMode(StructureMapTargetListMode.LAST);
-        lexer.next();
+      } else if (mode.equals("first")) {
+        target.addListMode(StructureMapTargetListMode.FIRST);
+      } else if (mode.equals("last")) {
+        target.addListMode(StructureMapTargetListMode.LAST);
+      } else { // "single"
+        target.addListMode(StructureMapTargetListMode.SINGLE);
+      }
+      if (Utilities.existsInList(lexer.getCurrent(), "first", "last", "share", "single")) {
+        throw lexer.error("only one list mode is permitted on a target");
       }
     }
   }
 
-
-  private void parseParameter(StructureMapGroupRuleTargetComponent target, FHIRLexer lexer) throws FHIRLexerException, FHIRFormatError {
+ 
+  private void parseParameter(StructureMapGroupRuleDependentComponent ref, FHIRLexer lexer) throws FHIRLexerException, FHIRFormatError {
     if (!lexer.isConstant()) {
-      target.addParameter().setValue(new IdType(lexer.take()));
+      ref.addParameter().setValue(new IdType(lexer.take()));
     } else if (lexer.isStringConstant())
-      target.addParameter().setValue(new StringType(lexer.readConstant("??")));
+      ref.addParameter().setValue(new StringType(lexer.readConstant("??")));
     else {
-      target.addParameter().setValue(readConstant(lexer.take(), lexer));
+      ref.addParameter().setValue(readConstant(lexer.take(), lexer));
     }
   }
 
+  private void parseParameter(StructureMapGroupRuleTargetComponent target, FHIRLexer lexer) throws FHIRLexerException, FHIRFormatError {
+    DataType value;
+    if (!lexer.isConstant()) {
+      value = new IdType(lexer.take());
+    } else if (lexer.isStringConstant())
+      value = new StringType(lexer.readConstant("??"));
+    else {
+      value = readConstant(lexer.take(), lexer);
+    }
+    target.addParameter().setValue(value);
+    if (target.getTransform() == StructureMapTransform.TRANSLATE && target.getParameter().size() == 2
+        && value instanceof StringType && value.primitiveValue().startsWith("#")) {
+      value.addExtension(ExtensionDefinitions.EXT_REFERENCES_CONTAINED, new Reference(value.primitiveValue()));
+    }
+  }
+
+ 
   private DataType readConstant(String s, FHIRLexer lexer) throws FHIRLexerException {
     if (Utilities.isInteger(s))
       return new IntegerType(s);
@@ -1093,29 +1722,102 @@ public class StructureMapUtilities {
       return new StringType(lexer.processConstant(s));
   }
 
+
+  /**
+   * The definition of the type the map creates: see {@link #getModelType}
+   */
   public StructureDefinition getTargetType(StructureMap map) throws FHIRException {
-    boolean found = false;
-    StructureDefinition res = null;
-    for (StructureMapStructureComponent uses : map.getStructure()) {
-      if (uses.getMode() == StructureMapModelMode.TARGET) {
-        if (found)
-          throw new FHIRException("Multiple targets found in map " + map.getUrl());
-        found = true;
-        res = worker.fetchResource(StructureDefinition.class, uses.getUrl());
-        if (res == null)
-          throw new FHIRException("Unable to find " + uses.getUrl() + " referenced from map " + map.getUrl());
+    return getModelType(map, StructureMapInputMode.TARGET, StructureMapModelMode.TARGET);
+  }
+
+  /**
+   * The definition of the type the map reads: see {@link #getModelType}
+   */
+  public StructureDefinition getSourceType(StructureMap map) throws FHIRException {
+    return getModelType(map, StructureMapInputMode.SOURCE, StructureMapModelMode.SOURCE);
+  }
+
+  /**
+   * The definition for the type of the first group's (single) source or target input.
+   * <p>
+   * If the input declares a type, that is (in order): the 'uses' with that alias; an unaliased 'uses'
+   * whose definition has that name; the type definition for it (a core type name or a URL); the one
+   * StructureDefinition with that name (an error if several have it). Names are case-sensitive, as
+   * they are in FML.
+   * <p>
+   * If the input has no type, or nothing matched, it's the 'uses' declared for that mode, if there's
+   * only one
+   */
+  public StructureDefinition getModelType(StructureMap map, StructureMapInputMode inputMode, StructureMapModelMode modelMode) throws FHIRException {
+    String label = inputMode.toCode();
+    if (map.getGroup().isEmpty())
+      throw new FHIRException("Unable to determine the " + label + " type: map " + map.getUrl() + " has no groups");
+    StructureMapGroupInputComponent input = null;
+    for (StructureMapGroupInputComponent gp : map.getGroupFirstRep().getInput()) {
+      if (gp.getMode() == inputMode) {
+        if (input != null)
+          throw new FHIRException("Multiple " + label + " inputs found in the first group of map " + map.getUrl());
+        input = gp;
       }
     }
-    if (res == null)
-      throw new FHIRException("No targets found in map " + map.getUrl());
-    return res;
+    String type = input == null ? null : input.getType();
+    List<StructureMapStructureComponent> uses = new ArrayList<>();
+    for (StructureMapStructureComponent u : map.getStructure()) {
+      if (u.getMode() == modelMode)
+        uses.add(u);
+    }
+
+    if (type != null) {
+      for (StructureMapStructureComponent u : uses) {
+        if (u.hasAlias() && u.getAlias().equals(type))
+          return fetchUses(map, u, label);
+      }
+      for (StructureMapStructureComponent u : uses) {
+        if (!u.hasAlias()) {
+          StructureDefinition sd = worker.fetchResource(StructureDefinition.class, u.getUrl(), ExtensionUtilities.getVersionResolutionRules(u.getUrlElement()));
+          if (sd != null && type.equals(sd.getName()))
+            return sd;
+        }
+      }
+      StructureDefinition sd = worker.fetchTypeDefinition(type);
+      if (sd != null)
+        return sd;
+      List<StructureDefinition> named = new ArrayList<>();
+      for (StructureDefinition t : worker.fetchResourcesByType(StructureDefinition.class)) {
+        if (type.equals(t.getName()))
+          named.add(t);
+      }
+      if (named.size() == 1)
+        return named.get(0);
+      if (named.size() > 1) {
+        CommaSeparatedStringBuilder b = new CommaSeparatedStringBuilder();
+        for (StructureDefinition t : named)
+          b.append(t.getVersionedUrl());
+        throw new FHIRException("The " + label + " type '" + type + "' in map " + map.getUrl() + " is ambiguous: it is the name of " + named.size() + " StructureDefinitions (" + b + ")");
+      }
+    }
+    if (uses.size() == 1)
+      return fetchUses(map, uses.get(0), label);
+    if (type != null)
+      throw new FHIRException("Unable to find a StructureDefinition for the " + label + " type '" + type + "' in map " + map.getUrl());
+    if (uses.isEmpty())
+      throw new FHIRException("No " + label + " types found in map " + map.getUrl());
+    throw new FHIRException("Multiple " + label + " types found in map " + map.getUrl() + ", and the first group does not say which one it uses");
+  }
+
+  private StructureDefinition fetchUses(StructureMap map, StructureMapStructureComponent uses, String label) {
+    StructureDefinition sd = worker.fetchResource(StructureDefinition.class, uses.getUrl(), ExtensionUtilities.getVersionResolutionRules(uses.getUrlElement()));
+    if (sd == null)
+      throw new FHIRException("Unable to find the " + label + " type " + uses.getUrl() + " referenced from map " + map.getUrl());
+    return sd;
   }
 
   private void log(String cnt) {
-    if (getServices() != null)
-      getServices().log(cnt);
-    else
-      System.out.println(cnt);
+    if (debug) {
+      if (getServices() != null)
+        getServices().log(cnt);
+    }
+    log.debug(cnt);
   }
 
   /**
@@ -1133,12 +1835,36 @@ public class StructureMapUtilities {
    * @throws FHIRException
    */
   protected void getChildrenByName(Base item, String name, List<Base> result) throws FHIRException {
+    if (!(item instanceof Element)) {
+      org.hl7.fhir.r5.model.Property property = item.getNamedProperty(name.hashCode(), name, false);
+      if (property != null && property.getName().endsWith("[x]")) {
+        String baseName = property.getName().replace("[x]", "");
+        for (Base value : property.getValues()) {
+          if (value != null && (name.equals(baseName) || name.equals(property.getName())
+              || name.equals(baseName + Utilities.capitalize(value.fhirType())))) {
+            result.add(value);
+          }
+        }
+        return;
+      }
+    }
     for (Base v : item.listChildrenByName(name, true))
       if (v != null)
         result.add(v);
   }
 
+  /**
+   * The main entry point for the transformer. It will transform the source into the target according to the rules in the map.
+   * @param appInfo the application-specific context information (note: this is NOT the same as the objContext used in the fhirpath engine functions/interfaces)
+   * @param source input resource or element to be transformed
+   * @param map the structure map that defines the transformation rules
+   * @param target the target resource or element to be populated by the transformation
+   * @throws FHIRException
+   */
   public void transform(Object appInfo, Base source, StructureMap map, Base target) throws FHIRException {
+    if (fpe == null) {
+      throw new Error("This method is not supported because no context was provided");
+    }
     TransformContext context = new TransformContext(appInfo);
     log("Start Transform " + map.getUrl());
     StructureMapGroupComponent g = map.getGroup().get(0);
@@ -1149,7 +1875,7 @@ public class StructureMapUtilities {
       vars.add(VariableMode.OUTPUT, getInputName(g, StructureMapInputMode.TARGET, "target"), target);
     else if (getInputName(g, StructureMapInputMode.TARGET, null) != null) {
       String type = getInputType(g, StructureMapInputMode.TARGET);
-      throw new Error("not handled yet: creating a type of " + type);
+      throw new FHIRException("not handled yet: creating a type of " + type);
     }
 
     executeGroup("", context, map, vars, g, true);
@@ -1182,15 +1908,23 @@ public class StructureMapUtilities {
   }
 
   private void executeGroup(String indent, TransformContext context, StructureMap map, Variables vars, StructureMapGroupComponent group, boolean atRoot) throws FHIRException {
-    log(indent + "Group : " + group.getName() + "; vars = " + vars.summary());
-    // todo: check inputs
-    if (group.hasExtends()) {
-      ResolvedGroup rg = resolveGroupReference(map, group, group.getExtends());
-      executeGroup(indent + " ", context, rg.targetMap, vars, rg.target, false);
-    }
+    // constants belong to the map that declares them: a group runs with its own map's constants,
+    // whichever map it was called from, and the caller's are restored when it returns
+    StructureMapConstantResolver callerConstants = vars.getConstants();
+    vars.setConstants(context.getConstants(map, fpe));
+    try {
+      log(indent + "Group : " + group.getName() + "; vars = " + vars.summary());
+      // todo: check inputs
+      if (group.hasExtends()) {
+        ResolvedGroup rg = resolveGroupReference(map, group, group.getExtends());
+        executeGroup(indent + " ", context, rg.getTargetMap(), vars, rg.getTargetGroup(), false);
+      }
 
-    for (StructureMapGroupRuleComponent r : group.getRule()) {
-      executeRule(indent + "  ", context, map, vars, group, r, atRoot);
+      for (StructureMapGroupRuleComponent r : group.getRule()) {
+        executeRule(indent + "  ", context, map, vars, group, r, atRoot);
+      }
+    } finally {
+      vars.setConstants(callerConstants);
     }
   }
 
@@ -1198,12 +1932,12 @@ public class StructureMapUtilities {
     log(indent + "rule : " + rule.getName() + "; vars = " + vars.summary());
     Variables srcVars = vars.copy();
     if (rule.getSource().size() != 1)
-      throw new FHIRException("Rule \"" + rule.getName() + "\": not handled yet");
+      throw new FHIRException("Rule \"" + rule.getName() + "\": multiple sources not supported yet");
     List<Variables> source = processSource(rule.getName(), context, srcVars, rule.getSource().get(0), map.getUrl(), indent);
     if (source != null) {
       for (Variables v : source) {
         for (StructureMapGroupRuleTargetComponent t : rule.getTarget()) {
-          processTarget(rule.getName(), context, v, map, group, t, rule.getSource().size() == 1 ? rule.getSourceFirstRep().getVariable() : null, atRoot, vars);
+          processTarget(map.getName()+"|"+group.getName()+"|"+rule.getName(), context, v, map, group, t, rule.getSource().size() == 1 ? rule.getSourceFirstRep().getVariable() : null, atRoot, vars);
         }
         if (rule.hasRule()) {
           for (StructureMapGroupRuleComponent childrule : rule.getRule()) {
@@ -1215,16 +1949,25 @@ public class StructureMapUtilities {
           }
         } else if (rule.getSource().size() == 1 && rule.getSourceFirstRep().hasVariable() && rule.getTarget().size() == 1 && rule.getTargetFirstRep().hasVariable() && rule.getTargetFirstRep().getTransform() == StructureMapTransform.CREATE && !rule.getTargetFirstRep().hasParameter()) {
           // simple inferred, map by type
-          System.out.println(v.summary());
+          if (debug) {
+            log(v.summary());
+          }
           Base src = v.get(VariableMode.INPUT, rule.getSourceFirstRep().getVariable());
           Base tgt = v.get(VariableMode.OUTPUT, rule.getTargetFirstRep().getVariable());
           String srcType = src.fhirType();
           String tgtType = tgt.fhirType();
           ResolvedGroup defGroup = resolveGroupByTypes(map, rule.getName(), group, srcType, tgtType);
-          Variables vdef = new Variables();
-          vdef.add(VariableMode.INPUT, defGroup.target.getInput().get(0).getName(), src);
-          vdef.add(VariableMode.OUTPUT, defGroup.target.getInput().get(1).getName(), tgt);
-          executeGroup(indent + "  ", context, defGroup.targetMap, vdef, defGroup.target, false);
+          if (defGroup != null){
+            Variables vdef = new Variables();
+            vdef.add(VariableMode.INPUT, defGroup.getTargetGroup().getInput().get(0).getName(), src);
+            vdef.add(VariableMode.OUTPUT, defGroup.getTargetGroup().getInput().get(1).getName(), tgt);
+            executeGroup(indent + "  ", context, defGroup.getTargetMap(), vdef, defGroup.getTargetGroup(), false);
+          }
+          else if (srcType.equals(tgtType))
+          {
+            // There's no group to call, and we didn't throw, so the types are the same, just copy
+            src.assignValues(tgt);
+          }
         }
       }
     }
@@ -1233,14 +1976,14 @@ public class StructureMapUtilities {
   private void executeDependency(String indent, TransformContext context, StructureMap map, Variables vin, StructureMapGroupComponent group, StructureMapGroupRuleDependentComponent dependent) throws FHIRException {
     ResolvedGroup rg = resolveGroupReference(map, group, dependent.getName());
 
-    if (rg.target.getInput().size() != dependent.getVariable().size()) {
-      throw new FHIRException("Rule '" + dependent.getName() + "' has " + rg.target.getInput().size() + " but the invocation has " + dependent.getVariable().size() + " variables");
+    if (rg.getTargetGroup().getInput().size() != dependent.getParameter().size()) {
+      throw new FHIRException("Rule '" + dependent.getName() + "' has " + rg.getTargetGroup().getInput().size() + " but the invocation has " + dependent.getParameter().size() + " variables");
     }
     Variables v = new Variables();
-    for (int i = 0; i < rg.target.getInput().size(); i++) {
-      StructureMapGroupInputComponent input = rg.target.getInput().get(i);
-      StringType rdp = dependent.getVariable().get(i);
-      String var = rdp.asStringValue();
+    for (int i = 0; i < rg.getTargetGroup().getInput().size(); i++) {
+      StructureMapGroupInputComponent input = rg.getTargetGroup().getInput().get(i);
+      StructureMapGroupRuleTargetParameterComponent rdp = dependent.getParameter().get(i);
+      String var = rdp.getValue().primitiveValue();
       VariableMode mode = input.getMode() == StructureMapInputMode.SOURCE ? VariableMode.INPUT : VariableMode.OUTPUT;
       Base vv = vin.get(mode, var);
       if (vv == null && mode == VariableMode.INPUT) //* once source, always source. but target can be treated as source at user convenient
@@ -1249,7 +1992,7 @@ public class StructureMapUtilities {
         throw new FHIRException("Rule '" + dependent.getName() + "' " + mode.toString() + " variable '" + input.getName() + "' named as '" + var + "' has no value (vars = " + vin.summary() + ")");
       v.add(mode, input.getName(), vv);
     }
-    executeGroup(indent + "  ", context, rg.targetMap, v, rg.target, false);
+    executeGroup(indent + "  ", context, rg.getTargetMap(), v, rg.getTargetGroup(), false);
   }
 
   private String determineTypeFromSourceType(StructureMap map, StructureMapGroupComponent source, Base base, String[] types) throws FHIRException {
@@ -1258,20 +2001,18 @@ public class StructureMapUtilities {
     if (source.hasUserData(kn))
       return source.getUserString(kn);
 
-    ResolvedGroup res = new ResolvedGroup();
-    res.targetMap = null;
-    res.target = null;
+    ResolvedGroup res = new ResolvedGroup(null, null);
     for (StructureMapGroupComponent grp : map.getGroup()) {
       if (matchesByType(map, grp, type)) {
-        if (res.targetMap == null) {
-          res.targetMap = map;
-          res.target = grp;
+        if (res.getTargetMap() == null) {
+          res.setTargetMap(map);
+          res.setTargetGroup(grp);
         } else
           throw new FHIRException("Multiple possible matches looking for default rule for '" + type + "'");
       }
     }
-    if (res.targetMap != null) {
-      String result = getActualType(res.targetMap, res.target.getInput().get(1).getType());
+    if (res.getTargetMap() != null) {
+      String result = getActualType(res.getTargetMap(), res.getTargetGroup().getInput().get(1).getType());
       source.setUserData(kn, result);
       return result;
     }
@@ -1284,19 +2025,21 @@ public class StructureMapUtilities {
         if (!impMap.getUrl().equals(map.getUrl())) {
           for (StructureMapGroupComponent grp : impMap.getGroup()) {
             if (matchesByType(impMap, grp, type)) {
-              if (res.targetMap == null) {
-                res.targetMap = impMap;
-                res.target = grp;
+              if (res.getTargetMap() == null) {
+                res.setTargetMap(impMap);
+                res.setTargetGroup(grp);
               } else
-                throw new FHIRException("Multiple possible matches for default rule for '" + type + "' in " + res.targetMap.getUrl() + " (" + res.target.getName() + ") and " + impMap.getUrl() + " (" + grp.getName() + ")");
+                throw new FHIRException("Multiple possible matches for default rule for '" + type + "' in " + res.getTargetMap().getUrl() + " (" + res.getTargetGroup().getName() + ") and " + impMap.getUrl() + " (" + grp.getName() + ")");
             }
           }
         }
       }
     }
-    if (res.target == null)
+    if (res.getTargetGroup() == null && Utilities.existsInList(type, types))
+      return type;
+    if (res.getTargetGroup() == null)
       throw new FHIRException("No matches found for default rule for '" + type + "' from " + map.getUrl());
-    String result = getActualType(res.targetMap, res.target.getInput().get(1).getType()); // should be .getType, but R2...
+    String result = getActualType(res.getTargetMap(), res.getTargetGroup().getInput().get(1).getType()); // should be .getType, but R2...
     source.setUserData(kn, result);
     return result;
   }
@@ -1304,20 +2047,20 @@ public class StructureMapUtilities {
   private List<StructureMap> findMatchingMaps(String value) {
     List<StructureMap> res = new ArrayList<StructureMap>();
     if (value.contains("*")) {
-      for (StructureMap sm : worker.listTransforms()) {
+      for (StructureMap sm : worker.fetchResourcesByType(StructureMap.class)) {
         if (urlMatches(value, sm.getUrl())) {
           res.add(sm);
         }
       }
     } else {
-      StructureMap sm = worker.getTransform(value);
+      StructureMap sm = worker.fetchResource(StructureMap.class, value, IWorkerContext.VersionResolutionRules.defaultRule());
       if (sm != null)
         res.add(sm);
     }
     Set<String> check = new HashSet<String>();
     for (StructureMap sm : res) {
       if (check.contains(sm.getUrl()))
-        throw new Error("duplicate");
+        throw new FHIRException("duplicate");
       else
         check.add(sm.getUrl());
     }
@@ -1333,19 +2076,17 @@ public class StructureMapUtilities {
     if (source.hasUserData(kn))
       return (ResolvedGroup) source.getUserData(kn);
 
-    ResolvedGroup res = new ResolvedGroup();
-    res.targetMap = null;
-    res.target = null;
+    ResolvedGroup res = new ResolvedGroup(null, null);
     for (StructureMapGroupComponent grp : map.getGroup()) {
       if (matchesByType(map, grp, srcType, tgtType)) {
-        if (res.targetMap == null) {
-          res.targetMap = map;
-          res.target = grp;
+        if (res.getTargetMap() == null) {
+          res.setTargetMap(map);
+          res.setTargetGroup(grp);
         } else
           throw new FHIRException("Multiple possible matches looking for rule for '" + srcType + "/" + tgtType + "', from rule '" + ruleid + "'");
       }
     }
-    if (res.targetMap != null) {
+    if (res.getTargetMap() != null) {
       source.setUserData(kn, res);
       return res;
     }
@@ -1358,17 +2099,22 @@ public class StructureMapUtilities {
         if (!impMap.getUrl().equals(map.getUrl())) {
           for (StructureMapGroupComponent grp : impMap.getGroup()) {
             if (matchesByType(impMap, grp, srcType, tgtType)) {
-              if (res.targetMap == null) {
-                res.targetMap = impMap;
-                res.target = grp;
+              if (res.getTargetMap() == null) {
+                res.setTargetMap(impMap);
+                res.setTargetGroup(grp);
               } else
-                throw new FHIRException("Multiple possible matches for rule for '" + srcType + "/" + tgtType + "' in " + res.targetMap.getUrl() + " and " + impMap.getUrl() + ", from rule '" + ruleid + "'");
+                throw new FHIRException("Multiple possible matches for rule for '" + srcType + "/" + tgtType + "' in " + res.getTargetMap().getUrl() + " and " + impMap.getUrl() + ", from rule '" + ruleid + "'");
             }
           }
         }
       }
     }
-    if (res.target == null)
+
+    // These are the same type, so we should be able to handle these directly.
+    if (res.getTargetGroup() == null && srcType.equals(tgtType))
+      return null;
+
+    if (res.getTargetGroup() == null)
       throw new FHIRException("No matches found for rule for '" + srcType + " to " + tgtType + "' from " + map.getUrl() + ", from rule '" + ruleid + "'");
     source.setUserData(kn, res);
     return res;
@@ -1397,7 +2143,7 @@ public class StructureMapUtilities {
     // check the aliases
     for (StructureMapStructureComponent imp : map.getStructure()) {
       if (imp.hasAlias() && statedType.equals(imp.getAlias())) {
-        StructureDefinition sd = worker.fetchResource(StructureDefinition.class, imp.getUrl());
+        StructureDefinition sd = worker.fetchResource(StructureDefinition.class, imp.getUrl(), ExtensionUtilities.getVersionResolutionRules(imp.getUrlElement()));
         if (sd != null)
           statedType = sd.getType();
         break;
@@ -1405,12 +2151,12 @@ public class StructureMapUtilities {
     }
 
     if (Utilities.isAbsoluteUrl(actualType)) {
-      StructureDefinition sd = worker.fetchResource(StructureDefinition.class, actualType);
+      StructureDefinition sd = worker.fetchResource(StructureDefinition.class, actualType, IWorkerContext.VersionResolutionRules.defaultRule());
       if (sd != null)
         actualType = sd.getType();
     }
     if (Utilities.isAbsoluteUrl(statedType)) {
-      StructureDefinition sd = worker.fetchResource(StructureDefinition.class, statedType);
+      StructureDefinition sd = worker.fetchResource(StructureDefinition.class, statedType, IWorkerContext.VersionResolutionRules.defaultRule());
       if (sd != null)
         statedType = sd.getType();
     }
@@ -1421,7 +2167,7 @@ public class StructureMapUtilities {
     // check the aliases
     for (StructureMapStructureComponent imp : map.getStructure()) {
       if (imp.hasAlias() && statedType.equals(imp.getAlias())) {
-        StructureDefinition sd = worker.fetchResource(StructureDefinition.class, imp.getUrl());
+        StructureDefinition sd = worker.fetchResource(StructureDefinition.class, imp.getUrl(), ExtensionUtilities.getVersionResolutionRules(imp.getUrlElement()));
         if (sd == null)
           throw new FHIRException("Unable to resolve structure " + imp.getUrl());
         return sd.getId(); // should be sd.getType(), but R2...
@@ -1436,19 +2182,17 @@ public class StructureMapUtilities {
     if (source.hasUserData(kn))
       return (ResolvedGroup) source.getUserData(kn);
 
-    ResolvedGroup res = new ResolvedGroup();
-    res.targetMap = null;
-    res.target = null;
+    ResolvedGroup res = new ResolvedGroup(null, null);
     for (StructureMapGroupComponent grp : map.getGroup()) {
       if (grp.getName().equals(name)) {
-        if (res.targetMap == null) {
-          res.targetMap = map;
-          res.target = grp;
+        if (res.getTargetMap() == null) {
+          res.setTargetMap(map);
+          res.setTargetGroup(grp);
         } else
           throw new FHIRException("Multiple possible matches for rule '" + name + "'");
       }
     }
-    if (res.targetMap != null) {
+    if (res.getTargetMap() != null) {
       source.setUserData(kn, res);
       return res;
     }
@@ -1461,19 +2205,19 @@ public class StructureMapUtilities {
         if (!impMap.getUrl().equals(map.getUrl())) {
           for (StructureMapGroupComponent grp : impMap.getGroup()) {
             if (grp.getName().equals(name)) {
-              if (res.targetMap == null) {
-                res.targetMap = impMap;
-                res.target = grp;
+              if (res.getTargetMap() == null) {
+                res.setTargetMap(impMap);
+                res.setTargetGroup(grp);
               } else
                 throw new FHIRException("Multiple possible matches for rule group '" + name + "' in " +
-                  res.targetMap.getUrl() + "#" + res.target.getName() + " and " +
+                  res.getTargetMap().getUrl() + "#" + res.getTargetGroup().getName() + " and " +
                   impMap.getUrl() + "#" + grp.getName());
             }
           }
         }
       }
     }
-    if (res.target == null)
+    if (res.getTargetGroup() == null)
       throw new FHIRException("No matches found for rule '" + name + "'. Reference found in " + map.getUrl());
     source.setUserData(kn, res);
     return res;
@@ -1498,9 +2242,25 @@ public class StructureMapUtilities {
       if (!src.hasElement())
         items.add(b);
       else {
-        getChildrenByName(b, src.getElement(), items);
-        if (items.size() == 0 && src.hasDefaultValue())
-          items.add(src.getDefaultValue());
+        items.add(b);
+        for (String element : elementPath(src)) {
+          List<Base> children = new ArrayList<>();
+          for (Base parent : items) {
+            getChildrenByName(parent, element, children);
+          }
+          items = children;
+        }
+        if (items.size() == 0 && src.hasDefaultValue()) {
+          // the default value property is a fhirpath expression that needs to be evaluated
+          ExpressionNode expr = (ExpressionNode) src.getUserData(MAP_DEFAULT_EXPRESSION);
+          if (expr == null) {
+            expr = fpe.parse(src.getDefaultValue());
+            src.setUserData(MAP_DEFAULT_EXPRESSION, expr);
+          }
+
+          List<Base> defaultValues = fpe.evaluate(vars, null, expr);
+          items.addAll(defaultValues);
+        }
       }
     }
 
@@ -1513,17 +2273,20 @@ public class StructureMapUtilities {
       }
       items.removeAll(remove);
     }
-
+    
     if (src.hasCondition()) {
       ExpressionNode expr = (ExpressionNode) src.getUserData(MAP_WHERE_EXPRESSION);
       if (expr == null) {
         expr = fpe.parse(src.getCondition());
-        //        fpe.check(context.appInfo, ??, ??, expr)
         src.setUserData(MAP_WHERE_EXPRESSION, expr);
       }
       List<Base> remove = new ArrayList<Base>();
       for (Base item : items) {
-        if (!fpe.evaluateToBoolean(vars, null, null, item, expr)) {
+        Variables varsForSource = vars.copy();
+        if (src.hasVariable()) {
+            varsForSource.add(VariableMode.INPUT, src.getVariable(), item);
+        }
+        if (!fpe.evaluateToBoolean(varsForSource, null, null, item, expr)) {
           log(indent + "  condition [" + src.getCondition() + "] for " + item.toString() + " : false");
           remove.add(item);
         } else
@@ -1536,12 +2299,14 @@ public class StructureMapUtilities {
       ExpressionNode expr = (ExpressionNode) src.getUserData(MAP_WHERE_CHECK);
       if (expr == null) {
         expr = fpe.parse(src.getCheck());
-        //        fpe.check(context.appInfo, ??, ??, expr)
         src.setUserData(MAP_WHERE_CHECK, expr);
       }
-      List<Base> remove = new ArrayList<Base>();
       for (Base item : items) {
-        if (!fpe.evaluateToBoolean(vars, null, null, item, expr))
+        Variables varsForSource = vars.copy();
+        if (src.hasVariable()) {
+            varsForSource.add(VariableMode.INPUT, src.getVariable(), item);
+        }
+        if (!fpe.evaluateToBoolean(varsForSource, null, null, item, expr))
           throw new FHIRException("Rule \"" + ruleId + "\": Check condition failed");
       }
     }
@@ -1550,16 +2315,26 @@ public class StructureMapUtilities {
       ExpressionNode expr = (ExpressionNode) src.getUserData(MAP_WHERE_LOG);
       if (expr == null) {
         expr = fpe.parse(src.getLogMessage());
-        //        fpe.check(context.appInfo, ??, ??, expr)
         src.setUserData(MAP_WHERE_LOG, expr);
       }
       CommaSeparatedStringBuilder b = new CommaSeparatedStringBuilder();
-      for (Base item : items)
-        b.appendIfNotNull(fpe.evaluateToString(vars, null, null, item, expr));
-      if (b.length() > 0)
-        services.log(b.toString());
+      for (Base item : items) {
+        Variables varsForSource = vars.copy();
+        if (src.hasVariable()) {
+            varsForSource.add(VariableMode.INPUT, src.getVariable(), item);
+        }
+        b.appendIfNotNull(fpe.evaluateToString(varsForSource, null, null, item, expr));
+      }
+      if (b.length() > 0) {
+        // the map's log(...) output is for the user: it goes to the transformer services, not just the debug log
+        String logMessage = b.toString();
+        if (getServices() != null) {
+          getServices().log(logMessage);
+        }
+        log.debug(logMessage);
+      }
     }
-
+    
 
     if (src.hasListMode() && !items.isEmpty()) {
       switch (src.getListMode()) {
@@ -1603,36 +2378,84 @@ public class StructureMapUtilities {
     return type.equals(item.fhirType());
   }
 
-  private void processTarget(String ruleId, TransformContext context, Variables vars, StructureMap map, StructureMapGroupComponent group, StructureMapGroupRuleTargetComponent tgt, String srcVar, boolean atRoot, Variables sharedVars) throws FHIRException {
+  private void processTarget(String rulePath, TransformContext context, Variables vars, StructureMap map, StructureMapGroupComponent group, StructureMapGroupRuleTargetComponent tgt, String srcVar, boolean atRoot, Variables sharedVars) throws FHIRException {
+    List<String> elements = elementPath(tgt);
+    String element = elements.isEmpty() ? null : elements.get(elements.size() - 1);
     Base dest = null;
     if (tgt.hasContext()) {
       dest = vars.get(VariableMode.OUTPUT, tgt.getContext());
-      if (dest == null)
-        throw new FHIRException("Rule \"" + ruleId + "\": target context not known: " + tgt.getContext());
-      if (!tgt.hasElement())
-        throw new FHIRException("Rule \"" + ruleId + "\": Not supported yet");
+      if (dest == null) {
+        throw new FHIRException("Rul \"" + rulePath + "\": target context not known: " + tgt.getContext());
+      }
     }
-    Base v = null;
+    Base v = !tgt.hasTransform() && tgt.hasListMode(StructureMapTargetListMode.SHARE)
+        ? sharedVars.get(VariableMode.SHARED, tgt.getListRuleId()) : null;
+    if (dest != null && v == null) {
+      for (int i = 0; i < elements.size() - 1; i++) {
+        dest = makeTargetProperty(dest, elements.get(i));
+        if (dest == null || dest.isPrimitive())
+          throw new FHIRException("Rule \"" + rulePath + "\": Cannot create intermediate target "
+              + tgt.getContext() + "." + String.join(".", elements.subList(0, i + 1)));
+      }
+    }
     if (tgt.hasTransform()) {
-      v = runTransform(ruleId, context, map, group, tgt, vars, dest, tgt.getElement(), srcVar, atRoot);
-      if (v != null && dest != null)
-        v = dest.setProperty(tgt.getElement().hashCode(), tgt.getElement(), v); // reset v because some implementations may have to rewrite v when setting the value
-    } else if (dest != null) {
+      v = runTransform(rulePath, context, map, group, tgt, vars, dest, element, srcVar, atRoot);
+      if (v != null && dest != null) {
+        try {
+          String propertyName = element;
+          if (!(dest instanceof Element)) {
+            org.hl7.fhir.r5.model.Property targetProperty = dest.getNamedProperty(propertyName.hashCode(), propertyName, false);
+            if (targetProperty != null && targetProperty.getName().endsWith("[x]")) {
+              String baseName = targetProperty.getName().replace("[x]", "");
+              if (!propertyName.equals(baseName) && !propertyName.equals(targetProperty.getName())
+                  && !propertyName.equals(baseName + Utilities.capitalize(v.fhirType()))) {
+                throw new FHIRException("Cannot assign " + v.fhirType() + " to choice property " + propertyName);
+              }
+              propertyName = baseName;
+            }
+          }
+          v = dest.setProperty(propertyName.hashCode(), propertyName, v); // reset v because some implementations may have to rewrite v when setting the value
+        } catch (Exception e) {
+          throw new FHIRException("Error setting "+element+" on "+dest.fhirType()+" for rule "+rulePath+" to value "+v.toString()+": "+e.getMessage(), e);
+        }
+      }
+    } else if (dest != null && v == null) {
       if (tgt.hasListMode(StructureMapTargetListMode.SHARE)) {
         v = sharedVars.get(VariableMode.SHARED, tgt.getListRuleId());
         if (v == null) {
-          v = dest.makeProperty(tgt.getElement().hashCode(), tgt.getElement());
+          v = makeTargetProperty(dest, element);
           sharedVars.add(VariableMode.SHARED, tgt.getListRuleId(), v);
         }
+      } else if (tgt.hasElement()) {
+        v = makeTargetProperty(dest, element);
       } else {
-        v = dest.makeProperty(tgt.getElement().hashCode(), tgt.getElement());
+        v = dest;
       }
     }
     if (tgt.hasVariable() && v != null)
       vars.add(VariableMode.OUTPUT, tgt.getVariable(), v);
   }
 
-  private Base runTransform(String ruleId, TransformContext context, StructureMap map, StructureMapGroupComponent group, StructureMapGroupRuleTargetComponent tgt, Variables vars, Base dest, String element, String srcVar, boolean root) throws FHIRException {
+  private Base makeTargetProperty(Base dest, String name) {
+    if (!(dest instanceof Element)) {
+      org.hl7.fhir.r5.model.Property p = dest.getNamedProperty(name.hashCode(), name, false);
+      if (p != null && p.getName().endsWith("[x]")
+          && name.equals(p.getName().replace("[x]", Utilities.capitalize(p.getTypeCode())))) {
+        if (!p.isList()) {
+          for (Base value : p.getValues()) {
+            if (value.fhirType().equals(p.getTypeCode())) {
+              return value;
+            }
+          }
+        }
+        String baseName = p.getName().replace("[x]", "");
+        return dest.setProperty(baseName.hashCode(), baseName, typeFactory(p.getTypeCode()));
+      }
+    }
+    return dest.makeProperty(name.hashCode(), name);
+  }
+
+  private Base runTransform(String rulePath, TransformContext context, StructureMap map, StructureMapGroupComponent group, StructureMapGroupRuleTargetComponent tgt, Variables vars, Base dest, String element, String srcVar, boolean root) throws FHIRException {
     try {
       switch (tgt.getTransform()) {
         case CREATE:
@@ -1645,7 +2468,7 @@ public class StructureMapUtilities {
             else if (srcVar != null) {
               tn = determineTypeFromSourceType(map, group, vars.get(VariableMode.INPUT, srcVar), types);
             } else
-              throw new Error("Cannot determine type implicitly because there is no single input variable");
+              throw new FHIRException("Cannot determine type implicitly because there is no single input variable");
           } else {
             tn = getParamStringNoNull(vars, tgt.getParameter().get(0), tgt.toString());
             // ok, now we resolve the type name against the import statements
@@ -1656,28 +2479,29 @@ public class StructureMapUtilities {
               }
             }
           }
-          Base res = services != null ? services.createType(context.getAppInfo(), tn) : ResourceFactory.createResourceOrType(tn);
+          Base res = services != null ? services.createType(context.getAppInfo(), tn, profileUtilities) : typeFactory(tn);
           if (res.isResource() && !res.fhirType().equals("Parameters")) {
 //	        res.setIdBase(tgt.getParameter().size() > 1 ? getParamString(vars, tgt.getParameter().get(0)) : UUID.randomUUID().toString().toLowerCase());
             if (services != null)
               res = services.createResource(context.getAppInfo(), res, root);
           }
-          if (tgt.hasUserData("profile"))
-            res.setUserData("profile", tgt.getUserData("profile"));
+          if (tgt.hasUserData(UserDataNames.map_profile))
+            res.setUserData(UserDataNames.map_profile, tgt.getUserData(UserDataNames.map_profile));
           return res;
         case COPY:
-          return getParam(vars, tgt.getParameter().get(0));
+          Base val = getParam(vars, tgt.getParameter().get(0));
+          return val != null ? val.copy() : val;
         case EVALUATE:
           ExpressionNode expr = (ExpressionNode) tgt.getUserData(MAP_EXPRESSION);
           if (expr == null) {
-            expr = fpe.parse(getParamStringNoNull(vars, tgt.getParameter().get(0), tgt.toString()));
-            tgt.setUserData(MAP_WHERE_EXPRESSION, expr);
+            expr = fpe.parse(getParamStringNoNull(vars, tgt.getParameter().get(tgt.getParameter().size() - 1), tgt.toString()));
+            tgt.setUserData(MAP_EXPRESSION, expr);
           }
           List<Base> v = fpe.evaluate(vars, null, null, tgt.getParameter().size() == 2 ? getParam(vars, tgt.getParameter().get(0)) : new BooleanType(false), expr);
           if (v.size() == 0)
             return null;
           else if (v.size() != 1)
-            throw new FHIRException("Rule \"" + ruleId + "\": Evaluation of " + expr.toString() + " returned " + v.size() + " objects");
+            throw new FHIRException("Rule \"" + rulePath+ "\": Evaluation of " + expr.toString() + " returned " + v.size() + " objects");
           else
             return v.get(0);
 
@@ -1691,29 +2515,70 @@ public class StructureMapUtilities {
           }
           return new StringType(src);
         case ESCAPE:
-          throw new Error("Rule \"" + ruleId + "\": Transform " + tgt.getTransform().toCode() + " not supported yet");
+          throw new FHIRException("Rule \"" + rulePath + "\": Transform " + tgt.getTransform().toCode() + " not supported yet");
         case CAST:
           src = getParamString(vars, tgt.getParameter().get(0));
           if (tgt.getParameter().size() == 1)
             throw new FHIRException("Implicit type parameters on cast not yet supported");
           String t = getParamString(vars, tgt.getParameter().get(1));
-          if (t.equals("string"))
-            return new StringType(src);
-          else
-            throw new FHIRException("cast to " + t + " not yet supported");
+          switch(t) {
+            case "boolean":
+              return new BooleanType(src);
+            case "integer":
+              return new IntegerType(src);
+            case  "integer64":
+              return new Integer64Type(src);
+            case  "string":
+              return new StringType(src);
+            case  "decimal":
+              return new DecimalType(src);
+            case  "uri":
+              return new UriType(src);
+            case  "base64Binary":
+              return new Base64BinaryType(src);
+            case  "instant":
+              return new InstantType(src);
+            case  "date":
+              return new DateType(src);
+            case  "dateTime":
+              return new DateTimeType(src);
+            case  "time":
+              return new TimeType(src);
+            case  "code":
+              return new CodeType(src);
+            case  "oid":
+              return new OidType(src);
+            case  "id":
+              return new IdType(src);
+            case  "markdown":
+              return new MarkdownType(src);
+            case  "unsignedInt":
+              return new UnsignedIntType(src);
+            case  "positiveInt":
+              return new PositiveIntType(src);
+            case  "uuid":
+              return new UuidType(src);
+            case  "url":
+              return new UrlType(src);
+            case  "canonical":
+              return new CanonicalType(src);
+          }
+          throw new FHIRException("cast to " + t + " not yet supported");
         case APPEND:
           StringBuilder sb = new StringBuilder(getParamString(vars, tgt.getParameter().get(0)));
-          for (int i = 1; i < tgt.getParameter().size(); i++)
-            sb.append(getParamString(vars, tgt.getParameter().get(i)));
+          for (int i = 1; i < tgt.getParameter().size(); i++) {
+            var appValue = getParamString(vars, tgt.getParameter().get(i));
+            sb.append(appValue == null ? "" : appValue);
+          }
           return new StringType(sb.toString());
         case TRANSLATE:
           return translate(context, map, vars, tgt.getParameter());
         case REFERENCE:
           Base b = getParam(vars, tgt.getParameter().get(0));
           if (b == null)
-            throw new FHIRException("Rule \"" + ruleId + "\": Unable to find parameter " + ((IdType) tgt.getParameter().get(0).getValue()).asStringValue());
+            throw new FHIRException("Rule \"" + rulePath + "\": Unable to find parameter " + ((IdType) tgt.getParameter().get(0).getValue()).asStringValue());
           if (!b.isResource())
-            throw new FHIRException("Rule \"" + ruleId + "\": Transform engine cannot point at an element of type " + b.fhirType());
+            throw new FHIRException("Rule \"" + rulePath + "\": Transform engine cannot point at an element of type " + b.fhirType());
           else {
             String id = b.getIdBase();
             if (id == null) {
@@ -1723,7 +2588,7 @@ public class StructureMapUtilities {
             return new StringType(b.fhirType() + "/" + id);
           }
         case DATEOP:
-          throw new Error("Rule \"" + ruleId + "\": Transform " + tgt.getTransform().toCode() + " not supported yet");
+          throw new FHIRException("Rule \"" + rulePath + "\": Transform " + tgt.getTransform().toCode() + " not supported yet");
         case UUID:
           return new IdType(UUID.randomUUID().toString());
         case POINTER:
@@ -1731,29 +2596,149 @@ public class StructureMapUtilities {
           if (b instanceof Resource)
             return new UriType("urn:uuid:" + ((Resource) b).getId());
           else
-            throw new FHIRException("Rule \"" + ruleId + "\": Transform engine cannot point at an element of type " + b.fhirType());
+            throw new FHIRException("Rule \"" + rulePath + "\": Transform engine cannot point at an element of type " + b.fhirType());
         case CC:
+          // cc(system, code [, display]), or cc(text) for a CodeableConcept with only a text value
           CodeableConcept cc = new CodeableConcept();
-          cc.addCoding(buildCoding(getParamStringNoNull(vars, tgt.getParameter().get(0), tgt.toString()), getParamStringNoNull(vars, tgt.getParameter().get(1), tgt.toString())));
+          String display = null;
+          if (tgt.getParameter().size() == 1) {
+            cc.setText(getParamStringNoNull(vars, tgt.getParameter().get(0), tgt.toString()));
+            return cc;
+          }
+          if (tgt.getParameter().size() > 2) {
+            display = getParamStringNoNull(vars, tgt.getParameter().get(2), tgt.toString());
+          }
+          cc.addCoding(buildCoding(getParamStringNoNull(vars, tgt.getParameter().get(0), tgt.toString()), getParamStringNoNull(vars, tgt.getParameter().get(1), tgt.toString()), display));
           return cc;
         case C:
-          Coding c = buildCoding(getParamStringNoNull(vars, tgt.getParameter().get(0), tgt.toString()), getParamStringNoNull(vars, tgt.getParameter().get(1), tgt.toString()));
+          String displayForCoding = null;
+          if (tgt.getParameter().size() > 2) {
+            displayForCoding = getParamStringNoNull(vars, tgt.getParameter().get(2), tgt.toString());
+          }
+          Coding c = buildCoding(getParamStringNoNull(vars, tgt.getParameter().get(0), tgt.toString()), getParamStringNoNull(vars, tgt.getParameter().get(1), tgt.toString()), displayForCoding);
           return c;
+        case ID:
+          if (tgt.getParameter().size() != 2 && tgt.getParameter().size() != 3) {
+            throw new FHIRException("Transform id requires 2 or 3 parameters");
+          }
+          org.hl7.fhir.r5.model.Identifier id = new org.hl7.fhir.r5.model.Identifier();
+          id.setSystem(getParamString(vars, tgt.getParameter().get(0)));
+          id.setValue(getParamString(vars, tgt.getParameter().get(1)));
+          if (tgt.getParameter().size() == 3) {
+            // The optional type parameter is a code from the identifier type value set (https://hl7.org/fhir/valueset-identifier-type.html)
+            var typeCode = getParamString(vars, tgt.getParameter().get(2));
+            id.setType(new CodeableConcept().addCoding(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/v2-0203").setCode(typeCode)));
+          }
+          return id;
+        case CP:
+          if (tgt.getParameter().size() == 2) {
+            org.hl7.fhir.r5.model.ContactPoint cp = new org.hl7.fhir.r5.model.ContactPoint();
+            cp.setSystem(ContactPoint.ContactPointSystem.fromCode(getParamStringNoNull(vars, tgt.getParameter().get(0), tgt.toString())));
+            cp.setValue(getParamString(vars, tgt.getParameter().get(1)));
+            return cp;
+          } else if (tgt.getParameter().size() == 1) {
+            return contactPointForValue(getParamStringNoNull(vars, tgt.getParameter().get(0), tgt.toString()));
+          } else {
+            throw new FHIRException("Transform cp requires 1 or 2 parameters");
+          }
+        case QTY:
+          int qtyParameterCount = tgt.getParameter().size();
+          if (qtyParameterCount != 1 && qtyParameterCount != 2 && qtyParameterCount != 4) {
+            throw new FHIRException("Transform qty requires 1, 2, or 4 parameters");
+          }
+          if (qtyParameterCount == 1) {
+            return parseQuantityText(getParamString(vars, tgt.getParameter().get(0)));
+          }
+          org.hl7.fhir.r5.model.Quantity qty = new org.hl7.fhir.r5.model.Quantity();
+          String qtyValueString = getParamStringNoNull(vars, tgt.getParameter().get(0), tgt.toString());
+          java.math.BigDecimal qtyValue;
+          try {
+            qtyValue = new java.math.BigDecimal(qtyValueString);
+          } catch (NumberFormatException e) {
+            throw new FHIRException("Transform qty: the value \"" + qtyValueString + "\" is not a decimal number", e);
+          }
+          var qtyUnit = getParamString(vars, tgt.getParameter().get(1));
+          qty.setValue(qtyValue);
+          qty.setUnit(qtyUnit);
+          if (qtyParameterCount == 4) {
+            var qtySystem = getParamString(vars, tgt.getParameter().get(2));
+            qty.setSystem(qtySystem);
+            var qtyCode = getParamString(vars, tgt.getParameter().get(3));
+            qty.setCode(qtyCode);
+          }
+          return qty;
         default:
-          throw new Error("Rule \"" + ruleId + "\": Transform Unknown: " + tgt.getTransform().toCode());
+          throw new FHIRException("Rule \"" + rulePath + "\": Transform Unknown: " + tgt.getTransform().toCode());
       }
     } catch (Exception e) {
-      throw new FHIRException("Exception executing transform " + tgt.toString() + " on Rule \"" + ruleId + "\": " + e.getMessage(), e);
+      throw new FHIRException("Exception executing transform " + tgt.toString() + " on Rule \"" + rulePath + "\": " + e.getMessage(), e);
+    }
+  }
+
+  private org.hl7.fhir.r5.model.Quantity parseQuantityText(String text) throws FHIRException {
+    String valueAndUnit = text == null ? "" : text.trim();
+    String comparator = null;
+    if (valueAndUnit.startsWith("<=") || valueAndUnit.startsWith(">=") || valueAndUnit.startsWith("ad")) {
+      comparator = valueAndUnit.substring(0, 2);
+      valueAndUnit = valueAndUnit.substring(2).trim();
+    } else if (valueAndUnit.startsWith("<") || valueAndUnit.startsWith(">")) {
+      comparator = valueAndUnit.substring(0, 1);
+      valueAndUnit = valueAndUnit.substring(1).trim();
+    }
+
+    int unitStart = -1;
+    for (int i = 0; i < valueAndUnit.length(); i++) {
+      if (Character.isWhitespace(valueAndUnit.charAt(i))) {
+        unitStart = i;
+        break;
+      }
+    }
+    String value = unitStart < 0 ? valueAndUnit : valueAndUnit.substring(0, unitStart);
+    String unit = unitStart < 0 ? null : valueAndUnit.substring(unitStart).trim();
+    if (unit != null && unit.length() >= 2 && unit.startsWith("'") && unit.endsWith("'")) {
+      unit = unit.substring(1, unit.length() - 1);
+    }
+
+    try {
+      org.hl7.fhir.r5.model.Quantity qty = new org.hl7.fhir.r5.model.Quantity();
+      qty.setValue(new java.math.BigDecimal(value));
+      if (comparator != null) {
+        qty.setComparator(Enumerations.QuantityComparator.fromCode(comparator));
+      }
+      if (!Utilities.noString(unit)) {
+        qty.setUnit(unit);
+      }
+      return qty;
+    } catch (NumberFormatException e) {
+      throw new FHIRException("Unable to parse quantity text \"" + text + "\": expected [comparator]value[space]unit", e);
+    }
+  }
+
+  private Base typeFactory(String tn) {
+    if (Utilities.isAbsoluteUrl(tn) && !tn.startsWith("http://hl7.org/fhir/StructureDefinition")) {
+      StructureDefinition sd = worker.fetchTypeDefinition(tn);
+      if (sd == null) {
+        if (Utilities.existsInList(tn, "http://hl7.org/fhirpath/System.String")) {
+          sd = worker.fetchTypeDefinition("string"); 
+        }
+      }
+      if (sd == null) {
+        throw new FHIRException("Unable to create type "+tn);
+      } else {
+        return Manager.build(worker, sd, profileUtilities);
+      }
+    } else {
+      return ResourceFactory.createResourceOrType(tn);
     }
   }
 
 
-  private Coding buildCoding(String uri, String code) throws FHIRException {
+  private Coding buildCodingUsingCodeInValueset(String uri, String code) throws FHIRException {
     // if we can get this as a valueSet, we will
     String system = null;
     String display = null;
     String version = null;
-    ValueSet vs = Utilities.noString(uri) ? null : worker.fetchResourceWithException(ValueSet.class, uri);
+    ValueSet vs = Utilities.noString(uri) ? null : worker.fetchResourceWithException(ValueSet.class, uri, IWorkerContext.VersionResolutionRules.defaultRule());
     if (vs != null) {
       ValueSetExpansionOutcome vse = worker.expandVS(vs, true, false);
       if (vse.getError() != null)
@@ -1780,7 +2765,7 @@ public class StructureMapUtilities {
     } else {
       system = uri;
     }
-    ValidationResult vr = worker.validateCode(terminologyServiceOptions.setVersionFlexible(true), system, version, code, null);
+    ValidationResult vr = worker.validateCode(terminologyServiceOptions.withVersionFlexible(true), system, version, code, null);
     if (vr != null && vr.getDisplay() != null)
       display = vr.getDisplay();
     return new Coding().setSystem(system).setCode(code).setDisplay(display);
@@ -1850,7 +2835,7 @@ public class StructureMapUtilities {
 
     String su = conceptMapUrl;
     if (conceptMapUrl.equals("http://hl7.org/fhir/ConceptMap/special-oid2uri")) {
-      String uri = worker.oid2Uri(src.getCode());
+      String uri = new ContextUtilities(worker).oid2Uri(src.getCode());
       if (uri == null)
         uri = "urn:oid:" + src.getCode();
       if ("uri".equals(fieldToReturn))
@@ -1870,8 +2855,10 @@ public class StructureMapUtilities {
           throw new FHIRException("Unable to translate - cannot find map " + conceptMapUrl);
       } else {
         if (conceptMapUrl.contains("#")) {
+          @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+          //single literal character split
           String[] p = conceptMapUrl.split("\\#");
-          StructureMap mapU = worker.fetchResource(StructureMap.class, p[0]);
+          StructureMap mapU = worker.fetchResource(StructureMap.class, p[0], IWorkerContext.VersionResolutionRules.defaultRule());
           for (Resource r : mapU.getContained()) {
             if (r instanceof ConceptMap && r.getId().equals(p[1])) {
               cmap = (ConceptMap) r;
@@ -1880,7 +2867,7 @@ public class StructureMapUtilities {
           }
         }
         if (cmap == null)
-          cmap = worker.fetchResource(ConceptMap.class, conceptMapUrl);
+          cmap = worker.fetchResource(ConceptMap.class, conceptMapUrl, IWorkerContext.VersionResolutionRules.defaultRule());
       }
       Coding outcome = null;
       boolean done = false;
@@ -1928,6 +2915,8 @@ public class StructureMapUtilities {
         return null;
       if ("code".equals(fieldToReturn))
         return new CodeType(outcome.getCode());
+      else if ("CodeableConcept".equals(fieldToReturn))
+        return new CodeableConcept(outcome);
       else
         return outcome;
     }
@@ -1947,26 +2936,40 @@ public class StructureMapUtilities {
    * @throws Exception
    */
   public StructureMapAnalysis analyse(Object appInfo, StructureMap map) throws FHIRException {
+    if (fpe == null) {
+      throw new Error("This method is not supported because no context was provided");
+    }
     ids.clear();
     StructureMapAnalysis result = new StructureMapAnalysis();
     TransformContext context = new TransformContext(appInfo);
     VariablesForProfiling vars = new VariablesForProfiling(this, false, false);
-    StructureMapGroupComponent start = map.getGroup().get(0);
-    for (StructureMapGroupInputComponent t : start.getInput()) {
-      PropertyWithType ti = resolveType(map, t.getType(), t.getMode());
-      if (t.getMode() == StructureMapInputMode.SOURCE)
-        vars.add(VariableMode.INPUT, t.getName(), ti);
-      else
-        vars.add(VariableMode.OUTPUT, t.getName(), createProfile(map, result.profiles, ti, start.getName(), start));
+    if (map.hasConst()) {
+      StructureMapConstantResolver constantResolver = new StructureMapConstantResolver(map, fpe);
+      for (StructureMapConstComponent constant : map.getConst()) {
+        TypeDetails constantTypes = new TypeDetails(CollectionStatus.SINGLETON);
+        for (Base value : constantResolver.resolve(constant.getName())) {
+          constantTypes.addType(value.fhirType());
+        }
+        vars.add(VariableMode.INPUT, constant.getName(), new PropertyWithType(constant.getName(), null, null, constantTypes));
+      }
     }
+    if (map.hasGroup()) {
+      StructureMapGroupComponent start = map.getGroup().get(0);
+      for (StructureMapGroupInputComponent t : start.getInput()) {
+        PropertyWithType ti = resolveType(map, t.getType(), t.getMode());
+        if (t.getMode() == StructureMapInputMode.SOURCE)
+          vars.add(VariableMode.INPUT, t.getName(), ti);
+        else
+          vars.add(VariableMode.OUTPUT, t.getName(), createProfile(map, result.profiles, ti, start.getName(), start));
+      }
+      result.summary = new XhtmlNode(NodeType.Element, "table").setAttribute("class", "grid");
+      XhtmlNode tr = result.summary.addTag("tr");
+      tr.addTag("td").addTag("b").addText("Source");
+      tr.addTag("td").addTag("b").addText("Target");
 
-    result.summary = new XhtmlNode(NodeType.Element, "table").setAttribute("class", "grid");
-    XhtmlNode tr = result.summary.addTag("tr");
-    tr.addTag("td").addTag("b").addText("Source");
-    tr.addTag("td").addTag("b").addText("Target");
-
-    log("Start Profiling Transform " + map.getUrl());
-    analyseGroup("", context, map, vars, start, result);
+      log("Start Profiling Transform " + map.getUrl());
+      analyseGroup("", context, map, vars, start, result);
+    }
     ProfileUtilities pu = new ProfileUtilities(worker, null, pkp);
     for (StructureDefinition sd : result.getProfiles())
       pu.cleanUpDifferential(sd);
@@ -2005,10 +3008,10 @@ public class StructureMapUtilities {
     XhtmlNode xs = tr.addTag("td");
     XhtmlNode xt = tr.addTag("td");
 
-    VariablesForProfiling srcVars = vars.copy();
-    if (rule.getSource().size() != 1)
-      throw new FHIRException("Rule \"" + rule.getName() + "\": not handled yet");
-    VariablesForProfiling source = analyseSource(rule.getName(), context, srcVars, rule.getSourceFirstRep(), xs);
+    VariablesForProfiling source = vars.copy();
+    for (StructureMapGroupRuleSourceComponent ruleSource : rule.getSource()) {
+      source = analyseSource(rule.getName(), context, source, ruleSource, xs);
+    }
 
     TargetWriter tw = new TargetWriter();
     for (StructureMapGroupRuleTargetComponent t : rule.getTarget()) {
@@ -2038,28 +3041,24 @@ public class StructureMapUtilities {
     }
 
     if (src.hasElement()) {
-      Property element = prop.getBaseProperty().getChild(prop.getTypes().getType(), src.getElement());
-      if (element == null)
-        throw new FHIRException("Rule \"" + ruleId + "\": Unknown element name " + src.getElement());
-      if (element.getDefinition().getMin() == 0)
-        optional = true;
-      if (element.getDefinition().getMax().equals("*"))
-        repeating = true;
-      VariablesForProfiling result = vars.copy(optional, repeating);
-      TypeDetails type = new TypeDetails(CollectionStatus.SINGLETON);
-      for (TypeRefComponent tr : element.getDefinition().getType()) {
-        if (!tr.hasCode())
-          throw new Error("Rule \"" + ruleId + "\": Element has no type");
-        ProfiledType pt = new ProfiledType(tr.getWorkingCode());
-        if (tr.hasProfile())
-          pt.addProfiles(tr.getProfile());
-        if (element.getDefinition().hasBinding())
-          pt.addBinding(element.getDefinition().getBinding());
-        type.addType(pt);
+      List<String> elements = elementPath(src);
+      for (int i = 0; i < elements.size(); i++) {
+        String name = elements.get(i);
+        if (prop.getBaseProperty() == null)
+          throw new FHIRException("Rule \"" + ruleId + "\": Unable to navigate to " + name + " from " + prop.getPath() + " (it has no known structure)");
+        Property element = prop.getBaseProperty().getChild(name, prop.getTypes());
+        String path = String.join(".", elements.subList(0, i + 1));
+        if (element == null)
+          throw new FHIRException("Rule \"" + ruleId + "\": Unknown element name " + path);
+        optional = optional || element.getDefinition().getMin() == 0;
+        repeating = repeating || element.isList();
+        TypeDetails type = analyseSourceTypes(ruleId, element, i == elements.size() - 1 ? src.getType() : null, path);
+        prop = new PropertyWithType(prop.getPath() + "." + name, element, null, type);
       }
-      td.addText(prop.getPath() + "." + src.getElement());
+      VariablesForProfiling result = vars.copy(optional, repeating);
+      td.addText(prop.getPath());
       if (src.hasVariable())
-        result.add(VariableMode.INPUT, src.getVariable(), new PropertyWithType(prop.getPath() + "." + src.getElement(), element, null, type));
+        result.add(VariableMode.INPUT, src.getVariable(), prop);
       return result;
     } else {
       td.addText(prop.getPath()); // ditto!
@@ -2067,8 +3066,31 @@ public class StructureMapUtilities {
     }
   }
 
+  private TypeDetails analyseSourceTypes(String ruleId, Property element, String filter, String path) {
+    TypeDetails type = new TypeDetails(CollectionStatus.SINGLETON);
+    boolean typeFilterMatched = filter == null;
+    for (TypeRefComponent tr : element.getDefinition().getType()) {
+      if (!tr.hasCode())
+        throw new FHIRException("Rule \"" + ruleId + "\": Element has no type");
+      if (filter != null && !filter.equals(tr.getWorkingCode()))
+        continue;
+      typeFilterMatched = true;
+      ProfiledType pt = new ProfiledType(tr.getWorkingCode());
+      if (tr.hasProfile())
+        pt.addProfiles(tr.getProfile());
+      if (element.getDefinition().hasBinding())
+        pt.addBinding(element.getDefinition().getBinding());
+      type.addType(pt);
+    }
+    if (!typeFilterMatched)
+      throw new FHIRException("Rule \"" + ruleId + "\": Type " + filter + " is not valid for element " + path);
+    return type;
+  }
+
 
   private void analyseTarget(String ruleId, TransformContext context, VariablesForProfiling vars, StructureMap map, StructureMapGroupRuleTargetComponent tgt, String tv, TargetWriter tw, List<StructureDefinition> profiles, String sliceName) throws FHIRException {
+    List<String> elements = elementPath(tgt);
+    String element = elements.isEmpty() ? null : elements.get(elements.size() - 1);
     VariableForProfiling var = null;
     if (tgt.hasContext()) {
       var = vars.get(VariableMode.OUTPUT, tgt.getContext());
@@ -2076,26 +3098,32 @@ public class StructureMapUtilities {
         throw new FHIRException("Rule \"" + ruleId + "\": target context not known: " + tgt.getContext());
       if (!tgt.hasElement())
         throw new FHIRException("Rule \"" + ruleId + "\": Not supported yet");
+      for (int i = 0; i < elements.size() - 1; i++) {
+        String name = elements.get(i);
+        TypeDetails intermediateType = analyseTargetType(var, name);
+        PropertyWithType intermediate = updateProfile(var, name, intermediateType, map, profiles, sliceName, null, tgt);
+        var = new VariableForProfiling(VariableMode.OUTPUT, tgt.getContext(), intermediate);
+      }
     }
 
 
     TypeDetails type = null;
-    if (tgt.hasTransform()) {
-      type = analyseTransform(context, map, tgt, var, vars);
+    boolean implicitCopy = tgt.getTransform() == StructureMapTransform.CREATE && !tgt.hasParameter()
+        && AUTO_VAR_NAME.equals(tv) && AUTO_VAR_NAME.equals(tgt.getVariable());
+    if (implicitCopy) {
+      type = vars.get(VariableMode.INPUT, tv).getProperty().getTypes();
+    } else if (tgt.hasTransform()) {
+      type = analyseTransform(context, map, tgt, var, vars, element);
     } else {
-      Property vp = var.getProperty().getBaseProperty().getChild(tgt.getElement(), tgt.getElement());
-      if (vp == null)
-        throw new FHIRException("Unknown Property " + tgt.getElement() + " on " + var.getProperty().getPath());
-
-      type = new TypeDetails(CollectionStatus.SINGLETON, vp.getType(tgt.getElement()));
+      type = analyseTargetType(var, element);
     }
 
-    if (tgt.getTransform() == StructureMapTransform.CREATE) {
+    if (tgt.getTransform() == StructureMapTransform.CREATE && tgt.hasParameter()) {
       String s = getParamString(vars, tgt.getParameter().get(0));
       if (worker.getResourceNames().contains(s))
         tw.newResource(tgt.getVariable(), s);
     } else {
-      boolean mapsSrc = false;
+      boolean mapsSrc = implicitCopy;
       for (StructureMapGroupRuleTargetParameterComponent p : tgt.getParameter()) {
         DataType pr = p.getValue();
         if (pr instanceof IdType && ((IdType) pr).asStringValue().equals(tv))
@@ -2103,24 +3131,39 @@ public class StructureMapUtilities {
       }
       if (mapsSrc) {
         if (var == null)
-          throw new Error("Rule \"" + ruleId + "\": Attempt to assign with no context");
-        tw.valueAssignment(tgt.getContext(), var.getProperty().getPath() + "." + tgt.getElement() + getTransformSuffix(tgt.getTransform()));
+          throw new FHIRException("Rule \"" + ruleId + "\": Attempt to assign with no context");
+        tw.valueAssignment(tgt.getContext(), var.getProperty().getPath() + "." + element
+            + (implicitCopy ? "" : getTransformSuffix(tgt.getTransform())));
       } else if (tgt.hasContext()) {
-        if (isSignificantElement(var.getProperty(), tgt.getElement())) {
+        if (isSignificantElement(var.getProperty(), element)) {
           String td = describeTransform(tgt);
           if (td != null)
-            tw.keyAssignment(tgt.getContext(), var.getProperty().getPath() + "." + tgt.getElement() + " = " + td);
+            tw.keyAssignment(tgt.getContext(), var.getProperty().getPath() + "." + element + " = " + td);
         }
       }
     }
     DataType fixed = generateFixedValue(tgt);
 
-    PropertyWithType prop = updateProfile(var, tgt.getElement(), type, map, profiles, sliceName, fixed, tgt);
+    PropertyWithType prop = updateProfile(var, element, type, map, profiles, sliceName, fixed, tgt);
     if (tgt.hasVariable())
       if (tgt.hasElement())
         vars.add(VariableMode.OUTPUT, tgt.getVariable(), prop);
       else
         vars.add(VariableMode.OUTPUT, tgt.getVariable(), prop);
+  }
+
+  private TypeDetails analyseTargetType(VariableForProfiling var, String element) {
+    if (var == null)
+      throw new FHIRException("Cannot infer a target type without a context");
+    Property property = var.getProperty().getBaseProperty().getChild(element, var.getProperty().getTypes());
+    if (property == null)
+      throw new FHIRException("Unknown Property " + element + " on " + var.getProperty().getPath());
+    if (property.getType() == null && !property.getDefinition().hasContentReference())
+      throw new FHIRException("Cannot infer a single type for " + var.getProperty().getPath() + "." + element);
+    String type = property.getType(element);
+    if (Utilities.noString(type))
+      throw new FHIRException("Cannot infer a single type for " + var.getProperty().getPath() + "." + element);
+    return new TypeDetails(CollectionStatus.SINGLETON, type);
   }
 
   private DataType generateFixedValue(StructureMapGroupRuleTargetComponent tgt) {
@@ -2143,23 +3186,111 @@ public class StructureMapUtilities {
       //case POINTER,
       //case EVALUATE,
       case CC:
-        CodeableConcept cc = new CodeableConcept();
-        cc.addCoding(buildCoding(tgt.getParameter().get(0).getValue(), tgt.getParameter().get(1).getValue()));
-        return cc;
+        // cc(system, code [, display]), or cc(text) for a CodeableConcept with only a text value.
+        // A parameter that isn't a primitive can't give a fixed value (allParametersFixed only rules out ids)
+        if (tgt.getParameter().size() == 1) {
+          String text = fixedParam(tgt, 0);
+          return text == null ? null : new CodeableConcept().setText(text);
+        } else {
+          Coding coding = fixedCoding(tgt);
+          return coding == null ? null : new CodeableConcept().addCoding(coding);
+        }
       case C:
-        return buildCoding(tgt.getParameter().get(0).getValue(), tgt.getParameter().get(1).getValue());
+        return fixedCoding(tgt);
       case QTY:
         return null;
-      //case ID,
-      //case CP,
+      case ID: {
+        String system = fixedParam(tgt, 0);
+        String value = fixedParam(tgt, 1);
+        if (system == null || value == null || tgt.getParameter().size() > 3)
+          return null;
+        org.hl7.fhir.r5.model.Identifier id = new org.hl7.fhir.r5.model.Identifier().setSystem(system).setValue(value);
+        if (tgt.getParameter().size() == 3) {
+          String typeCode = fixedParam(tgt, 2);
+          if (typeCode == null)
+            return null;
+          id.setType(new CodeableConcept().addCoding(new Coding().setSystem("http://terminology.hl7.org/CodeSystem/v2-0203").setCode(typeCode)));
+        }
+        return id;
+      }
+      case CP:
+        return fixedContactPoint(tgt);
       default:
         return null;
     }
   }
 
+
+  private Coding buildCoding(String system, String code, String display) {
+    var coding = new Coding().setSystem(system).setCode(code);
+    if (display != null)
+      coding.setDisplay(display);
+    return coding;
+  }
+
+  /**
+   * The value of a fixed (non-variable) transform parameter as a string, or null if it isn't one
+   * we can read - allParametersFixed only rules out IdType, so the value can still be complex
+   */
   @SuppressWarnings("rawtypes")
-  private Coding buildCoding(DataType value1, DataType value2) {
-    return new Coding().setSystem(((PrimitiveType) value1).asStringValue()).setCode(((PrimitiveType) value2).asStringValue());
+  private String fixedString(DataType value) {
+    return value instanceof PrimitiveType ? ((PrimitiveType) value).asStringValue() : null;
+  }
+
+  /**
+   * The value of fixed parameter {@code index} as a string, or null if there isn't one or it isn't a primitive
+   */
+  private String fixedParam(StructureMapGroupRuleTargetComponent tgt, int index) {
+    return index < tgt.getParameter().size() ? fixedString(tgt.getParameter().get(index).getValue()) : null;
+  }
+
+  /**
+   * c(system, code [, display]) / cc(system, code [, display]) with fixed values, or null if they can't be read
+   */
+  private Coding fixedCoding(StructureMapGroupRuleTargetComponent tgt) {
+    int count = tgt.getParameter().size();
+    String system = fixedParam(tgt, 0);
+    String code = fixedParam(tgt, 1);
+    String display = fixedParam(tgt, 2);
+    if (count < 2 || count > 3 || system == null || code == null || (count == 3 && display == null))
+      return null;
+    return buildCoding(system, code, display);
+  }
+
+  /**
+   * cp(system, value) or cp(value) with fixed values, or null if they can't be read
+   */
+  private ContactPoint fixedContactPoint(StructureMapGroupRuleTargetComponent tgt) {
+    int count = tgt.getParameter().size();
+    if (count == 2) {
+      String system = fixedParam(tgt, 0);
+      String value = fixedParam(tgt, 1);
+      if (system == null || value == null)
+        return null;
+      try {
+        return new ContactPoint().setSystem(ContactPoint.ContactPointSystem.fromCode(system)).setValue(value);
+      } catch (FHIRException e) {
+        return null; // not a valid system; the validator reports that
+      }
+    } else if (count == 1) {
+      String value = fixedParam(tgt, 0);
+      return value == null ? null : contactPointForValue(value);
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * cp(value): the system is inferred from the value - a url if it starts with http(s)://, an email
+   * address if it contains an @, and otherwise not known
+   */
+  private ContactPoint contactPointForValue(String value) {
+    ContactPoint cp = new ContactPoint().setValue(value);
+    if (value.startsWith("http://") || value.startsWith("https://"))
+      cp.setSystem(ContactPoint.ContactPointSystem.URL);
+    else if (value.contains("@"))
+      cp.setSystem(ContactPoint.ContactPointSystem.EMAIL);
+    return cp;
   }
 
   private boolean allParametersFixed(StructureMapGroupRuleTargetComponent tgt) {
@@ -2215,8 +3346,8 @@ public class StructureMapUtilities {
       throw new FHIRException("Describe Transform, but the uri is blank");
     if (Utilities.noString(code))
       throw new FHIRException("Describe Transform, but the code is blank");
-    Coding c = buildCoding(uri, code);
-    return TerminologyRenderer.describeSystem(c.getSystem()) + "#" + c.getCode() + (c.hasDisplay() ? "(" + c.getDisplay() + ")" : "");
+    Coding c = buildCodingUsingCodeInValueset(uri, code);
+    return c.getSystem() + "#" + c.getCode() + (c.hasDisplay() ? "(" + c.getDisplay() + ")" : "");
   }
 
 
@@ -2261,7 +3392,7 @@ public class StructureMapUtilities {
     if (var == null) {
       assert (Utilities.noString(element));
       // 1. start the new structure definition
-      StructureDefinition sdn = worker.fetchResource(StructureDefinition.class, type.getType());
+      StructureDefinition sdn = worker.fetchResource(StructureDefinition.class, type.getType(), IWorkerContext.VersionResolutionRules.defaultRule());
       if (sdn == null)
         throw new FHIRException("Unable to find definition for " + type.getType());
       ElementDefinition edn = sdn.getSnapshot().getElementFirstRep();
@@ -2279,7 +3410,7 @@ public class StructureMapUtilities {
       StructureDefinition sd = var.getProperty().getProfileProperty().getStructure();
       ElementDefinition ednew = sd.getDifferential().addElement();
       ednew.setPath(var.getProperty().getProfileProperty().getDefinition().getPath() + "." + pc.getName());
-      ednew.setUserData("slice-name", sliceName);
+      ednew.setUserData(UserDataNames.MAP_slice_name, sliceName); // todo.. why do this?
       ednew.setFixed(fixed);
       for (ProfiledType pt : type.getProfiledTypes()) {
         if (pt.hasBindings())
@@ -2322,6 +3453,9 @@ public class StructureMapUtilities {
   private boolean isCompatibleType(String t, String code) {
     if (t.equals(code))
       return true;
+    TypeDetails allowedType = new TypeDetails(CollectionStatus.SINGLETON, code);
+    if (allowedType.hasType(worker, t))
+      return true;
     if (t.equals("string")) {
       StructureDefinition sd = worker.fetchTypeDefinition(code);
       return sd != null && sd.getBaseDefinition().equals("http://hl7.org/fhir/StructureDefinition/string");
@@ -2329,45 +3463,83 @@ public class StructureMapUtilities {
     return false;
   }
 
-  private TypeDetails analyseTransform(TransformContext context, StructureMap map, StructureMapGroupRuleTargetComponent tgt, VariableForProfiling var, VariablesForProfiling vars) throws FHIRException {
+  private TypeDetails analyseTransform(TransformContext context, StructureMap map, StructureMapGroupRuleTargetComponent tgt, VariableForProfiling var, VariablesForProfiling vars, String element) throws FHIRException {
+    var tgtParameters = tgt.getParameter();
     switch (tgt.getTransform()) {
       case CREATE:
-        String p = getParamString(vars, tgt.getParameter().get(0));
+        if (tgtParameters.size() > 1)
+          throw new FHIRException("Transform " + tgt.getTransform().toCode() + " requires at most 1 parameter");
+        if (tgtParameters.isEmpty()) {
+          return analyseTargetType(var, element);
+        }
+        String p = getParamString(vars, tgtParameters.get(0));
         return new TypeDetails(CollectionStatus.SINGLETON, p);
+      case CAST:
+        if (tgtParameters.size() == 0 || tgtParameters.size() > 2)
+          throw new FHIRException("Transform " + tgt.getTransform().toCode() + " requires a source parameter, and optionally an output type");
+        if (tgtParameters.size() == 1) {
+          return analyseTargetType(var, element);
+        }
+        String castType = getParamString(vars, tgtParameters.get(1));
+        return new TypeDetails(CollectionStatus.SINGLETON, castType);
       case COPY:
-        return getParam(vars, tgt.getParameter().get(0));
+        return getParam(vars, tgtParameters.get(0));
       case EVALUATE:
         ExpressionNode expr = (ExpressionNode) tgt.getUserData(MAP_EXPRESSION);
         if (expr == null) {
-          expr = fpe.parse(getParamString(vars, tgt.getParameter().get(tgt.getParameter().size() - 1)));
-          tgt.setUserData(MAP_WHERE_EXPRESSION, expr);
+          expr = fpe.parse(getParamString(vars, tgtParameters.get(tgtParameters.size() - 1)));
         }
-        return fpe.check(vars, null, expr);
+        if (tgtParameters.size() == 2) {
+          TypeDetails expressionContext = getParam(vars, tgtParameters.get(0));
+          return fpe.checkOnTypes(vars, null, null, expressionContext, expr, new ArrayList<>());
+        }
+        return fpe.check(vars, null, null, expr);
       case TRANSLATE:
+        // the return type comes from the 3rd parameter
+        if (tgtParameters.size() >= 3) {
+          String param = getParamString(vars, tgtParameters.get(2));
+          if (param != null) {
+            if (param.equals("Coding") || param.equals("CodeableConcept") || param.equals("code"))
+              return new TypeDetails(CollectionStatus.SINGLETON, param);
+            throw new FHIRException("Invalid output format \"" + param + "\" provided to translate()");
+          }
+        }
+        // default to CodeableConcept, though this probably should fail here
         return new TypeDetails(CollectionStatus.SINGLETON, "CodeableConcept");
       case CC:
         ProfiledType res = new ProfiledType("CodeableConcept");
         if (tgt.getParameter().size() >= 2 && isParamId(vars, tgt.getParameter().get(1))) {
           TypeDetails td = vars.get(null, getParamId(vars, tgt.getParameter().get(1))).getProperty().getTypes();
           if (td != null && td.hasBinding())
-            // todo: do we need to check that there's no implicit translation her? I don't think we do...
+            // todo: do we need to check that there's no implicit translation here? I don't think we do...
             res.addBinding(td.getBinding());
         }
         return new TypeDetails(CollectionStatus.SINGLETON, res);
+      case ID:
+        return new TypeDetails(CollectionStatus.SINGLETON, "Identifier");
+      case CP:
+        return new TypeDetails(CollectionStatus.SINGLETON, "ContactPoint");
       case C:
         return new TypeDetails(CollectionStatus.SINGLETON, "Coding");
       case QTY:
         return new TypeDetails(CollectionStatus.SINGLETON, "Quantity");
+      case APPEND:
+      case TRUNCATE:
+        return new TypeDetails(CollectionStatus.SINGLETON, "string");
       case REFERENCE:
-        VariableForProfiling vrs = vars.get(VariableMode.OUTPUT, getParamId(vars, tgt.getParameterFirstRep()));
+        VariableForProfiling vrs = vars.get(null, getParamId(vars, tgt.getParameterFirstRep()));
         if (vrs == null)
           throw new FHIRException("Unable to resolve variable \"" + getParamId(vars, tgt.getParameterFirstRep()) + "\"");
-        String profile = vrs.getProperty().getProfileProperty().getStructure().getUrl();
+        String profile = vrs.getProperty().getProfileProperty() == null
+          ? vrs.getProperty().getTypes().getType()
+          : vrs.getProperty().getProfileProperty().getStructure().getUrl();
         TypeDetails td = new TypeDetails(CollectionStatus.SINGLETON);
         td.addType("Reference", profile);
         return td;
+      case UUID:
+        return new TypeDetails(CollectionStatus.SINGLETON, "id");
       default:
-        throw new Error("Transform Unknown or not handled yet: " + tgt.getTransform().toCode());
+        throw new FHIRException("Transform Unknown or not handled yet: " + tgt.getTransform().toCode());
     }
   }
 
@@ -2397,7 +3569,7 @@ public class StructureMapUtilities {
   private TypeDetails getParam(VariablesForProfiling vars, StructureMapGroupRuleTargetParameterComponent parameter) throws DefinitionException {
     DataType p = parameter.getValue();
     if (!(p instanceof IdType))
-      return new TypeDetails(CollectionStatus.SINGLETON, ProfileUtilities.sdNs(p.fhirType(), worker.getOverrideVersionNs()));
+      return new TypeDetails(CollectionStatus.SINGLETON, ProfileUtilities.sdNs(p.fhirType(), null));
     else {
       String n = ((IdType) p).asStringValue();
       VariableForProfiling b = vars.get(VariableMode.INPUT, n);
@@ -2430,7 +3602,7 @@ public class StructureMapUtilities {
     profile.setBaseDefinition(prop.getBaseProperty().getStructure().getUrl());
     profile.setName("Profile for " + profile.getType() + " for " + sliceName);
     profile.setUrl(map.getUrl().replace("StructureMap", "StructureDefinition") + "-" + profile.getType() + suffix);
-    ctxt.setUserData("profile", profile.getUrl()); // then we can easily assign this profile url for validation later when we actually transform
+    ctxt.setUserData(UserDataNames.map_profile, profile.getUrl()); // then we can easily assign this profile url for validation later when we actually transform
     profile.setId(map.getId() + "-" + profile.getType() + suffix);
     profile.setStatus(map.getStatus());
     profile.setExperimental(map.getExperimental());
@@ -2456,10 +3628,10 @@ public class StructureMapUtilities {
     for (StructureMapStructureComponent imp : map.getStructure()) {
       if ((imp.getMode() == StructureMapModelMode.SOURCE && mode == StructureMapInputMode.SOURCE) ||
         (imp.getMode() == StructureMapModelMode.TARGET && mode == StructureMapInputMode.TARGET)) {
-        StructureDefinition sd = worker.fetchResource(StructureDefinition.class, imp.getUrl());
+        StructureDefinition sd = worker.fetchResource(StructureDefinition.class, imp.getUrl(), ExtensionUtilities.getVersionResolutionRules(imp.getUrlElement()));
         if (sd == null)
           throw new FHIRException("Import " + imp.getUrl() + " cannot be resolved");
-        if (sd.getId().equals(type)) {
+        if ((imp.hasAlias() && imp.getAlias().equals(type)) || sd.getId().equals(type) || (sd.hasType() && sd.getType().equals(type))) {
           return new PropertyWithType(sd.getType(), new Property(worker, sd.getSnapshot().getElement().get(0), sd), null, new TypeDetails(CollectionStatus.SINGLETON, sd.getUrl()));
         }
       }
@@ -2472,8 +3644,8 @@ public class StructureMapUtilities {
     String id = getLogicalMappingId(sd);
     if (id == null)
       return null;
-    String prefix = ToolingExtensions.readStringExtension(sd, ToolingExtensions.EXT_MAPPING_PREFIX);
-    String suffix = ToolingExtensions.readStringExtension(sd, ToolingExtensions.EXT_MAPPING_SUFFIX);
+    String prefix = ExtensionUtilities.readStringExtension(sd, ExtensionDefinitions.EXT_MAPPING_PREFIX);
+    String suffix = ExtensionUtilities.readStringExtension(sd, ExtensionDefinitions.EXT_MAPPING_SUFFIX);
     if (prefix == null || suffix == null)
       return null;
     // we build this by text. Any element that has a mapping, we put it's mappings inside it....
@@ -2490,8 +3662,12 @@ public class StructureMapUtilities {
     b.append("\r\n");
     StructureMap map = parse(b.toString(), sd.getUrl());
     map.setId(tail(map.getUrl()));
-    if (!map.hasStatus())
+    if (!map.hasStatus()) {
       map.setStatus(PublicationStatus.DRAFT);
+    }
+    if (!map.hasDescription() && map.hasTitle()) {
+      map.setDescription(map.getTitle());
+    }
     map.getText().setStatus(NarrativeStatus.GENERATED);
     map.getText().setDiv(new XhtmlNode(NodeType.Element, "div"));
     map.getText().getDiv().addTag("pre").addText(render(map));
@@ -2506,7 +3682,7 @@ public class StructureMapUtilities {
 
   private void addChildMappings(StringBuilder b, String id, String indent, StructureDefinition sd, ElementDefinition ed, boolean inner) throws DefinitionException {
     boolean first = true;
-    List<ElementDefinition> children = profileUtilities.getChildMap(sd, ed);
+    List<ElementDefinition> children = profileUtilities.getChildMap(sd, ed, true).getList();
     for (ElementDefinition child : children) {
       if (first && inner) {
         b.append(" then {\r\n");
@@ -2548,6 +3724,109 @@ public class StructureMapUtilities {
 
   public void setTerminologyServiceOptions(ValidationOptions terminologyServiceOptions) {
     this.terminologyServiceOptions = terminologyServiceOptions;
+  }
+
+  public boolean isExceptionsForChecks() {
+    return exceptionsForChecks;
+  }
+
+  public void setExceptionsForChecks(boolean exceptionsForChecks) {
+    this.exceptionsForChecks = exceptionsForChecks;
+  }
+
+  public List<StructureMap> getMapsForUrl(List<StructureMap> maps, String url, StructureMapInputMode mode) {
+    List<StructureMap> res = new ArrayList<>();
+    for (StructureMap map : maps) {
+      if (mapIsForUrl(map, url, mode)) {
+        res.add(map);
+      }
+    }
+    return res;
+  }
+
+  private boolean mapIsForUrl(StructureMap map, String url, StructureMapInputMode mode) {
+    for (StructureMapGroupComponent grp : map.getGroup()) {
+      if (grp.getTypeMode() != StructureMapGroupTypeMode.NULL) {
+        for (StructureMapGroupInputComponent p : grp.getInput()) {
+          if (mode == null || mode == p.getMode()) { 
+            String t = resolveInputType(p, map);
+            if (url.equals(t)) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  public List<StructureMap> getMapsForUrlPrefix(List<StructureMap> maps, String url, StructureMapInputMode mode) {
+    List<StructureMap> res = new ArrayList<>();
+    for (StructureMap map : maps) {
+      if (mapIsForUrlPrefix(map, url, mode)) {
+        res.add(map);
+      }
+    }
+    return res;
+  }
+
+  private boolean mapIsForUrlPrefix(StructureMap map, String url, StructureMapInputMode mode) {
+    for (StructureMapGroupComponent grp : map.getGroup()) {
+      if (grp.getTypeMode() != StructureMapGroupTypeMode.NULL) {
+        for (StructureMapGroupInputComponent p : grp.getInput()) {
+          if (mode == null || mode == p.getMode()) { 
+            String t = resolveInputType(p, map);
+            if (t != null && t.startsWith(url)) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  private String resolveInputType(StructureMapGroupInputComponent p, StructureMap map) {
+    for (StructureMapStructureComponent struc : map.getStructure()) {
+      if (struc.hasAlias() && struc.getAlias().equals(p.getType())) {
+        return struc.getUrl();
+      }
+    }
+    return null;
+  }
+
+  public ResolvedGroup getGroupForUrl(StructureMap map, String url, StructureMapInputMode mode) {
+    for (StructureMapGroupComponent grp : map.getGroup()) {
+      if (grp.getTypeMode() != StructureMapGroupTypeMode.NULL) {
+        for (StructureMapGroupInputComponent p : grp.getInput()) {
+          if (mode == null || mode == p.getMode()) { 
+            String t = resolveInputType(p, map);
+            if (url.equals(t)) {
+              return new ResolvedGroup(map, grp);
+            }
+          }
+        }
+      }
+    }
+    return null;
+ }
+
+  public String getInputType(ResolvedGroup grp, StructureMapInputMode mode) {
+    if (grp.getTargetGroup().getInput().size() != 2 || grp.getTargetGroup().getInput().get(0).getMode() == grp.getTargetGroup().getInput().get(1).getMode()) {
+      return null;      
+    } else if (grp.getTargetGroup().getInput().get(0).getMode() == mode) {
+      return resolveInputType(grp.getTargetGroup().getInput().get(0), grp.getTargetMap());
+    } else {
+      return resolveInputType(grp.getTargetGroup().getInput().get(1), grp.getTargetMap());
+    }
+  }
+
+  public boolean isDebug() {
+    return debug;
+  }
+
+  public void setDebug(boolean debug) {
+    this.debug = debug;
   }
 
 }

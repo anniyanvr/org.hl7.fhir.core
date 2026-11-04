@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class TaskPriorityEnumFactory implements EnumFactory<TaskPriority> {
@@ -48,21 +44,23 @@ public class TaskPriorityEnumFactory implements EnumFactory<TaskPriority> {
       return TaskPriority.NORMAL;
     if ("high".equals(codeString))
       return TaskPriority.HIGH;
-    throw new IllegalArgumentException("Unknown TaskPriority code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown TaskPriority code '" + codeString + "'");
   }
 
   public String toCode(TaskPriority code) {
-    if (code == TaskPriority.LOW)
+       if (code == TaskPriority.NULL)
+           return null;
+       if (code == TaskPriority.LOW)
       return "low";
     if (code == TaskPriority.NORMAL)
       return "normal";
     if (code == TaskPriority.HIGH)
       return "high";
     return "?";
-  }
+   }
 
-    public String toSystem(TaskPriority code) {
-      return code.getSystem();
-      }
+  public String toSystem(TaskPriority code) {
+    return code.getSystem();
+  }
 
 }

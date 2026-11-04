@@ -251,13 +251,22 @@ public final class IdType extends UriType implements IPrimitiveType<String>, IId
     }
   }
 
+  @Override
+  public void assignValues(Base dst) {
+    copyValues((IdType) dst);
+  }
+
   /**
-   * @deprecated Use {@link #getIdPartAsBigDecimal()} instead (this method was
-   * deprocated because its name is ambiguous)
+   * the parsed component parts are state on this class: derived from the value, but only rebuilt
+   * when the value is set through setValue()
    */
-  @Deprecated
-  public BigDecimal asBigDecimal() {
-    return getIdPartAsBigDecimal();
+  public void copyValues(IdType dst) {
+    super.copyValues(dst);
+    dst.myBaseUrl = myBaseUrl;
+    dst.myHaveComponentParts = myHaveComponentParts;
+    dst.myResourceType = myResourceType;
+    dst.myUnqualifiedId = myUnqualifiedId;
+    dst.myUnqualifiedVersionId = myUnqualifiedVersionId;
   }
 
   @Override
@@ -490,6 +499,11 @@ public final class IdType extends UriType implements IPrimitiveType<String>, IId
   }
   @Override
   public String getValueAsString() {
+    return getValue();
+  }
+
+  @Override
+  public String asStringValue() {
     return getValue();
   }
 

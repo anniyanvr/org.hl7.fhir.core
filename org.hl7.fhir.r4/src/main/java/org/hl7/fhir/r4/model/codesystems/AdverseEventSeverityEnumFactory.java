@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class AdverseEventSeverityEnumFactory implements EnumFactory<AdverseEventSeverity> {
@@ -48,21 +44,23 @@ public class AdverseEventSeverityEnumFactory implements EnumFactory<AdverseEvent
       return AdverseEventSeverity.MODERATE;
     if ("severe".equals(codeString))
       return AdverseEventSeverity.SEVERE;
-    throw new IllegalArgumentException("Unknown AdverseEventSeverity code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown AdverseEventSeverity code '" + codeString + "'");
   }
 
   public String toCode(AdverseEventSeverity code) {
-    if (code == AdverseEventSeverity.MILD)
+       if (code == AdverseEventSeverity.NULL)
+           return null;
+       if (code == AdverseEventSeverity.MILD)
       return "mild";
     if (code == AdverseEventSeverity.MODERATE)
       return "moderate";
     if (code == AdverseEventSeverity.SEVERE)
       return "severe";
     return "?";
-  }
+   }
 
-    public String toSystem(AdverseEventSeverity code) {
-      return code.getSystem();
-      }
+  public String toSystem(AdverseEventSeverity code) {
+    return code.getSystem();
+  }
 
 }

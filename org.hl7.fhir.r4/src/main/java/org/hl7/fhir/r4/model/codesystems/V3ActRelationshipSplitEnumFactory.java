@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3ActRelationshipSplitEnumFactory implements EnumFactory<V3ActRelationshipSplit> {
@@ -50,11 +46,13 @@ public class V3ActRelationshipSplitEnumFactory implements EnumFactory<V3ActRelat
       return V3ActRelationshipSplit.I1;
     if ("IW".equals(codeString))
       return V3ActRelationshipSplit.IW;
-    throw new IllegalArgumentException("Unknown V3ActRelationshipSplit code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ActRelationshipSplit code '" + codeString + "'");
   }
 
   public String toCode(V3ActRelationshipSplit code) {
-    if (code == V3ActRelationshipSplit.E1)
+       if (code == V3ActRelationshipSplit.NULL)
+           return null;
+       if (code == V3ActRelationshipSplit.E1)
       return "E1";
     if (code == V3ActRelationshipSplit.EW)
       return "EW";
@@ -63,10 +61,10 @@ public class V3ActRelationshipSplitEnumFactory implements EnumFactory<V3ActRelat
     if (code == V3ActRelationshipSplit.IW)
       return "IW";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ActRelationshipSplit code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ActRelationshipSplit code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class IdentifierUseEnumFactory implements EnumFactory<IdentifierUse> {
@@ -50,11 +46,13 @@ public class IdentifierUseEnumFactory implements EnumFactory<IdentifierUse> {
       return IdentifierUse.TEMP;
     if ("secondary".equals(codeString))
       return IdentifierUse.SECONDARY;
-    throw new IllegalArgumentException("Unknown IdentifierUse code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown IdentifierUse code '" + codeString + "'");
   }
 
   public String toCode(IdentifierUse code) {
-    if (code == IdentifierUse.USUAL)
+       if (code == IdentifierUse.NULL)
+           return null;
+       if (code == IdentifierUse.USUAL)
       return "usual";
     if (code == IdentifierUse.OFFICIAL)
       return "official";
@@ -63,10 +61,10 @@ public class IdentifierUseEnumFactory implements EnumFactory<IdentifierUse> {
     if (code == IdentifierUse.SECONDARY)
       return "secondary";
     return "?";
-  }
+   }
 
-    public String toSystem(IdentifierUse code) {
-      return code.getSystem();
-      }
+  public String toSystem(IdentifierUse code) {
+    return code.getSystem();
+  }
 
 }

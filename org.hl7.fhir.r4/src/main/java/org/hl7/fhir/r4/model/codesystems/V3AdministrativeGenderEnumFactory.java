@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3AdministrativeGenderEnumFactory implements EnumFactory<V3AdministrativeGender> {
@@ -48,21 +44,23 @@ public class V3AdministrativeGenderEnumFactory implements EnumFactory<V3Administ
       return V3AdministrativeGender.M;
     if ("UN".equals(codeString))
       return V3AdministrativeGender.UN;
-    throw new IllegalArgumentException("Unknown V3AdministrativeGender code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3AdministrativeGender code '" + codeString + "'");
   }
 
   public String toCode(V3AdministrativeGender code) {
-    if (code == V3AdministrativeGender.F)
+       if (code == V3AdministrativeGender.NULL)
+           return null;
+       if (code == V3AdministrativeGender.F)
       return "F";
     if (code == V3AdministrativeGender.M)
       return "M";
     if (code == V3AdministrativeGender.UN)
       return "UN";
     return "?";
-  }
+   }
 
-    public String toSystem(V3AdministrativeGender code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3AdministrativeGender code) {
+    return code.getSystem();
+  }
 
 }

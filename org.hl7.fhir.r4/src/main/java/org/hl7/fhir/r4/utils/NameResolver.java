@@ -1,5 +1,7 @@
 package org.hl7.fhir.r4.utils;
 
+
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -28,7 +30,6 @@ package org.hl7.fhir.r4.utils;
   POSSIBILITY OF SUCH DAMAGE.
   
  */
-
 
 
 public interface NameResolver {

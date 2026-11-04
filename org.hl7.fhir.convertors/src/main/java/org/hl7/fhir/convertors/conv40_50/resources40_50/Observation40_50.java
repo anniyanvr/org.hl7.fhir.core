@@ -1,11 +1,18 @@
 package org.hl7.fhir.convertors.conv40_50.resources40_50;
 
 import org.hl7.fhir.convertors.context.ConversionContext40_50;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.*;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Annotation40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.CodeableConcept40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Identifier40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Range40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.SimpleQuantity40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Instant40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r5.model.Enumeration;
+import org.hl7.fhir.r5.model.Enumerations;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -63,8 +70,10 @@ public class Observation40_50 {
     if (src.hasIssued())
       tgt.setIssuedElement(Instant40_50.convertInstant(src.getIssuedElement()));
     for (org.hl7.fhir.r4.model.Reference t : src.getPerformer()) tgt.addPerformer(Reference40_50.convertReference(t));
-    if (src.hasValue())
+    if (src.hasValue()) {
       tgt.setValue(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getValue()));
+    }
+
     if (src.hasDataAbsentReason())
       tgt.setDataAbsentReason(CodeableConcept40_50.convertCodeableConcept(src.getDataAbsentReason()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getInterpretation())
@@ -113,8 +122,9 @@ public class Observation40_50 {
     if (src.hasIssued())
       tgt.setIssuedElement(Instant40_50.convertInstant(src.getIssuedElement()));
     for (org.hl7.fhir.r5.model.Reference t : src.getPerformer()) tgt.addPerformer(Reference40_50.convertReference(t));
-    if (src.hasValue())
+    if (src.hasValue()) {
       tgt.setValue(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getValue()));
+    }
     if (src.hasDataAbsentReason())
       tgt.setDataAbsentReason(CodeableConcept40_50.convertCodeableConcept(src.getDataAbsentReason()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getInterpretation())
@@ -139,84 +149,92 @@ public class Observation40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.ObservationStatus> convertObservationStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Observation.ObservationStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.ObservationStatus> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Enumerations.ObservationStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case REGISTERED:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ObservationStatus.REGISTERED);
-        break;
-      case PRELIMINARY:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ObservationStatus.PRELIMINARY);
-        break;
-      case FINAL:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ObservationStatus.FINAL);
-        break;
-      case AMENDED:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ObservationStatus.AMENDED);
-        break;
-      case CORRECTED:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ObservationStatus.CORRECTED);
-        break;
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ObservationStatus.CANCELLED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ObservationStatus.ENTEREDINERROR);
-        break;
-      case UNKNOWN:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ObservationStatus.UNKNOWN);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ObservationStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Enumerations.ObservationStatus> tgt = new Enumeration<>(new Enumerations.ObservationStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case REGISTERED:
+                  tgt.setValue(Enumerations.ObservationStatus.REGISTERED);
+                  break;
+              case PRELIMINARY:
+                  tgt.setValue(Enumerations.ObservationStatus.PRELIMINARY);
+                  break;
+              case FINAL:
+                  tgt.setValue(Enumerations.ObservationStatus.FINAL);
+                  break;
+              case AMENDED:
+                  tgt.setValue(Enumerations.ObservationStatus.AMENDED);
+                  break;
+              case CORRECTED:
+                  tgt.setValue(Enumerations.ObservationStatus.CORRECTED);
+                  break;
+              case CANCELLED:
+                  tgt.setValue(Enumerations.ObservationStatus.CANCELLED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(Enumerations.ObservationStatus.ENTEREDINERROR);
+                  break;
+              case UNKNOWN:
+                  tgt.setValue(Enumerations.ObservationStatus.UNKNOWN);
+                  break;
+              default:
+                  tgt.setValue(Enumerations.ObservationStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Observation.ObservationStatus> convertObservationStatus(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.ObservationStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Observation.ObservationStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Observation.ObservationStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case REGISTERED:
-        tgt.setValue(org.hl7.fhir.r4.model.Observation.ObservationStatus.REGISTERED);
-        break;
-      case PRELIMINARY:
-        tgt.setValue(org.hl7.fhir.r4.model.Observation.ObservationStatus.PRELIMINARY);
-        break;
-      case FINAL:
-        tgt.setValue(org.hl7.fhir.r4.model.Observation.ObservationStatus.FINAL);
-        break;
-      case AMENDED:
-        tgt.setValue(org.hl7.fhir.r4.model.Observation.ObservationStatus.AMENDED);
-        break;
-      case CORRECTED:
-        tgt.setValue(org.hl7.fhir.r4.model.Observation.ObservationStatus.CORRECTED);
-        break;
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r4.model.Observation.ObservationStatus.CANCELLED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.Observation.ObservationStatus.ENTEREDINERROR);
-        break;
-      case UNKNOWN:
-        tgt.setValue(org.hl7.fhir.r4.model.Observation.ObservationStatus.UNKNOWN);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.Observation.ObservationStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<Observation.ObservationStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new Observation.ObservationStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case REGISTERED:
+                  tgt.setValue(Observation.ObservationStatus.REGISTERED);
+                  break;
+              case PRELIMINARY:
+                  tgt.setValue(Observation.ObservationStatus.PRELIMINARY);
+                  break;
+              case FINAL:
+                  tgt.setValue(Observation.ObservationStatus.FINAL);
+                  break;
+              case AMENDED:
+                  tgt.setValue(Observation.ObservationStatus.AMENDED);
+                  break;
+              case CORRECTED:
+                  tgt.setValue(Observation.ObservationStatus.CORRECTED);
+                  break;
+              case CANCELLED:
+                  tgt.setValue(Observation.ObservationStatus.CANCELLED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(Observation.ObservationStatus.ENTEREDINERROR);
+                  break;
+              case UNKNOWN:
+                  tgt.setValue(Observation.ObservationStatus.UNKNOWN);
+                  break;
+              default:
+                  tgt.setValue(Observation.ObservationStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r5.model.Observation.ObservationReferenceRangeComponent convertObservationReferenceRangeComponent(org.hl7.fhir.r4.model.Observation.ObservationReferenceRangeComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Observation.ObservationReferenceRangeComponent tgt = new org.hl7.fhir.r5.model.Observation.ObservationReferenceRangeComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasLow())
       tgt.setLow(SimpleQuantity40_50.convertSimpleQuantity(src.getLow()));
     if (src.hasHigh())
@@ -228,7 +246,7 @@ public class Observation40_50 {
     if (src.hasAge())
       tgt.setAge(Range40_50.convertRange(src.getAge()));
     if (src.hasText())
-      tgt.setTextElement(String40_50.convertString(src.getTextElement()));
+      tgt.setTextElement(String40_50.convertStringToMarkdown(src.getTextElement()));
     return tgt;
   }
 
@@ -236,7 +254,7 @@ public class Observation40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Observation.ObservationReferenceRangeComponent tgt = new org.hl7.fhir.r4.model.Observation.ObservationReferenceRangeComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasLow())
       tgt.setLow(SimpleQuantity40_50.convertSimpleQuantity(src.getLow()));
     if (src.hasHigh())
@@ -256,11 +274,12 @@ public class Observation40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Observation.ObservationComponentComponent tgt = new org.hl7.fhir.r5.model.Observation.ObservationComponentComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCode())
       tgt.setCode(CodeableConcept40_50.convertCodeableConcept(src.getCode()));
-    if (src.hasValue())
+    if (src.hasValue()) {
       tgt.setValue(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getValue()));
+    }
     if (src.hasDataAbsentReason())
       tgt.setDataAbsentReason(CodeableConcept40_50.convertCodeableConcept(src.getDataAbsentReason()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getInterpretation())
@@ -274,11 +293,12 @@ public class Observation40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Observation.ObservationComponentComponent tgt = new org.hl7.fhir.r4.model.Observation.ObservationComponentComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCode())
       tgt.setCode(CodeableConcept40_50.convertCodeableConcept(src.getCode()));
-    if (src.hasValue())
+    if (src.hasValue()) {
       tgt.setValue(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getValue()));
+    }
     if (src.hasDataAbsentReason())
       tgt.setDataAbsentReason(CodeableConcept40_50.convertCodeableConcept(src.getDataAbsentReason()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getInterpretation())

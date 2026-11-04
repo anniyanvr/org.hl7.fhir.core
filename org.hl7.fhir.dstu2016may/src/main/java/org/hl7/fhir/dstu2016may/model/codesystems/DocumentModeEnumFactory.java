@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class DocumentModeEnumFactory implements EnumFactory<DocumentMode> {
@@ -46,19 +42,21 @@ public class DocumentModeEnumFactory implements EnumFactory<DocumentMode> {
       return DocumentMode.PRODUCER;
     if ("consumer".equals(codeString))
       return DocumentMode.CONSUMER;
-    throw new IllegalArgumentException("Unknown DocumentMode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown DocumentMode code '" + codeString + "'");
   }
 
   public String toCode(DocumentMode code) {
-    if (code == DocumentMode.PRODUCER)
+       if (code == DocumentMode.NULL)
+           return null;
+       if (code == DocumentMode.PRODUCER)
       return "producer";
     if (code == DocumentMode.CONSUMER)
       return "consumer";
     return "?";
-  }
+   }
 
-    public String toSystem(DocumentMode code) {
-      return code.getSystem();
-      }
+  public String toSystem(DocumentMode code) {
+    return code.getSystem();
+  }
 
 }

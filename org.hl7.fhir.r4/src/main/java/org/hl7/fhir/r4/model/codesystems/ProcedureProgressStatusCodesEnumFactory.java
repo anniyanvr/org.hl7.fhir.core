@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ProcedureProgressStatusCodesEnumFactory implements EnumFactory<ProcedureProgressStatusCodes> {
@@ -54,11 +50,13 @@ public class ProcedureProgressStatusCodesEnumFactory implements EnumFactory<Proc
       return ProcedureProgressStatusCodes.CLOSEDINCISION;
     if ("in-recovery-room".equals(codeString))
       return ProcedureProgressStatusCodes.INRECOVERYROOM;
-    throw new IllegalArgumentException("Unknown ProcedureProgressStatusCodes code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ProcedureProgressStatusCodes code '" + codeString + "'");
   }
 
   public String toCode(ProcedureProgressStatusCodes code) {
-    if (code == ProcedureProgressStatusCodes.INOPERATINGROOM)
+       if (code == ProcedureProgressStatusCodes.NULL)
+           return null;
+       if (code == ProcedureProgressStatusCodes.INOPERATINGROOM)
       return "in-operating-room";
     if (code == ProcedureProgressStatusCodes.PREPARED)
       return "prepared";
@@ -71,10 +69,10 @@ public class ProcedureProgressStatusCodesEnumFactory implements EnumFactory<Proc
     if (code == ProcedureProgressStatusCodes.INRECOVERYROOM)
       return "in-recovery-room";
     return "?";
-  }
+   }
 
-    public String toSystem(ProcedureProgressStatusCodes code) {
-      return code.getSystem();
-      }
+  public String toSystem(ProcedureProgressStatusCodes code) {
+    return code.getSystem();
+  }
 
 }

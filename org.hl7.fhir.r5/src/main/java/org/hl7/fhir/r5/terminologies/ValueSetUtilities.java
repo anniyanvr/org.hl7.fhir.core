@@ -1,5 +1,12 @@
 package org.hl7.fhir.r5.terminologies;
 
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -30,42 +37,121 @@ package org.hl7.fhir.r5.terminologies;
  */
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r5.context.IWorkerContext;
-import org.hl7.fhir.r5.model.CanonicalType;
-import org.hl7.fhir.r5.model.CodeSystem;
-import org.hl7.fhir.r5.model.Enumerations.FilterOperator;
+import org.hl7.fhir.r5.extensions.ExtensionDefinitions;
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
+import org.hl7.fhir.r5.model.*;
 import org.hl7.fhir.r5.model.Enumerations.PublicationStatus;
-import org.hl7.fhir.r5.model.Identifier;
-import org.hl7.fhir.r5.model.Meta;
-import org.hl7.fhir.r5.model.UriType;
-import org.hl7.fhir.r5.model.ValueSet;
+import org.hl7.fhir.r5.model.Parameters.ParametersParameterComponent;
+import org.hl7.fhir.r5.model.CodeSystem.ConceptDefinitionComponent;
+import org.hl7.fhir.r5.model.ValueSet.ConceptReferenceComponent;
 import org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent;
-import org.hl7.fhir.r5.utils.ToolingExtensions;
+import org.hl7.fhir.r5.model.ValueSet.ValueSetComposeComponent;
+import org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionComponent;
+import org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionContainsComponent;
+import org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionPropertyComponent;
+import org.hl7.fhir.r5.utils.CanonicalResourceUtilities;
+
+import org.hl7.fhir.utilities.UserDataNames;
+import org.hl7.fhir.utilities.NaturalOrderComparator;
 import org.hl7.fhir.utilities.StandardsStatus;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.VersionUtilities;
 
-public class ValueSetUtilities {
+@Slf4j
+public class ValueSetUtilities extends TerminologyUtilities {
 
-  public static ValueSet makeShareable(ValueSet vs) {
-    if (!vs.hasMeta())
-      vs.setMeta(new Meta());
-    for (UriType t : vs.getMeta().getProfile()) 
-      if (t.getValue().equals("http://hl7.org/fhir/StructureDefinition/shareablevalueset"))
-        return vs;
-    vs.getMeta().getProfile().add(new CanonicalType("http://hl7.org/fhir/StructureDefinition/shareablevalueset"));
+  public static class ValueSetSorter implements Comparator<ValueSet> {
+
+    @Override
+    public int compare(ValueSet o1, ValueSet o2) {
+      String url1 = o1.getUrl();
+      String url2 = o2.getUrl();
+      int c = compareString(url1, url2);
+      if (c == 0) {
+        String ver1 = o1.getVersion();
+        String ver2 = o2.getVersion();
+        c = compareVersions(ver1, ver2);
+        if (c == 0) {
+          String d1 = o1.getDateElement().asStringValue();
+          String d2 = o2.getDateElement().asStringValue();
+          c = compareString(url1, url2);
+        }
+      }
+      return c;
+    }
+
+    private int compareVersions(String v1, String v2) {
+      if (v1 == null && v2 == null) {
+        return 0;
+      } else if (v1 == null) {
+        return -1; // this order is deliberate
+      } else if (v2 == null) {
+        return 1;
+      } else if (VersionUtilities.isSemVer(v1, true) && VersionUtilities.isSemVer(v2, true)) {
+        return VersionUtilities.compareVersions(v1, v2);
+      } else if (Utilities.isInteger(v1) && Utilities.isInteger(v2)) {
+        return Integer.compare(Integer.parseInt(v1), Integer.parseInt(v2));
+      } else {
+        return new NaturalOrderComparator<String>().compare(v1, v2);
+      }
+    }
+
+    private int compareString(String s1, String s2) {
+      if (s1 == null) {
+        return s2 == null ? 0 : 1;
+      } else {
+        return s1.compareTo(s2);
+      }
+    }
+
+  }
+
+  public static boolean isServerSide(String url) {
+    // this is required to work around placeholders or bad definitions in THO (cvx)
+    return Utilities.existsInList(url,
+      "http://hl7.org/fhir/sid/cvx",
+      "http://loinc.org",
+      "http://snomed.info/sct",
+      "http://www.nlm.nih.gov/research/umls/rxnorm",
+      "http://www.ama-assn.org/go/cpt",
+      "http://hl7.org/fhir/ndfrt",
+      "http://hl7.org/fhir/sid/ndc", 
+      "http://hl7.org/fhir/sid/icd-10",
+      "http://hl7.org/fhir/sid/icd-9-cm",
+      "http://hl7.org/fhir/sid/icd-10-cm");
+  }
+
+  public static boolean isServerSide(Coding c) {
+    return isServerSide(c.getSystem());
+  }
+
+  public static boolean hasServerSide(CodeableConcept cc) {
+    for (Coding c : cc.getCoding()) {
+      if (isServerSide(c)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static ValueSet makeShareable(ValueSet vs, boolean extension) {
+    if (!vs.hasExperimental()) {
+      vs.setExperimental(false);
+    }
+    if (extension) {
+      if (!vs.hasMeta())
+        vs.setMeta(new Meta());
+      for (UriType t : vs.getMeta().getProfile())
+        if (t.getValue().equals("http://hl7.org/fhir/StructureDefinition/shareablevalueset"))
+          return vs;
+      vs.getMeta().getProfile().add(new CanonicalType("http://hl7.org/fhir/StructureDefinition/shareablevalueset"));
+    }
     return vs;
   }
 
-  public static boolean makeVSShareable(ValueSet vs) {
-    if (!vs.hasMeta())
-      vs.setMeta(new Meta());
-    for (UriType t : vs.getMeta().getProfile()) 
-      if (t.getValue().equals("http://hl7.org/fhir/StructureDefinition/shareablevalueset"))
-        return false;
-    vs.getMeta().getProfile().add(new CanonicalType("http://hl7.org/fhir/StructureDefinition/shareablevalueset"));
-    return true;
-  }
 
   public static void checkShareable(ValueSet vs) {
     if (!vs.hasMeta())
@@ -75,6 +161,32 @@ public class ValueSetUtilities {
         return;
     }
     throw new Error("ValueSet "+vs.getUrl()+" is not shareable");    
+  }
+
+  /**
+   * Check that the expansion contains no nested codes - e.g. that it is suitable for generating 
+   * a flat list of codes (enums in code generation, the expansions pack). Expansions come out 
+   * nested when they are produced with hierarchical = true (excludeNested = false)
+   */
+  public static void checkExpansionIsFlat(ValueSet vs) throws FHIRException {
+    if (vs != null && vs.hasExpansion()) {
+      String explanation = ". There is no expansion excludeNested parameter";
+      for (ValueSet.ValueSetExpansionParameterComponent p : vs.getExpansion().getParameter()) {
+        if ("excludeNested".equals(p.getName())) {
+          if ("true".equals(p.getValue().primitiveValue())) {
+            explanation = ". The expansion expansion parameter is excludeNested true";
+          } else {
+            explanation = ". The expansion expansion parameter is false";
+          }
+        }
+      }
+      String purpose = vs.getUserString(UserDataNames.EXPANSION_PURPOSE);
+      for (ValueSetExpansionContainsComponent cc : vs.getExpansion().getContains()) {
+        if (cc.hasContains()) {
+          throw new FHIRException("The "+(purpose == null ? "" : purpose+" ")+"expansion of the value set "+vs.getVersionedUrl()+" is not flat: the code '"+cc.getCode()+"' contains nested codes (starting with '"+cc.getContains().get(0).getCode()+"')"+explanation);
+        }
+      }
+    }
   }
 
   public static boolean hasOID(ValueSet vs) {
@@ -101,45 +213,38 @@ public class ValueSetUtilities {
     vs.addIdentifier().setSystem("urn:ietf:rfc:3986").setValue(oid);
   }
 
-  public static void markStatus(ValueSet vs, String wg, StandardsStatus status, String pckage, String fmm, IWorkerContext context, String normativeVersion) throws FHIRException {
-    if (vs.hasUserData("external.url"))
+  public static void markStatus(ValueSet vs, String wg, StandardsStatus status, String fmm, IWorkerContext context, String normativeVersion, String thisVersion) throws FHIRException {
+    if (vs.hasUserData(UserDataNames.render_external_link))
       return;
     
     if (wg != null) {
-      if (!ToolingExtensions.hasExtension(vs, ToolingExtensions.EXT_WORKGROUP) || 
-          (!Utilities.existsInList(ToolingExtensions.readStringExtension(vs, ToolingExtensions.EXT_WORKGROUP), "fhir", "vocab") && Utilities.existsInList(wg, "fhir", "vocab"))) {
-        ToolingExtensions.setCodeExtension(vs, ToolingExtensions.EXT_WORKGROUP, wg);
+      if (!ExtensionUtilities.hasExtension(vs, ExtensionDefinitions.EXT_WORKGROUP) ||
+          (!Utilities.existsInList(ExtensionUtilities.readStringExtension(vs, ExtensionDefinitions.EXT_WORKGROUP), "fhir", "vocab") && Utilities.existsInList(wg, "fhir", "vocab"))) {
+        CanonicalResourceUtilities.setHl7WG(vs, wg);
       }
     }
     if (status != null) {
-      StandardsStatus ss = ToolingExtensions.getStandardsStatus(vs);
+      StandardsStatus ss = ExtensionUtilities.getStandardsStatus(vs);
       if (ss == null || ss.isLowerThan(status)) 
-        ToolingExtensions.setStandardsStatus(vs, status, normativeVersion);
-      if (pckage != null) {
-        if (!vs.hasUserData("ballot.package"))        
-          vs.setUserData("ballot.package", pckage);
-        else if (!pckage.equals(vs.getUserString("ballot.package")))
-          if (!"infrastructure".equals(vs.getUserString("ballot.package")))
-          System.out.println("Value Set "+vs.getUrl()+": ownership clash "+pckage+" vs "+vs.getUserString("ballot.package"));
-      }
+        ExtensionUtilities.setStandardsStatus(vs, status, normativeVersion, context.getVersion());
       if (status == StandardsStatus.NORMATIVE) {
-        vs.setExperimental(false);
         vs.setStatus(PublicationStatus.ACTIVE);
       }
     }
     if (fmm != null) {
-      String sfmm = ToolingExtensions.readStringExtension(vs, ToolingExtensions.EXT_FMM_LEVEL);
-      if (Utilities.noString(sfmm) || Integer.parseInt(sfmm) < Integer.parseInt(fmm)) 
-        ToolingExtensions.setIntegerExtension(vs, ToolingExtensions.EXT_FMM_LEVEL, Integer.parseInt(fmm));
+      String sfmm = ExtensionUtilities.readStringExtension(vs, ExtensionDefinitions.EXT_FMM_LEVEL);
+      if (Utilities.noString(sfmm) || Integer.parseInt(sfmm) < Integer.parseInt(fmm))  {
+        ExtensionUtilities.setIntegerExtension(vs, ExtensionDefinitions.EXT_FMM_LEVEL, Integer.parseInt(fmm));
+      }
     }
-    if (vs.hasUserData("cs"))
-      CodeSystemUtilities.markStatus((CodeSystem) vs.getUserData("cs"), wg, status, pckage, fmm, normativeVersion);
+    if (vs.hasUserData(UserDataNames.TX_ASSOCIATED_CODESYSTEM))
+      CodeSystemUtilities.markStatus((CodeSystem) vs.getUserData(UserDataNames.TX_ASSOCIATED_CODESYSTEM), wg, status, fmm, normativeVersion, thisVersion);
     else if (status == StandardsStatus.NORMATIVE && context != null) {
       for (ConceptSetComponent csc : vs.getCompose().getInclude()) {
         if (csc.hasSystem()) {
-          CodeSystem cs = context.fetchCodeSystem(csc.getSystem());
+          CodeSystem cs = context.fetchCodeSystem(csc.getSystem(), ExtensionUtilities.getVersionResolutionRules(csc.getSystemElement()));
           if (cs != null) {
-            CodeSystemUtilities.markStatus(cs, wg, status, pckage, fmm, normativeVersion);
+            CodeSystemUtilities.markStatus(cs, wg, status, fmm, normativeVersion, context.getVersion());
           }
         }
       }
@@ -160,71 +265,352 @@ public class ValueSetUtilities {
     return -1;
   }
 
-  public static ValueSet generateImplicitValueSet(String uri) {
-    if (uri.startsWith("http://snomed.info/sct"))
-      return generateImplicitSnomedValueSet(uri);
-    if (uri.startsWith("http://loinc.org/vs"))
-      return generateImplicitLoincValueSet(uri);
-    if (uri.equals("http://hl7.org/fhir/ValueSet/mimetypes")) {
-      return generateImplicitMimetypesValueSet(uri);
+
+  public static class ConceptReferenceComponentSorter implements Comparator<ConceptReferenceComponent> {
+
+    @Override
+    public int compare(ConceptReferenceComponent o1, ConceptReferenceComponent o2) {
+      return o1.getCode().compareToIgnoreCase(o2.getCode());
+    }
+  }
+
+
+  public static void sortInclude(ConceptSetComponent inc) {
+    Collections.sort(inc.getConcept(), new ConceptReferenceComponentSorter());
+  }
+
+  public static String getAllCodesSystem(ValueSet vs) {
+    if (vs.hasCompose()) {
+      ValueSetComposeComponent c = vs.getCompose();
+      if (c.getExclude().isEmpty() && c.getInclude().size() == 1) {
+        ConceptSetComponent i = c.getIncludeFirstRep();
+        if (i.hasSystem() && !i.hasValueSet() && !i.hasConcept() && !i.hasFilter()) {
+          return i.getSystem();
+        }
+      }
     }
     return null;
   }
 
-  private static ValueSet generateImplicitMimetypesValueSet(String theUri) {
-    ValueSet valueSet = new ValueSet();
-    valueSet.setStatus(PublicationStatus.ACTIVE);
-    valueSet.setUrl(theUri);
-    valueSet.setDescription("This value set includes all possible codes from BCP-13 (http://tools.ietf.org/html/bcp13)");
-    valueSet.getCompose()
-      .addInclude().setSystem("urn:ietf:bcp:13");
-    return valueSet;
+  public static boolean isDeprecated(ValueSet vs, ValueSetExpansionContainsComponent c) {
+    try {
+      for (org.hl7.fhir.r5.model.ValueSet.ConceptPropertyComponent p : c.getProperty()) {
+        if ("status".equals(p.getCode()) && p.hasValue() && p.hasValueCodeType() && "deprecated".equals(p.getValueCodeType().getCode())) {
+          return true;
+        }      
+        // this, though status should also be set
+        if ("deprecationDate".equals(p.getCode()) && p.hasValue() && p.getValue() instanceof DateTimeType) 
+          return ((DateTimeType) p.getValue()).before(new DateTimeType(Calendar.getInstance()));
+        // legacy  
+        if ("deprecated".equals(p.getCode()) && p.hasValue() && p.getValue() instanceof BooleanType) 
+          return ((BooleanType) p.getValue()).getValue();
+      }
+      StandardsStatus ss = ExtensionUtilities.getStandardsStatus(c);
+      if (ss == StandardsStatus.DEPRECATED) {
+        return true;
+      }
+      return false;
+    } catch (FHIRException e) {
+      return false;
+    }  
   }
 
-  private static ValueSet generateImplicitLoincValueSet(String uri) {
-    if ("http://loinc.org/vs".equals(uri))
-      return makeLoincValueSet();
-    if (uri.startsWith("http://loinc.org/vs/LL"))
-      return makeAnswerList(makeLoincValueSet(), uri);
+  public static boolean hasCodeInExpansion(ValueSet vs, Coding code) {
+    return hasCodeInExpansion(vs.getExpansion().getContains(), code);
+  }
+
+  private static boolean hasCodeInExpansion(List<ValueSetExpansionContainsComponent> list, Coding code) {
+    for (ValueSetExpansionContainsComponent c : list) {
+      if (c.getSystem().equals(code.getSystem()) && c.getCode().equals(code.getCode())) {
+        return true;
+      }
+      if (hasCodeInExpansion(c.getContains(), code)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static org.hl7.fhir.r5.model.ValueSet.ConceptPropertyComponent addCodeProperty(ValueSet vs, ValueSetExpansionContainsComponent ctxt, String url, String code, String value) {
+    if (value != null) {
+      return addProperty(vs, ctxt, url, code, new CodeType(value));
+    } else {
+      return null;
+    }
+  }
+  public static org.hl7.fhir.r5.model.ValueSet.ConceptPropertyComponent addProperty(ValueSet vs, ValueSetExpansionContainsComponent ctxt, String url, String code, String value) {
+    if (value != null) {
+      return addProperty(vs, ctxt, url, code, new StringType(value));
+    } else {
+      return null;
+    }
+  }
+
+  public static org.hl7.fhir.r5.model.ValueSet.ConceptPropertyComponent addProperty(ValueSet vs, ValueSetExpansionContainsComponent ctxt, String url, String code, Integer value) {
+    if (value != null) {
+      return addProperty(vs, ctxt, url, code, new IntegerType(value));
+    } else {
+      return null;
+    }
+  }
+
+  public static org.hl7.fhir.r5.model.ValueSet.ConceptPropertyComponent addProperty(ValueSet vs, ValueSetExpansionContainsComponent ctxt, String url, String code, DataType value) {
+    code = defineProperty(vs, url, code);
+    org.hl7.fhir.r5.model.ValueSet.ConceptPropertyComponent p = getProperty(ctxt.getProperty(),  code);
+    if (p != null) {
+      p.setValue(value);
+    } else {
+      p = ctxt.addProperty().setCode(code).setValue(value);
+    }
+    return p;
+  }
+
+  /**
+   * Add another value for a property that may legitimately repeat, instead of replacing the value
+   * already carried.
+   *
+   * <p>{@link #addProperty} is a set: callers such as the label / order / weight handling
+   * deliberately write the code system's value and then let the value set's value replace it. That
+   * is the wrong behaviour when the values are siblings rather than overrides —
+   * {@code CodeSystem.concept.property} is 0..*, and every value belongs in the expansion.
+   *
+   * <p>An identical value already present is not added twice; a repeated identical value in the
+   * source says nothing the expansion does not already carry.
+   */
+  public static org.hl7.fhir.r5.model.ValueSet.ConceptPropertyComponent addPropertyValue(ValueSet vs, ValueSetExpansionContainsComponent ctxt, String url, String code, DataType value) {
+    code = defineProperty(vs, url, code);
+    for (org.hl7.fhir.r5.model.ValueSet.ConceptPropertyComponent t : ctxt.getProperty()) {
+      if (code.equals(t.getCode()) && t.hasValue() && value != null && t.getValue().equalsDeep(value)) {
+        return t;
+      }
+    }
+    return ctxt.addProperty().setCode(code).setValue(value);
+  }
+
+  private static org.hl7.fhir.r5.model.ValueSet.ConceptPropertyComponent getProperty(List<org.hl7.fhir.r5.model.ValueSet.ConceptPropertyComponent> list, String code) {
+    for (org.hl7.fhir.r5.model.ValueSet.ConceptPropertyComponent t : list) {
+      if (code.equals(t.getCode())) {
+        return t;
+      }
+    }
     return null;
   }
 
-  private static ValueSet makeAnswerList(ValueSet vs, String uri) {
-    vs.setUrl(uri);
-    String c = uri.substring(20);
-    vs.setName("LOINCAnswers"+c);
-    vs.setTitle("LOINC Answer Codes for "+c);
-    vs.getCompose().getIncludeFirstRep().addFilter().setProperty("LIST").setOp(FilterOperator.EQUAL).setValue(c);
-    return vs;
+  private static String defineProperty(ValueSet vs, String url, String code) {
+    for (ValueSetExpansionPropertyComponent p : vs.getExpansion().getProperty()) {
+      if (p.hasUri() && p.getUri().equals(url)) {
+        return p.getCode();
+      }
+    }
+    for (ValueSetExpansionPropertyComponent p : vs.getExpansion().getProperty()) {
+      if (p.hasCode() && p.getCode().equals(code)) {
+        if (url != null) {
+          // a code system property need not have a uri, and when it doesn't, the declaration is by
+          // code alone - which must not clear a uri that another source provided
+          p.setUri(url);
+        }
+        return code;
+      }
+    }
+    ValueSetExpansionPropertyComponent p = vs.getExpansion().addProperty();
+    if (url != null) {
+      p.setUri(url);
+    }
+    p.setCode(code);
+    return code;  
   }
 
-  private static ValueSet makeLoincValueSet() {
-    ValueSet vs = new ValueSet();
-    vs.setUrl("http://loinc.org/vs");
-    vs.setName("LOINCCodes");
-    vs.setTitle("All LOINC codes");
-    vs.setCopyright("This content LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use");
-    vs.setStatus(PublicationStatus.ACTIVE);
-    vs.getCompose().addInclude().setSystem("http://loinc.org");
-    return vs;
+  public static int countExpansion(ValueSet valueset) {
+    int i = valueset.getExpansion().getContains().size();
+    for (ValueSetExpansionContainsComponent t : valueset.getExpansion().getContains()) {
+      i = i + countExpansion(t);
+    }
+    return i;
   }
 
-  private static ValueSet generateImplicitSnomedValueSet(String uri) {
-    if ("http://snomed.info/sct?fhir_vs".equals(uri))
-      return makeImplicitSnomedValueSet(uri);
+  public static int countExpansion(List<ValueSetExpansionContainsComponent> list) {
+    int i = list.size();
+    for (ValueSetExpansionContainsComponent t : list) {
+      i = i + countExpansion(t);
+    }
+    return i;
+  }
+
+  private static int countExpansion(ValueSetExpansionContainsComponent c) {
+    int i = c.getContains().size();
+    for (ValueSetExpansionContainsComponent t : c.getContains()) {
+      i = i + countExpansion(t);
+    }
+    return i;
+  }
+
+  public static Set<String> listSystems(IWorkerContext ctxt, ValueSet vs) {
+    Set<String> systems = new HashSet<>();
+    for (ConceptSetComponent inc : vs.getCompose().getInclude()) {
+      for (CanonicalType ct : inc.getValueSet()) {
+        ValueSet vsr = ctxt.findTxResource(ValueSet.class, ct.asStringValue(), ExtensionUtilities.getVersionResolutionRules(ct), null, vs);
+        if (vsr != null) {
+          systems.addAll(listSystems(ctxt, vsr));
+        }
+      }
+      if (inc.hasSystem()) {
+        systems.add(inc.getSystem());
+      }
+    }
+    return systems;
+  }
+  
+
+  public static boolean isIncompleteExpansion(ValueSet valueSet) {
+    if (valueSet.hasExpansion()) {
+      ValueSetExpansionComponent exp = valueSet.getExpansion();
+      if (exp.hasTotal()) {
+        if (exp.getTotal() != countExpansion(exp.getContains())) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+
+  public static Set<String> codes(ValueSet vs, CodeSystem cs) {
+    Set<String> res = new HashSet<>();
+    for (ConceptSetComponent inc : vs.getCompose().getInclude()) {
+      if (inc.getSystem().equals(cs.getUrl())) {
+        addCodes(res, inc, cs.getConcept());
+      }
+    }
+    return res;
+  }
+
+  private static void addCodes(Set<String> res, ConceptSetComponent inc, List<ConceptDefinitionComponent> list) {
+    for (ConceptDefinitionComponent cd : list) {
+      if (cd.hasCode() && (!inc.hasConcept() || inc.hasConcept(cd.getCode()))) {
+        res.add(cd.getCode());
+      }
+      if (cd.hasConcept()) {
+        addCodes(res, inc, cd.getConcept());
+      }
+    }    
+  }
+  
+  public static String versionFromExpansionParams(Parameters expParameters, String system, String defaultVersion) {
+    if (expParameters != null) {
+      for (ParametersParameterComponent p : expParameters.getParameter()) {
+        if ("system-version".equals(p.getName()) || "force-system-version".equals(p.getName())) {
+          String v = p.getValue().primitiveValue();
+          if (v.startsWith(system+"|")) {
+            String ver = v.substring(v.indexOf("|")+1);
+            if (defaultVersion == null || ver.startsWith(defaultVersion) || "force-system-version".equals(p.getName())) {
+              return ver;
+            }
+          }
+        }
+      }
+    }
+    return defaultVersion;
+  }
+
+  public static Set<String> checkExpansionSubset(ValueSet vs1, ValueSet vs2) {
+    Set<String> codes = new HashSet<>();
+    checkCodes(codes, vs2.getExpansion().getContains(), vs1.getExpansion().getContains());
+    return codes;
+  }
+
+  private static void checkCodes(Set<String> codes, List<ValueSetExpansionContainsComponent> listS, List<ValueSetExpansionContainsComponent> listT) {
+    for (ValueSetExpansionContainsComponent c : listS) {
+      ValueSetExpansionContainsComponent t = findContained(c, listT);
+      if (t == null) {
+        codes.add(c.getCode());
+      }
+      if (c.hasContains()) {
+        checkCodes(codes, c.getContains(), listT);
+      }
+    }
+  }
+
+  private static ValueSetExpansionContainsComponent findContained(ValueSetExpansionContainsComponent c, List<ValueSetExpansionContainsComponent> listT) {
+    for (ValueSetExpansionContainsComponent t : listT) {
+      if (t.getSystem().equals(c.getSystem()) && t.getCode().equals(c.getCode())) {
+        return t;
+      }
+      if (t.hasContains()) {
+        ValueSetExpansionContainsComponent tt = findContained(c, t.getContains());
+        if (tt != null) {
+          return tt;
+        }
+      }
+    }
     return null;
   }
 
-  private static ValueSet makeImplicitSnomedValueSet(String uri) {
-    ValueSet vs = new ValueSet();
-    vs.setUrl(uri);
-    vs.setName("SCTValueSet");
-    vs.setTitle("SCT ValueSet");
-    vs.setDescription("All SNOMED CT Concepts");
-    vs.setCopyright("This value set includes content from SNOMED CT, which is copyright © 2002+ International Health Terminology Standards Development Organisation (SNOMED International), and distributed by agreement between SNOMED International and HL7. Implementer use of SNOMED CT is not covered by this agreement");
-    vs.setStatus(PublicationStatus.ACTIVE);
-    vs.getCompose().addInclude().setSystem("http://snomed.info/sct");
-    return vs;
+  public static void setDeprecated(List<ValueSet.ValueSetExpansionPropertyComponent> vsProp, ValueSet.ValueSetExpansionContainsComponent n) {
+    if (!"deprecated".equals(ValueSetUtilities.getStatus(vsProp, n))) {
+      n.addProperty().setCode("status").setValue(new CodeType("deprecated"));
+      for (ValueSet.ValueSetExpansionPropertyComponent o : vsProp) {
+        if ("status".equals(o.getCode())) {
+          return;
+        }
+      }
+      vsProp.add(new ValueSet.ValueSetExpansionPropertyComponent().setCode("status").setUri("http://hl7.org/fhir/concept-properties#status"));
+    }
+  }
+
+  private static String getStatus(List<ValueSetExpansionPropertyComponent> vsProp, ValueSetExpansionContainsComponent n) {
+    return ValueSetUtilities.getProperty(vsProp, n, "status", "http://hl7.org/fhir/concept-properties#status");
+  }
+
+
+  public static String getProperty(List<ValueSetExpansionPropertyComponent> vsProp, ValueSetExpansionContainsComponent focus, String code, String url) {
+    ValueSet.ValueSetExpansionPropertyComponent pc = null;
+    for (ValueSet.ValueSetExpansionPropertyComponent t : vsProp) {
+      if (t.hasUri() && t.getUri().equals(url)) {
+        pc = t;
+      }
+    }
+    if (pc == null) {
+      for (ValueSet.ValueSetExpansionPropertyComponent t : vsProp) {
+        if (t.hasCode() && t.getCode().equals(code)) {
+          pc = t;
+        }
+      }
+    }
+    if (pc != null) {
+      for (ValueSet.ConceptPropertyComponent t : focus.getProperty()) {
+        if (t.hasCode() && t.getCode().equals(pc.getCode())) {
+          return t.getValue().primitiveValue();
+        }
+      }
+    }
+    return null;
+  }
+
+  public static boolean expansionsOverlap(ValueSet vs1, ValueSet vs2) {
+    for (ValueSetExpansionContainsComponent c1 : vs1.getExpansion().getContains()) {
+      for (ValueSetExpansionContainsComponent c2 : vs2.getExpansion().getContains()) {
+        if (matches(c1, c2)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private static boolean matches(ValueSetExpansionContainsComponent c1, ValueSetExpansionContainsComponent c2) {
+    return stringsMatch(c1.getSystem(), c2.getSystem(), false) && stringsMatch(c1.getVersion(), c2.getVersion(), true) && stringsMatch(c1.getCode(), c2.getCode(), false);
+  }
+
+  private static boolean stringsMatch(String s1, String s2, boolean defForNull) {
+    if (s1 == null || s2 == null) {
+      if (s1 == s2) {
+        return defForNull;
+      } else {
+        return false;
+      }
+    } else {
+      return s1.equals(s2);
+    }
   }
 
 }

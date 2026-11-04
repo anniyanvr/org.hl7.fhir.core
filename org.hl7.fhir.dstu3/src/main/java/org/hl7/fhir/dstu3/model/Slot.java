@@ -155,12 +155,12 @@ public class Slot extends DomainResource {
           return SlotStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown SlotStatus code '"+codeString+"'");
         }
-        public Enumeration<SlotStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<SlotStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<SlotStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("busy".equals(codeString))
@@ -176,7 +176,9 @@ public class Slot extends DomainResource {
         throw new FHIRException("Unknown SlotStatus code '"+codeString+"'");
         }
     public String toCode(SlotStatus code) {
-      if (code == SlotStatus.BUSY)
+       if (code == SlotStatus.NULL)
+           return null;
+       if (code == SlotStatus.BUSY)
         return "busy";
       if (code == SlotStatus.FREE)
         return "free";
@@ -187,7 +189,7 @@ public class Slot extends DomainResource {
       if (code == SlotStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(SlotStatus code) {
       return code.getSystem();
       }
@@ -967,19 +969,19 @@ public class Slot extends DomainResource {
           return this.schedule;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Slot.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Slot.status");
         }
         else if (name.equals("start")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Slot.start");
+          throw new FHIRException("Cannot call addChild on a singleton property Slot.start");
         }
         else if (name.equals("end")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Slot.end");
+          throw new FHIRException("Cannot call addChild on a singleton property Slot.end");
         }
         else if (name.equals("overbooked")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Slot.overbooked");
+          throw new FHIRException("Cannot call addChild on a singleton property Slot.overbooked");
         }
         else if (name.equals("comment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Slot.comment");
+          throw new FHIRException("Cannot call addChild on a singleton property Slot.comment");
         }
         else
           return super.addChild(name);

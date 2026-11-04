@@ -141,12 +141,12 @@ public class Narrative extends BaseNarrative implements INarrative {
           return NarrativeStatus.EMPTY;
         throw new IllegalArgumentException("Unknown NarrativeStatus code '"+codeString+"'");
         }
-        public Enumeration<NarrativeStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<NarrativeStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<NarrativeStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("generated".equals(codeString))
@@ -160,7 +160,9 @@ public class Narrative extends BaseNarrative implements INarrative {
         throw new FHIRException("Unknown NarrativeStatus code '"+codeString+"'");
         }
     public String toCode(NarrativeStatus code) {
-      if (code == NarrativeStatus.GENERATED)
+       if (code == NarrativeStatus.NULL)
+           return null;
+       if (code == NarrativeStatus.GENERATED)
         return "generated";
       if (code == NarrativeStatus.EXTENSIONS)
         return "extensions";
@@ -169,7 +171,7 @@ public class Narrative extends BaseNarrative implements INarrative {
       if (code == NarrativeStatus.EMPTY)
         return "empty";
       return "?";
-      }
+   }
     public String toSystem(NarrativeStatus code) {
       return code.getSystem();
       }
@@ -350,7 +352,7 @@ public class Narrative extends BaseNarrative implements INarrative {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Narrative.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Narrative.status");
         }
         else
           return super.addChild(name);

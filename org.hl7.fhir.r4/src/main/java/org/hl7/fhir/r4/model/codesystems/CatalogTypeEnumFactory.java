@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class CatalogTypeEnumFactory implements EnumFactory<CatalogType> {
@@ -48,21 +44,23 @@ public class CatalogTypeEnumFactory implements EnumFactory<CatalogType> {
       return CatalogType.DEVICE;
     if ("protocol".equals(codeString))
       return CatalogType.PROTOCOL;
-    throw new IllegalArgumentException("Unknown CatalogType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CatalogType code '" + codeString + "'");
   }
 
   public String toCode(CatalogType code) {
-    if (code == CatalogType.MEDICATION)
+       if (code == CatalogType.NULL)
+           return null;
+       if (code == CatalogType.MEDICATION)
       return "medication";
     if (code == CatalogType.DEVICE)
       return "device";
     if (code == CatalogType.PROTOCOL)
       return "protocol";
     return "?";
-  }
+   }
 
-    public String toSystem(CatalogType code) {
-      return code.getSystem();
-      }
+  public String toSystem(CatalogType code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class DeviceActionEnumFactory implements EnumFactory<DeviceAction> {
@@ -48,21 +44,23 @@ public class DeviceActionEnumFactory implements EnumFactory<DeviceAction> {
       return DeviceAction.EXPLANTED;
     if ("manipulated".equals(codeString))
       return DeviceAction.MANIPULATED;
-    throw new IllegalArgumentException("Unknown DeviceAction code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown DeviceAction code '" + codeString + "'");
   }
 
   public String toCode(DeviceAction code) {
-    if (code == DeviceAction.IMPLANTED)
+       if (code == DeviceAction.NULL)
+           return null;
+       if (code == DeviceAction.IMPLANTED)
       return "implanted";
     if (code == DeviceAction.EXPLANTED)
       return "explanted";
     if (code == DeviceAction.MANIPULATED)
       return "manipulated";
     return "?";
-  }
+   }
 
-    public String toSystem(DeviceAction code) {
-      return code.getSystem();
-      }
+  public String toSystem(DeviceAction code) {
+    return code.getSystem();
+  }
 
 }

@@ -254,12 +254,12 @@ public class Goal extends DomainResource {
           return GoalStatus.REJECTED;
         throw new IllegalArgumentException("Unknown GoalStatus code '"+codeString+"'");
         }
-        public Enumeration<GoalStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<GoalStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<GoalStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("proposed".equals(codeString))
@@ -291,7 +291,9 @@ public class Goal extends DomainResource {
         throw new FHIRException("Unknown GoalStatus code '"+codeString+"'");
         }
     public String toCode(GoalStatus code) {
-      if (code == GoalStatus.PROPOSED)
+       if (code == GoalStatus.NULL)
+           return null;
+       if (code == GoalStatus.PROPOSED)
         return "proposed";
       if (code == GoalStatus.ACCEPTED)
         return "accepted";
@@ -318,7 +320,7 @@ public class Goal extends DomainResource {
       if (code == GoalStatus.REJECTED)
         return "rejected";
       return "?";
-      }
+   }
     public String toSystem(GoalStatus code) {
       return code.getSystem();
       }
@@ -399,8 +401,8 @@ public class Goal extends DomainResource {
           return (Quantity) this.detail;
         }
 
-        public boolean hasDetailQuantity() { 
-          return this != null && this.detail instanceof Quantity;
+        public boolean hasDetailQuantity() {
+            return this.detail instanceof Quantity;
         }
 
         /**
@@ -414,8 +416,8 @@ public class Goal extends DomainResource {
           return (Range) this.detail;
         }
 
-        public boolean hasDetailRange() { 
-          return this != null && this.detail instanceof Range;
+        public boolean hasDetailRange() {
+            return this.detail instanceof Range;
         }
 
         /**
@@ -429,8 +431,8 @@ public class Goal extends DomainResource {
           return (CodeableConcept) this.detail;
         }
 
-        public boolean hasDetailCodeableConcept() { 
-          return this != null && this.detail instanceof CodeableConcept;
+        public boolean hasDetailCodeableConcept() {
+            return this.detail instanceof CodeableConcept;
         }
 
         public boolean hasDetail() { 
@@ -465,8 +467,8 @@ public class Goal extends DomainResource {
           return (DateType) this.due;
         }
 
-        public boolean hasDueDateType() { 
-          return this != null && this.due instanceof DateType;
+        public boolean hasDueDateType() {
+            return this.due instanceof DateType;
         }
 
         /**
@@ -480,8 +482,8 @@ public class Goal extends DomainResource {
           return (Duration) this.due;
         }
 
-        public boolean hasDueDuration() { 
-          return this != null && this.due instanceof Duration;
+        public boolean hasDueDuration() {
+            return this.due instanceof Duration;
         }
 
         public boolean hasDue() { 
@@ -1064,8 +1066,8 @@ public class Goal extends DomainResource {
       return (DateType) this.start;
     }
 
-    public boolean hasStartDateType() { 
-      return this != null && this.start instanceof DateType;
+    public boolean hasStartDateType() {
+        return this.start instanceof DateType;
     }
 
     /**
@@ -1079,8 +1081,8 @@ public class Goal extends DomainResource {
       return (CodeableConcept) this.start;
     }
 
-    public boolean hasStartCodeableConcept() { 
-      return this != null && this.start instanceof CodeableConcept;
+    public boolean hasStartCodeableConcept() {
+        return this.start instanceof CodeableConcept;
     }
 
     public boolean hasStart() { 
@@ -1312,16 +1314,6 @@ public class Goal extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getAddressesTarget() { 
-      if (this.addressesTarget == null)
-        this.addressesTarget = new ArrayList<Resource>();
-      return this.addressesTarget;
-    }
-
-    /**
      * @return {@link #note} (Any comments related to the goal.)
      */
     public List<Annotation> getNote() { 
@@ -1478,28 +1470,6 @@ public class Goal extends DomainResource {
         addOutcomeReference();
       }
       return getOutcomeReference().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Observation> getOutcomeReferenceTarget() { 
-      if (this.outcomeReferenceTarget == null)
-        this.outcomeReferenceTarget = new ArrayList<Observation>();
-      return this.outcomeReferenceTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Observation addOutcomeReferenceTarget() { 
-      Observation r = new Observation();
-      if (this.outcomeReferenceTarget == null)
-        this.outcomeReferenceTarget = new ArrayList<Observation>();
-      this.outcomeReferenceTarget.add(r);
-      return r;
     }
 
       protected void listChildren(List<Property> children) {
@@ -1715,7 +1685,7 @@ public class Goal extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Goal.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Goal.status");
         }
         else if (name.equals("category")) {
           return addCategory();
@@ -1745,10 +1715,10 @@ public class Goal extends DomainResource {
           return this.target;
         }
         else if (name.equals("statusDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Goal.statusDate");
+          throw new FHIRException("Cannot call addChild on a singleton property Goal.statusDate");
         }
         else if (name.equals("statusReason")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Goal.statusReason");
+          throw new FHIRException("Cannot call addChild on a singleton property Goal.statusReason");
         }
         else if (name.equals("expressedBy")) {
           this.expressedBy = new Reference();

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class OperationKindEnumFactory implements EnumFactory<OperationKind> {
@@ -46,19 +42,21 @@ public class OperationKindEnumFactory implements EnumFactory<OperationKind> {
       return OperationKind.OPERATION;
     if ("query".equals(codeString))
       return OperationKind.QUERY;
-    throw new IllegalArgumentException("Unknown OperationKind code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown OperationKind code '" + codeString + "'");
   }
 
   public String toCode(OperationKind code) {
-    if (code == OperationKind.OPERATION)
+       if (code == OperationKind.NULL)
+           return null;
+       if (code == OperationKind.OPERATION)
       return "operation";
     if (code == OperationKind.QUERY)
       return "query";
     return "?";
-  }
+   }
 
-    public String toSystem(OperationKind code) {
-      return code.getSystem();
-      }
+  public String toSystem(OperationKind code) {
+    return code.getSystem();
+  }
 
 }

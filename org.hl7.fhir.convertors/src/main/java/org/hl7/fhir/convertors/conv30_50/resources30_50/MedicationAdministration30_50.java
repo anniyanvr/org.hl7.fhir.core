@@ -20,7 +20,7 @@ public class MedicationAdministration30_50 {
     ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyDomainResource(src, tgt);
     for (org.hl7.fhir.r5.model.Identifier t : src.getIdentifier())
       tgt.addIdentifier(Identifier30_50.convertIdentifier(t));
-    for (org.hl7.fhir.r5.model.UriType t : src.getInstantiatesUri()) tgt.addDefinition().setReference(t.getValue());
+//    for (org.hl7.fhir.r5.model.UriType t : src.getInstantiatesUri()) tgt.addDefinition().setReference(t.getValue());
     for (org.hl7.fhir.r5.model.Reference t : src.getPartOf()) tgt.addPartOf(Reference30_50.convertReference(t));
     if (src.hasStatus())
       tgt.setStatusElement(convertMedicationAdministrationStatus(src.getStatusElement()));
@@ -48,7 +48,9 @@ public class MedicationAdministration30_50 {
         tgt.addReasonReference(Reference30_50.convertReference(t.getReference()));
     if (src.hasRequest())
       tgt.setPrescription(Reference30_50.convertReference(src.getRequest()));
-    for (org.hl7.fhir.r5.model.Reference t : src.getDevice()) tgt.addDevice(Reference30_50.convertReference(t));
+    for (CodeableReference t : src.getDevice())
+      if (t.hasReference())
+        tgt.addDevice(Reference30_50.convertReference(t.getReference()));
     for (org.hl7.fhir.r5.model.Annotation t : src.getNote()) tgt.addNote(Annotation30_50.convertAnnotation(t));
     if (src.hasDosage())
       tgt.setDosage(convertMedicationAdministrationDosageComponent(src.getDosage()));
@@ -64,7 +66,7 @@ public class MedicationAdministration30_50 {
     ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyDomainResource(src, tgt);
     for (org.hl7.fhir.dstu3.model.Identifier t : src.getIdentifier())
       tgt.addIdentifier(Identifier30_50.convertIdentifier(t));
-    for (org.hl7.fhir.dstu3.model.Reference t : src.getDefinition()) tgt.addInstantiatesUri(t.getReference());
+//    for (org.hl7.fhir.dstu3.model.Reference t : src.getDefinition()) tgt.addInstantiatesUri(t.getReference());
     for (org.hl7.fhir.dstu3.model.Reference t : src.getPartOf()) tgt.addPartOf(Reference30_50.convertReference(t));
     if (src.hasStatus())
       tgt.setStatusElement(convertMedicationAdministrationStatus(src.getStatusElement()));
@@ -90,7 +92,7 @@ public class MedicationAdministration30_50 {
       tgt.addReason(Reference30_50.convertReferenceToCodableReference(t));
     if (src.hasPrescription())
       tgt.setRequest(Reference30_50.convertReference(src.getPrescription()));
-    for (org.hl7.fhir.dstu3.model.Reference t : src.getDevice()) tgt.addDevice(Reference30_50.convertReference(t));
+    for (org.hl7.fhir.dstu3.model.Reference t : src.getDevice()) tgt.addDevice(Reference30_50.convertReferenceToCodableReference(t));
     for (org.hl7.fhir.dstu3.model.Annotation t : src.getNote()) tgt.addNote(Annotation30_50.convertAnnotation(t));
     if (src.hasDosage())
       tgt.setDosage(convertMedicationAdministrationDosageComponent(src.getDosage()));
@@ -103,7 +105,7 @@ public class MedicationAdministration30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.dstu3.model.MedicationAdministration.MedicationAdministrationDosageComponent tgt = new org.hl7.fhir.dstu3.model.MedicationAdministration.MedicationAdministrationDosageComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src,tgt);
     if (src.hasText())
       tgt.setTextElement(String30_50.convertString(src.getTextElement()));
     if (src.hasSite())
@@ -123,7 +125,7 @@ public class MedicationAdministration30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationAdministration.MedicationAdministrationDosageComponent tgt = new org.hl7.fhir.r5.model.MedicationAdministration.MedicationAdministrationDosageComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src,tgt);
     if (src.hasText())
       tgt.setTextElement(String30_50.convertString(src.getTextElement()));
     if (src.hasSite())
@@ -143,9 +145,9 @@ public class MedicationAdministration30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MedicationAdministration.MedicationAdministrationPerformerComponent tgt = new org.hl7.fhir.r5.model.MedicationAdministration.MedicationAdministrationPerformerComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src,tgt);
     if (src.hasActor())
-      tgt.setActor(Reference30_50.convertReference(src.getActor()));
+      tgt.setActor(Reference30_50.convertReferenceToCodableReference(src.getActor()));
     return tgt;
   }
 
@@ -153,9 +155,9 @@ public class MedicationAdministration30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.dstu3.model.MedicationAdministration.MedicationAdministrationPerformerComponent tgt = new org.hl7.fhir.dstu3.model.MedicationAdministration.MedicationAdministrationPerformerComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
-    if (src.hasActor())
-      tgt.setActor(Reference30_50.convertReference(src.getActor()));
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src,tgt);
+    if (src.hasActor() && src.getActor().hasReference())
+      tgt.setActor(Reference30_50.convertReference(src.getActor().getReference()));
     return tgt;
   }
 

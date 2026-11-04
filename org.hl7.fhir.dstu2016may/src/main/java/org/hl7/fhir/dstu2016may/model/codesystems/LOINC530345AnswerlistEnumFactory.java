@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class LOINC530345AnswerlistEnumFactory implements EnumFactory<LOINC530345Answerlist> {
@@ -52,11 +48,13 @@ public class LOINC530345AnswerlistEnumFactory implements EnumFactory<LOINC530345
       return LOINC530345Answerlist.LA67061;
     if ("LA6707-9".equals(codeString))
       return LOINC530345Answerlist.LA67079;
-    throw new IllegalArgumentException("Unknown LOINC530345Answerlist code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown LOINC530345Answerlist code '" + codeString + "'");
   }
 
   public String toCode(LOINC530345Answerlist code) {
-    if (code == LOINC530345Answerlist.LA67038)
+       if (code == LOINC530345Answerlist.NULL)
+           return null;
+       if (code == LOINC530345Answerlist.LA67038)
       return "LA6703-8";
     if (code == LOINC530345Answerlist.LA67046)
       return "LA6704-6";
@@ -67,10 +65,10 @@ public class LOINC530345AnswerlistEnumFactory implements EnumFactory<LOINC530345
     if (code == LOINC530345Answerlist.LA67079)
       return "LA6707-9";
     return "?";
-  }
+   }
 
-    public String toSystem(LOINC530345Answerlist code) {
-      return code.getSystem();
-      }
+  public String toSystem(LOINC530345Answerlist code) {
+    return code.getSystem();
+  }
 
 }

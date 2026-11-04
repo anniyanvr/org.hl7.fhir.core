@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -72,11 +68,13 @@ public class ObjectLifecycleEnumFactory implements EnumFactory<ObjectLifecycle> 
       return ObjectLifecycle._14;
     if ("15".equals(codeString))
       return ObjectLifecycle._15;
-    throw new IllegalArgumentException("Unknown ObjectLifecycle code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ObjectLifecycle code '" + codeString + "'");
   }
 
   public String toCode(ObjectLifecycle code) {
-    if (code == ObjectLifecycle._1)
+       if (code == ObjectLifecycle.NULL)
+           return null;
+       if (code == ObjectLifecycle._1)
       return "1";
     if (code == ObjectLifecycle._2)
       return "2";
@@ -107,10 +105,10 @@ public class ObjectLifecycleEnumFactory implements EnumFactory<ObjectLifecycle> 
     if (code == ObjectLifecycle._15)
       return "15";
     return "?";
-  }
+   }
 
-    public String toSystem(ObjectLifecycle code) {
-      return code.getSystem();
-      }
+  public String toSystem(ObjectLifecycle code) {
+    return code.getSystem();
+  }
 
 }

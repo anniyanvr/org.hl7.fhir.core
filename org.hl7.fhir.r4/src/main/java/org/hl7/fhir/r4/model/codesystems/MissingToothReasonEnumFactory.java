@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class MissingToothReasonEnumFactory implements EnumFactory<MissingToothReason> {
@@ -50,11 +46,13 @@ public class MissingToothReasonEnumFactory implements EnumFactory<MissingToothRe
       return MissingToothReason.U;
     if ("o".equals(codeString))
       return MissingToothReason.O;
-    throw new IllegalArgumentException("Unknown MissingToothReason code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MissingToothReason code '" + codeString + "'");
   }
 
   public String toCode(MissingToothReason code) {
-    if (code == MissingToothReason.E)
+       if (code == MissingToothReason.NULL)
+           return null;
+       if (code == MissingToothReason.E)
       return "e";
     if (code == MissingToothReason.C)
       return "c";
@@ -63,10 +61,10 @@ public class MissingToothReasonEnumFactory implements EnumFactory<MissingToothRe
     if (code == MissingToothReason.O)
       return "o";
     return "?";
-  }
+   }
 
-    public String toSystem(MissingToothReason code) {
-      return code.getSystem();
-      }
+  public String toSystem(MissingToothReason code) {
+    return code.getSystem();
+  }
 
 }

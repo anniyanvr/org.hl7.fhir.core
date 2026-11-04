@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ActionRelationshipTypeEnumFactory implements EnumFactory<ActionRelationshipType> {
@@ -60,11 +56,13 @@ public class ActionRelationshipTypeEnumFactory implements EnumFactory<ActionRela
       return ActionRelationshipType.AFTER;
     if ("after-end".equals(codeString))
       return ActionRelationshipType.AFTEREND;
-    throw new IllegalArgumentException("Unknown ActionRelationshipType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ActionRelationshipType code '" + codeString + "'");
   }
 
   public String toCode(ActionRelationshipType code) {
-    if (code == ActionRelationshipType.BEFORESTART)
+       if (code == ActionRelationshipType.NULL)
+           return null;
+       if (code == ActionRelationshipType.BEFORESTART)
       return "before-start";
     if (code == ActionRelationshipType.BEFORE)
       return "before";
@@ -83,10 +81,10 @@ public class ActionRelationshipTypeEnumFactory implements EnumFactory<ActionRela
     if (code == ActionRelationshipType.AFTEREND)
       return "after-end";
     return "?";
-  }
+   }
 
-    public String toSystem(ActionRelationshipType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ActionRelationshipType code) {
+    return code.getSystem();
+  }
 
 }

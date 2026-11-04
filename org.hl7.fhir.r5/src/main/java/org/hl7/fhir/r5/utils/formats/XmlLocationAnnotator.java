@@ -44,9 +44,13 @@ import org.w3c.dom.events.MutationEvent;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.helpers.XMLFilterImpl;
+
+import javax.xml.XMLConstants;
 
 // http://javacoalface.blogspot.com.au/2011/04/line-and-column-numbers-in-xml-dom.html
 
@@ -69,6 +73,22 @@ public class XmlLocationAnnotator extends XMLFilterImpl  {
           }
       };
       ((EventTarget) dom).addEventListener("DOMNodeInserted", modListener, true);
+  }
+
+  @Override
+  public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
+    if (!name.equals(XMLConstants.ACCESS_EXTERNAL_DTD)) {
+      super.setProperty(name, value);
+    }
+  }
+
+  @Override
+  public Object getProperty(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
+    if (!name.equals(XMLConstants.ACCESS_EXTERNAL_DTD)) {
+      return null;
+    } else {
+      return super.getProperty(name);
+    }
   }
 
   @Override

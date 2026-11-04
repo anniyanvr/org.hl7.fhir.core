@@ -4,14 +4,199 @@ pr:
 - master
 - release
 
-# Different users have different machine setups, we run the build three times, on ubuntu, osx, and windows
+parameters:
+  - name: modulesToCache
+    displayName: Module Target Directories to Cache
+    type: object
+    default:
+      modules:
+        - org.hl7.fhir.utilities
+        - org.hl7.fhir.dstu2
+        - org.hl7.fhir.dstu2016may
+        - org.hl7.fhir.dstu3
+        - org.hl7.fhir.dstu3.support
+        - org.hl7.fhir.r4
+        - org.hl7.fhir.r4b
+        - org.hl7.fhir.r5
+        - org.hl7.fhir.model
+        - org.hl7.fhir.support
+        - org.hl7.fhir.standalone
+        - org.hl7.fhir.convertors
+        - org.hl7.fhir.validation
+        - org.hl7.fhir.validation.cli
+        - org.hl7.fhir.report
+  - name: modulesToTest
+    displayName: Modules to Test
+    type: object
+    default:
+      modules:
+        - utilities
+        - dstu2
+        - dstu2016may
+        - dstu3
+        - dstu3_support
+        - r4
+        - r4b
+        - r5
+        - model
+        - support
+        - standalone
+        - convertors
+        - validation
+        - validation_cli
+      multiplatformModules:
+        - utilities
+  - name: testConfigurations
+    displayName: VM Images and JDKs to Test Against
+    type: object
+    default:
+      configurations:
+        - name: ubuntu_java_17
+          image: ubuntu-latest
+          jdk: 1.17
+          javaToolOptions:
+        - name: ubuntu_java_21
+          image: ubuntu-latest
+          jdk: 1.21
+          javaToolOptions:
+        - name: ubuntu_java_17_cp1252
+          image: ubuntu-latest
+          jdk: 1.17
+          javaToolOptions: -Dfile.encoding=Cp1252
+        - name: windows_java_17
+          image: windows-latest
+          jdk: 1.17
+          javaToolOptions:
+        - name: windows_java_21
+          image: windows-latest
+          jdk: 1.21
+          javaToolOptions:
+        - name: macos_java_17
+          image: macos-latest
+          jdk: 1.17
+          javaToolOptions:
+        - name: macos_java_21
+          image: macos-latest
+          jdk: 1.21
+          javaToolOptions:
+        - name: ubuntu_java_25
+          image: ubuntu-latest
+          jdk: 1.25
+          javaToolOptions:
+  - name: jdksToTest
+    displayName: JDKs to Test Against
+    type: object
+    default:
+      jdks:
+        - 1.17
+        - 1.21
+  - name: sourceDirectories
+    displayName: Source directories for test coverage reporting
+    type: string
+    default: '$(System.DefaultWorkingDirectory)/org.hl7.fhir.utilities/src/main/java/;$(System.DefaultWorkingDirectory)/org.hl7.fhir.dstu2/src/main/java/;$(System.DefaultWorkingDirectory)/org.hl7.fhir.dstu2016may/src/main/java/;$(System.DefaultWorkingDirectory)/org.hl7.fhir.dstu3/src/main/java/;$(System.DefaultWorkingDirectory)/org.hl7.fhir.r4/src/main/java/;$(System.DefaultWorkingDirectory)/org.hl7.fhir.r4b/src/main/java/;$(System.DefaultWorkingDirectory)/org.hl7.fhir.r5/src/main/java/;$(System.DefaultWorkingDirectory)/org.hl7.fhir.convertors/src/main/java/;$(System.DefaultWorkingDirectory)/org.hl7.fhir.validation/src/main/java/;$(System.DefaultWorkingDirectory)/org.hl7.fhir.validation.cli/src/main/java/'
+  - name: verboseCoverage
+    displayName: Enable Verbose Coverage Reporting
+    type: boolean
+    default: false
+
+variables:
+  - group: CODECOV_GROUP
+  - name: MAVEN_CACHE_FOLDER
+    value: $(Pipeline.Workspace)/.m2/repository
+
 jobs:
-  - template: pull-request-pipeline-parameterized.yml
+  - template: setup-and-cache-job-template.yml
     parameters:
-      images:
-        - name: ubuntu-latest
-          jdkVersions:  [ '1.8', '1.11' ]
-        - name: macos-latest
-          jdkVersions: [ '1.8', '1.11', '1.17']
-        - name: windows-2019
-          jdkVersions: [ '1.8', '1.11', '1.17']
+      modulesToCache:
+        ${{ parameters.modulesToCache.modules }}
+  - template: test-unit-jobs-template.yml
+    parameters:
+      testUnits:
+        - ${{ each configuration in parameters.testConfigurations.configurations }}:
+            - name: ${{ configuration.name }}
+              vmImage: ${{ configuration.image }}
+              javaToolOptions:  ${{ configuration.javaToolOptions }}
+              jdkVersion: ${{ configuration.jdk }}
+              ${{ if eq(configuration.name, 'ubuntu_java_17') }}:
+                skipJaCoCo: false
+                modules:
+                  ${{ parameters.modulesToTest.modules }}
+              ${{ else }}:
+                skipJaCoCo: true
+                modules:
+                  ${{ parameters.modulesToTest.multiplatformModules }}
+
+
+  - template: test-cli-exec-job-template.yml
+    parameters:
+      testUnits:
+        - ${{ each configuration in parameters.testConfigurations.configurations }}:
+            - name: ${{ configuration.name }}
+              vmImage: ${{ configuration.image }}
+              jdkVersion: ${{ configuration.jdk }}
+
+  - job: publish_codecov
+    dependsOn:
+      - ${{ each module in parameters.modulesToTest.modules }}:
+          - ubuntu_java_17_${{ module }}
+    displayName: Publish Test Results and Coverage
+
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+      - checkout: self
+        fetchDepth: 1
+      - ${{ each module in parameters.modulesToTest.modules }}:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: mkdir -p $(System.DefaultWorkingDirectory)/org.hl7.fhir.${{ replace(module, '_', '.') }}/target/site/
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Download jacoco module artifacts for ${{ module }}'
+            continueOnError: true
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: "org.hl7.fhir.${{ replace(module, '_', '.') }}_target"
+              downloadPath: '$(Agent.TempDirectory)/'
+          # Copy contents from downloaded artifact directory to final target directory.
+          - task: CopyFiles@2
+            condition: always()
+            inputs:
+              sourceFolder: "$(Agent.TempDirectory)/org.hl7.fhir.${{ replace(module, '_', '.') }}_target/"
+              contents: '**'
+              targetFolder: "$(System.DefaultWorkingDirectory)/org.hl7.fhir.${{ replace(module, '_', '.') }}/target"
+      - task: Maven@4
+        inputs:
+          mavenPomFile: 'pom.xml'
+          options: '-P JACOCO'
+          mavenOptions: '-Xmx3072m'
+          javaHomeOption: 'JDKVersion'
+          jdkVersionOption: '1.17'
+          jdkArchitectureOption: 'x64'
+          goals: 'jacoco:report-aggregate'
+
+
+      - task: PublishCodeCoverageResults@2
+        displayName: 'Publish test coverage for Azure'
+        condition: ${{ eq(parameters.verboseCoverage, false) }}
+        inputs:
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/org.hl7.fhir.report/target/site/jacoco-aggregate/jacoco.xml'
+          pathToSources: ${{ parameters.sourceDirectories }}
+
+      - task: reportgenerator@5
+        displayName: 'Publish verbose test coverage for Azure'
+        condition: ${{ eq(parameters.verboseCoverage, true) }}
+        inputs:
+          reports: '$(System.DefaultWorkingDirectory)/org.hl7.fhir.report/target/site/jacoco-aggregate/jacoco.xml'
+          targetdir: '$(System.DefaultWorkingDirectory)/org.hl7.fhir.report/target/site/jacoco-aggregate/'
+          sourcedirs: ${{ parameters.sourceDirectories }}
+          publishCodeCoverageResults: true
+
+
+      - bash: |
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov -t $(CODECOV_TOKEN) -R $(System.DefaultWorkingDirectory)/org.hl7.fhir.report/target/site/jacoco-aggregate/
+        displayName: 'Upload test results to codecov'

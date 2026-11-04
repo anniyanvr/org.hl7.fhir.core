@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -100,11 +96,13 @@ public class V3EntityNamePartQualifierEnumFactory implements EnumFactory<V3Entit
       return V3EntityNamePartQualifier._PERSONNAMEPARTCHANGEQUALIFIER;
     if ("_PersonNamePartMiscQualifier".equals(codeString))
       return V3EntityNamePartQualifier._PERSONNAMEPARTMISCQUALIFIER;
-    throw new IllegalArgumentException("Unknown V3EntityNamePartQualifier code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3EntityNamePartQualifier code '" + codeString + "'");
   }
 
   public String toCode(V3EntityNamePartQualifier code) {
-    if (code == V3EntityNamePartQualifier._ORGANIZATIONNAMEPARTQUALIFIER)
+       if (code == V3EntityNamePartQualifier.NULL)
+           return null;
+       if (code == V3EntityNamePartQualifier._ORGANIZATIONNAMEPARTQUALIFIER)
       return "_OrganizationNamePartQualifier";
     if (code == V3EntityNamePartQualifier.AC)
       return "AC";
@@ -163,10 +161,10 @@ public class V3EntityNamePartQualifierEnumFactory implements EnumFactory<V3Entit
     if (code == V3EntityNamePartQualifier._PERSONNAMEPARTMISCQUALIFIER)
       return "_PersonNamePartMiscQualifier";
     return "?";
-  }
+   }
 
-    public String toSystem(V3EntityNamePartQualifier code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3EntityNamePartQualifier code) {
+    return code.getSystem();
+  }
 
 }

@@ -137,12 +137,12 @@ public class MessageDefinition extends MetadataResource {
           return MessageSignificanceCategory.NOTIFICATION;
         throw new IllegalArgumentException("Unknown MessageSignificanceCategory code '"+codeString+"'");
         }
-        public Enumeration<MessageSignificanceCategory> fromType(Base code) throws FHIRException {
+        public Enumeration<MessageSignificanceCategory> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<MessageSignificanceCategory>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("Consequence".equals(codeString))
@@ -154,14 +154,16 @@ public class MessageDefinition extends MetadataResource {
         throw new FHIRException("Unknown MessageSignificanceCategory code '"+codeString+"'");
         }
     public String toCode(MessageSignificanceCategory code) {
-      if (code == MessageSignificanceCategory.CONSEQUENCE)
+       if (code == MessageSignificanceCategory.NULL)
+           return null;
+       if (code == MessageSignificanceCategory.CONSEQUENCE)
         return "Consequence";
       if (code == MessageSignificanceCategory.CURRENCY)
         return "Currency";
       if (code == MessageSignificanceCategory.NOTIFICATION)
         return "Notification";
       return "?";
-      }
+   }
     public String toSystem(MessageSignificanceCategory code) {
       return code.getSystem();
       }
@@ -497,17 +499,17 @@ public class MessageDefinition extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("code")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.code");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.code");
         }
         else if (name.equals("profile")) {
           this.profile = new Reference();
           return this.profile;
         }
         else if (name.equals("min")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.min");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.min");
         }
         else if (name.equals("max")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.max");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.max");
         }
         else
           return super.addChild(name);
@@ -766,7 +768,7 @@ public class MessageDefinition extends MetadataResource {
           return this.message;
         }
         else if (name.equals("situation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.situation");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.situation");
         }
         else
           return super.addChild(name);
@@ -1732,16 +1734,6 @@ public class MessageDefinition extends MetadataResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getParentTarget() { 
-      if (this.parentTarget == null)
-        this.parentTarget = new ArrayList<Resource>();
-      return this.parentTarget;
-    }
-
-    /**
      * @return {@link #replaces} (A MessageDefinition that is superseded by this definition.)
      */
     public List<Reference> getReplaces() { 
@@ -1792,28 +1784,6 @@ public class MessageDefinition extends MetadataResource {
         addReplaces();
       }
       return getReplaces().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<MessageDefinition> getReplacesTarget() { 
-      if (this.replacesTarget == null)
-        this.replacesTarget = new ArrayList<MessageDefinition>();
-      return this.replacesTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public MessageDefinition addReplacesTarget() { 
-      MessageDefinition r = new MessageDefinition();
-      if (this.replacesTarget == null)
-        this.replacesTarget = new ArrayList<MessageDefinition>();
-      this.replacesTarget.add(r);
-      return r;
     }
 
     /**
@@ -2328,38 +2298,38 @@ public class MessageDefinition extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.url");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.url");
         }
         else if (name.equals("identifier")) {
           this.identifier = new Identifier();
           return this.identifier;
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.version");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.version");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.name");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.name");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.title");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.title");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.status");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.status");
         }
         else if (name.equals("experimental")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.experimental");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.experimental");
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.date");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.date");
         }
         else if (name.equals("publisher")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.publisher");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.publisher");
         }
         else if (name.equals("contact")) {
           return addContact();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.description");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.description");
         }
         else if (name.equals("useContext")) {
           return addUseContext();
@@ -2368,10 +2338,10 @@ public class MessageDefinition extends MetadataResource {
           return addJurisdiction();
         }
         else if (name.equals("purpose")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.purpose");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.purpose");
         }
         else if (name.equals("copyright")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.copyright");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.copyright");
         }
         else if (name.equals("base")) {
           this.base = new Reference();
@@ -2388,13 +2358,13 @@ public class MessageDefinition extends MetadataResource {
           return this.event;
         }
         else if (name.equals("category")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.category");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.category");
         }
         else if (name.equals("focus")) {
           return addFocus();
         }
         else if (name.equals("responseRequired")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MessageDefinition.responseRequired");
+          throw new FHIRException("Cannot call addChild on a singleton property MessageDefinition.responseRequired");
         }
         else if (name.equals("allowedResponse")) {
           return addAllowedResponse();

@@ -28,19 +28,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 */
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.hl7.fhir.core.generator.analysis.TypeInfo;
-import org.hl7.fhir.core.generator.codegen.JavaBaseGenerator;
 import org.hl7.fhir.core.generator.engine.Definitions;
-import org.hl7.fhir.r5.model.ImplementationGuide.SPDXLicense;
 import org.hl7.fhir.r5.model.StructureDefinition;
 import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
 import org.hl7.fhir.r5.model.StructureDefinition.TypeDerivationRule;
@@ -50,14 +41,16 @@ import org.hl7.fhir.r5.model.StructureDefinition.TypeDerivationRule;
 public class JavaFactoryGenerator extends JavaBaseGenerator {
 
   
-  public JavaFactoryGenerator(OutputStream out, Definitions definitions, Configuration configuration, Date genDate, String version) throws UnsupportedEncodingException {
-    super(out, definitions, configuration, version, genDate);
+  public JavaFactoryGenerator(OutputStream out, Definitions definitions, Configuration configuration, String genDate, String version, String jid) throws UnsupportedEncodingException {
+    super(out, definitions, configuration, version, genDate, jid);
   }
 
 	public void generate() throws Exception {
 	  String template = config.getAdornments().get("ResourceFactory");
-	  template = template.replace("{{license}}", config.getLicense());
+    template = template.replace("{{jid}}", jid);
+  template = template.replace("{{license}}", config.getLicense());
     template = template.replace("{{startMark}}", startVMarkValue());
+    template = template.replace("{{generated}}", generatedAnnotationValue());
     template = template.replace("{{resource-factory}}", genResourceFactory());
     template = template.replace("{{type-factory}}", genTypeFactory());
     template = template.replace("{{case-factory}}", genCaseFactory());
@@ -72,7 +65,7 @@ public class JavaFactoryGenerator extends JavaBaseGenerator {
     for (StructureDefinition sd : definitions.getStructures().getSortedList()) {
       if (sd.getKind() == StructureDefinitionKind.RESOURCE && sd.getDerivation() == TypeDerivationRule.SPECIALIZATION && !sd.getAbstract()) {
         String tn = ((TypeInfo) sd.getUserData("java.type.info")).getName();
-        b.append("        if (\""+sd.getName()+"\".equals(name))\r\n");
+        b.append("        if (\""+escapeJavaString(sd.getName())+"\".equals(name))\r\n");
         b.append("            return new "+tn+"();\r\n");
       }
     }
@@ -85,7 +78,7 @@ public class JavaFactoryGenerator extends JavaBaseGenerator {
     for (StructureDefinition sd : definitions.getStructures().getSortedList()) {
       if (sd.getKind() == StructureDefinitionKind.COMPLEXTYPE && sd.getDerivation() == TypeDerivationRule.SPECIALIZATION && !sd.getAbstract()) {
         String tn = ((TypeInfo) sd.getUserData("java.type.info")).getName();
-        b.append("        if (\""+sd.getName()+"\".equals(name))\r\n");
+        b.append("        if (\""+escapeJavaString(sd.getName())+"\".equals(name))\r\n");
         b.append("            return new "+tn+"();\r\n");
       }
     }
@@ -98,14 +91,14 @@ public class JavaFactoryGenerator extends JavaBaseGenerator {
     for (StructureDefinition sd : definitions.getStructures().getSortedList()) {
       if (sd.getKind() == StructureDefinitionKind.RESOURCE && sd.getDerivation() == TypeDerivationRule.SPECIALIZATION && !sd.getAbstract()) {
         String tn = ((TypeInfo) sd.getUserData("java.type.info")).getName();
-        b.append("        case "+Integer.toString(sd.getName().hashCode())+": return new "+tn+"();\r\n");
+        b.append("        case \""+escapeJavaString(sd.getName())+"\": return new "+tn+"();\r\n");
       }
     }
 
     for (StructureDefinition sd : definitions.getStructures().getSortedList()) {
       if (sd.getKind() == StructureDefinitionKind.COMPLEXTYPE && sd.getDerivation() == TypeDerivationRule.SPECIALIZATION && !sd.getAbstract()) {
         String tn = ((TypeInfo) sd.getUserData("java.type.info")).getName();
-        b.append("        case "+Integer.toString(sd.getName().hashCode())+": return new "+tn+"();\r\n");
+        b.append("        case \""+escapeJavaString(sd.getName())+"\": return new "+tn+"();\r\n");
       }
     }
     

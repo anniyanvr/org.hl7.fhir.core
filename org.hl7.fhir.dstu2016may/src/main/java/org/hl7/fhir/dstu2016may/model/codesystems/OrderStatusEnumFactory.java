@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class OrderStatusEnumFactory implements EnumFactory<OrderStatus> {
@@ -60,11 +56,13 @@ public class OrderStatusEnumFactory implements EnumFactory<OrderStatus> {
       return OrderStatus.ABORTED;
     if ("completed".equals(codeString))
       return OrderStatus.COMPLETED;
-    throw new IllegalArgumentException("Unknown OrderStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown OrderStatus code '" + codeString + "'");
   }
 
   public String toCode(OrderStatus code) {
-    if (code == OrderStatus.PENDING)
+       if (code == OrderStatus.NULL)
+           return null;
+       if (code == OrderStatus.PENDING)
       return "pending";
     if (code == OrderStatus.REVIEW)
       return "review";
@@ -83,10 +81,10 @@ public class OrderStatusEnumFactory implements EnumFactory<OrderStatus> {
     if (code == OrderStatus.COMPLETED)
       return "completed";
     return "?";
-  }
+   }
 
-    public String toSystem(OrderStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(OrderStatus code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,0 +1,491 @@
+package org.hl7.fhir.utilities.npm;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.File;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+
+
+import org.hl7.fhir.utilities.IniFile;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+import org.junit.jupiter.api.*;
+
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+public class FilesystemPackageManagerTests {
+
+  private static final String DUMMY_URL_1 = "https://dummy1.org";
+  private static final String DUMMY_URL_2 = "https://dummy2.org";
+
+  private static final String DUMMY_URL_3 = "https://dummy3.org";
+
+  private static final String DUMMY_URL_4 = "https://dummy4.org";
+  public static final String CURRENT_PACKAGE_CACHE_VERSION = "4";
+  public static final String MULTITHREAD_TEST_NAME_PATTERN = "Test iteration {0}: {1} threads {2} packageCacheManagers";
+  private final List<PackageServer> dummyPrivateServers = List.of(
+     new PackageServer(DUMMY_URL_1),
+     new PackageServer(DUMMY_URL_2)
+  );
+
+  private final List<PackageServer> dummyDefaultServers = List.of(
+    new PackageServer(DUMMY_URL_3),
+    new PackageServer(DUMMY_URL_4)
+  );
+
+  @Test
+  void testDefaultServers() throws IOException {
+    FilesystemPackageCacheManager filesystemPackageCacheManager = getFilesystemPackageCacheManager(false);
+
+    assertEquals(4, filesystemPackageCacheManager.myPackageServers.size());
+    assertEquals(DUMMY_URL_1, filesystemPackageCacheManager.myPackageServers.get(0).getUrl());
+    assertEquals(DUMMY_URL_2, filesystemPackageCacheManager.myPackageServers.get(1).getUrl());
+    assertEquals(DUMMY_URL_3, filesystemPackageCacheManager.myPackageServers.get(2).getUrl());
+    assertEquals(DUMMY_URL_4, filesystemPackageCacheManager.myPackageServers.get(3).getUrl());
+  }
+
+  @Test
+  void testIgnoreDefaultServers() throws IOException {
+    FilesystemPackageCacheManager filesystemPackageCacheManager = getFilesystemPackageCacheManager(true);
+
+    assertEquals(2, filesystemPackageCacheManager.myPackageServers.size());
+    assertEquals(DUMMY_URL_1, filesystemPackageCacheManager.myPackageServers.get(0).getUrl());
+    assertEquals(DUMMY_URL_2, filesystemPackageCacheManager.myPackageServers.get(1).getUrl());
+  }
+
+  @Nonnull
+  private FilesystemPackageCacheManager getFilesystemPackageCacheManager(final boolean ignoreDefaultPackageServers) throws IOException {
+
+    FilesystemPackageCacheManager.Builder builder = new FilesystemPackageCacheManager.Builder() {
+      @Override
+      protected boolean isIgnoreDefaultPackageServers() {
+        return ignoreDefaultPackageServers;
+      }
+
+      @Override
+      @Nonnull
+      protected List<PackageServer> getDefaultServers() {
+        return dummyDefaultServers;
+      }
+
+      @Override
+      protected List<PackageServer> getConfiguredServers() {
+        return dummyPrivateServers;
+      }
+    };
+
+    return builder.build();
+
+  }
+
+  @Test
+  void testUserCacheDirectory() throws IOException {
+    FilesystemPackageCacheManager filesystemPackageCacheManager = new FilesystemPackageCacheManager.Builder().build();
+    assertEquals(System.getProperty("user.home") + File.separator + ".fhir" + File.separator + "packages", filesystemPackageCacheManager.getFolder());
+  }
+
+  /*
+    Targeted folder will only be valid on -nix style systems.
+   */
+  @Test
+  @DisabledOnOs(OS.WINDOWS)
+  void testSystemCacheDirectory() throws IOException {
+    File folder = new FilesystemPackageCacheManager.Builder().withSystemCacheFolder().getCacheFolder();
+    assertEquals( "/var/lib/.fhir/packages", folder.getAbsolutePath());
+  }
+
+  @Test
+  @EnabledOnOs(OS.WINDOWS)
+  void testSystemCacheDirectoryWin() throws IOException {
+    File folder = new FilesystemPackageCacheManager.Builder().withSystemCacheFolder().getCacheFolder();
+    assertEquals( System.getenv("ProgramData") + "\\.fhir\\packages", folder.getAbsolutePath());
+  }
+
+  @Test
+  void testCorruptPackageCleanup() throws IOException {
+    File cacheDirectory = ManagedFileAccess.fromPath(Files.createTempDirectory("fpcm-multithreadingTest"));
+
+    File dummyPackage = createDummyPackage(cacheDirectory, "example.fhir.uv.myig", "1.2.3");
+    File dummyLockFile = createDummyLockFile(cacheDirectory, "example.fhir.uv.myig" , "1.2.3");
+
+    assertThat(dummyPackage).isDirectory();
+    assertThat(dummyPackage).exists();
+    assertThat(dummyLockFile).exists();
+
+    FilesystemPackageCacheManager filesystemPackageCacheManager = new FilesystemPackageCacheManager.Builder().withCacheFolder(cacheDirectory.getAbsolutePath()).build();
+
+    assertThat(dummyPackage).doesNotExist();
+    assertThat(dummyLockFile).doesNotExist();
+  }
+
+  @Test
+  void testLockedPackageIsntCleanedUp() throws IOException, InterruptedException, TimeoutException {
+    File cacheDirectory = ManagedFileAccess.fromPath(Files.createTempDirectory("fpcm-multithreadingTest"));
+
+    File dummyPackage = createDummyPackage(cacheDirectory, "example.fhir.uv.myig", "1.2.3");
+
+    Thread lockThread = LockfileTestProcessUtility.lockWaitAndDeleteInNewProcess(cacheDirectory.getAbsolutePath(), "example.fhir.uv.myig#1.2.3.lock", 2);
+
+    LockfileTestUtility.waitForLockfileCreation(cacheDirectory.getAbsolutePath(), "example.fhir.uv.myig#1.2.3.lock");
+    File dummyLockFile = ManagedFileAccess.file(cacheDirectory.getAbsolutePath(), "example.fhir.uv.myig#1.2.3.lock");
+
+    assertThat(dummyPackage).isDirectory();
+    assertThat(dummyPackage).exists();
+    assertThat(dummyLockFile).exists();
+
+    FilesystemPackageCacheManager filesystemPackageCacheManager = new FilesystemPackageCacheManager.Builder().withCacheFolder(cacheDirectory.getAbsolutePath()).build();
+
+    assertThat(dummyPackage).exists();
+    assertThat(dummyLockFile).exists();
+
+    lockThread.join();
+  }
+
+  @Test
+  void testTimeoutForLockedPackageRead() throws IOException, InterruptedException, TimeoutException {
+    String pcmPath = ManagedFileAccess.fromPath(Files.createTempDirectory("fpcm-multithreadingTest")).getAbsolutePath();
+
+    final FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager.Builder()
+      .withCacheFolder(pcmPath)
+      .withLockParameters(new FilesystemPackageCacheManagerLocks.LockParameters(5,TimeUnit.SECONDS))
+      .build();
+
+    Assertions.assertTrue(pcm.listPackages().isEmpty());
+
+    Thread lockThread = LockfileTestProcessUtility.lockWaitAndDeleteInNewProcess(pcmPath, "example.fhir.uv.myig#1.2.3.lock", 10);
+    File directory = ManagedFileAccess.file(pcmPath, "example.fhir.uv.myig#1.2.3" );
+    directory.mkdir();
+
+    LockfileTestUtility.waitForLockfileCreation(pcmPath, "example.fhir.uv.myig#1.2.3.lock");
+
+    IOException exception = assertThrows(IOException.class, () -> pcm.loadPackageFromCacheOnly("example.fhir.uv.myig", "1.2.3"));
+
+    assertThat(exception.getMessage()).contains("Package cache timed out waiting for lock");
+    assertThat(exception.getCause().getMessage()).contains("Timeout waiting for lock file deletion");
+    lockThread.join();
+  }
+
+  @Test
+  void testReadFromCacheOnlyWaitsForLockDelete() throws IOException, InterruptedException, TimeoutException {
+    String pcmPath = ManagedFileAccess.fromPath(Files.createTempDirectory("fpcm-multithreadingTest")).getAbsolutePath();
+
+    final FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager.Builder().withCacheFolder(pcmPath).build();
+
+    Assertions.assertTrue(pcm.listPackages().isEmpty());
+
+    pcm.addPackageToCache("example.fhir.uv.myig", "1.2.3", this.getClass().getResourceAsStream("/npm/dummy-package.tgz"), "https://packages.fhir.org/example.fhir.uv.myig/1.2.3");
+
+    String packageAndVersion = "example.fhir.uv.myig#1.2.3";
+
+    //Now sneak in a new lock file and directory:
+
+    File directory = ManagedFileAccess.file(pcmPath, packageAndVersion);
+    directory.mkdir();
+
+    Thread lockThread = LockfileTestProcessUtility.lockWaitAndDeleteInNewProcess(pcmPath, "example.fhir.uv.myig#1.2.3.lock", 5);
+    LockfileTestUtility.waitForLockfileCreation(pcmPath, "example.fhir.uv.myig#1.2.3.lock");
+
+    NpmPackage npmPackage = pcm.loadPackageFromCacheOnly("example.fhir.uv.myig", "1.2.3");
+
+    assertThat(npmPackage.id()).isEqualTo("example.fhir.uv.myig");
+
+    lockThread.join();
+  }
+
+  /**
+    We repeat the same tests multiple times here, in order to catch very rare edge cases.
+   */
+  public static Stream<Arguments> packageCacheMultiThreadTestParams() {
+    List<Arguments> params = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      params.add(Arguments.of(i,100, 1));
+      params.add(Arguments.of(i,10,10));
+      params.add(Arguments.of(i,100, 10));
+    }
+    return params.stream();
+  }
+
+  private File createDummyTemp(File cacheDirectory, String lowerCase) throws IOException {
+    File dir = createDummyPackage(cacheDirectory, lowerCase);
+    // old enough to be abandoned - deleteOldTempDirectories leaves recent ones alone
+    dir.setLastModified(System.currentTimeMillis() - 2L * 60L * 60L * 1000L);
+    return dir;
+  }
+
+  private File createDummyPackage(File cacheDirectory, String packageName, String packageVersion) throws IOException {
+    String directoryName = packageName + "#" + packageVersion;
+    return createDummyPackage(cacheDirectory, directoryName);
+  }
+
+  private static File createDummyPackage(File cacheDirectory, String directoryName) throws IOException {
+    File packageDirectory = ManagedFileAccess.file(cacheDirectory.getAbsolutePath(), directoryName);
+    packageDirectory.mkdirs();
+
+    File dummyContentFile = ManagedFileAccess.file(packageDirectory.getAbsolutePath(), "dummy.txt");
+    FileWriter wr = new FileWriter(dummyContentFile);
+    wr.write("Ain't nobody here but us chickens");
+    wr.flush();
+    wr.close();
+    return packageDirectory;
+  }
+
+  private File createDummyLockFile(File cacheDirectory, String packageName, String packageVersion) throws IOException {
+    final File dummyLockFile = ManagedFileAccess.file(cacheDirectory.getAbsolutePath(), packageName + "#" + packageVersion + ".lock");
+    final FileWriter wr = new FileWriter(dummyLockFile);
+    wr.write("Ain't nobody here but us chickens");
+    wr.flush();
+    wr.close();
+    return dummyLockFile;
+  }
+
+  private void assertThatDummyTempExists(File cacheDirectory, String dummyTempPackage) throws IOException {
+    File dummyTempDirectory = ManagedFileAccess.file(cacheDirectory.getAbsolutePath(), dummyTempPackage);
+    assertThat(dummyTempDirectory).exists();
+
+    File dummyContentFile = ManagedFileAccess.file(dummyTempDirectory.getAbsolutePath(), "dummy.txt");
+    assertThat(dummyContentFile).exists();
+  }
+
+  @Test
+  void testCreatesIniIfDoesntExistAndCacheStaysIntact() throws IOException {
+    File cacheDirectory = ManagedFileAccess.fromPath(Files.createTempDirectory("fpcm-multithreadingTest"));
+    File cacheIni = ManagedFileAccess.file(cacheDirectory.getAbsolutePath(), "packages.ini");
+
+    createDummyPackage(cacheDirectory, "example.fhir.uv.myig", "1.2.3");
+
+    String dummyTempPackage = UUID.randomUUID().toString().toLowerCase();
+    createDummyTemp(cacheDirectory, dummyTempPackage);
+    assertThatDummyTempExists(cacheDirectory, dummyTempPackage);
+
+    assertThat(cacheIni).doesNotExist();
+    FilesystemPackageCacheManager filesystemPackageCacheManager = new FilesystemPackageCacheManager.Builder().withCacheFolder(cacheDirectory.getAbsolutePath()).build();
+    assertInitializedTestCacheIsValid(cacheDirectory, true);
+  }
+
+
+
+  @Test
+  void testLeavesRecentTempDirectoryAlone() throws IOException {
+    // another process may be extracting a package into it right now
+    File cacheDirectory = ManagedFileAccess.fromPath(Files.createTempDirectory("fpcm-multithreadingTest"));
+    String recentTemp = UUID.randomUUID().toString().toLowerCase();
+    createDummyPackage(cacheDirectory, recentTemp);
+    String oldTemp = UUID.randomUUID().toString().toLowerCase();
+    createDummyTemp(cacheDirectory, oldTemp);
+
+    new FilesystemPackageCacheManager.Builder().withCacheFolder(cacheDirectory.getAbsolutePath()).build();
+    new FilesystemPackageCacheManager.Builder().withCacheFolder(cacheDirectory.getAbsolutePath()).build();
+
+    assertThatDummyTempExists(cacheDirectory, recentTemp);
+    assertThat(ManagedFileAccess.file(cacheDirectory.getAbsolutePath(), oldTemp)).doesNotExist();
+  }
+
+  @Test
+  void testClearsCacheIfVersionIsWrong() throws IOException {
+    File cacheDirectory = ManagedFileAccess.fromPath(Files.createTempDirectory("fpcm-multithreadingTest"));
+    File cacheIni = ManagedFileAccess.file(cacheDirectory.getAbsolutePath(), "packages.ini");
+
+    createDummyPackage(cacheDirectory, "example.fhir.uv.myig", "1.2.3");
+    String dummyTempPackage = UUID.randomUUID().toString().toLowerCase();
+    createDummyTemp(cacheDirectory, dummyTempPackage);
+    assertThatDummyTempExists(cacheDirectory, dummyTempPackage);
+
+
+    IniFile ini = new IniFile(cacheIni.getAbsolutePath());
+    ini.setStringProperty("cache", "version", "2", null);
+    ini.save();
+
+    assertThat(cacheIni).exists();
+    FilesystemPackageCacheManager filesystemPackageCacheManager = new FilesystemPackageCacheManager.Builder().withCacheFolder(cacheDirectory.getAbsolutePath()).build();
+    assertInitializedTestCacheIsValid(cacheDirectory, false);
+  }
+
+  @Test
+  void testCacheStaysIntactIfVersionIsTheSame() throws IOException {
+    File cacheDirectory = ManagedFileAccess.fromPath(Files.createTempDirectory("fpcm-multithreadingTest"));
+    File cacheIni = ManagedFileAccess.file(cacheDirectory.getAbsolutePath(), "packages.ini");
+
+    createDummyPackage(cacheDirectory, "example.fhir.uv.myig", "1.2.3");
+    String dummyTempPackage = UUID.randomUUID().toString().toLowerCase();
+    createDummyTemp(cacheDirectory, dummyTempPackage);
+    assertThatDummyTempExists(cacheDirectory, dummyTempPackage);
+
+
+    IniFile ini = new IniFile(cacheIni.getAbsolutePath());
+    ini.setStringProperty("cache", "version", CURRENT_PACKAGE_CACHE_VERSION, null);
+    ini.save();
+
+    assertThat(cacheIni).exists();
+    FilesystemPackageCacheManager filesystemPackageCacheManager = new FilesystemPackageCacheManager.Builder().withCacheFolder(cacheDirectory.getAbsolutePath()).build();
+    assertInitializedTestCacheIsValid(cacheDirectory, true);
+  }
+
+  private void assertInitializedTestCacheIsValid(File cacheDirectory, boolean dummyPackageShouldExist) throws IOException {
+    assertThat(cacheDirectory).exists();
+    File iniFile = ManagedFileAccess.file(cacheDirectory.getAbsolutePath(), "packages.ini");
+    assertThat(ManagedFileAccess.file(cacheDirectory.getAbsolutePath(), "packages.ini")).exists();
+    IniFile ini = new IniFile(iniFile.getAbsolutePath());
+    String version = ini.getStringProperty("cache", "version");
+    assertThat(version).isEqualTo(CURRENT_PACKAGE_CACHE_VERSION);
+
+    File[] files = cacheDirectory.listFiles();
+    if (dummyPackageShouldExist) {
+      // Check that only packages.ini and our dummy package are in the cache. Our previous temp should be deleted.
+      assertThat(files).hasSize(2); // packages.ini and example.fhir.uv.myig#1.2.3 (directory)
+
+      File dummyPackage = ManagedFileAccess.file(cacheDirectory.getAbsolutePath(), "example.fhir.uv.myig#1.2.3");
+      assertThat(dummyPackage).exists();
+
+      File dummyContentFile = ManagedFileAccess.file(dummyPackage.getAbsolutePath(), "dummy.txt");
+      assertThat(dummyContentFile).exists();
+    } else {
+      // Check that only packages.ini is in the cache.
+      assertThat(files).hasSize(1);
+    }
+  }
+
+  @Test
+  void generatesIndexWhenMissing() throws IOException {
+    String pcmPath = ManagedFileAccess.fromPath(Files.createTempDirectory("fpcm-multithreadingTest")).getAbsolutePath();
+
+    final FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager.Builder().withCacheFolder(pcmPath).build();
+
+    Assertions.assertTrue(pcm.listPackages().isEmpty());
+
+    NpmPackage npmPackage = pcm.addPackageToCache("example.fhir.uv.myig", "1.2.3", this.getClass().getResourceAsStream("/npm/dummy-package-no-index.tgz"), "https://packages.fhir.org/example.fhir.uv.myig/1.2.3");
+    Assertions.assertTrue(npmPackage.isIndexed());
+  }
+
+  @Test
+  void testAddScopedPackage() throws IOException {
+    String pcmPath = ManagedFileAccess.fromPath(Files.createTempDirectory("fpcm-scopedPackageTest")).getAbsolutePath();
+
+    final FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager.Builder().withCacheFolder(pcmPath).build();
+
+    Assertions.assertTrue(pcm.listPackages().isEmpty());
+
+    NpmPackage npmPackage = pcm.addPackageToCache("@fhir/example.fhir.uv.myig", "1.2.3", this.getClass().getResourceAsStream("/npm/dummy-package-no-index-scoped.tgz"), "https://packages.fhir.org/example.fhir.uv.myig/1.2.3");
+    Assertions.assertTrue(npmPackage.isIndexed());
+    Assertions.assertNotNull(pcm.loadPackage("@fhir/example.fhir.uv.myig", "1.2.3"));
+  }
+
+  private class MultiThreadTestRunnable implements Runnable {
+
+    private final FilesystemPackageCacheManager pcm;
+    private final String originatingTest;
+    private final int index;
+    private final int operation;
+
+    private boolean successful = false;
+
+    private MultiThreadTestRunnable(FilesystemPackageCacheManager pcm, String originatingTest, int index, int operation) {
+      this.pcm = pcm;
+      this.originatingTest = originatingTest;
+      this.index = index;
+      this.operation = operation;
+    }
+
+    @Override
+    public void run() {
+      try {
+      if (operation == 0) {
+        pcm.addPackageToCache("example.fhir.uv.myig", "1.2.3", this.getClass().getResourceAsStream("/npm/dummy-package.tgz"), "https://packages.fhir.org/example.fhir.uv.myig/1.2.3");
+      } else if (operation == 1) {
+        pcm.clear();
+      } else if (operation == 2) {
+        pcm.loadPackageFromCacheOnly("example.fhir.uv.myig", "1.2.3");
+      } else {
+        pcm.removePackage("example.fhir.uv.myig", "1.2.3");
+      }
+      successful = true;
+      System.out.println(getRunnableName() + " successful.");
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.err.println(getRunnableName() + " failed.");
+    }
+    }
+
+    private @Nonnull String getRunnableName() {
+      return "Test " + originatingTest + " Thread #" + index + " " + getOperationName();
+    }
+
+    public String getOperationName() {
+      if (operation == 0) {
+        return "addPackageToCache";
+      } else if (operation == 1) {
+        return "clear";
+      } else if (operation == 2) {
+        return "loadPackageFromCacheOnly";
+      } else {
+        return "removePackage";
+      }
+    }
+  }
+
+  @MethodSource("packageCacheMultiThreadTestParams")
+  @ParameterizedTest(name = MULTITHREAD_TEST_NAME_PATTERN)
+  @Timeout(120)
+  void packageCacheMultiThreadTest(final int testIteration, final int threadTotal, final int packageCacheManagerTotal) throws IOException {
+    final String testName = MessageFormat.format(MULTITHREAD_TEST_NAME_PATTERN, testIteration, threadTotal, packageCacheManagerTotal);
+    System.out.println("Test name: " + testName);
+    final String pcmPath = ManagedFileAccess.fromPath(Files.createTempDirectory("fpcm-multithreadingTest")).getAbsolutePath();
+    System.out.println("Using temp pcm path: " + pcmPath);
+    FilesystemPackageCacheManager[] packageCacheManagers = new FilesystemPackageCacheManager[packageCacheManagerTotal];
+    Random rand = new Random();
+
+    Map<Thread, MultiThreadTestRunnable> threads = new HashMap<>();
+
+    for (int i = 0; i < threadTotal; i++) {
+      final int randomPCM = rand.nextInt(packageCacheManagerTotal);
+      if (packageCacheManagers[randomPCM] == null) {
+        packageCacheManagers[randomPCM] = new FilesystemPackageCacheManager.Builder().withCacheFolder(pcmPath).build();
+      }
+      final FilesystemPackageCacheManager pcm = packageCacheManagers[randomPCM];
+
+      final int randomOperation = rand.nextInt(4);
+      MultiThreadTestRunnable runnable = new MultiThreadTestRunnable(pcm, testName, i, randomOperation);
+
+      Thread t = new Thread(runnable);
+      threads.put(t, runnable);
+      t.start();
+    }
+    final int threadTimeout = 30000;
+    threads.forEach((thread, aliveRunnable) -> {
+      try {
+        thread.join(threadTimeout);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      if (thread.isAlive()) {
+        System.err.println("Thread with Runnable " + aliveRunnable.getRunnableName() + " alive after " + threadTimeout + " milliseconds. Printing stack");
+        for (StackTraceElement element : thread.getStackTrace()) {
+          System.err.println(element);
+        }
+        System.err.println("State of other threads:");
+        for (MultiThreadTestRunnable runnable : threads.values()) {
+          System.err.println("  " + runnable.getRunnableName() + ": " + runnable.successful);
+        }
+        fail();
+      }
+    });
+
+    for (MultiThreadTestRunnable runnable : threads.values()) {
+      assertThat(runnable.successful).isTrue();
+    }
+  }
+}

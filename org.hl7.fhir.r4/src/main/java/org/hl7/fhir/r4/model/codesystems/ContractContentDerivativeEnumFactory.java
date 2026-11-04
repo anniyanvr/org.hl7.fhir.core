@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ContractContentDerivativeEnumFactory implements EnumFactory<ContractContentDerivative> {
@@ -50,11 +46,13 @@ public class ContractContentDerivativeEnumFactory implements EnumFactory<Contrac
       return ContractContentDerivative.STATEMENT;
     if ("shareable".equals(codeString))
       return ContractContentDerivative.SHAREABLE;
-    throw new IllegalArgumentException("Unknown ContractContentDerivative code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ContractContentDerivative code '" + codeString + "'");
   }
 
   public String toCode(ContractContentDerivative code) {
-    if (code == ContractContentDerivative.REGISTRATION)
+       if (code == ContractContentDerivative.NULL)
+           return null;
+       if (code == ContractContentDerivative.REGISTRATION)
       return "registration";
     if (code == ContractContentDerivative.RETRIEVAL)
       return "retrieval";
@@ -63,10 +61,10 @@ public class ContractContentDerivativeEnumFactory implements EnumFactory<Contrac
     if (code == ContractContentDerivative.SHAREABLE)
       return "shareable";
     return "?";
-  }
+   }
 
-    public String toSystem(ContractContentDerivative code) {
-      return code.getSystem();
-      }
+  public String toSystem(ContractContentDerivative code) {
+    return code.getSystem();
+  }
 
 }

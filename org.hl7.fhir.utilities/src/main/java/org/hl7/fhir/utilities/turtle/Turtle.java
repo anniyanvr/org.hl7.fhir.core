@@ -49,18 +49,15 @@ import org.hl7.fhir.utilities.Utilities;
 
 public class Turtle {
 
-	public static final String GOOD_IRI_CHAR = "a-zA-Z0-9\u00A0-\uFFFE";
+  public static final String LANG_REGEX = "[a-z]{2}(-[a-zA-Z]{2})?";
 
-  public static final String IRI_URL = "(([a-z])+:)*((%[0-9a-fA-F]{2})|[&'\\(\\)*+,;:@_~?!$\\/\\-\\#.\\="+GOOD_IRI_CHAR+"])+"; 
-  public static final String LANG_REGEX = "[a-z]{2}(\\-[a-zA-Z]{2})?";
 
 	// Object model
-	public abstract class Triple {
-		private String uri;
+	public interface Triple {
 	}
 
-	public class StringType extends Triple {
-		private String value;
+	public static class StringType implements Triple {
+		private final String value;
 
 		public StringType(String value) {
 			super();
@@ -68,26 +65,39 @@ public class Turtle {
 		}
 	}
 
-	public class Complex extends Triple {
-		protected List<Predicate> predicates = new ArrayList<Predicate>();
+	public class Complex implements Triple {
+		protected List<Predicate> predicates = new ArrayList<>();
 
 		public Complex predicate(String predicate, String object) {
+			return predicate(predicate, object, false);
+		}
+		
+		public Complex predicate(String predicate, String object, boolean asList) {
 			predicateSet.add(predicate);
 			objectSet.add(object);
-			return predicate(predicate, new StringType(object));
+			return predicate(predicate, new StringType(object), asList);
 		}
 
-    public Complex linkedPredicate(String predicate, String object, String link) {
+	public Complex linkedPredicate(String predicate, String object, String link, String comment) {
+		return linkedPredicate(predicate, object, link, comment, false);
+	}
+		
+    public Complex linkedPredicate(String predicate, String object, String link, String comment, boolean asList) {
       predicateSet.add(predicate);
       objectSet.add(object);
-      return linkedPredicate(predicate, new StringType(object), link);
+      return linkedPredicate(predicate, new StringType(object), link, comment, asList);
+    }
+    
+    public Complex predicate(String predicate, Triple object) {
+    	return predicate(predicate, object, false);
     }
 
-		public Complex predicate(String predicate, Triple object) {
+	public Complex predicate(String predicate, Triple object, boolean asList) {
       Predicate p = getPredicate(predicate);
       if (p == null) {
         p = new Predicate();
 			p.predicate = predicate;
+			p.asList = asList;
 			predicateSet.add(predicate);
         predicates.add(p);
       }
@@ -95,7 +105,7 @@ public class Turtle {
 				objectSet.add(((StringType) object).value);
       p.objects.add(object);
 			return this;
-		}
+	}
 
     protected Predicate getPredicate(String predicate) {
       for (Predicate p : predicates)
@@ -103,13 +113,19 @@ public class Turtle {
           return p;
       return null;
     }
+    
+    public Complex linkedPredicate(String predicate, Triple object, String link, String comment) {
+    	return linkedPredicate(predicate, object, link, comment, false);
+    }
 
-    public Complex linkedPredicate(String predicate, Triple object, String link) {
+    public Complex linkedPredicate(String predicate, Triple object, String link, String comment, boolean asList) {
       Predicate p = getPredicate(predicate);
       if (p == null) {
         p = new Predicate();
       p.predicate = predicate;
       p.link = link;
+      p.comment = comment;
+      p.asList = asList;
       predicateSet.add(predicate);
         predicates.add(p);
       }
@@ -118,18 +134,26 @@ public class Turtle {
       p.objects.add(object);
       return this;
     }
+    
+    public Complex predicate(String predicate) {
+		return predicate(predicate, false);
+	}
 
-		public Complex predicate(String predicate) {
-			predicateSet.add(predicate);
-			Complex c = complex();
-			predicate(predicate, c);
-			return c;
-		}
+	public Complex predicate(String predicate, boolean asList) {
+		predicateSet.add(predicate);
+		Complex c = complex();
+		predicate(predicate, c, asList);
+		return c;
+	}
 
-    public Complex linkedPredicate(String predicate, String link) {
+	public Complex linkedPredicate(String predicate, String link, String comment) {
+		return linkedPredicate(predicate, link, comment, false);
+	}
+	
+    public Complex linkedPredicate(String predicate, String link, String comment, boolean asList) {
       predicateSet.add(predicate);
       Complex c = complex();
-      linkedPredicate(predicate, c, link);
+      linkedPredicate(predicate, c, link, comment, asList);
       return c;
     }
 
@@ -138,11 +162,12 @@ public class Turtle {
 		}
 	}
 
-	private class Predicate {
+	protected static class Predicate {
 		protected String predicate;
 		protected String link;
-    protected List<Triple> objects = new ArrayList<Turtle.Triple>();
+    protected List<Triple> objects = new ArrayList<>();
 		protected String comment;
+		protected boolean asList = false;
 
 		public String getPredicate() {
 			return predicate;
@@ -182,21 +207,22 @@ public class Turtle {
 
 		public void comment(String comment) {
 			if (!Utilities.noString(comment)) {
-				predicate("rdfs:comment", literal(comment));
-				predicate("dcterms:description", literal(comment));
+				predicate("rdfs:comment", literal(comment), false);
+				predicate("dcterms:description", literal(comment), false);
 			}
 		}
 
 		public void label(String label) {
 			if (!Utilities.noString(label)) {
-				predicate("rdfs:label", literal(label));
-				predicate("dc:title", literal(label));
+				predicate("rdfs:label", literal(label), false);
+				predicate("dc:title", literal(label), false);
 			}
 		}
 
 	}
 
 	public class Section {
+	  private List<String> comments = new ArrayList<>();
 		private String name;
 		private List<Subject> subjects = new ArrayList<Subject>();
 
@@ -243,6 +269,10 @@ public class Turtle {
         if (ss.id.equals(subject))
           return true;
       return false;
+    }
+
+    public void stringComment(String cnt) {
+      comments.add(cnt);
     }
 	}
 
@@ -314,11 +344,11 @@ public class Turtle {
 	}
 
 	protected StringType literal(String s) {
-		return new StringType("\""+escape(s, true)+"\"");
+		return new StringType("\"" + escape(s, true) + "\"");
 	}
 
   protected StringType literalTyped(String s, String t) {
-    return new StringType("\""+escape(s, true)+"\"^^xs:"+t);
+    return new StringType("\"" + escape(s, true) + "\"^^xs:" + t);
   }
 
 	public static String escape(String s, boolean string) {
@@ -382,14 +412,14 @@ public class Turtle {
 		writer.close();
 	}
 
-  public String asHtml() throws Exception {
+  public String asHtml(boolean prism) throws Exception {
     StringBuilder b = new StringBuilder();
-    b.append("<pre class=\"rdf\"><code class=\"language-turtle\">\r\n");
+    b.append("<pre class=\"rdf\" data-fhir=\"generated\" style=\"white-space: pre; overflow: hidden\">"+(prism ? "<code class=\"language-turtle\">" : "")+"\r\n");
     commitPrefixes(b);
     for (Section s : sections) {
       commitSection(b, s);
     }
-    b.append("</code></pre>\r\n");
+    b.append((prism ? "</code>" : "")+"</pre>\r\n");
     b.append("\r\n");
     return b.toString();
   }
@@ -435,8 +465,14 @@ public class Turtle {
 	//  private String lastComment = "";
 
 	private void commitSection(LineOutputStreamWriter writer, Section section) throws IOException {
-		writer.ln("# - "+section.name+" "+Utilities.padLeft("", '-', 75-section.name.length()));
-		writer.ln();
+	  writer.ln("# - "+section.name+" "+Utilities.padLeft("", '-', 75-section.name.length()));
+	  writer.ln();
+	  if (!section.comments.isEmpty()) {
+	    for (String s : section.comments) {
+	      writer.ln("# "+formatMultilineComment(s));
+	    }
+	    writer.ln();
+	  }
 		for (Subject sbj : section.subjects) {
       if (Utilities.noString(sbj.id)) {
         writer.write("[");
@@ -447,28 +483,34 @@ public class Turtle {
 			int i = 0;
 
 			for (Predicate p : sbj.predicates) {
+			  //
 				writer.write(p.getPredicate());
 				writer.write(" ");
         boolean first = true;
         for (Triple o : p.getObjects()) {
-          if (first)
+          if (first) {
             first = false;
-          else
-            writer.write(", ");
+            if (p.asList) writer.write("( ");
+          } else {
+        	  if (!p.asList) writer.write(", ");
+        	  else writer.write(" ");
+          }
           if (o instanceof StringType)
             writer.write(((StringType) o).value);
 				else {
 					writer.write("[");
-            if (write((Complex) o, writer, 4))
-						writer.write("\r\n  ]");
-					else
-						writer.write("]");
+            if (write((Complex) o, writer, 4)) {
+              writer.write("\r\n  ]");
+            } else {
+              writer.write("]");
+            }
 				}
         }
-				String comment = p.comment == null? "" : " # "+p.comment;
+				String comment = p.comment == null? "" : " # "+formatMultilineComment(p.comment);
+				if (p.asList) writer.write(" )");	
 				i++;
 				if (i < sbj.predicates.size())
-					writer.write(";"+comment+"\r\n  ");
+					writer.write(" ;"+comment+"\r\n  ");
         else {
           if (Utilities.noString(sbj.id)) 
             writer.write("]");
@@ -477,13 +519,27 @@ public class Turtle {
 	  }
 	}
   }
+	
+  private String formatMultilineComment(String s) {
+	  return s.replace("\n", "\n#");
+  }
 
   private void commitSection(StringBuilder b, Section section) throws Exception {
     b.append("# - "+section.name+" "+Utilities.padLeft("", '-', 75-section.name.length())+"\r\n");
     b.append("\r\n");
+    if (!section.comments.isEmpty()) {
+      for (String s : section.comments) {
+        b.append("# "+s+"\r\n");
+      }
+      b.append("\r\n");
+    }
     for (Subject sbj : section.subjects) {
-      b.append(Utilities.escapeXml(sbj.id));
-      b.append(" ");
+      if (Utilities.noString(sbj.id)) {
+        b.append("[");
+      } else {
+        b.append(Utilities.escapeXml(sbj.id));
+        b.append(" ");
+      }
       int i = 0;
 
       for (Predicate p : sbj.predicates) {
@@ -491,30 +547,36 @@ public class Turtle {
         b.append(" ");
         boolean first = true;
         for (Triple o : p.getObjects()) {
-          if (first)
+          if (first) {
             first = false;
-          else
-            b.append(", ");
+            if (p.asList) b.append("( ");
+          } else {
+            if (!p.asList) b.append(", ");
+            else b.append(" ");
+          }
           if (o instanceof StringType)
             b.append(Utilities.escapeXml(((StringType) o).value));
-        else {
-          b.append("[");
+          else {
+            b.append("[");
             if (write((Complex) o, b, 4))
-            b.append("\r\n  ]");
-          else
-            b.append("]");
+              b.append("\r\n  ]");
+            else
+              b.append("]");
+          }
         }
-        }
-        String comment = p.comment == null? "" : " # "+p.comment;
+        String comment = p.comment == null? "" : " # "+formatMultilineComment(p.comment);
+        if (p.asList) b.append(" )");
         i++;
         if (i < sbj.predicates.size())
-          b.append(";"+Utilities.escapeXml(comment)+"\r\n  ");
-        else
-          b.append("."+Utilities.escapeXml(comment)+"\r\n\r\n");
+          b.append(" ;"+Utilities.escapeXml(comment)+"\r\n  ");
+        else {
+          if (Utilities.noString(sbj.id))
+            b.append("]");
+          b.append(" ."+Utilities.escapeXml(comment)+"\r\n\r\n");
+        }
       }
     }
   }
-
 	protected class LineOutputStreamWriter extends OutputStreamWriter {
 		private LineOutputStreamWriter(OutputStream out) throws UnsupportedEncodingException {
 			super(out, "UTF-8");
@@ -546,8 +608,11 @@ public class Turtle {
         if (first) {
           first = false;
           writer.write(left+" "+po.getPredicate()+" ");
-        } else
-          writer.write(", ");
+          if (po.asList) writer.write("( ");
+        } else {
+        	  if (!po.asList) writer.write(", ");
+        	  else writer.write(" ");
+        }
         if (o instanceof StringType)
           writer.write(((StringType) o).value);
 			else {
@@ -558,9 +623,10 @@ public class Turtle {
 					writer.write(" ]");
 			}
       }
+      if (po.asList) writer.write(" )");
 			i++;
 			if (i < complex.predicates.size())
-				writer.write(";");
+				writer.write(" ;");
 			if (!Utilities.noString(po.comment)) 
 				writer.write(" # "+escape(po.comment, false));
 		}
@@ -583,21 +649,25 @@ public class Turtle {
         if (first) {
           first = false;
           b.append(left+" "+po.makelink()+" ");
+          if (po.asList) b.append("( ");
         } else
-          b.append(", ");
+        	if (!po.asList) b.append(", ");
+        	else b.append(" ");
         if (o instanceof StringType)
           b.append(Utilities.escapeXml(((StringType) o).value));
       else {
           b.append("[");
-          if (write((Complex) o, b, indent+2))
-          b.append(left+" ]");
-        else
-          b.append(" ]");
+          if (write((Complex) o, b, indent+2)) {
+            b.append("\r\n").append(left).append(" ]");
+          } else {
+            b.append(" ]");
+          }
       }
       }
+      if (po.asList) b.append(" )");
       i++;
       if (i < complex.predicates.size())
-        b.append(";");
+        b.append(" ;");
       if (!Utilities.noString(po.comment)) 
         b.append(" # "+Utilities.escapeXml(escape(po.comment, false)));
     }
@@ -657,7 +727,7 @@ public class Turtle {
 		}
 
     public void setUri(String uri) throws FHIRFormatError {
-			if (!uri.matches(IRI_URL))
+			if (!TurtleIRIUtil.isValidIRI(uri))
         throw new FHIRFormatError("Illegal URI "+uri);
 			this.uri = uri;
 		}
@@ -725,6 +795,9 @@ public class Turtle {
   }
 
   private Map<TTLURL, TTLComplex> objects = new HashMap<TTLURL, Turtle.TTLComplex>();
+
+  private static final int MAX_TTL_DEPTH = 500;
+  private int parseDepth = 0;
 
   private Object base;
 
@@ -821,16 +894,18 @@ public class Turtle {
 				String end = "\"";
 				while (cursor < source.length()) {
 					ch = grab();
-          if (b.length() == 2 && ch != '"' && b.equals("\"\"")) {
+          if (b.length() == 2 && ch != '"' && b.equals("\"\"")) { // FIXME SpotBugs issue: EC_UNRELATED_TYPES b.equals("\"\"") is always false (StringBuilder vs String); use b.toString().equals("\"\"")
 						cursor--;
 						break;
 					}
 					b.append(ch);
-          if (ch == '"')
-					if (b.toString().equals("\"\"\""))
-						end = "\"\"\"";
-            else if (!b.toString().equals("\"\"") && b.toString().endsWith(end) && !b.toString().endsWith("\\"+end))
-						break;
+          if (ch == '"') {
+            if (b.toString().equals("\"\"\"")) {
+              end = "\"\"\"";
+            } else if (!b.toString().equals("\"\"") && b.toString().endsWith(end) && !b.toString().endsWith("\\" + end)) {
+              break;
+            }
+          }
 				}
 				type = LexerTokenType.LITERAL;
 				token = unescape(b.toString().substring(end.length(), b.length()-end.length()), false);
@@ -840,7 +915,7 @@ public class Turtle {
 				end = "'";
 				while (cursor < source.length()) {
 					ch = grab();
-					if (b.equals("''") && ch != '\'') {
+					if (b.equals("''") && ch != '\'') { // FIXME SpotBugs issue: EC_UNRELATED_TYPES b.equals("''") is always false (StringBuilder vs String); use b.toString().equals("''")
 						cursor--;
 						break;
 					}
@@ -858,15 +933,14 @@ public class Turtle {
 					b.append(ch);
 					while (cursor < source.length()) {
 						ch = grab();
-            //						if (!Utilities.charInRange(ch, '0', '9') && !Utilities.charInRange(ch, 'a', 'z') && !Utilities.charInRange(ch, 'A', 'Z') && !Utilities.charInSet(ch, '_', '-', '+', '.', '\\', '#'))
-            if (Character.isWhitespace(ch) || Utilities.charInSet(ch, ';', ']', ')', '~') || (( ch == ':') && !postColon))
-							break;
+            if (Character.isWhitespace(ch) || Utilities.charInSet(ch, ';', ']', ')', '~') || (( ch == ':') && !postColon)) {
+              break;
+            }
 						b.append(ch);
 					}
 					type = LexerTokenType.WORD;
 					token = b.toString();
 					cursor--;
-					return;        
 				} else
 					throw error("unexpected lexer char "+ch);
 			}
@@ -908,15 +982,21 @@ public class Turtle {
 					case 'u':
 						i++;
 						int l = 4;
-						int uc = Integer.parseInt(s.substring(i, i+l), 16);
+						String ss = s.substring(i, i+l);
+            int uc = Integer.parseInt(ss, 16);
 						if (uc < (isUri ? 33 : 32)) {
 							l = 8;
-							uc = Integer.parseInt(s.substring(i, i+8), 16);
+							ss = s.substring(i, i+l);
+							uc = Integer.parseInt(ss, 16);
 						}
 						if (uc < (isUri ? 33 : 32) || (isUri && (uc == 0x3C || uc == 0x3E)))
               throw new FHIRFormatError("Illegal unicode character");
-						b.append((char) uc);
-						i = i + l;
+						try {
+						  b.append(Character.toString(uc));
+						} catch (Exception e) {
+						  throw new FHIRFormatError("Illegal Unicode Sequence: "+ss);
+						}
+						i = i + l - 1; // -1 cause we're about to i++
 						break;
 					default:
             throw new FHIRFormatError("Unknown character escape \\"+s.charAt(i));
@@ -995,7 +1075,6 @@ public class Turtle {
 	//	
 	//	public void importTtl(Section sct, String ttl) throws Exception {
 	//		if (!Utilities.noString(ttl)) {
-	//			//        System.out.println("import ttl: "+ttl);
 	//			Lexer lexer = new Lexer(ttl);
 	//			String subject = null;
 	//			String predicate = null;
@@ -1063,12 +1142,13 @@ public class Turtle {
         String url = lexer.next(LexerTokenType.URI, false);
 				if (!sparqlStyle)
 					lexer.token(".");
-        if (!base)
-				prefix(prefix, url);
-        else if (this.base == null)
+        if (!base) {
+          prefix(prefix, url);
+        } else if (this.base == null) {
           this.base = url;
-        else
-          throw new FHIRFormatError("Duplicate @base");  
+        } else {
+          throw new FHIRFormatError("Duplicate @base");
+        }
 			} else if (lexer.peekType() == LexerTokenType.URI) {
 				doPrefixes = false;
 				TTLURL uri = new TTLURL(lexer.startLine, lexer.startCol);
@@ -1122,111 +1202,128 @@ public class Turtle {
     return url;
   }
 
+
   private TTLComplex parseComplex(Lexer lexer) throws FHIRFormatError {
-		TTLComplex result = new TTLComplex(lexer.startLine, lexer.startCol);
+    parseDepth++;
+    try {
+      // guard against unbounded recursion in parseComplex (self-recursive on nested "[ ... ]"
+      // blank-node objects) on deeply nested Turtle/RDF documents, which would otherwise cause a
+      // StackOverflowError.
+      if (parseDepth > MAX_TTL_DEPTH) {
+        throw lexer.error("Turtle nesting depth exceeds maximum of " + MAX_TTL_DEPTH);
+      }
+      TTLComplex result = new TTLComplex(lexer.startLine, lexer.startCol);
 
-		boolean done = lexer.peek(LexerTokenType.TOKEN, "]");
-		while (!done) {
-			String uri = null;
-			if (lexer.peekType() == LexerTokenType.URI)
-				uri = lexer.uri();
-			else {
-				String t = lexer.peekType() == LexerTokenType.WORD ? lexer.word() : null;
-				if (lexer.type == LexerTokenType.TOKEN && lexer.token.equals(":")) {
-					lexer.token(":");
-					if (!prefixes.containsKey(t))
-            throw new FHIRFormatError("unknown prefix "+t);
-					uri = prefixes.get(t)+lexer.word();
-				} else if (t.equals("a"))
-					uri = prefixes.get("rdfs")+"type";
-				else
-					throw lexer.error("unexpected token");
-			}
+      boolean done = lexer.peek(LexerTokenType.TOKEN, "]");
+      while (!done) {
+        String uri = null;
+        if (lexer.peekType() == LexerTokenType.URI)
+          uri = lexer.uri();
+        else {
+          String t = lexer.peekType() == LexerTokenType.WORD ? lexer.word() : null;
+          if (lexer.type == LexerTokenType.TOKEN && lexer.token.equals(":")) {
+            lexer.token(":");
+            if (!prefixes.containsKey(t))
+              throw new FHIRFormatError("unknown prefix " + t);
+            uri = prefixes.get(t) + lexer.word();
+          } else if (t != null && t.equals("a"))
+            uri = prefixes.get("rdfs") + "type";
+          else
+            throw lexer.error("unexpected token");
+        }
 
-			boolean inlist = false;
-			if (lexer.peek(LexerTokenType.TOKEN, "(")) {
-				inlist = true;
-				lexer.token("(");
-			}
+        boolean inlist = false;
+        if (lexer.peek(LexerTokenType.TOKEN, "(")) {
+          inlist = true;
+          lexer.token("(");
+        }
 
-			boolean rpt = false;
-			do {
-				if (lexer.peek(LexerTokenType.TOKEN, "[")) {
-					lexer.token("[");
-          result.addPredicate(uri, parseComplex(lexer));
-					lexer.token("]");
-				} else if (lexer.peekType() == LexerTokenType.URI) {
-					TTLURL u = new TTLURL(lexer.startLine, lexer.startCol);
-					u.setUri(lexer.uri());
-          result.addPredicate(uri, u);
-				} else if (lexer.peekType() == LexerTokenType.LITERAL) {
-					TTLLiteral u = new TTLLiteral(lexer.startLine, lexer.startCol);
-					u.value = lexer.literal();
-					if (lexer.peek(LexerTokenType.TOKEN, "^")) {
-						lexer.token("^");
-						lexer.token("^");
-						if (lexer.peekType() == LexerTokenType.URI) {
-							u.type = lexer.uri();
-						} else {
-							String l = lexer.word();
-							lexer.token(":");
-							u.type = prefixes.get(l)+ lexer.word();
-						}
-					}
-					if (lexer.peek(LexerTokenType.TOKEN, "@")) {
-						//lang tag - skip it 
-						lexer.token("@");
-            String lang = lexer.word();
-            if (!lang.matches(LANG_REGEX)) {
-              throw new FHIRFormatError("Invalid Language tag "+lang);
-            }
-					}
-          result.addPredicate(uri, u);
-				} else if (lexer.peekType() == LexerTokenType.WORD || lexer.peek(LexerTokenType.TOKEN, ":")) {
-					int sl = lexer.startLine;
-					int sc = lexer.startCol;
-					String pfx = lexer.peekType() == LexerTokenType.WORD ? lexer.word() : null;
-					if (Utilities.isDecimal(pfx, true, true) && !lexer.peek(LexerTokenType.TOKEN, ":")) {
-						TTLLiteral u = new TTLLiteral(sl, sc);
-						u.value = pfx;
-            result.addPredicate(uri, u);					
-					} else if (("false".equals(pfx) || "true".equals(pfx)) && !lexer.peek(LexerTokenType.TOKEN, ":")) {
-						TTLLiteral u = new TTLLiteral(sl, sc);
-						u.value = pfx;
-            result.addPredicate(uri, u);					
-					} else {
-						if (!prefixes.containsKey(pfx))
-              throw new FHIRFormatError("Unknown prefix "+(pfx == null ? "''" : pfx));						
-						TTLURL u = new TTLURL(sl, sc);
-						lexer.token(":");
-						u.setUri(prefixes.get(pfx)+lexer.word());
+        boolean rpt = false;
+        do {
+          if (lexer.peek(LexerTokenType.TOKEN, "[")) {
+            lexer.token("[");
+            result.addPredicate(uri, parseComplex(lexer));
+            lexer.token("]");
+          } else if (lexer.peekType() == LexerTokenType.URI) {
+            TTLURL u = new TTLURL(lexer.startLine, lexer.startCol);
+            u.setUri(lexer.uri());
             result.addPredicate(uri, u);
-					} 
-				} else if (!lexer.peek(LexerTokenType.TOKEN, ";") && (!inlist || !lexer.peek(LexerTokenType.TOKEN, ")"))) {
-          throw new FHIRFormatError("unexpected token "+lexer.token);
-				}
+          } else if (lexer.peekType() == LexerTokenType.LITERAL) {
+            TTLLiteral u = new TTLLiteral(lexer.startLine, lexer.startCol);
+            u.value = lexer.literal();
+            if (lexer.peek(LexerTokenType.TOKEN, "^")) {
+              lexer.token("^");
+              lexer.token("^");
+              if (lexer.peekType() == LexerTokenType.URI) {
+                u.type = lexer.uri();
+              } else {
+                String l = lexer.word();
+                lexer.token(":");
+                u.type = prefixes.get(l) + lexer.word();
+              }
+            }
+            if (lexer.peek(LexerTokenType.TOKEN, "@")) {
+              //lang tag - skip it
+              lexer.token("@");
+              String lang = lexer.word();
 
-				if (inlist)
-					rpt = !lexer.peek(LexerTokenType.TOKEN, ")");
-				else {
-					rpt = lexer.peek(LexerTokenType.TOKEN, ",");
-					if (rpt)
-            lexer.readNext(false);
-				}
-			} while (rpt);
-			if (inlist)
-				lexer.token(")");
+              @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+              //bounded, optional non-overlapping group, safe
+              boolean matchesLangRegex = !lang.matches(LANG_REGEX);
+              if (matchesLangRegex) {
+                throw new FHIRFormatError("Invalid Language tag " + lang);
+              }
+            }
+            result.addPredicate(uri, u);
+          } else if (lexer.peekType() == LexerTokenType.WORD || lexer.peek(LexerTokenType.TOKEN, ":")) {
+            int sl = lexer.startLine;
+            int sc = lexer.startCol;
+            String pfx = lexer.peekType() == LexerTokenType.WORD ? lexer.word() : null;
+            if (Utilities.isDecimal(pfx, true, true) && !lexer.peek(LexerTokenType.TOKEN, ":")) {
+              TTLLiteral u = new TTLLiteral(sl, sc);
+              u.value = pfx;
+              result.addPredicate(uri, u);
+            } else if (("false".equals(pfx) || "true".equals(pfx)) && !lexer.peek(LexerTokenType.TOKEN, ":")) {
+              TTLLiteral u = new TTLLiteral(sl, sc);
+              u.value = pfx;
+              result.addPredicate(uri, u);
+            } else {
+              if (!prefixes.containsKey(pfx))
+                throw new FHIRFormatError("Unknown prefix " + (pfx == null ? "''" : pfx));
+              TTLURL u = new TTLURL(sl, sc);
+              lexer.token(":");
+              u.setUri(prefixes.get(pfx) + lexer.word());
+              result.addPredicate(uri, u);
+            }
+          } else if (!lexer.peek(LexerTokenType.TOKEN, ";") && (!inlist || !lexer.peek(LexerTokenType.TOKEN, ")"))) {
+            throw new FHIRFormatError("unexpected token " + lexer.token);
+          }
 
-			if (lexer.peek(LexerTokenType.TOKEN, ";")) {
-        while ((lexer.peek(LexerTokenType.TOKEN, ";")))
-				lexer.token(";");
-        done = lexer.peek(LexerTokenType.TOKEN, ".") || lexer.peek(LexerTokenType.TOKEN, "]");
-			} else {
-				done = true;
-			}
-		}
-		return result;
-	}
+          if (inlist)
+            rpt = !lexer.peek(LexerTokenType.TOKEN, ")");
+          else {
+            rpt = lexer.peek(LexerTokenType.TOKEN, ",");
+            if (rpt)
+              lexer.readNext(false);
+          }
+        } while (rpt);
+        if (inlist)
+          lexer.token(")");
+
+        if (lexer.peek(LexerTokenType.TOKEN, ";")) {
+          while ((lexer.peek(LexerTokenType.TOKEN, ";"))) {
+            lexer.token(";");
+          }
+          done = lexer.peek(LexerTokenType.TOKEN, ".") || lexer.peek(LexerTokenType.TOKEN, "]");
+        } else {
+          done = true;
+        }
+      }
+      return result;
+    } finally {
+      parseDepth--;
+    }
+  }
 
   public Map<TTLURL, TTLComplex> getObjects() {
     return objects;
@@ -1239,76 +1336,5 @@ public class Turtle {
     }
     return null;
   }
-
-	//	public void parseFragment(Lexer lexer) throws Exception {
-	//		lexer.next(); // read [
-	//		Complex obj = new Complex();
-	//		while (!lexer.peek().equals("]")) {
-	//			String predicate = lexer.next();
-	//			if (lexer.peekType() == LexerTokenType.TOKEN || lexer.peekType() == LexerTokenType.LITERAL) {
-	//				obj.predicate(predicate, lexer.next());
-	//			} else if (lexer.peek().equals("[")) {
-	//				obj.predicate(predicate, importComplex(lexer));
-	//			} else
-	//				throw new Exception("Not done yet");
-	//			if (lexer.peek().equals(";")) 
-	//				lexer.next();
-	//		}
-	//		lexer.next(); // read ]
-	//		//return obj;
-	//	}
-	//
-	//	public void importTtl(Section sct, String ttl) throws Exception {
-	//		if (!Utilities.noString(ttl)) {
-	//			//        System.out.println("import ttl: "+ttl);
-	//			Lexer lexer = new Lexer(ttl);
-	//			String subject = null;
-	//			String predicate = null;
-	//			while (!lexer.done()) {
-	//				if (subject == null)
-	//					subject = lexer.next();
-	//				if (predicate == null)
-	//					predicate = lexer.next();
-	//				if (lexer.peekType() == null) {
-	//					throw new Error("Unexpected end of input parsing turtle");
-	//				} if (lexer.peekType() == LexerTokenType.TOKEN) {
-	//					sct.triple(subject, predicate, lexer.next());
-	//				} else if (lexer.peek() == null) {
-	//					throw new Error("Unexected - turtle lexer found no token");
-	//				} else if (lexer.peek().equals("[")) {
-	//					sct.triple(subject, predicate, importComplex(lexer));
-	//				} else
-	//					throw new Exception("Not done yet");
-	//				String n = lexer.next();
-	//				if (Utilities.noString(n))
-	//					break;
-	//				if (n.equals(".")) {
-	//					subject = null;
-	//					predicate = null;
-	//				} else if (n.equals(";")) {
-	//					predicate = null;
-	//				} else if (!n.equals(","))
-	//					throw new Exception("Unexpected token "+n);          
-	//			}
-	//		}
-	//}
-
-	//	private Complex importComplex(Lexer lexer) throws Exception {
-	//		lexer.next(); // read [
-	//		Complex obj = new Complex();
-	//		while (!lexer.peek().equals("]")) {
-	//			String predicate = lexer.next();
-	//			if (lexer.peekType() == LexerTokenType.TOKEN || lexer.peekType() == LexerTokenType.LITERAL) {
-	//				obj.predicate(predicate, lexer.next());
-	//			} else if (lexer.peek().equals("[")) {
-	//				obj.predicate(predicate, importComplex(lexer));
-	//			} else
-	//				throw new Exception("Not done yet");
-	//			if (lexer.peek().equals(";")) 
-	//				lexer.next();
-	//		}
-	//		lexer.next(); // read ]
-	//		return obj;
-	//	}
 
 }

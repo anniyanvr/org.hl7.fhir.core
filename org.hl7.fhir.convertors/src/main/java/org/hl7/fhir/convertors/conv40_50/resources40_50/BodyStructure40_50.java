@@ -51,12 +51,12 @@ public class BodyStructure40_50 {
       tgt.setActiveElement(Boolean40_50.convertBoolean(src.getActiveElement()));
     if (src.hasMorphology())
       tgt.setMorphology(CodeableConcept40_50.convertCodeableConcept(src.getMorphology()));
-    if (src.hasLocation())
-      tgt.setLocation(CodeableConcept40_50.convertCodeableConcept(src.getLocation()));
-    for (org.hl7.fhir.r4.model.CodeableConcept t : src.getLocationQualifier())
-      tgt.addLocationQualifier(CodeableConcept40_50.convertCodeableConcept(t));
+//    if (src.hasLocation())
+//      tgt.setLocation(CodeableConcept40_50.convertCodeableConcept(src.getLocation()));
+//    for (org.hl7.fhir.r4.model.CodeableConcept t : src.getLocationQualifier())
+//      tgt.addLocationQualifier(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasDescription())
-      tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
+      tgt.setDescriptionElement(String40_50.convertStringToMarkdown(src.getDescriptionElement()));
     for (org.hl7.fhir.r4.model.Attachment t : src.getImage()) tgt.addImage(Attachment40_50.convertAttachment(t));
     if (src.hasPatient())
       tgt.setPatient(Reference40_50.convertReference(src.getPatient()));
@@ -74,10 +74,10 @@ public class BodyStructure40_50 {
       tgt.setActiveElement(Boolean40_50.convertBoolean(src.getActiveElement()));
     if (src.hasMorphology())
       tgt.setMorphology(CodeableConcept40_50.convertCodeableConcept(src.getMorphology()));
-    if (src.hasLocation())
-      tgt.setLocation(CodeableConcept40_50.convertCodeableConcept(src.getLocation()));
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getLocationQualifier())
-      tgt.addLocationQualifier(CodeableConcept40_50.convertCodeableConcept(t));
+//    if (src.hasLocation())
+//      tgt.setLocation(CodeableConcept40_50.convertCodeableConcept(src.getLocation()));
+//    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getLocationQualifier())
+//      tgt.addLocationQualifier(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasDescription())
       tgt.setDescriptionElement(String40_50.convertString(src.getDescriptionElement()));
     for (org.hl7.fhir.r5.model.Attachment t : src.getImage()) tgt.addImage(Attachment40_50.convertAttachment(t));

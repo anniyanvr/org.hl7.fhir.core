@@ -145,12 +145,12 @@ public class ProcessResponse extends DomainResource {
           return ProcessResponseStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown ProcessResponseStatus code '"+codeString+"'");
         }
-        public Enumeration<ProcessResponseStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ProcessResponseStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ProcessResponseStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -164,7 +164,9 @@ public class ProcessResponse extends DomainResource {
         throw new FHIRException("Unknown ProcessResponseStatus code '"+codeString+"'");
         }
     public String toCode(ProcessResponseStatus code) {
-      if (code == ProcessResponseStatus.ACTIVE)
+       if (code == ProcessResponseStatus.NULL)
+           return null;
+       if (code == ProcessResponseStatus.ACTIVE)
         return "active";
       if (code == ProcessResponseStatus.CANCELLED)
         return "cancelled";
@@ -173,7 +175,7 @@ public class ProcessResponse extends DomainResource {
       if (code == ProcessResponseStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(ProcessResponseStatus code) {
       return code.getSystem();
       }
@@ -356,7 +358,7 @@ public class ProcessResponse extends DomainResource {
           return this.type;
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessResponse.text");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessResponse.text");
         }
         else
           return super.addChild(name);
@@ -1108,28 +1110,6 @@ public class ProcessResponse extends DomainResource {
       return getCommunicationRequest().get(0);
     }
 
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<CommunicationRequest> getCommunicationRequestTarget() { 
-      if (this.communicationRequestTarget == null)
-        this.communicationRequestTarget = new ArrayList<CommunicationRequest>();
-      return this.communicationRequestTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public CommunicationRequest addCommunicationRequestTarget() { 
-      CommunicationRequest r = new CommunicationRequest();
-      if (this.communicationRequestTarget == null)
-        this.communicationRequestTarget = new ArrayList<CommunicationRequest>();
-      this.communicationRequestTarget.add(r);
-      return r;
-    }
-
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
         children.add(new Property("identifier", "Identifier", "The Response business identifier.", 0, java.lang.Integer.MAX_VALUE, identifier));
@@ -1319,10 +1299,10 @@ public class ProcessResponse extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessResponse.status");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessResponse.status");
         }
         else if (name.equals("created")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessResponse.created");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessResponse.created");
         }
         else if (name.equals("organization")) {
           this.organization = new Reference();
@@ -1337,7 +1317,7 @@ public class ProcessResponse extends DomainResource {
           return this.outcome;
         }
         else if (name.equals("disposition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessResponse.disposition");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessResponse.disposition");
         }
         else if (name.equals("requestProvider")) {
           this.requestProvider = new Reference();

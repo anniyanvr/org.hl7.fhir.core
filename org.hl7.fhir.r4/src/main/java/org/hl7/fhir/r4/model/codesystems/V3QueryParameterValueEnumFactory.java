@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -74,11 +70,13 @@ public class V3QueryParameterValueEnumFactory implements EnumFactory<V3QueryPara
       return V3QueryParameterValue.ISSFI;
     if ("ISSFU".equals(codeString))
       return V3QueryParameterValue.ISSFU;
-    throw new IllegalArgumentException("Unknown V3QueryParameterValue code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3QueryParameterValue code '" + codeString + "'");
   }
 
   public String toCode(V3QueryParameterValue code) {
-    if (code == V3QueryParameterValue._DISPENSEQUERYFILTERCODE)
+       if (code == V3QueryParameterValue.NULL)
+           return null;
+       if (code == V3QueryParameterValue._DISPENSEQUERYFILTERCODE)
       return "_DispenseQueryFilterCode";
     if (code == V3QueryParameterValue.ALLDISP)
       return "ALLDISP";
@@ -111,10 +109,10 @@ public class V3QueryParameterValueEnumFactory implements EnumFactory<V3QueryPara
     if (code == V3QueryParameterValue.ISSFU)
       return "ISSFU";
     return "?";
-  }
+   }
 
-    public String toSystem(V3QueryParameterValue code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3QueryParameterValue code) {
+    return code.getSystem();
+  }
 
 }

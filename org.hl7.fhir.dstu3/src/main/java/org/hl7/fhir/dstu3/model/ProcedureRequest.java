@@ -181,12 +181,12 @@ public class ProcedureRequest extends DomainResource {
           return ProcedureRequestStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown ProcedureRequestStatus code '"+codeString+"'");
         }
-        public Enumeration<ProcedureRequestStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ProcedureRequestStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ProcedureRequestStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -206,7 +206,9 @@ public class ProcedureRequest extends DomainResource {
         throw new FHIRException("Unknown ProcedureRequestStatus code '"+codeString+"'");
         }
     public String toCode(ProcedureRequestStatus code) {
-      if (code == ProcedureRequestStatus.DRAFT)
+       if (code == ProcedureRequestStatus.NULL)
+           return null;
+       if (code == ProcedureRequestStatus.DRAFT)
         return "draft";
       if (code == ProcedureRequestStatus.ACTIVE)
         return "active";
@@ -221,7 +223,7 @@ public class ProcedureRequest extends DomainResource {
       if (code == ProcedureRequestStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(ProcedureRequestStatus code) {
       return code.getSystem();
       }
@@ -371,12 +373,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return ProcedureRequestIntent.OPTION;
         throw new IllegalArgumentException("Unknown ProcedureRequestIntent code '"+codeString+"'");
         }
-        public Enumeration<ProcedureRequestIntent> fromType(Base code) throws FHIRException {
+        public Enumeration<ProcedureRequestIntent> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ProcedureRequestIntent>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("proposal".equals(codeString))
@@ -398,7 +400,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown ProcedureRequestIntent code '"+codeString+"'");
         }
     public String toCode(ProcedureRequestIntent code) {
-      if (code == ProcedureRequestIntent.PROPOSAL)
+       if (code == ProcedureRequestIntent.NULL)
+           return null;
+       if (code == ProcedureRequestIntent.PROPOSAL)
         return "proposal";
       if (code == ProcedureRequestIntent.PLAN)
         return "plan";
@@ -415,7 +419,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == ProcedureRequestIntent.OPTION)
         return "option";
       return "?";
-      }
+   }
     public String toSystem(ProcedureRequestIntent code) {
       return code.getSystem();
       }
@@ -515,12 +519,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return ProcedureRequestPriority.STAT;
         throw new IllegalArgumentException("Unknown ProcedureRequestPriority code '"+codeString+"'");
         }
-        public Enumeration<ProcedureRequestPriority> fromType(Base code) throws FHIRException {
+        public Enumeration<ProcedureRequestPriority> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ProcedureRequestPriority>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("routine".equals(codeString))
@@ -534,7 +538,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown ProcedureRequestPriority code '"+codeString+"'");
         }
     public String toCode(ProcedureRequestPriority code) {
-      if (code == ProcedureRequestPriority.ROUTINE)
+       if (code == ProcedureRequestPriority.NULL)
+           return null;
+       if (code == ProcedureRequestPriority.ROUTINE)
         return "routine";
       if (code == ProcedureRequestPriority.URGENT)
         return "urgent";
@@ -543,7 +549,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == ProcedureRequestPriority.STAT)
         return "stat";
       return "?";
-      }
+   }
     public String toSystem(ProcedureRequestPriority code) {
       return code.getSystem();
       }
@@ -1167,16 +1173,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getDefinitionTarget() { 
-      if (this.definitionTarget == null)
-        this.definitionTarget = new ArrayList<Resource>();
-      return this.definitionTarget;
-    }
-
-    /**
      * @return {@link #basedOn} (Plan/proposal/order fulfilled by this request.)
      */
     public List<Reference> getBasedOn() { 
@@ -1230,16 +1226,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<Resource>();
-      return this.basedOnTarget;
-    }
-
-    /**
      * @return {@link #replaces} (The request takes the place of the referenced completed or terminated request(s).)
      */
     public List<Reference> getReplaces() { 
@@ -1290,16 +1276,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addReplaces();
       }
       return getReplaces().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getReplacesTarget() { 
-      if (this.replacesTarget == null)
-        this.replacesTarget = new ArrayList<Resource>();
-      return this.replacesTarget;
     }
 
     /**
@@ -1683,8 +1659,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return (DateTimeType) this.occurrence;
     }
 
-    public boolean hasOccurrenceDateTimeType() { 
-      return this != null && this.occurrence instanceof DateTimeType;
+    public boolean hasOccurrenceDateTimeType() {
+      return this.occurrence instanceof DateTimeType;
     }
 
     /**
@@ -1698,8 +1674,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return (Period) this.occurrence;
     }
 
-    public boolean hasOccurrencePeriod() { 
-      return this != null && this.occurrence instanceof Period;
+    public boolean hasOccurrencePeriod() {
+      return this.occurrence instanceof Period;
     }
 
     /**
@@ -1713,8 +1689,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return (Timing) this.occurrence;
     }
 
-    public boolean hasOccurrenceTiming() { 
-      return this != null && this.occurrence instanceof Timing;
+    public boolean hasOccurrenceTiming() {
+      return this.occurrence instanceof Timing;
     }
 
     public boolean hasOccurrence() { 
@@ -1749,8 +1725,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return (BooleanType) this.asNeeded;
     }
 
-    public boolean hasAsNeededBooleanType() { 
-      return this != null && this.asNeeded instanceof BooleanType;
+    public boolean hasAsNeededBooleanType() {
+      return this.asNeeded instanceof BooleanType;
     }
 
     /**
@@ -1764,8 +1740,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return (CodeableConcept) this.asNeeded;
     }
 
-    public boolean hasAsNeededCodeableConcept() { 
-      return this != null && this.asNeeded instanceof CodeableConcept;
+    public boolean hasAsNeededCodeableConcept() {
+      return this.asNeeded instanceof CodeableConcept;
     }
 
     public boolean hasAsNeeded() { 
@@ -2025,16 +2001,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getReasonReferenceTarget() { 
-      if (this.reasonReferenceTarget == null)
-        this.reasonReferenceTarget = new ArrayList<Resource>();
-      return this.reasonReferenceTarget;
-    }
-
-    /**
      * @return {@link #supportingInfo} (Additional clinical information about the patient or specimen that may influence the procedure or diagnostics or their interpretations.     This information includes diagnosis, clinical findings and other observations.  In laboratory ordering these are typically referred to as "ask at order entry questions (AOEs)".  This includes observations explicitly requested by the producer (filler) to provide context or supporting information needed to complete the order. For example,  reporting the amount of inspired oxygen for blood gas measurements.)
      */
     public List<Reference> getSupportingInfo() { 
@@ -2088,16 +2054,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getSupportingInfoTarget() { 
-      if (this.supportingInfoTarget == null)
-        this.supportingInfoTarget = new ArrayList<Resource>();
-      return this.supportingInfoTarget;
-    }
-
-    /**
      * @return {@link #specimen} (One or more specimens that the laboratory procedure will use.)
      */
     public List<Reference> getSpecimen() { 
@@ -2148,28 +2104,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addSpecimen();
       }
       return getSpecimen().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Specimen> getSpecimenTarget() { 
-      if (this.specimenTarget == null)
-        this.specimenTarget = new ArrayList<Specimen>();
-      return this.specimenTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Specimen addSpecimenTarget() { 
-      Specimen r = new Specimen();
-      if (this.specimenTarget == null)
-        this.specimenTarget = new ArrayList<Specimen>();
-      this.specimenTarget.add(r);
-      return r;
     }
 
     /**
@@ -2329,28 +2263,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addRelevantHistory();
       }
       return getRelevantHistory().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Provenance> getRelevantHistoryTarget() { 
-      if (this.relevantHistoryTarget == null)
-        this.relevantHistoryTarget = new ArrayList<Provenance>();
-      return this.relevantHistoryTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Provenance addRelevantHistoryTarget() { 
-      Provenance r = new Provenance();
-      if (this.relevantHistoryTarget == null)
-        this.relevantHistoryTarget = new ArrayList<Provenance>();
-      this.relevantHistoryTarget.add(r);
-      return r;
     }
 
       protected void listChildren(List<Property> children) {
@@ -2698,16 +2610,16 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return this.requisition;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcedureRequest.status");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcedureRequest.status");
         }
         else if (name.equals("intent")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcedureRequest.intent");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcedureRequest.intent");
         }
         else if (name.equals("priority")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcedureRequest.priority");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcedureRequest.priority");
         }
         else if (name.equals("doNotPerform")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcedureRequest.doNotPerform");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcedureRequest.doNotPerform");
         }
         else if (name.equals("category")) {
           return addCategory();
@@ -2745,7 +2657,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return this.asNeeded;
         }
         else if (name.equals("authoredOn")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcedureRequest.authoredOn");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcedureRequest.authoredOn");
         }
         else if (name.equals("requester")) {
           this.requester = new ProcedureRequestRequesterComponent();

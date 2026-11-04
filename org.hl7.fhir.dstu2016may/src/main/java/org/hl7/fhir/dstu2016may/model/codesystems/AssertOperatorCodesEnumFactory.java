@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class AssertOperatorCodesEnumFactory implements EnumFactory<AssertOperatorCodes> {
@@ -62,11 +58,13 @@ public class AssertOperatorCodesEnumFactory implements EnumFactory<AssertOperato
       return AssertOperatorCodes.CONTAINS;
     if ("notContains".equals(codeString))
       return AssertOperatorCodes.NOTCONTAINS;
-    throw new IllegalArgumentException("Unknown AssertOperatorCodes code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown AssertOperatorCodes code '" + codeString + "'");
   }
 
   public String toCode(AssertOperatorCodes code) {
-    if (code == AssertOperatorCodes.EQUALS)
+       if (code == AssertOperatorCodes.NULL)
+           return null;
+       if (code == AssertOperatorCodes.EQUALS)
       return "equals";
     if (code == AssertOperatorCodes.NOTEQUALS)
       return "notEquals";
@@ -87,10 +85,10 @@ public class AssertOperatorCodesEnumFactory implements EnumFactory<AssertOperato
     if (code == AssertOperatorCodes.NOTCONTAINS)
       return "notContains";
     return "?";
-  }
+   }
 
-    public String toSystem(AssertOperatorCodes code) {
-      return code.getSystem();
-      }
+  public String toSystem(AssertOperatorCodes code) {
+    return code.getSystem();
+  }
 
 }

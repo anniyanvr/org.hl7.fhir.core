@@ -121,12 +121,12 @@ public class Enumerations {
           return AbstractType.ANY;
         throw new IllegalArgumentException("Unknown AbstractType code '"+codeString+"'");
         }
-        public Enumeration<AbstractType> fromType(Base code) throws FHIRException {
+        public Enumeration<AbstractType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<AbstractType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("Type".equals(codeString))
@@ -136,12 +136,14 @@ public class Enumerations {
         throw new FHIRException("Unknown AbstractType code '"+codeString+"'");
         }
     public String toCode(AbstractType code) {
-      if (code == AbstractType.TYPE)
+       if (code == AbstractType.NULL)
+           return null;
+       if (code == AbstractType.TYPE)
         return "Type";
       if (code == AbstractType.ANY)
         return "Any";
       return "?";
-      }
+   }
     public String toSystem(AbstractType code) {
       return code.getSystem();
       }
@@ -238,12 +240,12 @@ public class Enumerations {
           return AdministrativeGender.UNKNOWN;
         throw new IllegalArgumentException("Unknown AdministrativeGender code '"+codeString+"'");
         }
-        public Enumeration<AdministrativeGender> fromType(Base code) throws FHIRException {
+        public Enumeration<AdministrativeGender> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<AdministrativeGender>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("male".equals(codeString))
@@ -257,7 +259,9 @@ public class Enumerations {
         throw new FHIRException("Unknown AdministrativeGender code '"+codeString+"'");
         }
     public String toCode(AdministrativeGender code) {
-      if (code == AdministrativeGender.MALE)
+       if (code == AdministrativeGender.NULL)
+           return null;
+       if (code == AdministrativeGender.MALE)
         return "male";
       if (code == AdministrativeGender.FEMALE)
         return "female";
@@ -266,7 +270,7 @@ public class Enumerations {
       if (code == AdministrativeGender.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(AdministrativeGender code) {
       return code.getSystem();
       }
@@ -387,12 +391,12 @@ public class Enumerations {
           return AgeUnits.A;
         throw new IllegalArgumentException("Unknown AgeUnits code '"+codeString+"'");
         }
-        public Enumeration<AgeUnits> fromType(Base code) throws FHIRException {
+        public Enumeration<AgeUnits> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<AgeUnits>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("min".equals(codeString))
@@ -410,7 +414,9 @@ public class Enumerations {
         throw new FHIRException("Unknown AgeUnits code '"+codeString+"'");
         }
     public String toCode(AgeUnits code) {
-      if (code == AgeUnits.MIN)
+       if (code == AgeUnits.NULL)
+           return null;
+       if (code == AgeUnits.MIN)
         return "min";
       if (code == AgeUnits.H)
         return "h";
@@ -423,7 +429,7 @@ public class Enumerations {
       if (code == AgeUnits.A)
         return "a";
       return "?";
-      }
+   }
     public String toSystem(AgeUnits code) {
       return code.getSystem();
       }
@@ -520,12 +526,12 @@ public class Enumerations {
           return BindingStrength.EXAMPLE;
         throw new IllegalArgumentException("Unknown BindingStrength code '"+codeString+"'");
         }
-        public Enumeration<BindingStrength> fromType(Base code) throws FHIRException {
+        public Enumeration<BindingStrength> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<BindingStrength>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("required".equals(codeString))
@@ -539,7 +545,9 @@ public class Enumerations {
         throw new FHIRException("Unknown BindingStrength code '"+codeString+"'");
         }
     public String toCode(BindingStrength code) {
-      if (code == BindingStrength.REQUIRED)
+       if (code == BindingStrength.NULL)
+           return null;
+       if (code == BindingStrength.REQUIRED)
         return "required";
       if (code == BindingStrength.EXTENSIBLE)
         return "extensible";
@@ -548,7 +556,7 @@ public class Enumerations {
       if (code == BindingStrength.EXAMPLE)
         return "example";
       return "?";
-      }
+   }
     public String toSystem(BindingStrength code) {
       return code.getSystem();
       }
@@ -717,12 +725,12 @@ public class Enumerations {
           return ConceptMapEquivalence.DISJOINT;
         throw new IllegalArgumentException("Unknown ConceptMapEquivalence code '"+codeString+"'");
         }
-        public Enumeration<ConceptMapEquivalence> fromType(Base code) throws FHIRException {
+        public Enumeration<ConceptMapEquivalence> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ConceptMapEquivalence>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("relatedto".equals(codeString))
@@ -748,7 +756,9 @@ public class Enumerations {
         throw new FHIRException("Unknown ConceptMapEquivalence code '"+codeString+"'");
         }
     public String toCode(ConceptMapEquivalence code) {
-      if (code == ConceptMapEquivalence.RELATEDTO)
+       if (code == ConceptMapEquivalence.NULL)
+           return null;
+       if (code == ConceptMapEquivalence.RELATEDTO)
         return "relatedto";
       if (code == ConceptMapEquivalence.EQUIVALENT)
         return "equivalent";
@@ -769,7 +779,7 @@ public class Enumerations {
       if (code == ConceptMapEquivalence.DISJOINT)
         return "disjoint";
       return "?";
-      }
+   }
     public String toSystem(ConceptMapEquivalence code) {
       return code.getSystem();
       }
@@ -938,12 +948,12 @@ public class Enumerations {
           return DataAbsentReason.NOTPERFORMED;
         throw new IllegalArgumentException("Unknown DataAbsentReason code '"+codeString+"'");
         }
-        public Enumeration<DataAbsentReason> fromType(Base code) throws FHIRException {
+        public Enumeration<DataAbsentReason> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DataAbsentReason>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("unknown".equals(codeString))
@@ -969,7 +979,9 @@ public class Enumerations {
         throw new FHIRException("Unknown DataAbsentReason code '"+codeString+"'");
         }
     public String toCode(DataAbsentReason code) {
-      if (code == DataAbsentReason.UNKNOWN)
+       if (code == DataAbsentReason.NULL)
+           return null;
+       if (code == DataAbsentReason.UNKNOWN)
         return "unknown";
       if (code == DataAbsentReason.ASKED)
         return "asked";
@@ -990,7 +1002,7 @@ public class Enumerations {
       if (code == DataAbsentReason.NOTPERFORMED)
         return "not-performed";
       return "?";
-      }
+   }
     public String toSystem(DataAbsentReason code) {
       return code.getSystem();
       }
@@ -1687,12 +1699,12 @@ public class Enumerations {
           return DataType.XHTML;
         throw new IllegalArgumentException("Unknown DataType code '"+codeString+"'");
         }
-        public Enumeration<DataType> fromType(Base code) throws FHIRException {
+        public Enumeration<DataType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DataType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("Address".equals(codeString))
@@ -1806,7 +1818,9 @@ public class Enumerations {
         throw new FHIRException("Unknown DataType code '"+codeString+"'");
         }
     public String toCode(DataType code) {
-      if (code == DataType.ADDRESS)
+       if (code == DataType.NULL)
+           return null;
+       if (code == DataType.ADDRESS)
         return "Address";
       if (code == DataType.AGE)
         return "Age";
@@ -1915,7 +1929,7 @@ public class Enumerations {
       if (code == DataType.XHTML)
         return "xhtml";
       return "?";
-      }
+   }
     public String toSystem(DataType code) {
       return code.getSystem();
       }
@@ -2000,12 +2014,12 @@ public class Enumerations {
           return DocumentReferenceStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown DocumentReferenceStatus code '"+codeString+"'");
         }
-        public Enumeration<DocumentReferenceStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<DocumentReferenceStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DocumentReferenceStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("current".equals(codeString))
@@ -2017,14 +2031,16 @@ public class Enumerations {
         throw new FHIRException("Unknown DocumentReferenceStatus code '"+codeString+"'");
         }
     public String toCode(DocumentReferenceStatus code) {
-      if (code == DocumentReferenceStatus.CURRENT)
+       if (code == DocumentReferenceStatus.NULL)
+           return null;
+       if (code == DocumentReferenceStatus.CURRENT)
         return "current";
       if (code == DocumentReferenceStatus.SUPERSEDED)
         return "superseded";
       if (code == DocumentReferenceStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(DocumentReferenceStatus code) {
       return code.getSystem();
       }
@@ -4175,12 +4191,12 @@ The primary difference between a medication statement and a medication administr
           return FHIRAllTypes.ANY;
         throw new IllegalArgumentException("Unknown FHIRAllTypes code '"+codeString+"'");
         }
-        public Enumeration<FHIRAllTypes> fromType(Base code) throws FHIRException {
+        public Enumeration<FHIRAllTypes> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<FHIRAllTypes>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("Address".equals(codeString))
@@ -4536,7 +4552,9 @@ The primary difference between a medication statement and a medication administr
         throw new FHIRException("Unknown FHIRAllTypes code '"+codeString+"'");
         }
     public String toCode(FHIRAllTypes code) {
-      if (code == FHIRAllTypes.ADDRESS)
+       if (code == FHIRAllTypes.NULL)
+           return null;
+       if (code == FHIRAllTypes.ADDRESS)
         return "Address";
       if (code == FHIRAllTypes.AGE)
         return "Age";
@@ -4887,7 +4905,7 @@ The primary difference between a medication statement and a medication administr
       if (code == FHIRAllTypes.ANY)
         return "Any";
       return "?";
-      }
+   }
     public String toSystem(FHIRAllTypes code) {
       return code.getSystem();
       }
@@ -7014,12 +7032,12 @@ The primary difference between a medication statement and a medication administr
           return FHIRDefinedType.VISIONPRESCRIPTION;
         throw new IllegalArgumentException("Unknown FHIRDefinedType code '"+codeString+"'");
         }
-        public Enumeration<FHIRDefinedType> fromType(Base code) throws FHIRException {
+        public Enumeration<FHIRDefinedType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<FHIRDefinedType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("Address".equals(codeString))
@@ -7371,7 +7389,9 @@ The primary difference between a medication statement and a medication administr
         throw new FHIRException("Unknown FHIRDefinedType code '"+codeString+"'");
         }
     public String toCode(FHIRDefinedType code) {
-      if (code == FHIRDefinedType.ADDRESS)
+       if (code == FHIRDefinedType.NULL)
+           return null;
+       if (code == FHIRDefinedType.ADDRESS)
         return "Address";
       if (code == FHIRDefinedType.AGE)
         return "Age";
@@ -7718,7 +7738,7 @@ The primary difference between a medication statement and a medication administr
       if (code == FHIRDefinedType.VISIONPRESCRIPTION)
         return "VisionPrescription";
       return "?";
-      }
+   }
     public String toSystem(FHIRDefinedType code) {
       return code.getSystem();
       }
@@ -7911,12 +7931,12 @@ The primary difference between a medication statement and a medication administr
           return MessageEvent.VALUESETEXPAND;
         throw new IllegalArgumentException("Unknown MessageEvent code '"+codeString+"'");
         }
-        public Enumeration<MessageEvent> fromType(Base code) throws FHIRException {
+        public Enumeration<MessageEvent> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<MessageEvent>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("CodeSystem-expand".equals(codeString))
@@ -7946,7 +7966,9 @@ The primary difference between a medication statement and a medication administr
         throw new FHIRException("Unknown MessageEvent code '"+codeString+"'");
         }
     public String toCode(MessageEvent code) {
-      if (code == MessageEvent.CODESYSTEMEXPAND)
+       if (code == MessageEvent.NULL)
+           return null;
+       if (code == MessageEvent.CODESYSTEMEXPAND)
         return "CodeSystem-expand";
       if (code == MessageEvent.MEDICATIONADMINISTRATIONCOMPLETE)
         return "MedicationAdministration-Complete";
@@ -7971,7 +7993,7 @@ The primary difference between a medication statement and a medication administr
       if (code == MessageEvent.VALUESETEXPAND)
         return "valueset-expand";
       return "?";
-      }
+   }
     public String toSystem(MessageEvent code) {
       return code.getSystem();
       }
@@ -8056,12 +8078,12 @@ The primary difference between a medication statement and a medication administr
           return NoteType.PRINTOPER;
         throw new IllegalArgumentException("Unknown NoteType code '"+codeString+"'");
         }
-        public Enumeration<NoteType> fromType(Base code) throws FHIRException {
+        public Enumeration<NoteType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<NoteType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("display".equals(codeString))
@@ -8073,14 +8095,16 @@ The primary difference between a medication statement and a medication administr
         throw new FHIRException("Unknown NoteType code '"+codeString+"'");
         }
     public String toCode(NoteType code) {
-      if (code == NoteType.DISPLAY)
+       if (code == NoteType.NULL)
+           return null;
+       if (code == NoteType.DISPLAY)
         return "display";
       if (code == NoteType.PRINT)
         return "print";
       if (code == NoteType.PRINTOPER)
         return "printoper";
       return "?";
-      }
+   }
     public String toSystem(NoteType code) {
       return code.getSystem();
       }
@@ -8177,12 +8201,12 @@ The primary difference between a medication statement and a medication administr
           return PublicationStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown PublicationStatus code '"+codeString+"'");
         }
-        public Enumeration<PublicationStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<PublicationStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<PublicationStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -8196,7 +8220,9 @@ The primary difference between a medication statement and a medication administr
         throw new FHIRException("Unknown PublicationStatus code '"+codeString+"'");
         }
     public String toCode(PublicationStatus code) {
-      if (code == PublicationStatus.DRAFT)
+       if (code == PublicationStatus.NULL)
+           return null;
+       if (code == PublicationStatus.DRAFT)
         return "draft";
       if (code == PublicationStatus.ACTIVE)
         return "active";
@@ -8205,7 +8231,7 @@ The primary difference between a medication statement and a medication administr
       if (code == PublicationStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(PublicationStatus code) {
       return code.getSystem();
       }
@@ -8290,12 +8316,12 @@ The primary difference between a medication statement and a medication administr
           return RemittanceOutcome.PARTIAL;
         throw new IllegalArgumentException("Unknown RemittanceOutcome code '"+codeString+"'");
         }
-        public Enumeration<RemittanceOutcome> fromType(Base code) throws FHIRException {
+        public Enumeration<RemittanceOutcome> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<RemittanceOutcome>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("complete".equals(codeString))
@@ -8307,14 +8333,16 @@ The primary difference between a medication statement and a medication administr
         throw new FHIRException("Unknown RemittanceOutcome code '"+codeString+"'");
         }
     public String toCode(RemittanceOutcome code) {
-      if (code == RemittanceOutcome.COMPLETE)
+       if (code == RemittanceOutcome.NULL)
+           return null;
+       if (code == RemittanceOutcome.COMPLETE)
         return "complete";
       if (code == RemittanceOutcome.ERROR)
         return "error";
       if (code == RemittanceOutcome.PARTIAL)
         return "partial";
       return "?";
-      }
+   }
     public String toSystem(RemittanceOutcome code) {
       return code.getSystem();
       }
@@ -9793,12 +9821,12 @@ The primary difference between a medication statement and a medication administr
           return ResourceType.VISIONPRESCRIPTION;
         throw new IllegalArgumentException("Unknown ResourceType code '"+codeString+"'");
         }
-        public Enumeration<ResourceType> fromType(Base code) throws FHIRException {
+        public Enumeration<ResourceType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ResourceType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("Account".equals(codeString))
@@ -10042,7 +10070,9 @@ The primary difference between a medication statement and a medication administr
         throw new FHIRException("Unknown ResourceType code '"+codeString+"'");
         }
     public String toCode(ResourceType code) {
-      if (code == ResourceType.ACCOUNT)
+       if (code == ResourceType.NULL)
+           return null;
+       if (code == ResourceType.ACCOUNT)
         return "Account";
       if (code == ResourceType.ACTIVITYDEFINITION)
         return "ActivityDefinition";
@@ -10281,7 +10311,7 @@ The primary difference between a medication statement and a medication administr
       if (code == ResourceType.VISIONPRESCRIPTION)
         return "VisionPrescription";
       return "?";
-      }
+   }
     public String toSystem(ResourceType code) {
       return code.getSystem();
       }
@@ -10426,12 +10456,12 @@ The primary difference between a medication statement and a medication administr
           return SearchParamType.URI;
         throw new IllegalArgumentException("Unknown SearchParamType code '"+codeString+"'");
         }
-        public Enumeration<SearchParamType> fromType(Base code) throws FHIRException {
+        public Enumeration<SearchParamType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<SearchParamType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("number".equals(codeString))
@@ -10453,7 +10483,9 @@ The primary difference between a medication statement and a medication administr
         throw new FHIRException("Unknown SearchParamType code '"+codeString+"'");
         }
     public String toCode(SearchParamType code) {
-      if (code == SearchParamType.NUMBER)
+       if (code == SearchParamType.NULL)
+           return null;
+       if (code == SearchParamType.NUMBER)
         return "number";
       if (code == SearchParamType.DATE)
         return "date";
@@ -10470,7 +10502,7 @@ The primary difference between a medication statement and a medication administr
       if (code == SearchParamType.URI)
         return "uri";
       return "?";
-      }
+   }
     public String toSystem(SearchParamType code) {
       return code.getSystem();
       }
@@ -10591,12 +10623,12 @@ The primary difference between a medication statement and a medication administr
           return SpecialValues.NILKNOWN;
         throw new IllegalArgumentException("Unknown SpecialValues code '"+codeString+"'");
         }
-        public Enumeration<SpecialValues> fromType(Base code) throws FHIRException {
+        public Enumeration<SpecialValues> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<SpecialValues>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("true".equals(codeString))
@@ -10614,7 +10646,9 @@ The primary difference between a medication statement and a medication administr
         throw new FHIRException("Unknown SpecialValues code '"+codeString+"'");
         }
     public String toCode(SpecialValues code) {
-      if (code == SpecialValues.TRUE)
+       if (code == SpecialValues.NULL)
+           return null;
+       if (code == SpecialValues.TRUE)
         return "true";
       if (code == SpecialValues.FALSE)
         return "false";
@@ -10627,7 +10661,7 @@ The primary difference between a medication statement and a medication administr
       if (code == SpecialValues.NILKNOWN)
         return "nil-known";
       return "?";
-      }
+   }
     public String toSystem(SpecialValues code) {
       return code.getSystem();
       }

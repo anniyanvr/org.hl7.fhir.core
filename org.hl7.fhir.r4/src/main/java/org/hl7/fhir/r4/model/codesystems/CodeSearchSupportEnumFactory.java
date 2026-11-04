@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class CodeSearchSupportEnumFactory implements EnumFactory<CodeSearchSupport> {
@@ -46,19 +42,21 @@ public class CodeSearchSupportEnumFactory implements EnumFactory<CodeSearchSuppo
       return CodeSearchSupport.EXPLICIT;
     if ("all".equals(codeString))
       return CodeSearchSupport.ALL;
-    throw new IllegalArgumentException("Unknown CodeSearchSupport code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CodeSearchSupport code '" + codeString + "'");
   }
 
   public String toCode(CodeSearchSupport code) {
-    if (code == CodeSearchSupport.EXPLICIT)
+       if (code == CodeSearchSupport.NULL)
+           return null;
+       if (code == CodeSearchSupport.EXPLICIT)
       return "explicit";
     if (code == CodeSearchSupport.ALL)
       return "all";
     return "?";
-  }
+   }
 
-    public String toSystem(CodeSearchSupport code) {
-      return code.getSystem();
-      }
+  public String toSystem(CodeSearchSupport code) {
+    return code.getSystem();
+  }
 
 }

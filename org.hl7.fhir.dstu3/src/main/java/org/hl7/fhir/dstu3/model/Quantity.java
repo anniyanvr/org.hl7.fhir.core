@@ -1,8 +1,7 @@
 package org.hl7.fhir.dstu3.model;
 
 import java.math.BigDecimal;
-
-
+import java.util.ArrayList;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -143,12 +142,12 @@ public class Quantity extends Type implements ICompositeType {
           return QuantityComparator.GREATER_THAN;
         throw new IllegalArgumentException("Unknown QuantityComparator code '"+codeString+"'");
         }
-        public Enumeration<QuantityComparator> fromType(Base code) throws FHIRException {
+        public Enumeration<QuantityComparator> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<QuantityComparator>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("<".equals(codeString))
@@ -162,7 +161,9 @@ public class Quantity extends Type implements ICompositeType {
         throw new FHIRException("Unknown QuantityComparator code '"+codeString+"'");
         }
     public String toCode(QuantityComparator code) {
-      if (code == QuantityComparator.LESS_THAN)
+       if (code == QuantityComparator.NULL)
+           return null;
+       if (code == QuantityComparator.LESS_THAN)
         return "<";
       if (code == QuantityComparator.LESS_OR_EQUAL)
         return "<=";
@@ -171,7 +172,7 @@ public class Quantity extends Type implements ICompositeType {
       if (code == QuantityComparator.GREATER_THAN)
         return ">";
       return "?";
-      }
+   }
     public String toSystem(QuantityComparator code) {
       return code.getSystem();
       }
@@ -642,19 +643,19 @@ public class Quantity extends Type implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("value")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Quantity.value");
+          throw new FHIRException("Cannot call addChild on a singleton property Quantity.value");
         }
         else if (name.equals("comparator")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Quantity.comparator");
+          throw new FHIRException("Cannot call addChild on a singleton property Quantity.comparator");
         }
         else if (name.equals("unit")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Quantity.unit");
+          throw new FHIRException("Cannot call addChild on a singleton property Quantity.unit");
         }
         else if (name.equals("system")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Quantity.system");
+          throw new FHIRException("Cannot call addChild on a singleton property Quantity.system");
         }
         else if (name.equals("code")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Quantity.code");
+          throw new FHIRException("Cannot call addChild on a singleton property Quantity.code");
         }
         else
           return super.addChild(name);
@@ -668,12 +669,16 @@ public class Quantity extends Type implements ICompositeType {
       public Quantity copy() {
         Quantity dst = new Quantity();
         copyValues(dst);
+        return dst;
+      }
+
+      public void copyValues(Quantity dst) {
+        super.copyValues(dst);
         dst.value = value == null ? null : value.copy();
         dst.comparator = comparator == null ? null : comparator.copy();
         dst.unit = unit == null ? null : unit.copy();
         dst.system = system == null ? null : system.copy();
         dst.code = code == null ? null : code.copy();
-        return dst;
       }
 
       protected Quantity typedCopy() {

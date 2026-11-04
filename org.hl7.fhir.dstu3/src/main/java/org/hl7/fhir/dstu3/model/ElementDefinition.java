@@ -160,12 +160,12 @@ public class ElementDefinition extends Type implements ICompositeType {
           return PropertyRepresentation.XHTML;
         throw new IllegalArgumentException("Unknown PropertyRepresentation code '"+codeString+"'");
         }
-        public Enumeration<PropertyRepresentation> fromType(Base code) throws FHIRException {
+        public Enumeration<PropertyRepresentation> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<PropertyRepresentation>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("xmlAttr".equals(codeString))
@@ -181,7 +181,9 @@ public class ElementDefinition extends Type implements ICompositeType {
         throw new FHIRException("Unknown PropertyRepresentation code '"+codeString+"'");
         }
     public String toCode(PropertyRepresentation code) {
-      if (code == PropertyRepresentation.XMLATTR)
+       if (code == PropertyRepresentation.NULL)
+           return null;
+       if (code == PropertyRepresentation.XMLATTR)
         return "xmlAttr";
       if (code == PropertyRepresentation.XMLTEXT)
         return "xmlText";
@@ -192,7 +194,7 @@ public class ElementDefinition extends Type implements ICompositeType {
       if (code == PropertyRepresentation.XHTML)
         return "xhtml";
       return "?";
-      }
+   }
     public String toSystem(PropertyRepresentation code) {
       return code.getSystem();
       }
@@ -304,12 +306,12 @@ public class ElementDefinition extends Type implements ICompositeType {
           return DiscriminatorType.PROFILE;
         throw new IllegalArgumentException("Unknown DiscriminatorType code '"+codeString+"'");
         }
-        public Enumeration<DiscriminatorType> fromType(Base code) throws FHIRException {
+        public Enumeration<DiscriminatorType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DiscriminatorType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("value".equals(codeString))
@@ -325,7 +327,9 @@ public class ElementDefinition extends Type implements ICompositeType {
         throw new FHIRException("Unknown DiscriminatorType code '"+codeString+"'");
         }
     public String toCode(DiscriminatorType code) {
-      if (code == DiscriminatorType.VALUE)
+       if (code == DiscriminatorType.NULL)
+           return null;
+       if (code == DiscriminatorType.VALUE)
         return "value";
       if (code == DiscriminatorType.EXISTS)
         return "exists";
@@ -336,7 +340,7 @@ public class ElementDefinition extends Type implements ICompositeType {
       if (code == DiscriminatorType.PROFILE)
         return "profile";
       return "?";
-      }
+   }
     public String toSystem(DiscriminatorType code) {
       return code.getSystem();
       }
@@ -424,12 +428,12 @@ public class ElementDefinition extends Type implements ICompositeType {
           return SlicingRules.OPENATEND;
         throw new IllegalArgumentException("Unknown SlicingRules code '"+codeString+"'");
         }
-        public Enumeration<SlicingRules> fromType(Base code) throws FHIRException {
+        public Enumeration<SlicingRules> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<SlicingRules>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("closed".equals(codeString))
@@ -441,14 +445,16 @@ public class ElementDefinition extends Type implements ICompositeType {
         throw new FHIRException("Unknown SlicingRules code '"+codeString+"'");
         }
     public String toCode(SlicingRules code) {
-      if (code == SlicingRules.CLOSED)
+       if (code == SlicingRules.NULL)
+           return null;
+       if (code == SlicingRules.CLOSED)
         return "closed";
       if (code == SlicingRules.OPEN)
         return "open";
       if (code == SlicingRules.OPENATEND)
         return "openAtEnd";
       return "?";
-      }
+   }
     public String toSystem(SlicingRules code) {
       return code.getSystem();
       }
@@ -536,12 +542,12 @@ public class ElementDefinition extends Type implements ICompositeType {
           return AggregationMode.BUNDLED;
         throw new IllegalArgumentException("Unknown AggregationMode code '"+codeString+"'");
         }
-        public Enumeration<AggregationMode> fromType(Base code) throws FHIRException {
+        public Enumeration<AggregationMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<AggregationMode>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("contained".equals(codeString))
@@ -553,14 +559,16 @@ public class ElementDefinition extends Type implements ICompositeType {
         throw new FHIRException("Unknown AggregationMode code '"+codeString+"'");
         }
     public String toCode(AggregationMode code) {
-      if (code == AggregationMode.CONTAINED)
+       if (code == AggregationMode.NULL)
+           return null;
+       if (code == AggregationMode.CONTAINED)
         return "contained";
       if (code == AggregationMode.REFERENCED)
         return "referenced";
       if (code == AggregationMode.BUNDLED)
         return "bundled";
       return "?";
-      }
+   }
     public String toSystem(AggregationMode code) {
       return code.getSystem();
       }
@@ -648,12 +656,12 @@ public class ElementDefinition extends Type implements ICompositeType {
           return ReferenceVersionRules.SPECIFIC;
         throw new IllegalArgumentException("Unknown ReferenceVersionRules code '"+codeString+"'");
         }
-        public Enumeration<ReferenceVersionRules> fromType(Base code) throws FHIRException {
+        public Enumeration<ReferenceVersionRules> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ReferenceVersionRules>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("either".equals(codeString))
@@ -665,14 +673,16 @@ public class ElementDefinition extends Type implements ICompositeType {
         throw new FHIRException("Unknown ReferenceVersionRules code '"+codeString+"'");
         }
     public String toCode(ReferenceVersionRules code) {
-      if (code == ReferenceVersionRules.EITHER)
+       if (code == ReferenceVersionRules.NULL)
+           return null;
+       if (code == ReferenceVersionRules.EITHER)
         return "either";
       if (code == ReferenceVersionRules.INDEPENDENT)
         return "independent";
       if (code == ReferenceVersionRules.SPECIFIC)
         return "specific";
       return "?";
-      }
+   }
     public String toSystem(ReferenceVersionRules code) {
       return code.getSystem();
       }
@@ -748,12 +758,12 @@ public class ElementDefinition extends Type implements ICompositeType {
           return ConstraintSeverity.WARNING;
         throw new IllegalArgumentException("Unknown ConstraintSeverity code '"+codeString+"'");
         }
-        public Enumeration<ConstraintSeverity> fromType(Base code) throws FHIRException {
+        public Enumeration<ConstraintSeverity> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ConstraintSeverity>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("error".equals(codeString))
@@ -763,12 +773,14 @@ public class ElementDefinition extends Type implements ICompositeType {
         throw new FHIRException("Unknown ConstraintSeverity code '"+codeString+"'");
         }
     public String toCode(ConstraintSeverity code) {
-      if (code == ConstraintSeverity.ERROR)
+       if (code == ConstraintSeverity.NULL)
+           return null;
+       if (code == ConstraintSeverity.ERROR)
         return "error";
       if (code == ConstraintSeverity.WARNING)
         return "warning";
       return "?";
-      }
+   }
     public String toSystem(ConstraintSeverity code) {
       return code.getSystem();
       }
@@ -1113,13 +1125,13 @@ public class ElementDefinition extends Type implements ICompositeType {
           return addDiscriminator();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.description");
         }
         else if (name.equals("ordered")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.ordered");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.ordered");
         }
         else if (name.equals("rules")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.rules");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.rules");
         }
         else
           return super.addChild(name);
@@ -1374,10 +1386,10 @@ public class ElementDefinition extends Type implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.type");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.type");
         }
         else if (name.equals("path")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.path");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.path");
         }
         else
           return super.addChild(name);
@@ -1683,13 +1695,13 @@ public class ElementDefinition extends Type implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("path")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.path");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.path");
         }
         else if (name.equals("min")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.min");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.min");
         }
         else if (name.equals("max")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.max");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.max");
         }
         else
           return super.addChild(name);
@@ -2155,19 +2167,19 @@ public class ElementDefinition extends Type implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("code")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.code");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.code");
         }
         else if (name.equals("profile")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.profile");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.profile");
         }
         else if (name.equals("targetProfile")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.targetProfile");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.targetProfile");
         }
         else if (name.equals("aggregation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.aggregation");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.aggregation");
         }
         else if (name.equals("versioning")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.versioning");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.versioning");
         }
         else
           return super.addChild(name);
@@ -2439,7 +2451,7 @@ public class ElementDefinition extends Type implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("label")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.label");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.label");
         }
         else if (name.equals("valueBoolean")) {
           this.value = new BooleanType();
@@ -3141,25 +3153,25 @@ public class ElementDefinition extends Type implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("key")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.key");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.key");
         }
         else if (name.equals("requirements")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.requirements");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.requirements");
         }
         else if (name.equals("severity")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.severity");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.severity");
         }
         else if (name.equals("human")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.human");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.human");
         }
         else if (name.equals("expression")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.expression");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.expression");
         }
         else if (name.equals("xpath")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.xpath");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.xpath");
         }
         else if (name.equals("source")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.source");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.source");
         }
         else
           return super.addChild(name);
@@ -3367,8 +3379,8 @@ public class ElementDefinition extends Type implements ICompositeType {
           return (UriType) this.valueSet;
         }
 
-        public boolean hasValueSetUriType() { 
-          return this != null && this.valueSet instanceof UriType;
+        public boolean hasValueSetUriType() {
+            return this.valueSet instanceof UriType;
         }
 
         /**
@@ -3382,8 +3394,8 @@ public class ElementDefinition extends Type implements ICompositeType {
           return (Reference) this.valueSet;
         }
 
-        public boolean hasValueSetReference() { 
-          return this != null && this.valueSet instanceof Reference;
+        public boolean hasValueSetReference() {
+            return this.valueSet instanceof Reference;
         }
 
         public boolean hasValueSet() { 
@@ -3490,10 +3502,10 @@ public class ElementDefinition extends Type implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("strength")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.strength");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.strength");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.description");
         }
         else if (name.equals("valueSetUri")) {
           this.valueSet = new UriType();
@@ -3880,16 +3892,16 @@ public class ElementDefinition extends Type implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("identity")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.identity");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.identity");
         }
         else if (name.equals("language")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.language");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.language");
         }
         else if (name.equals("map")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.map");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.map");
         }
         else if (name.equals("comment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.comment");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.comment");
         }
         else
           return super.addChild(name);
@@ -5166,8 +5178,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (DateType) this.minValue;
     }
 
-    public boolean hasMinValueDateType() { 
-      return this != null && this.minValue instanceof DateType;
+    public boolean hasMinValueDateType() {
+        return this.minValue instanceof DateType;
     }
 
     /**
@@ -5181,8 +5193,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (DateTimeType) this.minValue;
     }
 
-    public boolean hasMinValueDateTimeType() { 
-      return this != null && this.minValue instanceof DateTimeType;
+    public boolean hasMinValueDateTimeType() {
+        return this.minValue instanceof DateTimeType;
     }
 
     /**
@@ -5196,8 +5208,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (InstantType) this.minValue;
     }
 
-    public boolean hasMinValueInstantType() { 
-      return this != null && this.minValue instanceof InstantType;
+    public boolean hasMinValueInstantType() {
+        return this.minValue instanceof InstantType;
     }
 
     /**
@@ -5211,8 +5223,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (TimeType) this.minValue;
     }
 
-    public boolean hasMinValueTimeType() { 
-      return this != null && this.minValue instanceof TimeType;
+    public boolean hasMinValueTimeType() {
+        return this.minValue instanceof TimeType;
     }
 
     /**
@@ -5226,8 +5238,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (DecimalType) this.minValue;
     }
 
-    public boolean hasMinValueDecimalType() { 
-      return this != null && this.minValue instanceof DecimalType;
+    public boolean hasMinValueDecimalType() {
+        return this.minValue instanceof DecimalType;
     }
 
     /**
@@ -5241,8 +5253,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (IntegerType) this.minValue;
     }
 
-    public boolean hasMinValueIntegerType() { 
-      return this != null && this.minValue instanceof IntegerType;
+    public boolean hasMinValueIntegerType() {
+        return this.minValue instanceof IntegerType;
     }
 
     /**
@@ -5256,8 +5268,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (PositiveIntType) this.minValue;
     }
 
-    public boolean hasMinValuePositiveIntType() { 
-      return this != null && this.minValue instanceof PositiveIntType;
+    public boolean hasMinValuePositiveIntType() {
+        return this.minValue instanceof PositiveIntType;
     }
 
     /**
@@ -5271,8 +5283,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (UnsignedIntType) this.minValue;
     }
 
-    public boolean hasMinValueUnsignedIntType() { 
-      return this != null && this.minValue instanceof UnsignedIntType;
+    public boolean hasMinValueUnsignedIntType() {
+        return this.minValue instanceof UnsignedIntType;
     }
 
     /**
@@ -5286,8 +5298,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (Quantity) this.minValue;
     }
 
-    public boolean hasMinValueQuantity() { 
-      return this != null && this.minValue instanceof Quantity;
+    public boolean hasMinValueQuantity() {
+        return this.minValue instanceof Quantity;
     }
 
     public boolean hasMinValue() { 
@@ -5322,8 +5334,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (DateType) this.maxValue;
     }
 
-    public boolean hasMaxValueDateType() { 
-      return this != null && this.maxValue instanceof DateType;
+    public boolean hasMaxValueDateType() {
+        return this.maxValue instanceof DateType;
     }
 
     /**
@@ -5337,8 +5349,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (DateTimeType) this.maxValue;
     }
 
-    public boolean hasMaxValueDateTimeType() { 
-      return this != null && this.maxValue instanceof DateTimeType;
+    public boolean hasMaxValueDateTimeType() {
+        return this.maxValue instanceof DateTimeType;
     }
 
     /**
@@ -5352,8 +5364,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (InstantType) this.maxValue;
     }
 
-    public boolean hasMaxValueInstantType() { 
-      return this != null && this.maxValue instanceof InstantType;
+    public boolean hasMaxValueInstantType() {
+        return this.maxValue instanceof InstantType;
     }
 
     /**
@@ -5367,8 +5379,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (TimeType) this.maxValue;
     }
 
-    public boolean hasMaxValueTimeType() { 
-      return this != null && this.maxValue instanceof TimeType;
+    public boolean hasMaxValueTimeType() {
+        return this.maxValue instanceof TimeType;
     }
 
     /**
@@ -5382,8 +5394,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (DecimalType) this.maxValue;
     }
 
-    public boolean hasMaxValueDecimalType() { 
-      return this != null && this.maxValue instanceof DecimalType;
+    public boolean hasMaxValueDecimalType() {
+        return this.maxValue instanceof DecimalType;
     }
 
     /**
@@ -5397,8 +5409,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (IntegerType) this.maxValue;
     }
 
-    public boolean hasMaxValueIntegerType() { 
-      return this != null && this.maxValue instanceof IntegerType;
+    public boolean hasMaxValueIntegerType() {
+        return this.maxValue instanceof IntegerType;
     }
 
     /**
@@ -5412,8 +5424,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (PositiveIntType) this.maxValue;
     }
 
-    public boolean hasMaxValuePositiveIntType() { 
-      return this != null && this.maxValue instanceof PositiveIntType;
+    public boolean hasMaxValuePositiveIntType() {
+        return this.maxValue instanceof PositiveIntType;
     }
 
     /**
@@ -5427,8 +5439,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (UnsignedIntType) this.maxValue;
     }
 
-    public boolean hasMaxValueUnsignedIntType() { 
-      return this != null && this.maxValue instanceof UnsignedIntType;
+    public boolean hasMaxValueUnsignedIntType() {
+        return this.maxValue instanceof UnsignedIntType;
     }
 
     /**
@@ -5442,8 +5454,8 @@ public class ElementDefinition extends Type implements ICompositeType {
       return (Quantity) this.maxValue;
     }
 
-    public boolean hasMaxValueQuantity() { 
-      return this != null && this.maxValue instanceof Quantity;
+    public boolean hasMaxValueQuantity() {
+        return this.maxValue instanceof Quantity;
     }
 
     public boolean hasMaxValue() { 
@@ -6343,16 +6355,16 @@ public class ElementDefinition extends Type implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("path")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.path");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.path");
         }
         else if (name.equals("representation")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.representation");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.representation");
         }
         else if (name.equals("sliceName")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.sliceName");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.sliceName");
         }
         else if (name.equals("label")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.label");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.label");
         }
         else if (name.equals("code")) {
           return addCode();
@@ -6362,32 +6374,32 @@ public class ElementDefinition extends Type implements ICompositeType {
           return this.slicing;
         }
         else if (name.equals("short")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.short");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.short");
         }
         else if (name.equals("definition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.definition");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.definition");
         }
         else if (name.equals("comment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.comment");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.comment");
         }
         else if (name.equals("requirements")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.requirements");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.requirements");
         }
         else if (name.equals("alias")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.alias");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.alias");
         }
         else if (name.equals("min")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.min");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.min");
         }
         else if (name.equals("max")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.max");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.max");
         }
         else if (name.equals("base")) {
           this.base = new ElementDefinitionBaseComponent();
           return this.base;
         }
         else if (name.equals("contentReference")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.contentReference");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.contentReference");
         }
         else if (name.equals("type")) {
           return addType();
@@ -6525,10 +6537,10 @@ public class ElementDefinition extends Type implements ICompositeType {
           return this.defaultValue;
         }
         else if (name.equals("meaningWhenMissing")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.meaningWhenMissing");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.meaningWhenMissing");
         }
         else if (name.equals("orderMeaning")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.orderMeaning");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.orderMeaning");
         }
         else if (name.equals("fixedBoolean")) {
           this.fixed = new BooleanType();
@@ -6870,22 +6882,22 @@ public class ElementDefinition extends Type implements ICompositeType {
           return this.maxValue;
         }
         else if (name.equals("maxLength")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.maxLength");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.maxLength");
         }
         else if (name.equals("condition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.condition");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.condition");
         }
         else if (name.equals("constraint")) {
           return addConstraint();
         }
         else if (name.equals("mustSupport")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.mustSupport");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.mustSupport");
         }
         else if (name.equals("isModifier")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.isModifier");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.isModifier");
         }
         else if (name.equals("isSummary")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ElementDefinition.isSummary");
+          throw new FHIRException("Cannot call addChild on a singleton property ElementDefinition.isSummary");
         }
         else if (name.equals("binding")) {
           this.binding = new ElementDefinitionBindingComponent();

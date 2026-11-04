@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3ActRelationshipJoinEnumFactory implements EnumFactory<V3ActRelationshipJoin> {
@@ -50,11 +46,13 @@ public class V3ActRelationshipJoinEnumFactory implements EnumFactory<V3ActRelati
       return V3ActRelationshipJoin.W;
     if ("X".equals(codeString))
       return V3ActRelationshipJoin.X;
-    throw new IllegalArgumentException("Unknown V3ActRelationshipJoin code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ActRelationshipJoin code '" + codeString + "'");
   }
 
   public String toCode(V3ActRelationshipJoin code) {
-    if (code == V3ActRelationshipJoin.D)
+       if (code == V3ActRelationshipJoin.NULL)
+           return null;
+       if (code == V3ActRelationshipJoin.D)
       return "D";
     if (code == V3ActRelationshipJoin.K)
       return "K";
@@ -63,10 +61,10 @@ public class V3ActRelationshipJoinEnumFactory implements EnumFactory<V3ActRelati
     if (code == V3ActRelationshipJoin.X)
       return "X";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ActRelationshipJoin code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ActRelationshipJoin code) {
+    return code.getSystem();
+  }
 
 }

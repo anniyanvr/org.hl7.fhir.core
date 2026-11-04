@@ -29,27 +29,30 @@ package org.hl7.fhir.r4.context;
   
  */
 
-
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+
 import org.hl7.fhir.utilities.ToolingClientLogger;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+
+
 
 public class HTMLClientLogger implements ToolingClientLogger {
 
   private PrintStream file;
   private int id = 0;
   private String lastId;
-  
-  public HTMLClientLogger(String log) {
+
+  public HTMLClientLogger(String log) throws IOException {
     if (log != null) {
       try {
-        file = new PrintStream(new FileOutputStream(log));
+        file = new PrintStream(ManagedFileAccess.outStream(log));
       } catch (FileNotFoundException e) {
       }
     }
@@ -61,10 +64,10 @@ public class HTMLClientLogger implements ToolingClientLogger {
       return;
     id++;
     lastId = Integer.toString(id);
-    file.println("<hr/><a name=\"l"+lastId+"\"> </a>");
+    file.println("<hr/><a name=\"l" + lastId + "\"> </a>");
     file.println("<pre>");
-    file.println(method+" "+url+" HTTP/1.0");
-    for (String s : headers)  
+    file.println(method + " " + url + " HTTP/1.1");
+    for (String s : headers)
       file.println(Utilities.escapeXml(s));
     if (body != null) {
       file.println("");
@@ -77,12 +80,12 @@ public class HTMLClientLogger implements ToolingClientLogger {
   }
 
   @Override
-  public void logResponse(String outcome, List<String> headers, byte[] body) {
+  public void logResponse(String outcome, List<String> headers, byte[] body, long start) {
     if (file == null)
       return;
     file.println("<pre>");
     file.println(outcome);
-    for (String s : headers)  
+    for (String s : headers)
       file.println(Utilities.escapeXml(s));
     if (body != null) {
       file.println("");
@@ -99,7 +102,7 @@ public class HTMLClientLogger implements ToolingClientLogger {
   }
 
   public void clearLastId() {
-    lastId = null;    
+    lastId = null;
   }
 
 }

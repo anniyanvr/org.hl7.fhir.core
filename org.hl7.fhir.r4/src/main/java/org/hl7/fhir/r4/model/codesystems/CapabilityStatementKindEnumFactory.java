@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class CapabilityStatementKindEnumFactory implements EnumFactory<CapabilityStatementKind> {
@@ -48,21 +44,23 @@ public class CapabilityStatementKindEnumFactory implements EnumFactory<Capabilit
       return CapabilityStatementKind.CAPABILITY;
     if ("requirements".equals(codeString))
       return CapabilityStatementKind.REQUIREMENTS;
-    throw new IllegalArgumentException("Unknown CapabilityStatementKind code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CapabilityStatementKind code '" + codeString + "'");
   }
 
   public String toCode(CapabilityStatementKind code) {
-    if (code == CapabilityStatementKind.INSTANCE)
+       if (code == CapabilityStatementKind.NULL)
+           return null;
+       if (code == CapabilityStatementKind.INSTANCE)
       return "instance";
     if (code == CapabilityStatementKind.CAPABILITY)
       return "capability";
     if (code == CapabilityStatementKind.REQUIREMENTS)
       return "requirements";
     return "?";
-  }
+   }
 
-    public String toSystem(CapabilityStatementKind code) {
-      return code.getSystem();
-      }
+  public String toSystem(CapabilityStatementKind code) {
+    return code.getSystem();
+  }
 
 }

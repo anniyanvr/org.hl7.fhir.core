@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class SearchXpathUsageEnumFactory implements EnumFactory<SearchXpathUsage> {
@@ -52,11 +48,13 @@ public class SearchXpathUsageEnumFactory implements EnumFactory<SearchXpathUsage
       return SearchXpathUsage.DISTANCE;
     if ("other".equals(codeString))
       return SearchXpathUsage.OTHER;
-    throw new IllegalArgumentException("Unknown SearchXpathUsage code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown SearchXpathUsage code '" + codeString + "'");
   }
 
   public String toCode(SearchXpathUsage code) {
-    if (code == SearchXpathUsage.NORMAL)
+       if (code == SearchXpathUsage.NULL)
+           return null;
+       if (code == SearchXpathUsage.NORMAL)
       return "normal";
     if (code == SearchXpathUsage.PHONETIC)
       return "phonetic";
@@ -67,10 +65,10 @@ public class SearchXpathUsageEnumFactory implements EnumFactory<SearchXpathUsage
     if (code == SearchXpathUsage.OTHER)
       return "other";
     return "?";
-  }
+   }
 
-    public String toSystem(SearchXpathUsage code) {
-      return code.getSystem();
-      }
+  public String toSystem(SearchXpathUsage code) {
+    return code.getSystem();
+  }
 
 }

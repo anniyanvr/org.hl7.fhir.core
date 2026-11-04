@@ -1,5 +1,12 @@
 package org.hl7.fhir.convertors.loaders.loaderR5;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -32,28 +39,27 @@ package org.hl7.fhir.convertors.loaders.loaderR5;
 
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_10_50;
 import org.hl7.fhir.convertors.factory.VersionConvertorFactory_10_50;
+import org.hl7.fhir.convertors.txClient.TerminologyClientFactory;
 import org.hl7.fhir.dstu2.formats.JsonParser;
 import org.hl7.fhir.dstu2.formats.XmlParser;
 import org.hl7.fhir.dstu2.model.Resource;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.context.IWorkerContext.IContextResourceLoader;
-import org.hl7.fhir.r5.model.*;
+import org.hl7.fhir.r5.context.IContextResourceLoader;
+import org.hl7.fhir.r5.context.PackageResourceLoader;
+import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r5.model.Bundle.BundleType;
-import org.hl7.fhir.r5.model.ElementDefinition.TypeRefComponent;
+import org.hl7.fhir.r5.model.CanonicalResource;
+import org.hl7.fhir.r5.model.CodeSystem;
+import org.hl7.fhir.r5.model.StructureDefinition;
 import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import org.hl7.fhir.r5.terminologies.client.ITerminologyClientFactory5;
 
 public class R2ToR5Loader extends BaseLoaderR5 implements IContextResourceLoader {
 
   private final BaseAdvisor_10_50 advisor = new BaseAdvisor_10_50();
 
-  public R2ToR5Loader(String[] types, ILoaderKnowledgeProviderR5 lkp) {
+  public R2ToR5Loader(Set<String> types, ILoaderKnowledgeProviderR5 lkp) {
     super(types, lkp);
   }
 
@@ -96,10 +102,9 @@ public class R2ToR5Loader extends BaseLoaderR5 implements IContextResourceLoader
     }
     if (patchUrls) {
       for (BundleEntryComponent be : b.getEntry()) {
-        if (be.hasResource() && be.getResource() instanceof StructureDefinition) {
-          StructureDefinition sd = (StructureDefinition) be.getResource();
-          sd.setUrl(sd.getUrl().replace(URL_BASE, URL_DSTU2));
-          sd.addExtension().setUrl(URL_ELEMENT_DEF_NAMESPACE).setValue(new UriType(URL_BASE));
+        if (be.hasResource()) {
+          inspectResource(be.getResource());
+          doPatchUrls(be.getResource());
         }
       }
     }
@@ -116,34 +121,46 @@ public class R2ToR5Loader extends BaseLoaderR5 implements IContextResourceLoader
       r2 = new XmlParser().parse(stream);
     org.hl7.fhir.r5.model.Resource r5 = VersionConvertorFactory_10_50.convertResource(r2, advisor);
     setPath(r5);
-    if (!advisor.getCslist().isEmpty()) {
-      throw new FHIRException("Error: Cannot have included code systems");
-    }
     if (killPrimitives) {
       throw new FHIRException("Cannot kill primitives when using deferred loading");
     }
+    inspectResource(r5);
     if (patchUrls) {
-      if (r5 instanceof StructureDefinition) {
-        StructureDefinition sd = (StructureDefinition) r5;
-        sd.setUrl(sd.getUrl().replace(URL_BASE, URL_R4));
-        sd.addExtension().setUrl(URL_ELEMENT_DEF_NAMESPACE).setValue(new UriType(URL_BASE));
-        for (ElementDefinition ed : sd.getSnapshot().getElement())
-          patchUrl(ed);
-        for (ElementDefinition ed : sd.getDifferential().getElement())
-          patchUrl(ed);
-      }
+      doPatchUrls(r5);
     }
     return r5;
   }
 
-  private void patchUrl(ElementDefinition ed) {
-    for (TypeRefComponent tr : ed.getType()) {
-      for (CanonicalType s : tr.getTargetProfile()) {
-        s.setValue(s.getValue().replace(URL_BASE, URL_DSTU2));
-      }
-      for (CanonicalType s : tr.getProfile()) {
-        s.setValue(s.getValue().replace(URL_BASE, URL_DSTU2));
-      }
+  @Override
+  public List<CodeSystem> getCodeSystems() {
+    List<CodeSystem> list = new ArrayList<>();
+    if (!advisor.getCslist().isEmpty()) {
+      list.addAll(advisor.getCslist());
+      advisor.getCslist().clear();
     }
+    return list;
   }
+
+  @Override
+  protected String versionString() {
+    return "1.0";
+  }
+
+  @Override
+  public ITerminologyClientFactory5 txFactory() {
+    return new TerminologyClientFactory(versionString());
+  }
+
+  @Override
+  public Set<String> reviewActualTypes(Set<String> types) {
+
+    // this isn't correct, but we don't care anymore for R2 IGs
+    return types;
+  }
+
+  @Override
+  public PackageResourceLoader editInfo(PackageResourceLoader pri) {
+    return pri;
+  }
+  
 }

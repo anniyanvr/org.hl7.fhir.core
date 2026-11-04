@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -140,11 +136,13 @@ public class OperationOutcomeEnumFactory implements EnumFactory<OperationOutcome
       return OperationOutcome.UPDATEMULTIPLEMATCHES;
     if ("SEARCH_NONE".equals(codeString))
       return OperationOutcome.SEARCHNONE;
-    throw new IllegalArgumentException("Unknown OperationOutcome code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown OperationOutcome code '" + codeString + "'");
   }
 
   public String toCode(OperationOutcome code) {
-    if (code == OperationOutcome.MSGAUTHREQUIRED)
+       if (code == OperationOutcome.NULL)
+           return null;
+       if (code == OperationOutcome.MSGAUTHREQUIRED)
       return "MSG_AUTH_REQUIRED";
     if (code == OperationOutcome.MSGBADFORMAT)
       return "MSG_BAD_FORMAT";
@@ -243,10 +241,10 @@ public class OperationOutcomeEnumFactory implements EnumFactory<OperationOutcome
     if (code == OperationOutcome.SEARCHNONE)
       return "SEARCH_NONE";
     return "?";
-  }
+   }
 
-    public String toSystem(OperationOutcome code) {
-      return code.getSystem();
-      }
+  public String toSystem(OperationOutcome code) {
+    return code.getSystem();
+  }
 
 }

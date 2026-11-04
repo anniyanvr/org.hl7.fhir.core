@@ -168,12 +168,12 @@ public class GuidanceResponse extends DomainResource {
           return GuidanceResponseStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown GuidanceResponseStatus code '"+codeString+"'");
         }
-        public Enumeration<GuidanceResponseStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<GuidanceResponseStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<GuidanceResponseStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("success".equals(codeString))
@@ -191,7 +191,9 @@ public class GuidanceResponse extends DomainResource {
         throw new FHIRException("Unknown GuidanceResponseStatus code '"+codeString+"'");
         }
     public String toCode(GuidanceResponseStatus code) {
-      if (code == GuidanceResponseStatus.SUCCESS)
+       if (code == GuidanceResponseStatus.NULL)
+           return null;
+       if (code == GuidanceResponseStatus.SUCCESS)
         return "success";
       if (code == GuidanceResponseStatus.DATAREQUESTED)
         return "data-requested";
@@ -204,7 +206,7 @@ public class GuidanceResponse extends DomainResource {
       if (code == GuidanceResponseStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(GuidanceResponseStatus code) {
       return code.getSystem();
       }
@@ -713,8 +715,8 @@ public class GuidanceResponse extends DomainResource {
       return (CodeableConcept) this.reason;
     }
 
-    public boolean hasReasonCodeableConcept() { 
-      return this != null && this.reason instanceof CodeableConcept;
+    public boolean hasReasonCodeableConcept() {
+        return this.reason instanceof CodeableConcept;
     }
 
     /**
@@ -728,8 +730,8 @@ public class GuidanceResponse extends DomainResource {
       return (Reference) this.reason;
     }
 
-    public boolean hasReasonReference() { 
-      return this != null && this.reason instanceof Reference;
+    public boolean hasReasonReference() {
+        return this.reason instanceof Reference;
     }
 
     public boolean hasReason() { 
@@ -850,28 +852,6 @@ public class GuidanceResponse extends DomainResource {
         addEvaluationMessage();
       }
       return getEvaluationMessage().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<OperationOutcome> getEvaluationMessageTarget() { 
-      if (this.evaluationMessageTarget == null)
-        this.evaluationMessageTarget = new ArrayList<OperationOutcome>();
-      return this.evaluationMessageTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public OperationOutcome addEvaluationMessageTarget() { 
-      OperationOutcome r = new OperationOutcome();
-      if (this.evaluationMessageTarget == null)
-        this.evaluationMessageTarget = new ArrayList<OperationOutcome>();
-      this.evaluationMessageTarget.add(r);
-      return r;
     }
 
     /**
@@ -1210,7 +1190,7 @@ public class GuidanceResponse extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("requestId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type GuidanceResponse.requestId");
+          throw new FHIRException("Cannot call addChild on a singleton property GuidanceResponse.requestId");
         }
         else if (name.equals("identifier")) {
           this.identifier = new Identifier();
@@ -1221,7 +1201,7 @@ public class GuidanceResponse extends DomainResource {
           return this.module;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type GuidanceResponse.status");
+          throw new FHIRException("Cannot call addChild on a singleton property GuidanceResponse.status");
         }
         else if (name.equals("subject")) {
           this.subject = new Reference();
@@ -1232,7 +1212,7 @@ public class GuidanceResponse extends DomainResource {
           return this.context;
         }
         else if (name.equals("occurrenceDateTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type GuidanceResponse.occurrenceDateTime");
+          throw new FHIRException("Cannot call addChild on a singleton property GuidanceResponse.occurrenceDateTime");
         }
         else if (name.equals("performer")) {
           this.performer = new Reference();

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3AcknowledgementTypeEnumFactory implements EnumFactory<V3AcknowledgementType> {
@@ -54,11 +50,13 @@ public class V3AcknowledgementTypeEnumFactory implements EnumFactory<V3Acknowled
       return V3AcknowledgementType.CE;
     if ("CR".equals(codeString))
       return V3AcknowledgementType.CR;
-    throw new IllegalArgumentException("Unknown V3AcknowledgementType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3AcknowledgementType code '" + codeString + "'");
   }
 
   public String toCode(V3AcknowledgementType code) {
-    if (code == V3AcknowledgementType.AA)
+       if (code == V3AcknowledgementType.NULL)
+           return null;
+       if (code == V3AcknowledgementType.AA)
       return "AA";
     if (code == V3AcknowledgementType.AE)
       return "AE";
@@ -71,10 +69,10 @@ public class V3AcknowledgementTypeEnumFactory implements EnumFactory<V3Acknowled
     if (code == V3AcknowledgementType.CR)
       return "CR";
     return "?";
-  }
+   }
 
-    public String toSystem(V3AcknowledgementType code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3AcknowledgementType code) {
+    return code.getSystem();
+  }
 
 }

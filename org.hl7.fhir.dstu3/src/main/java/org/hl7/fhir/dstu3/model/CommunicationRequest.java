@@ -181,12 +181,12 @@ public class CommunicationRequest extends DomainResource {
           return CommunicationRequestStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown CommunicationRequestStatus code '"+codeString+"'");
         }
-        public Enumeration<CommunicationRequestStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<CommunicationRequestStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<CommunicationRequestStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -206,7 +206,9 @@ public class CommunicationRequest extends DomainResource {
         throw new FHIRException("Unknown CommunicationRequestStatus code '"+codeString+"'");
         }
     public String toCode(CommunicationRequestStatus code) {
-      if (code == CommunicationRequestStatus.DRAFT)
+       if (code == CommunicationRequestStatus.NULL)
+           return null;
+       if (code == CommunicationRequestStatus.DRAFT)
         return "draft";
       if (code == CommunicationRequestStatus.ACTIVE)
         return "active";
@@ -221,7 +223,7 @@ public class CommunicationRequest extends DomainResource {
       if (code == CommunicationRequestStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(CommunicationRequestStatus code) {
       return code.getSystem();
       }
@@ -321,12 +323,12 @@ public class CommunicationRequest extends DomainResource {
           return CommunicationPriority.STAT;
         throw new IllegalArgumentException("Unknown CommunicationPriority code '"+codeString+"'");
         }
-        public Enumeration<CommunicationPriority> fromType(Base code) throws FHIRException {
+        public Enumeration<CommunicationPriority> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<CommunicationPriority>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("routine".equals(codeString))
@@ -340,7 +342,9 @@ public class CommunicationRequest extends DomainResource {
         throw new FHIRException("Unknown CommunicationPriority code '"+codeString+"'");
         }
     public String toCode(CommunicationPriority code) {
-      if (code == CommunicationPriority.ROUTINE)
+       if (code == CommunicationPriority.NULL)
+           return null;
+       if (code == CommunicationPriority.ROUTINE)
         return "routine";
       if (code == CommunicationPriority.URGENT)
         return "urgent";
@@ -349,7 +353,7 @@ public class CommunicationRequest extends DomainResource {
       if (code == CommunicationPriority.STAT)
         return "stat";
       return "?";
-      }
+   }
     public String toSystem(CommunicationPriority code) {
       return code.getSystem();
       }
@@ -399,8 +403,8 @@ public class CommunicationRequest extends DomainResource {
           return (StringType) this.content;
         }
 
-        public boolean hasContentStringType() { 
-          return this != null && this.content instanceof StringType;
+        public boolean hasContentStringType() {
+            return this.content instanceof StringType;
         }
 
         /**
@@ -414,8 +418,8 @@ public class CommunicationRequest extends DomainResource {
           return (Attachment) this.content;
         }
 
-        public boolean hasContentAttachment() { 
-          return this != null && this.content instanceof Attachment;
+        public boolean hasContentAttachment() {
+            return this.content instanceof Attachment;
         }
 
         /**
@@ -429,8 +433,8 @@ public class CommunicationRequest extends DomainResource {
           return (Reference) this.content;
         }
 
-        public boolean hasContentReference() { 
-          return this != null && this.content instanceof Reference;
+        public boolean hasContentReference() {
+            return this.content instanceof Reference;
         }
 
         public boolean hasContent() { 
@@ -1128,16 +1132,6 @@ public class CommunicationRequest extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<Resource>();
-      return this.basedOnTarget;
-    }
-
-    /**
      * @return {@link #replaces} (Completed or terminated request(s) whose function is taken by this new request.)
      */
     public List<Reference> getReplaces() { 
@@ -1188,28 +1182,6 @@ public class CommunicationRequest extends DomainResource {
         addReplaces();
       }
       return getReplaces().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<CommunicationRequest> getReplacesTarget() { 
-      if (this.replacesTarget == null)
-        this.replacesTarget = new ArrayList<CommunicationRequest>();
-      return this.replacesTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public CommunicationRequest addReplacesTarget() { 
-      CommunicationRequest r = new CommunicationRequest();
-      if (this.replacesTarget == null)
-        this.replacesTarget = new ArrayList<CommunicationRequest>();
-      this.replacesTarget.add(r);
-      return r;
     }
 
     /**
@@ -1529,16 +1501,6 @@ public class CommunicationRequest extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getRecipientTarget() { 
-      if (this.recipientTarget == null)
-        this.recipientTarget = new ArrayList<Resource>();
-      return this.recipientTarget;
-    }
-
-    /**
      * @return {@link #topic} (The resources which were related to producing this communication request.)
      */
     public List<Reference> getTopic() { 
@@ -1589,16 +1551,6 @@ public class CommunicationRequest extends DomainResource {
         addTopic();
       }
       return getTopic().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getTopicTarget() { 
-      if (this.topicTarget == null)
-        this.topicTarget = new ArrayList<Resource>();
-      return this.topicTarget;
     }
 
     /**
@@ -1711,8 +1663,8 @@ public class CommunicationRequest extends DomainResource {
       return (DateTimeType) this.occurrence;
     }
 
-    public boolean hasOccurrenceDateTimeType() { 
-      return this != null && this.occurrence instanceof DateTimeType;
+    public boolean hasOccurrenceDateTimeType() {
+        return this.occurrence instanceof DateTimeType;
     }
 
     /**
@@ -1726,8 +1678,8 @@ public class CommunicationRequest extends DomainResource {
       return (Period) this.occurrence;
     }
 
-    public boolean hasOccurrencePeriod() { 
-      return this != null && this.occurrence instanceof Period;
+    public boolean hasOccurrencePeriod() {
+        return this.occurrence instanceof Period;
     }
 
     public boolean hasOccurrence() { 
@@ -1960,16 +1912,6 @@ public class CommunicationRequest extends DomainResource {
         addReasonReference();
       }
       return getReasonReference().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getReasonReferenceTarget() { 
-      if (this.reasonReferenceTarget == null)
-        this.reasonReferenceTarget = new ArrayList<Resource>();
-      return this.reasonReferenceTarget;
     }
 
     /**
@@ -2300,13 +2242,13 @@ public class CommunicationRequest extends DomainResource {
           return this.groupIdentifier;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CommunicationRequest.status");
+          throw new FHIRException("Cannot call addChild on a singleton property CommunicationRequest.status");
         }
         else if (name.equals("category")) {
           return addCategory();
         }
         else if (name.equals("priority")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CommunicationRequest.priority");
+          throw new FHIRException("Cannot call addChild on a singleton property CommunicationRequest.priority");
         }
         else if (name.equals("medium")) {
           return addMedium();
@@ -2337,7 +2279,7 @@ public class CommunicationRequest extends DomainResource {
           return this.occurrence;
         }
         else if (name.equals("authoredOn")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CommunicationRequest.authoredOn");
+          throw new FHIRException("Cannot call addChild on a singleton property CommunicationRequest.authoredOn");
         }
         else if (name.equals("sender")) {
           this.sender = new Reference();

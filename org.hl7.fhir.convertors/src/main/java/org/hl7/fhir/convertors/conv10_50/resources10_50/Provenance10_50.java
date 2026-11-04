@@ -10,6 +10,9 @@ import org.hl7.fhir.convertors.conv10_50.datatypes10_50.complextypes10_50.Signat
 import org.hl7.fhir.convertors.conv10_50.datatypes10_50.primitivetypes10_50.Instant10_50;
 import org.hl7.fhir.convertors.conv10_50.datatypes10_50.primitivetypes10_50.Uri10_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.model.CodeableReference;
+import org.hl7.fhir.r5.model.Enumeration;
+import org.hl7.fhir.r5.model.Provenance;
 import org.hl7.fhir.utilities.Utilities;
 
 /*
@@ -57,7 +60,7 @@ public class Provenance10_50 {
     if (src.hasLocation())
       tgt.setLocation(Reference10_50.convertReference(src.getLocation()));
     for (org.hl7.fhir.dstu2.model.CodeableConcept t : src.getReason())
-      tgt.addReason(CodeableConcept10_50.convertCodeableConcept(t));
+      tgt.addAuthorization().setConcept(CodeableConcept10_50.convertCodeableConcept(t));
     if (src.hasActivity())
       tgt.setActivity(CodeableConcept10_50.convertCodeableConcept(src.getActivity()));
     for (org.hl7.fhir.dstu2.model.Provenance.ProvenanceAgentComponent t : src.getAgent())
@@ -82,8 +85,9 @@ public class Provenance10_50 {
     for (org.hl7.fhir.r5.model.UriType t : src.getPolicy()) tgt.getPolicy().add(Uri10_50.convertUri(t));
     if (src.hasLocation())
       tgt.setLocation(Reference10_50.convertReference(src.getLocation()));
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getReason())
-      tgt.addReason(CodeableConcept10_50.convertCodeableConcept(t));
+    for (CodeableReference t : src.getAuthorization())
+      if (t.hasConcept())
+        tgt.addReason(CodeableConcept10_50.convertCodeableConcept(t.getConcept()));
     if (src.hasActivity())
       tgt.setActivity(CodeableConcept10_50.convertCodeableConcept(src.getActivity()));
     for (org.hl7.fhir.r5.model.Provenance.ProvenanceAgentComponent t : src.getAgent())
@@ -98,7 +102,7 @@ public class Provenance10_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Provenance.ProvenanceAgentComponent tgt = new org.hl7.fhir.r5.model.Provenance.ProvenanceAgentComponent();
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyBackboneElement(src,tgt);
 //        if (src.hasType())
 //            tgt.setType(convertCodeableConcept(src.getType()));
     if (src.hasRole())
@@ -112,7 +116,7 @@ public class Provenance10_50 {
     if (src == null)
       return null;
     org.hl7.fhir.dstu2.model.Provenance.ProvenanceAgentComponent tgt = new org.hl7.fhir.dstu2.model.Provenance.ProvenanceAgentComponent();
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyBackboneElement(src,tgt);
 //        if (src.hasType())
 //            tgt.setType(convertCodeableConcept(src.getType()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getRole())
@@ -127,7 +131,7 @@ public class Provenance10_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Provenance.ProvenanceEntityComponent tgt = new org.hl7.fhir.r5.model.Provenance.ProvenanceEntityComponent();
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyBackboneElement(src,tgt);
     if (src.hasRole())
       tgt.setRoleElement(convertProvenanceEntityRole(src.getRoleElement()));
     if (src.hasReference())
@@ -140,7 +144,7 @@ public class Provenance10_50 {
     if (src == null)
       return null;
     org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityComponent tgt = new org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityComponent();
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyBackboneElement(src,tgt);
     if (src.hasRole())
       tgt.setRoleElement(convertProvenanceEntityRole(src.getRoleElement()));
     if (Utilities.isAbsoluteUrl(src.getWhat().getReference()))
@@ -151,52 +155,60 @@ public class Provenance10_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Provenance.ProvenanceEntityRole> convertProvenanceEntityRole(org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Provenance.ProvenanceEntityRole> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Provenance.ProvenanceEntityRoleEnumFactory());
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case DERIVATION:
-        tgt.setValue(org.hl7.fhir.r5.model.Provenance.ProvenanceEntityRole.DERIVATION);
-        break;
-      case REVISION:
-        tgt.setValue(org.hl7.fhir.r5.model.Provenance.ProvenanceEntityRole.REVISION);
-        break;
-      case QUOTATION:
-        tgt.setValue(org.hl7.fhir.r5.model.Provenance.ProvenanceEntityRole.QUOTATION);
-        break;
-      case SOURCE:
-        tgt.setValue(org.hl7.fhir.r5.model.Provenance.ProvenanceEntityRole.SOURCE);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Provenance.ProvenanceEntityRole.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Provenance.ProvenanceEntityRole> tgt = new Enumeration<>(new Provenance.ProvenanceEntityRoleEnumFactory());
+      ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case DERIVATION:
+                  tgt.setValue(Provenance.ProvenanceEntityRole.INSTANTIATES);
+                  break;
+              case REVISION:
+                  tgt.setValue(Provenance.ProvenanceEntityRole.REVISION);
+                  break;
+              case QUOTATION:
+                  tgt.setValue(Provenance.ProvenanceEntityRole.QUOTATION);
+                  break;
+              case SOURCE:
+                  tgt.setValue(Provenance.ProvenanceEntityRole.SOURCE);
+                  break;
+              default:
+                  tgt.setValue(Provenance.ProvenanceEntityRole.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole> convertProvenanceEntityRole(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Provenance.ProvenanceEntityRole> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole> tgt = new org.hl7.fhir.dstu2.model.Enumeration<>(new org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRoleEnumFactory());
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case DERIVATION:
-        tgt.setValue(org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole.DERIVATION);
-        break;
-      case REVISION:
-        tgt.setValue(org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole.REVISION);
-        break;
-      case QUOTATION:
-        tgt.setValue(org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole.QUOTATION);
-        break;
-      case SOURCE:
-        tgt.setValue(org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole.SOURCE);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole> tgt = new org.hl7.fhir.dstu2.model.Enumeration<>(new org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRoleEnumFactory());
+      ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case INSTANTIATES:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole.DERIVATION);
+                  break;
+              case REVISION:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole.REVISION);
+                  break;
+              case QUOTATION:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole.QUOTATION);
+                  break;
+              case SOURCE:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole.SOURCE);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.Provenance.ProvenanceEntityRole.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 }

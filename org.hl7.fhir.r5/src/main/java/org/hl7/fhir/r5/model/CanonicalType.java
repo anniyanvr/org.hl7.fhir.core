@@ -33,6 +33,9 @@ package org.hl7.fhir.r5.model;
 
 import java.net.URI;
 
+import org.hl7.fhir.r5.extensions.ExtensionDefinitions;
+
+
 import ca.uhn.fhir.model.api.annotation.DatatypeDef;
 
 /**
@@ -64,7 +67,18 @@ public class CanonicalType extends UriType {
 		super(theValue);
 	}
 
-	/**
+  public static boolean matches(String canonical, String url, String version) {
+    String u = canonical.contains("|") ? canonical.substring(0, canonical.indexOf("|")) : canonical;
+    String v = canonical.contains("|") ? canonical.substring(canonical.indexOf("|")+1) : null;
+    if (version == null) {
+      return u.equals(url);
+    } else {
+      return u.equals(url) && (v == null || v.equals(version));
+    }
+  }
+
+
+  /**
 	 * Constructor
 	 */
 	@Override
@@ -77,6 +91,47 @@ public class CanonicalType extends UriType {
 	public String fhirType() {
 		return "canonical";		
 	}
-	
+
+  public String baseUrl() {
+    var s = primitiveValue();
+    return s == null || !s.contains("|") ? s : s.substring(0, s.indexOf("|"));
+  }
+
+  public String version() {
+    var s = primitiveValue();
+    return s == null || !s.contains("|") ? null : s.substring(s.indexOf("|")+1);
+  }
+
+  public String getCanonical() {
+    if (hasPrimitiveValue()) {
+      return primitiveValue();
+    }
+    if (hasExtension(ExtensionDefinitions.EXT_ALTERNATE_CANONICAL)) {
+      return getExtensionString(ExtensionDefinitions.EXT_ALTERNATE_CANONICAL);
+    }
+    return null;
+  }
+
+  public boolean hasVersion() {
+    return getValue() != null && getValue().contains("|");
+  }
+
+  public void addVersion(String version) {
+    if (version != null) {
+      setValue(getValue()+"|"+version);
+    }
+  }
+
+  public static String urlWithVersion(String system, String version) {
+    return system+(version == null ? "" : "|"+version);
+  }
+
+  public boolean matches(String system, String version) {
+    if (version == null) {
+      return this.primitiveValue().equals(system) || this.primitiveValue().startsWith(system+"|");
+    } else {
+      return this.primitiveValue().equals(urlWithVersion(system, version));
+    }
+  }
 
 }

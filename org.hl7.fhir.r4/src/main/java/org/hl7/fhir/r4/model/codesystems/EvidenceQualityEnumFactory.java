@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class EvidenceQualityEnumFactory implements EnumFactory<EvidenceQuality> {
@@ -50,11 +46,13 @@ public class EvidenceQualityEnumFactory implements EnumFactory<EvidenceQuality> 
       return EvidenceQuality.LOW;
     if ("very-low".equals(codeString))
       return EvidenceQuality.VERYLOW;
-    throw new IllegalArgumentException("Unknown EvidenceQuality code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown EvidenceQuality code '" + codeString + "'");
   }
 
   public String toCode(EvidenceQuality code) {
-    if (code == EvidenceQuality.HIGH)
+       if (code == EvidenceQuality.NULL)
+           return null;
+       if (code == EvidenceQuality.HIGH)
       return "high";
     if (code == EvidenceQuality.MODERATE)
       return "moderate";
@@ -63,10 +61,10 @@ public class EvidenceQualityEnumFactory implements EnumFactory<EvidenceQuality> 
     if (code == EvidenceQuality.VERYLOW)
       return "very-low";
     return "?";
-  }
+   }
 
-    public String toSystem(EvidenceQuality code) {
-      return code.getSystem();
-      }
+  public String toSystem(EvidenceQuality code) {
+    return code.getSystem();
+  }
 
 }

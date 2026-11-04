@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3SubstitutionConditionEnumFactory implements EnumFactory<V3SubstitutionCondition> {
@@ -52,11 +48,13 @@ public class V3SubstitutionConditionEnumFactory implements EnumFactory<V3Substit
       return V3SubstitutionCondition.NOSUB;
     if ("UNCOND".equals(codeString))
       return V3SubstitutionCondition.UNCOND;
-    throw new IllegalArgumentException("Unknown V3SubstitutionCondition code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3SubstitutionCondition code '" + codeString + "'");
   }
 
   public String toCode(V3SubstitutionCondition code) {
-    if (code == V3SubstitutionCondition._CONDITIONAL)
+       if (code == V3SubstitutionCondition.NULL)
+           return null;
+       if (code == V3SubstitutionCondition._CONDITIONAL)
       return "_Conditional";
     if (code == V3SubstitutionCondition.CONFIRM)
       return "CONFIRM";
@@ -67,10 +65,10 @@ public class V3SubstitutionConditionEnumFactory implements EnumFactory<V3Substit
     if (code == V3SubstitutionCondition.UNCOND)
       return "UNCOND";
     return "?";
-  }
+   }
 
-    public String toSystem(V3SubstitutionCondition code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3SubstitutionCondition code) {
+    return code.getSystem();
+  }
 
 }

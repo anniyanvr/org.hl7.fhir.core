@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class MeasureReportStatusEnumFactory implements EnumFactory<MeasureReportStatus> {
@@ -48,21 +44,23 @@ public class MeasureReportStatusEnumFactory implements EnumFactory<MeasureReport
       return MeasureReportStatus.PENDING;
     if ("error".equals(codeString))
       return MeasureReportStatus.ERROR;
-    throw new IllegalArgumentException("Unknown MeasureReportStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MeasureReportStatus code '" + codeString + "'");
   }
 
   public String toCode(MeasureReportStatus code) {
-    if (code == MeasureReportStatus.COMPLETE)
+       if (code == MeasureReportStatus.NULL)
+           return null;
+       if (code == MeasureReportStatus.COMPLETE)
       return "complete";
     if (code == MeasureReportStatus.PENDING)
       return "pending";
     if (code == MeasureReportStatus.ERROR)
       return "error";
     return "?";
-  }
+   }
 
-    public String toSystem(MeasureReportStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(MeasureReportStatus code) {
+    return code.getSystem();
+  }
 
 }

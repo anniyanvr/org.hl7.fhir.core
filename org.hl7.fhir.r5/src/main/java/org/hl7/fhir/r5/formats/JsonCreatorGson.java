@@ -46,11 +46,6 @@ public class JsonCreatorGson implements JsonCreator {
   }
 
   @Override
-  public void setIndent(String indent) {
-    gson.setIndent(indent);
-  }
-
-  @Override
   public void beginObject() throws IOException {
     gson.beginObject();    
   }
@@ -120,5 +115,29 @@ public class JsonCreatorGson implements JsonCreator {
   public void anchor(String name) {
     // not used
   }
-       
+
+  @Override
+  public void comment(String content) {
+     // gson (dense json) ignores comments
+  }
+  
+
+  @Override
+  public void externalLink(String string) {
+    // not used
+  }
+
+  @Override
+  public void elide() {
+    // not used
+  }
+
+  @Override
+  public boolean canElide() { return false;}
+
+  @Override
+  public boolean isCanonical() {
+    return false;
+  }
+
 }

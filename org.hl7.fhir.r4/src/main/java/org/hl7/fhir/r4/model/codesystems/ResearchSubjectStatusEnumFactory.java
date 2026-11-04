@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -68,11 +64,13 @@ public class ResearchSubjectStatusEnumFactory implements EnumFactory<ResearchSub
       return ResearchSubjectStatus.SCREENING;
     if ("withdrawn".equals(codeString))
       return ResearchSubjectStatus.WITHDRAWN;
-    throw new IllegalArgumentException("Unknown ResearchSubjectStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ResearchSubjectStatus code '" + codeString + "'");
   }
 
   public String toCode(ResearchSubjectStatus code) {
-    if (code == ResearchSubjectStatus.CANDIDATE)
+       if (code == ResearchSubjectStatus.NULL)
+           return null;
+       if (code == ResearchSubjectStatus.CANDIDATE)
       return "candidate";
     if (code == ResearchSubjectStatus.ELIGIBLE)
       return "eligible";
@@ -99,10 +97,10 @@ public class ResearchSubjectStatusEnumFactory implements EnumFactory<ResearchSub
     if (code == ResearchSubjectStatus.WITHDRAWN)
       return "withdrawn";
     return "?";
-  }
+   }
 
-    public String toSystem(ResearchSubjectStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(ResearchSubjectStatus code) {
+    return code.getSystem();
+  }
 
 }

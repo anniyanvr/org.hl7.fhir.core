@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ListEmptyReasonEnumFactory implements EnumFactory<ListEmptyReason> {
@@ -54,11 +50,13 @@ public class ListEmptyReasonEnumFactory implements EnumFactory<ListEmptyReason> 
       return ListEmptyReason.NOTSTARTED;
     if ("closed".equals(codeString))
       return ListEmptyReason.CLOSED;
-    throw new IllegalArgumentException("Unknown ListEmptyReason code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ListEmptyReason code '" + codeString + "'");
   }
 
   public String toCode(ListEmptyReason code) {
-    if (code == ListEmptyReason.NILKNOWN)
+       if (code == ListEmptyReason.NULL)
+           return null;
+       if (code == ListEmptyReason.NILKNOWN)
       return "nilknown";
     if (code == ListEmptyReason.NOTASKED)
       return "notasked";
@@ -71,10 +69,10 @@ public class ListEmptyReasonEnumFactory implements EnumFactory<ListEmptyReason> 
     if (code == ListEmptyReason.CLOSED)
       return "closed";
     return "?";
-  }
+   }
 
-    public String toSystem(ListEmptyReason code) {
-      return code.getSystem();
-      }
+  public String toSystem(ListEmptyReason code) {
+    return code.getSystem();
+  }
 
 }

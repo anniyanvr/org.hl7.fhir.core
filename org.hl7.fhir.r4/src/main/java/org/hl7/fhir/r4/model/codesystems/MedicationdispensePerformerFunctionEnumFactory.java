@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,10 +31,10 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
-public class MedicationdispensePerformerFunctionEnumFactory implements EnumFactory<MedicationdispensePerformerFunction> {
+public class MedicationdispensePerformerFunctionEnumFactory
+    implements EnumFactory<MedicationdispensePerformerFunction> {
 
   public MedicationdispensePerformerFunction fromCode(String codeString) throws IllegalArgumentException {
     if (codeString == null || "".equals(codeString))
@@ -50,11 +47,13 @@ public class MedicationdispensePerformerFunctionEnumFactory implements EnumFacto
       return MedicationdispensePerformerFunction.CHECKER;
     if ("finalchecker".equals(codeString))
       return MedicationdispensePerformerFunction.FINALCHECKER;
-    throw new IllegalArgumentException("Unknown MedicationdispensePerformerFunction code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MedicationdispensePerformerFunction code '" + codeString + "'");
   }
 
   public String toCode(MedicationdispensePerformerFunction code) {
-    if (code == MedicationdispensePerformerFunction.DATAENTERER)
+       if (code == MedicationdispensePerformerFunction.NULL)
+           return null;
+       if (code == MedicationdispensePerformerFunction.DATAENTERER)
       return "dataenterer";
     if (code == MedicationdispensePerformerFunction.PACKAGER)
       return "packager";
@@ -63,10 +62,10 @@ public class MedicationdispensePerformerFunctionEnumFactory implements EnumFacto
     if (code == MedicationdispensePerformerFunction.FINALCHECKER)
       return "finalchecker";
     return "?";
-  }
+   }
 
-    public String toSystem(MedicationdispensePerformerFunction code) {
-      return code.getSystem();
-      }
+  public String toSystem(MedicationdispensePerformerFunction code) {
+    return code.getSystem();
+  }
 
 }

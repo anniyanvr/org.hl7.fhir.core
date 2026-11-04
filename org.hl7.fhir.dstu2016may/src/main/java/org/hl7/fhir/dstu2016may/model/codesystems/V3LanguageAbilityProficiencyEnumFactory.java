@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3LanguageAbilityProficiencyEnumFactory implements EnumFactory<V3LanguageAbilityProficiency> {
@@ -50,11 +46,13 @@ public class V3LanguageAbilityProficiencyEnumFactory implements EnumFactory<V3La
       return V3LanguageAbilityProficiency.G;
     if ("P".equals(codeString))
       return V3LanguageAbilityProficiency.P;
-    throw new IllegalArgumentException("Unknown V3LanguageAbilityProficiency code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3LanguageAbilityProficiency code '" + codeString + "'");
   }
 
   public String toCode(V3LanguageAbilityProficiency code) {
-    if (code == V3LanguageAbilityProficiency.E)
+       if (code == V3LanguageAbilityProficiency.NULL)
+           return null;
+       if (code == V3LanguageAbilityProficiency.E)
       return "E";
     if (code == V3LanguageAbilityProficiency.F)
       return "F";
@@ -63,10 +61,10 @@ public class V3LanguageAbilityProficiencyEnumFactory implements EnumFactory<V3La
     if (code == V3LanguageAbilityProficiency.P)
       return "P";
     return "?";
-  }
+   }
 
-    public String toSystem(V3LanguageAbilityProficiency code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3LanguageAbilityProficiency code) {
+    return code.getSystem();
+  }
 
 }

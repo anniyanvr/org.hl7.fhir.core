@@ -5,12 +5,18 @@
     <parent>
         <groupId>ca.uhn.hapi.fhir</groupId>
         <artifactId>org.hl7.fhir.core</artifactId>
-        <version>5.6.1-SNAPSHOT</version>
+        <version>7.0.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>org.hl7.fhir.convertors</artifactId>
     <packaging>bundle</packaging>
+
+    <name>HL7 Core Artifact - Convertors</name>
+
+    <properties>
+        <checkstyle_config_location>${project.parent.basedir}</checkstyle_config_location>
+    </properties>
 
     <dependencies>
 
@@ -56,7 +62,17 @@
         </dependency>
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>org.hl7.fhir.dstu3.support</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>org.hl7.fhir.r4</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>org.hl7.fhir.r4b</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -65,11 +81,27 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>org.hl7.fhir.model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>org.hl7.fhir.services</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- UCUM -->
         <dependency>
             <groupId>org.fhir</groupId>
             <artifactId>ucum</artifactId>
-            <version>1.0.3</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codelibs</groupId>
+            <artifactId>xpp3</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -81,30 +113,58 @@
         </dependency>
         <dependency>
           <groupId>com.squareup.okhttp3</groupId>
-          <artifactId>okhttp</artifactId>
-          <version>4.9.0</version>
+          <artifactId>okhttp-jvm</artifactId>
           <optional>true</optional>
         </dependency>
-
+        <dependency>
+            <groupId>com.squareup.okio</groupId>
+            <artifactId>okio</artifactId>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok_version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- the baseAdaptors tests read fixtures from the test cases via
+             BaseTestingUtilities, which falls back to the classpath when no local
+             fhir-test-cases directory is configured. utilities declares this
+             provided+optional, so it does not arrive transitively -->
+        <dependency>
+            <groupId>org.hl7.fhir.testcases</groupId>
+            <artifactId>fhir-test-cases</artifactId>
+            <version>${validator_test_case_version}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- JUnit Jupiter -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit_jupiter_version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>${junit_jupiter_version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
         </dependency>
     </dependencies>
 
@@ -115,6 +175,17 @@
                 <artifactId>duplicate-finder-maven-plugin</artifactId>
                 <configuration>
                     <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <!-- bnd tool (used by maven-bundle-plugin) has a built-in convention: packages matching *.impl are automatically treated as private and excluded
+                         from Export-Package. org.hl7.fhir.convertors.advisors.impl is so named, and must be included. So we explicitly set Export-Package -->
+                    <instructions>
+                        <Export-Package>org.hl7.fhir.convertors.*</Export-Package>
+                    </instructions>
                 </configuration>
             </plugin>
         </plugins>

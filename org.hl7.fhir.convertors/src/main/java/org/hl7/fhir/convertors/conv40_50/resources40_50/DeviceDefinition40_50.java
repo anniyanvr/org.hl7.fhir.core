@@ -1,13 +1,21 @@
 package org.hl7.fhir.convertors.conv40_50.resources40_50;
 
 import org.hl7.fhir.convertors.context.ConversionContext40_50;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.*;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Annotation40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.CodeableConcept40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.ContactPoint40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Identifier40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Quantity40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Boolean40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Uri40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r4.model.DeviceDefinition;
+import org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionClassificationComponent;
 import org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionVersionComponent;
+import org.hl7.fhir.r5.model.Enumeration;
+import org.hl7.fhir.r5.model.Enumerations;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -49,39 +57,39 @@ public class DeviceDefinition40_50 {
       tgt.addIdentifier(Identifier40_50.convertIdentifier(t));
     for (org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionUdiDeviceIdentifierComponent t : src.getUdiDeviceIdentifier())
       tgt.addUdiDeviceIdentifier(convertDeviceDefinitionUdiDeviceIdentifierComponent(t));
-    if (src.hasManufacturer())
-      tgt.setManufacturer(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getManufacturer()));
+    if (src.hasManufacturerReference())
+      tgt.setManufacturer(Reference40_50.convertReference(src.getManufacturerReference()));
     for (org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionDeviceNameComponent t : src.getDeviceName())
       tgt.addDeviceName(convertDeviceDefinitionDeviceNameComponent(t));
     if (src.hasModelNumber())
       tgt.setModelNumberElement(String40_50.convertString(src.getModelNumberElement()));
     if (src.hasType())
-      tgt.addType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
-    for (org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionSpecializationComponent t : src.getSpecialization())
-      tgt.addSpecialization(convertDeviceDefinitionSpecializationComponent(t));
+      tgt.addClassification().setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
+//    for (org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionSpecializationComponent t : src.getSpecialization())
+//      tgt.addSpecialization(convertDeviceDefinitionSpecializationComponent(t));
     for (org.hl7.fhir.r4.model.StringType t : src.getVersion())
       tgt.getVersion().add(new DeviceDefinitionVersionComponent().setValueElement(String40_50.convertString(t)));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getSafety())
       tgt.addSafety(CodeableConcept40_50.convertCodeableConcept(t));
     for (org.hl7.fhir.r4.model.ProductShelfLife t : src.getShelfLifeStorage())
       tgt.addShelfLifeStorage(ProductShelfLife40_50.convertProductShelfLife(t));
-    if (src.hasPhysicalCharacteristics())
-      tgt.setPhysicalCharacteristics(ProdCharacteristic40_50.convertProdCharacteristic(src.getPhysicalCharacteristics()));
+//    if (src.hasPhysicalCharacteristics())
+//      tgt.setPhysicalCharacteristics(ProdCharacteristic40_50.convertProdCharacteristic(src.getPhysicalCharacteristics()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getLanguageCode())
       tgt.addLanguageCode(CodeableConcept40_50.convertCodeableConcept(t));
-    for (org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionCapabilityComponent t : src.getCapability())
-      tgt.addCapability(convertDeviceDefinitionCapabilityComponent(t));
+//    for (org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionCapabilityComponent t : src.getCapability())
+//      tgt.addCapability(convertDeviceDefinitionCapabilityComponent(t));
     for (org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionPropertyComponent t : src.getProperty())
       tgt.addProperty(convertDeviceDefinitionPropertyComponent(t));
     if (src.hasOwner())
       tgt.setOwner(Reference40_50.convertReference(src.getOwner()));
     for (org.hl7.fhir.r4.model.ContactPoint t : src.getContact())
       tgt.addContact(ContactPoint40_50.convertContactPoint(t));
-    if (src.hasOnlineInformation())
-      tgt.setOnlineInformationElement(Uri40_50.convertUri(src.getOnlineInformationElement()));
+//    if (src.hasOnlineInformation())
+//      tgt.setOnlineInformationElement(Uri40_50.convertUri(src.getOnlineInformationElement()));
     for (org.hl7.fhir.r4.model.Annotation t : src.getNote()) tgt.addNote(Annotation40_50.convertAnnotation(t));
-    if (src.hasParentDevice())
-      tgt.setParentDevice(Reference40_50.convertReference(src.getParentDevice()));
+//    if (src.hasParentDevice())
+//      tgt.setParentDevice(Reference40_50.convertReference(src.getParentDevice()));
     for (org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionMaterialComponent t : src.getMaterial())
       tgt.addMaterial(convertDeviceDefinitionMaterialComponent(t));
     return tgt;
@@ -102,33 +110,33 @@ public class DeviceDefinition40_50 {
       tgt.addDeviceName(convertDeviceDefinitionDeviceNameComponent(t));
     if (src.hasModelNumber())
       tgt.setModelNumberElement(String40_50.convertString(src.getModelNumberElement()));
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getType())
-      tgt.setType(CodeableConcept40_50.convertCodeableConcept(t));
-    for (org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionSpecializationComponent t : src.getSpecialization())
-      tgt.addSpecialization(convertDeviceDefinitionSpecializationComponent(t));
+    for (DeviceDefinitionClassificationComponent t : src.getClassification())
+      tgt.setType(CodeableConcept40_50.convertCodeableConcept(t.getType()));
+//    for (org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionSpecializationComponent t : src.getSpecialization())
+//      tgt.addSpecialization(convertDeviceDefinitionSpecializationComponent(t));
     for (DeviceDefinitionVersionComponent t : src.getVersion())
       tgt.getVersion().add(String40_50.convertString(t.getValueElement()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getSafety())
       tgt.addSafety(CodeableConcept40_50.convertCodeableConcept(t));
     for (org.hl7.fhir.r5.model.ProductShelfLife t : src.getShelfLifeStorage())
       tgt.addShelfLifeStorage(ProductShelfLife40_50.convertProductShelfLife(t));
-    if (src.hasPhysicalCharacteristics())
-      tgt.setPhysicalCharacteristics(ProdCharacteristic40_50.convertProdCharacteristic(src.getPhysicalCharacteristics()));
+//    if (src.hasPhysicalCharacteristics())
+//      tgt.setPhysicalCharacteristics(ProdCharacteristic40_50.convertProdCharacteristic(src.getPhysicalCharacteristics()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getLanguageCode())
       tgt.addLanguageCode(CodeableConcept40_50.convertCodeableConcept(t));
-    for (org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionCapabilityComponent t : src.getCapability())
-      tgt.addCapability(convertDeviceDefinitionCapabilityComponent(t));
+//    for (org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionCapabilityComponent t : src.getCapability())
+//      tgt.addCapability(convertDeviceDefinitionCapabilityComponent(t));
     for (org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionPropertyComponent t : src.getProperty())
       tgt.addProperty(convertDeviceDefinitionPropertyComponent(t));
     if (src.hasOwner())
       tgt.setOwner(Reference40_50.convertReference(src.getOwner()));
     for (org.hl7.fhir.r5.model.ContactPoint t : src.getContact())
       tgt.addContact(ContactPoint40_50.convertContactPoint(t));
-    if (src.hasOnlineInformation())
-      tgt.setOnlineInformationElement(Uri40_50.convertUri(src.getOnlineInformationElement()));
+//    if (src.hasOnlineInformation())
+//      tgt.setOnlineInformationElement(Uri40_50.convertUri(src.getOnlineInformationElement()));
     for (org.hl7.fhir.r5.model.Annotation t : src.getNote()) tgt.addNote(Annotation40_50.convertAnnotation(t));
-    if (src.hasParentDevice())
-      tgt.setParentDevice(Reference40_50.convertReference(src.getParentDevice()));
+//    if (src.hasParentDevice())
+//      tgt.setParentDevice(Reference40_50.convertReference(src.getParentDevice()));
     for (org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionMaterialComponent t : src.getMaterial())
       tgt.addMaterial(convertDeviceDefinitionMaterialComponent(t));
     return tgt;
@@ -138,7 +146,7 @@ public class DeviceDefinition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionUdiDeviceIdentifierComponent tgt = new org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionUdiDeviceIdentifierComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasDeviceIdentifier())
       tgt.setDeviceIdentifierElement(String40_50.convertString(src.getDeviceIdentifierElement()));
     if (src.hasIssuer())
@@ -152,7 +160,7 @@ public class DeviceDefinition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionUdiDeviceIdentifierComponent tgt = new org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionUdiDeviceIdentifierComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasDeviceIdentifier())
       tgt.setDeviceIdentifierElement(String40_50.convertString(src.getDeviceIdentifierElement()));
     if (src.hasIssuer())
@@ -166,7 +174,7 @@ public class DeviceDefinition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionDeviceNameComponent tgt = new org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionDeviceNameComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasName())
       tgt.setNameElement(String40_50.convertString(src.getNameElement()));
     if (src.hasType())
@@ -178,7 +186,7 @@ public class DeviceDefinition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionDeviceNameComponent tgt = new org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionDeviceNameComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasName())
       tgt.setNameElement(String40_50.convertString(src.getNameElement()));
     if (src.hasType())
@@ -187,126 +195,119 @@ public class DeviceDefinition40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.DeviceNameType> convertDeviceNameType(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.DeviceDefinition.DeviceNameType> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.DeviceNameType> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Enumerations.DeviceNameTypeEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case UDILABELNAME:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DeviceNameType.UDILABELNAME);
-        break;
-      case USERFRIENDLYNAME:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DeviceNameType.USERFRIENDLYNAME);
-        break;
-      case PATIENTREPORTEDNAME:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DeviceNameType.PATIENTREPORTEDNAME);
-        break;
-      case MANUFACTURERNAME:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DeviceNameType.MANUFACTURERNAME);
-        break;
-      case MODELNAME:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DeviceNameType.MODELNAME);
-        break;
-      case OTHER:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DeviceNameType.OTHER);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DeviceNameType.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Enumerations.DeviceNameType> tgt = new Enumeration<>(new Enumerations.DeviceNameTypeEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case USERFRIENDLYNAME:
+                  tgt.setValue(Enumerations.DeviceNameType.USERFRIENDLYNAME);
+                  break;
+              case PATIENTREPORTEDNAME:
+                  tgt.setValue(Enumerations.DeviceNameType.PATIENTREPORTEDNAME);
+                  break;
+              case MANUFACTURERNAME:
+                  tgt.setValue(Enumerations.DeviceNameType.REGISTEREDNAME);
+                  break;
+              case MODELNAME:
+                  tgt.setValue(Enumerations.DeviceNameType.USERFRIENDLYNAME);
+                  break;
+              default:
+                  tgt.setValue(Enumerations.DeviceNameType.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.DeviceDefinition.DeviceNameType> convertDeviceNameType(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.DeviceNameType> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.DeviceDefinition.DeviceNameType> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.DeviceDefinition.DeviceNameTypeEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case UDILABELNAME:
-        tgt.setValue(org.hl7.fhir.r4.model.DeviceDefinition.DeviceNameType.UDILABELNAME);
-        break;
-      case USERFRIENDLYNAME:
-        tgt.setValue(org.hl7.fhir.r4.model.DeviceDefinition.DeviceNameType.USERFRIENDLYNAME);
-        break;
-      case PATIENTREPORTEDNAME:
-        tgt.setValue(org.hl7.fhir.r4.model.DeviceDefinition.DeviceNameType.PATIENTREPORTEDNAME);
-        break;
-      case MANUFACTURERNAME:
-        tgt.setValue(org.hl7.fhir.r4.model.DeviceDefinition.DeviceNameType.MANUFACTURERNAME);
-        break;
-      case MODELNAME:
-        tgt.setValue(org.hl7.fhir.r4.model.DeviceDefinition.DeviceNameType.MODELNAME);
-        break;
-      case OTHER:
-        tgt.setValue(org.hl7.fhir.r4.model.DeviceDefinition.DeviceNameType.OTHER);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.DeviceDefinition.DeviceNameType.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<DeviceDefinition.DeviceNameType> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new DeviceDefinition.DeviceNameTypeEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case USERFRIENDLYNAME:
+                  tgt.setValue(DeviceDefinition.DeviceNameType.USERFRIENDLYNAME);
+                  break;
+              case PATIENTREPORTEDNAME:
+                  tgt.setValue(DeviceDefinition.DeviceNameType.PATIENTREPORTEDNAME);
+                  break;
+              case REGISTEREDNAME:
+                  tgt.setValue(DeviceDefinition.DeviceNameType.MANUFACTURERNAME);
+                  break;
+              default:
+                  tgt.setValue(DeviceDefinition.DeviceNameType.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
-
-  public static org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionSpecializationComponent convertDeviceDefinitionSpecializationComponent(org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionSpecializationComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionSpecializationComponent tgt = new org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionSpecializationComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasSystemType())
-      tgt.setSystemTypeElement(String40_50.convertString(src.getSystemTypeElement()));
-    if (src.hasVersion())
-      tgt.setVersionElement(String40_50.convertString(src.getVersionElement()));
-    return tgt;
-  }
-
-  public static org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionSpecializationComponent convertDeviceDefinitionSpecializationComponent(org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionSpecializationComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionSpecializationComponent tgt = new org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionSpecializationComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasSystemType())
-      tgt.setSystemTypeElement(String40_50.convertString(src.getSystemTypeElement()));
-    if (src.hasVersion())
-      tgt.setVersionElement(String40_50.convertString(src.getVersionElement()));
-    return tgt;
-  }
-
-  public static org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionCapabilityComponent convertDeviceDefinitionCapabilityComponent(org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionCapabilityComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionCapabilityComponent tgt = new org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionCapabilityComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasType())
-      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
-    for (org.hl7.fhir.r4.model.CodeableConcept t : src.getDescription())
-      tgt.addDescription(CodeableConcept40_50.convertCodeableConcept(t));
-    return tgt;
-  }
-
-  public static org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionCapabilityComponent convertDeviceDefinitionCapabilityComponent(org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionCapabilityComponent src) throws FHIRException {
-    if (src == null)
-      return null;
-    org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionCapabilityComponent tgt = new org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionCapabilityComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasType())
-      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getDescription())
-      tgt.addDescription(CodeableConcept40_50.convertCodeableConcept(t));
-    return tgt;
-  }
+//
+//  public static org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionSpecializationComponent convertDeviceDefinitionSpecializationComponent(org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionSpecializationComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionSpecializationComponent tgt = new org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionSpecializationComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+//    if (src.hasSystemType())
+//      tgt.setSystemTypeElement(String40_50.convertString(src.getSystemTypeElement()));
+//    if (src.hasVersion())
+//      tgt.setVersionElement(String40_50.convertString(src.getVersionElement()));
+//    return tgt;
+//  }
+//
+//  public static org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionSpecializationComponent convertDeviceDefinitionSpecializationComponent(org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionSpecializationComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionSpecializationComponent tgt = new org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionSpecializationComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+//    if (src.hasSystemType())
+//      tgt.setSystemTypeElement(String40_50.convertString(src.getSystemTypeElement()));
+//    if (src.hasVersion())
+//      tgt.setVersionElement(String40_50.convertString(src.getVersionElement()));
+//    return tgt;
+//  }
+//
+//  public static org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionCapabilityComponent convertDeviceDefinitionCapabilityComponent(org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionCapabilityComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionCapabilityComponent tgt = new org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionCapabilityComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+//    if (src.hasType())
+//      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
+//    for (org.hl7.fhir.r4.model.CodeableConcept t : src.getDescription())
+//      tgt.addDescription(CodeableConcept40_50.convertCodeableConcept(t));
+//    return tgt;
+//  }
+//
+//  public static org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionCapabilityComponent convertDeviceDefinitionCapabilityComponent(org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionCapabilityComponent src) throws FHIRException {
+//    if (src == null)
+//      return null;
+//    org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionCapabilityComponent tgt = new org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionCapabilityComponent();
+//    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+//    if (src.hasType())
+//      tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
+//    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getDescription())
+//      tgt.addDescription(CodeableConcept40_50.convertCodeableConcept(t));
+//    return tgt;
+//  }
 
   public static org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionPropertyComponent convertDeviceDefinitionPropertyComponent(org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionPropertyComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionPropertyComponent tgt = new org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionPropertyComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     for (org.hl7.fhir.r4.model.Quantity t : src.getValueQuantity())
-      tgt.addValueQuantity(Quantity40_50.convertQuantity(t));
+      tgt.setValue(Quantity40_50.convertQuantity(t));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getValueCode())
-      tgt.addValueCode(CodeableConcept40_50.convertCodeableConcept(t));
+      tgt.setValue(CodeableConcept40_50.convertCodeableConcept(t));
     return tgt;
   }
 
@@ -314,13 +315,13 @@ public class DeviceDefinition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionPropertyComponent tgt = new org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionPropertyComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
-    for (org.hl7.fhir.r5.model.Quantity t : src.getValueQuantity())
-      tgt.addValueQuantity(Quantity40_50.convertQuantity(t));
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getValueCode())
-      tgt.addValueCode(CodeableConcept40_50.convertCodeableConcept(t));
+    if (src.hasValueQuantity())
+      tgt.addValueQuantity(Quantity40_50.convertQuantity(src.getValueQuantity()));
+    if (src.hasValueCodeableConcept())
+      tgt.addValueCode(CodeableConcept40_50.convertCodeableConcept(src.getValueCodeableConcept()));
     return tgt;
   }
 
@@ -328,7 +329,7 @@ public class DeviceDefinition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionMaterialComponent tgt = new org.hl7.fhir.r5.model.DeviceDefinition.DeviceDefinitionMaterialComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSubstance())
       tgt.setSubstance(CodeableConcept40_50.convertCodeableConcept(src.getSubstance()));
     if (src.hasAlternate())
@@ -342,7 +343,7 @@ public class DeviceDefinition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionMaterialComponent tgt = new org.hl7.fhir.r4.model.DeviceDefinition.DeviceDefinitionMaterialComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasSubstance())
       tgt.setSubstance(CodeableConcept40_50.convertCodeableConcept(src.getSubstance()));
     if (src.hasAlternate())

@@ -145,12 +145,12 @@ public class ImagingStudy extends DomainResource {
           return InstanceAvailability.UNAVAILABLE;
         throw new IllegalArgumentException("Unknown InstanceAvailability code '"+codeString+"'");
         }
-        public Enumeration<InstanceAvailability> fromType(Base code) throws FHIRException {
+        public Enumeration<InstanceAvailability> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<InstanceAvailability>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("ONLINE".equals(codeString))
@@ -164,7 +164,9 @@ public class ImagingStudy extends DomainResource {
         throw new FHIRException("Unknown InstanceAvailability code '"+codeString+"'");
         }
     public String toCode(InstanceAvailability code) {
-      if (code == InstanceAvailability.ONLINE)
+       if (code == InstanceAvailability.NULL)
+           return null;
+       if (code == InstanceAvailability.ONLINE)
         return "ONLINE";
       if (code == InstanceAvailability.OFFLINE)
         return "OFFLINE";
@@ -173,7 +175,7 @@ public class ImagingStudy extends DomainResource {
       if (code == InstanceAvailability.UNAVAILABLE)
         return "UNAVAILABLE";
       return "?";
-      }
+   }
     public String toSystem(InstanceAvailability code) {
       return code.getSystem();
       }
@@ -608,28 +610,6 @@ public class ImagingStudy extends DomainResource {
         }
 
         /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Endpoint> getEndpointTarget() { 
-          if (this.endpointTarget == null)
-            this.endpointTarget = new ArrayList<Endpoint>();
-          return this.endpointTarget;
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public Endpoint addEndpointTarget() { 
-          Endpoint r = new Endpoint();
-          if (this.endpointTarget == null)
-            this.endpointTarget = new ArrayList<Endpoint>();
-          this.endpointTarget.add(r);
-          return r;
-        }
-
-        /**
          * @return {@link #bodySite} (The anatomic structures examined. See DICOM Part 16 Annex L (http://dicom.nema.org/medical/dicom/current/output/chtml/part16/chapter_L.html) for DICOM to SNOMED-CT mappings. The bodySite may indicate the laterality of body part imaged; if so, it shall be consistent with any content of ImagingStudy.series.laterality.)
          */
         public Coding getBodySite() { 
@@ -777,28 +757,6 @@ public class ImagingStudy extends DomainResource {
             addPerformer();
           }
           return getPerformer().get(0);
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Practitioner> getPerformerTarget() { 
-          if (this.performerTarget == null)
-            this.performerTarget = new ArrayList<Practitioner>();
-          return this.performerTarget;
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public Practitioner addPerformerTarget() { 
-          Practitioner r = new Practitioner();
-          if (this.performerTarget == null)
-            this.performerTarget = new ArrayList<Practitioner>();
-          this.performerTarget.add(r);
-          return r;
         }
 
         /**
@@ -1030,23 +988,23 @@ public class ImagingStudy extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("uid")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.uid");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.uid");
         }
         else if (name.equals("number")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.number");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.number");
         }
         else if (name.equals("modality")) {
           this.modality = new Coding();
           return this.modality;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.description");
         }
         else if (name.equals("numberOfInstances")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.numberOfInstances");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.numberOfInstances");
         }
         else if (name.equals("availability")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.availability");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.availability");
         }
         else if (name.equals("endpoint")) {
           return addEndpoint();
@@ -1060,7 +1018,7 @@ public class ImagingStudy extends DomainResource {
           return this.laterality;
         }
         else if (name.equals("started")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.started");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.started");
         }
         else if (name.equals("performer")) {
           return addPerformer();
@@ -1467,16 +1425,16 @@ public class ImagingStudy extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("uid")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.uid");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.uid");
         }
         else if (name.equals("number")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.number");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.number");
         }
         else if (name.equals("sopClass")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.sopClass");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.sopClass");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.title");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.title");
         }
         else
           return super.addChild(name);
@@ -2126,16 +2084,6 @@ public class ImagingStudy extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<Resource>();
-      return this.basedOnTarget;
-    }
-
-    /**
      * @return {@link #referrer} (The requesting/referring physician.)
      */
     public Reference getReferrer() { 
@@ -2233,28 +2181,6 @@ public class ImagingStudy extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Practitioner> getInterpreterTarget() { 
-      if (this.interpreterTarget == null)
-        this.interpreterTarget = new ArrayList<Practitioner>();
-      return this.interpreterTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Practitioner addInterpreterTarget() { 
-      Practitioner r = new Practitioner();
-      if (this.interpreterTarget == null)
-        this.interpreterTarget = new ArrayList<Practitioner>();
-      this.interpreterTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #endpoint} (The network service providing access (e.g., query, view, or retrieval) for the study. See implementation notes for information about using DICOM endpoints. A study-level endpoint applies to each series in the study, unless overridden by a series-level endpoint with the same Endpoint.type.)
      */
     public List<Reference> getEndpoint() { 
@@ -2305,28 +2231,6 @@ public class ImagingStudy extends DomainResource {
         addEndpoint();
       }
       return getEndpoint().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Endpoint> getEndpointTarget() { 
-      if (this.endpointTarget == null)
-        this.endpointTarget = new ArrayList<Endpoint>();
-      return this.endpointTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Endpoint addEndpointTarget() { 
-      Endpoint r = new Endpoint();
-      if (this.endpointTarget == null)
-        this.endpointTarget = new ArrayList<Endpoint>();
-      this.endpointTarget.add(r);
-      return r;
     }
 
     /**
@@ -2470,28 +2374,6 @@ public class ImagingStudy extends DomainResource {
         addProcedureReference();
       }
       return getProcedureReference().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Procedure> getProcedureReferenceTarget() { 
-      if (this.procedureReferenceTarget == null)
-        this.procedureReferenceTarget = new ArrayList<Procedure>();
-      return this.procedureReferenceTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Procedure addProcedureReferenceTarget() { 
-      Procedure r = new Procedure();
-      if (this.procedureReferenceTarget == null)
-        this.procedureReferenceTarget = new ArrayList<Procedure>();
-      this.procedureReferenceTarget.add(r);
-      return r;
     }
 
     /**
@@ -2919,7 +2801,7 @@ public class ImagingStudy extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("uid")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.uid");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.uid");
         }
         else if (name.equals("accession")) {
           this.accession = new Identifier();
@@ -2929,7 +2811,7 @@ public class ImagingStudy extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("availability")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.availability");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.availability");
         }
         else if (name.equals("modalityList")) {
           return addModalityList();
@@ -2943,7 +2825,7 @@ public class ImagingStudy extends DomainResource {
           return this.context;
         }
         else if (name.equals("started")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.started");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.started");
         }
         else if (name.equals("basedOn")) {
           return addBasedOn();
@@ -2959,10 +2841,10 @@ public class ImagingStudy extends DomainResource {
           return addEndpoint();
         }
         else if (name.equals("numberOfSeries")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.numberOfSeries");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.numberOfSeries");
         }
         else if (name.equals("numberOfInstances")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.numberOfInstances");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.numberOfInstances");
         }
         else if (name.equals("procedureReference")) {
           return addProcedureReference();
@@ -2975,7 +2857,7 @@ public class ImagingStudy extends DomainResource {
           return this.reason;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingStudy.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingStudy.description");
         }
         else if (name.equals("series")) {
           return addSeries();

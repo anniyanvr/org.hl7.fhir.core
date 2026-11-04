@@ -1,20 +1,20 @@
 package org.hl7.fhir.r4.utils.client.network;
 
-import org.hl7.fhir.r4.formats.IParser;
-import org.hl7.fhir.r4.formats.JsonParser;
-import org.hl7.fhir.r4.formats.XmlParser;
-import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.utils.client.EFhirClientException;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+import org.hl7.fhir.r4.formats.IParser;
+import org.hl7.fhir.r4.formats.JsonParser;
+import org.hl7.fhir.r4.formats.XmlParser;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.utils.client.EFhirClientException;
+
 public class ByteUtils {
 
-  public static <T extends Resource> byte[] resourceToByteArray(T resource, boolean pretty, boolean isJson) {
+  public static <T extends Resource> byte[] resourceToByteArray(T resource, boolean pretty, boolean isJson, boolean noXhtml) {
     ByteArrayOutputStream baos = null;
     byte[] byteArray = null;
     try {
@@ -26,6 +26,9 @@ public class ByteUtils {
         parser = new XmlParser();
       }
       parser.setOutputStyle(pretty ? IParser.OutputStyle.PRETTY : IParser.OutputStyle.NORMAL);
+      if (noXhtml) {
+        parser.setSuppressXhtml("Narrative removed");
+      }      
       parser.compose(baos, resource);
       baos.close();
       byteArray = baos.toByteArray();
@@ -34,14 +37,15 @@ public class ByteUtils {
       try {
         baos.close();
       } catch (Exception ex) {
-        throw new EFhirClientException("Error closing output stream", ex);
+        throw new EFhirClientException(0, "Error closing output stream", ex);
       }
-      throw new EFhirClientException("Error converting output stream to byte array", e);
+      throw new EFhirClientException(0, "Error converting output stream to byte array", e);
     }
     return byteArray;
   }
 
-  public static byte[] encodeFormSubmission(Map<String, String> parameters, String resourceName, Resource resource, String boundary) throws IOException {
+  public static byte[] encodeFormSubmission(Map<String, String> parameters, String resourceName, Resource resource,
+      String boundary) throws IOException {
     ByteArrayOutputStream b = new ByteArrayOutputStream();
     OutputStreamWriter w = new OutputStreamWriter(b, StandardCharsets.UTF_8);
     for (String name : parameters.keySet()) {

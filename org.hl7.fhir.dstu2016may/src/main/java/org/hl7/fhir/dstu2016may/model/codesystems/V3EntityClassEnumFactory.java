@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -96,11 +92,13 @@ public class V3EntityClassEnumFactory implements EnumFactory<V3EntityClass> {
       return V3EntityClass.PROVINCE;
     if ("RGRP".equals(codeString))
       return V3EntityClass.RGRP;
-    throw new IllegalArgumentException("Unknown V3EntityClass code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3EntityClass code '" + codeString + "'");
   }
 
   public String toCode(V3EntityClass code) {
-    if (code == V3EntityClass.ENT)
+       if (code == V3EntityClass.NULL)
+           return null;
+       if (code == V3EntityClass.ENT)
       return "ENT";
     if (code == V3EntityClass.HCE)
       return "HCE";
@@ -155,10 +153,10 @@ public class V3EntityClassEnumFactory implements EnumFactory<V3EntityClass> {
     if (code == V3EntityClass.RGRP)
       return "RGRP";
     return "?";
-  }
+   }
 
-    public String toSystem(V3EntityClass code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3EntityClass code) {
+    return code.getSystem();
+  }
 
 }

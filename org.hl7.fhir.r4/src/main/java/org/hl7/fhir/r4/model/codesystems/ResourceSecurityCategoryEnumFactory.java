@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ResourceSecurityCategoryEnumFactory implements EnumFactory<ResourceSecurityCategory> {
@@ -52,11 +48,13 @@ public class ResourceSecurityCategoryEnumFactory implements EnumFactory<Resource
       return ResourceSecurityCategory.PATIENT;
     if ("not-classified".equals(codeString))
       return ResourceSecurityCategory.NOTCLASSIFIED;
-    throw new IllegalArgumentException("Unknown ResourceSecurityCategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ResourceSecurityCategory code '" + codeString + "'");
   }
 
   public String toCode(ResourceSecurityCategory code) {
-    if (code == ResourceSecurityCategory.ANONYMOUS)
+       if (code == ResourceSecurityCategory.NULL)
+           return null;
+       if (code == ResourceSecurityCategory.ANONYMOUS)
       return "anonymous";
     if (code == ResourceSecurityCategory.BUSINESS)
       return "business";
@@ -67,10 +65,10 @@ public class ResourceSecurityCategoryEnumFactory implements EnumFactory<Resource
     if (code == ResourceSecurityCategory.NOTCLASSIFIED)
       return "not-classified";
     return "?";
-  }
+   }
 
-    public String toSystem(ResourceSecurityCategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(ResourceSecurityCategory code) {
+    return code.getSystem();
+  }
 
 }

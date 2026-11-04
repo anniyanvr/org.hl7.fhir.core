@@ -1,5 +1,9 @@
 package org.hl7.fhir.convertors.misc;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -44,10 +48,7 @@ import org.hl7.fhir.r4.model.Enumerations.PublicationStatus;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.utilities.CSVReader;
 import org.hl7.fhir.utilities.Utilities;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
 
 public class NUCCConvertor {
 
@@ -56,7 +57,7 @@ public class NUCCConvertor {
   }
 
   public void execute() throws IOException, FHIRException {
-    CSVReader csv = new CSVReader(new FileInputStream("c:\\temp\\nucc.csv"));
+    CSVReader csv = new CSVReader(ManagedFileAccess.inStream(Utilities.path("[tmp]", "nucc.csv")));
     CodeSystem cs = new CodeSystem();
     cs.setId("nucc-provider-taxonomy");
     cs.setUrl("http://nucc.org/provider-taxonomy");
@@ -79,7 +80,7 @@ public class NUCCConvertor {
     }
     csv.close();
     cs.sort();
-    new JsonParser().setOutputStyle(OutputStyle.PRETTY).compose(new FileOutputStream("c:\\temp\\nucc.json"), cs);
+    new JsonParser().setOutputStyle(OutputStyle.PRETTY).compose(ManagedFileAccess.outStream(Utilities.path("[tmp]", "nucc.json")), cs);
   }
 
   private void processLine(CodeSystem cs, String[] values) throws FHIRFormatError {

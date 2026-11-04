@@ -32,10 +32,17 @@ package org.hl7.fhir.r5.utils;
 
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,14 +51,23 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.HexFormat;
 import java.util.UUID;
+import java.util.stream.Stream;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+import org.eclipse.jgit.ignore.IgnoreNode;
+
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.extensions.ExtensionDefinitions;
+import org.hl7.fhir.r5.model.Coding;
 import org.hl7.fhir.r5.model.ContactDetail;
 import org.hl7.fhir.r5.model.ContactPoint;
 import org.hl7.fhir.r5.model.ContactPoint.ContactPointSystem;
@@ -59,35 +75,39 @@ import org.hl7.fhir.r5.model.Enumeration;
 import org.hl7.fhir.r5.model.Enumerations.FHIRVersion;
 import org.hl7.fhir.r5.model.ImplementationGuide;
 import org.hl7.fhir.r5.model.ImplementationGuide.ImplementationGuideDependsOnComponent;
-import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
-import org.hl7.fhir.utilities.TextFile;
-import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.*;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+import org.hl7.fhir.utilities.json.model.JsonArray;
+import org.hl7.fhir.utilities.json.model.JsonObject;
+import org.hl7.fhir.utilities.json.model.JsonString;
+import org.hl7.fhir.utilities.json.parser.JsonParser;
 import org.hl7.fhir.utilities.npm.NpmPackageIndexBuilder;
-import org.hl7.fhir.utilities.npm.ToolsVersion;
 import org.hl7.fhir.utilities.npm.PackageGenerator.PackageType;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import org.hl7.fhir.utilities.npm.ToolsVersion;
 
+
+
+@Slf4j
 public class NPMPackageGenerator {
 
   public enum Category {
-    RESOURCE, EXAMPLE, OPENAPI, SCHEMATRON, RDF, OTHER, TOOL, TEMPLATE, JEKYLL;
+    RESOURCE, EXAMPLE, OPENAPI, SCHEMATRON, RDF, OTHER, TOOL, TEMPLATE, JEKYLL, TEST, ADL, CUSTOM;
 
     private String getDirectory() {
       switch (this) {
       case RESOURCE: return "package/";
-      case EXAMPLE: return "example/";
-      case OPENAPI: return "openapi/";
-      case SCHEMATRON: return "xml/";
-      case RDF: return "rdf/";      
-      case OTHER: return "other/";      
-      case TEMPLATE: return "other/";      
-      case JEKYLL: return "jekyll/";      
-      case TOOL: return "bin/";      
+      case EXAMPLE: return "package/examples/"; // as the package spec says. Older packages have package/example/ - see NpmPackage.EXAMPLE_FOLDERS
+      case OPENAPI: return "package/openapi/";
+      case SCHEMATRON: return "package/xml/";
+      case RDF: return "package/rdf/";      
+      case OTHER: return "package/other/";  
+      case ADL: return "package/adl/";      
+      case TEMPLATE: return "package/other/";      
+      case JEKYLL: return "package/jekyll/";      
+      case TEST: return "package/tests/"; 
+      case TOOL: return "package/bin/";      
+      case CUSTOM: return "package/custom/";      
       }
       return "/";
     }
@@ -95,46 +115,84 @@ public class NPMPackageGenerator {
 
   private String destFile;
   private Set<String> created = new HashSet<String>();
+  public Set<String> getCreated() {
+    return created;
+  }
+
   private TarArchiveOutputStream tar;
   private ByteArrayOutputStream OutputStream;
   private BufferedOutputStream bufferedOutputStream;
   private GzipCompressorOutputStream gzipOutputStream;
   private JsonObject packageJ;
+  public JsonObject getPackageJ() {
+    return packageJ;
+  }
+
   private JsonObject packageManifest;
   private NpmPackageIndexBuilder indexer;
   private String igVersion;
+  private String indexdb;
+
+  private final List<String> dependencyWarnings = new ArrayList<>();
+
+  /** Package-private so NPMPackageGeneratorTest can assert what was reported. */
+  List<String> getDependencyWarnings() {
+    return dependencyWarnings;
+  }
 
 
-  public NPMPackageGenerator(String destFile, String canonical, String url, PackageType kind, ImplementationGuide ig, Date date, boolean notForPublication) throws FHIRException, IOException {
+  public NPMPackageGenerator(String pid, String destFile, String canonical, String url, PackageType kind, ImplementationGuide ig, Date date, Map<String, String> relatedIgs, boolean notForPublication) throws FHIRException, IOException {
     super();
     this.destFile = destFile;
     start();
     List<String> fhirVersion = new ArrayList<>();
     for (Enumeration<FHIRVersion> v : ig.getFhirVersion())
       fhirVersion.add(v.asStringValue());
-    buildPackageJson(canonical, kind, url, date, ig, fhirVersion, notForPublication);
+    buildPackageJson(pid, canonical, kind, url, date, ig, fhirVersion, notForPublication, relatedIgs);
+  }
+
+  public NPMPackageGenerator(String pid, String destFile, String canonical, String url, PackageType kind, ImplementationGuide ig, Date date, Map<String, String> relatedIgs, boolean notForPublication, String fhirVersion) throws FHIRException, IOException {
+    super();
+    this.destFile = destFile;
+    start();
+    List<String> fhirVersions = new ArrayList<>();
+    fhirVersions.add(fhirVersion);
+    buildPackageJson(pid, canonical, kind, url, date, ig, fhirVersions, notForPublication, relatedIgs);
   }
 
   public static NPMPackageGenerator subset(NPMPackageGenerator master, String destFile, String id, String name, Date date, boolean notForPublication) throws FHIRException, IOException {
     JsonObject p = master.packageJ.deepCopy();
     p.remove("name");
-    p.addProperty("name", id);
+    p.add("name", id);
     p.remove("type");
-    p.addProperty("type", PackageType.SUBSET.getCode());    
+    p.add("type", PackageType.CONFORMANCE.getCode());    
     p.remove("title");
-    p.addProperty("title", name);
+    p.add("title", name);
     if (notForPublication) {
-      p.addProperty("notForPublication", true);
+      p.add("notForPublication", true);
     }
 
     return new NPMPackageGenerator(destFile, p, date, notForPublication);
   }
 
-  public NPMPackageGenerator(String destFile, String canonical, String url, PackageType kind, ImplementationGuide ig, Date date, List<String> fhirVersion, boolean notForPublication) throws FHIRException, IOException {
+  public NPMPackageGenerator(String destFile, String canonical, String url, PackageType kind, ImplementationGuide ig, Date date, List<String> fhirVersion, Map<String, String> relatedIgs, boolean notForPublication) throws FHIRException, IOException {
     super();
     this.destFile = destFile;
     start();
-    buildPackageJson(canonical, kind, url, date, ig, fhirVersion, notForPublication);
+    buildPackageJson(ig.getPackageId(), canonical, kind, url, date, ig, fhirVersion, notForPublication, relatedIgs);
+  }
+
+  public NPMPackageGenerator(String destFile, JsonObject npm) throws FHIRException, IOException {
+    super();
+    log.info("create package file at " + destFile);
+    this.destFile = destFile;
+    start();
+    String json =JsonParser.compose(npm, true);
+    try {
+      addFile(Category.RESOURCE, "package.json", json.getBytes("UTF-8"));
+    } catch (UnsupportedEncodingException e) {
+    }
+    packageJ = npm;
   }
 
   public NPMPackageGenerator(String destFile, JsonObject npm, Date date, boolean notForPublication) throws FHIRException, IOException {
@@ -142,114 +200,148 @@ public class NPMPackageGenerator {
     String dt = new SimpleDateFormat("yyyyMMddHHmmss").format(date);
     packageJ = npm;
     packageManifest = new JsonObject();
-    packageManifest.addProperty("version", npm.get("version").getAsString());
-    packageManifest.addProperty("date", dt);
+    packageManifest.set("version", npm.asString("version"));
+    packageManifest.set("date", dt);
     if (notForPublication) {
-      packageManifest.addProperty("notForPublication", true);
+      packageManifest.add("notForPublication", true);
     }
-    npm.addProperty("date", dt);
-    packageManifest.addProperty("name", npm.get("name").getAsString());
+    npm.set("date", dt);
+    packageManifest.set("name", npm.asString("name"));
     this.destFile = destFile;
     start();
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    String json = gson.toJson(npm);
+    String json = JsonParser.compose(npm, true);
     try {
       addFile(Category.RESOURCE, "package.json", json.getBytes("UTF-8"));
     } catch (UnsupportedEncodingException e) {
     }
   }
 
-  private void buildPackageJson(String canonical, PackageType kind, String web, Date date, ImplementationGuide ig, List<String> fhirVersion, boolean notForPublication) throws FHIRException, IOException {
+  static String missingVersionMessage(ImplementationGuide ig, int index, ImplementationGuideDependsOnComponent d) {
+    StringBuilder msg = new StringBuilder("ImplementationGuide ")
+        .append(ig.getPackageId())
+        .append(": dependsOn[").append(index).append("]");
+    if (d.hasPackageId()) {
+      msg.append(' ').append(d.getPackageId());
+    }
+    if (d.hasUri()) {
+      msg.append(" (").append(d.getUri()).append(')');
+    }
+    return msg.append(" is missing a required version; it will be omitted from the generated package.json").toString();
+  }
+
+  private void buildPackageJson(String pid, String canonical, PackageType kind, String web, Date date, ImplementationGuide ig, List<String> fhirVersion, boolean notForPublication, Map<String, String> relatedIgs) throws FHIRException, IOException {
     String dtHuman = new SimpleDateFormat("EEE, MMM d, yyyy HH:mmZ", new Locale("en", "US")).format(date);
     String dt = new SimpleDateFormat("yyyyMMddHHmmss").format(date);
 
-    CommaSeparatedStringBuilder b = new CommaSeparatedStringBuilder();
-    if (!ig.hasPackageId()) {
-      b.append("packageId");
-    }
-    if (!ig.hasVersion()) {
-      b.append("version");
-    }
-    if (!ig.hasFhirVersion()) {
-      b.append("fhirVersion");
-    }
-    if (!ig.hasLicense()) {
-      b.append("license");
-    }
-    for (ImplementationGuideDependsOnComponent d : ig.getDependsOn()) {
-      if (!d.hasVersion()) {
-        b.append("dependsOn.version("+d.getUri()+")");
-      }
-    }
-
     JsonObject npm = new JsonObject();
-    npm.addProperty("name", ig.getPackageId());
-    npm.addProperty("version", ig.getVersion());
+    npm.add("name", pid);
+    npm.add("version", ig.getVersion());
     igVersion = ig.getVersion();
-    npm.addProperty("tools-version", ToolsVersion.TOOLS_VERSION);
-    npm.addProperty("type", kind.getCode());
-    npm.addProperty("date", dt);
+    npm.add("tools-version", ToolsVersion.TOOLS_VERSION);
+    npm.add("type", kind.getCode());
+    npm.add("date", dt);
     if (ig.hasLicense()) {
-      npm.addProperty("license", ig.getLicense().toCode());
+      npm.add("license", ig.getLicense().toCode());
     }
-    npm.addProperty("canonical", canonical);
+    npm.add("canonical", canonical);
     if (notForPublication) {
-      npm.addProperty("notForPublication", true);
+      npm.add("notForPublication", true);
     }
-    npm.addProperty("url", web);
+    npm.add("url", web);
     if (ig.hasTitle()) {
-      npm.addProperty("title", ig.getTitle());
+      npm.add("title", ig.getTitle());
     }
     if (ig.hasDescription()) {
-      npm.addProperty("description", ig.getDescription()+ " (built "+dtHuman+timezone()+")");
+      npm.add("description", ig.getDescription()+ " (built "+dtHuman+timezone()+")");
     }
     JsonArray vl = new JsonArray();
     
     npm.add("fhirVersions", vl);
     for (String v : fhirVersion) { 
-      vl.add(new JsonPrimitive(v));
+      vl.add(new JsonString(v));
     }
     
+    // dep is nullable: a CORE package writes no dependencies object, but the dependsOn loop below
+    // still has to run for it, because reporting a versionless dependsOn is independent of whether
+    // anything is emitted. Hoisting the loop out keeps this fold behaviour-neutral.
+    JsonObject dep = null;
     if (kind != PackageType.CORE) {
-      JsonObject dep = new JsonObject();
+      dep = new JsonObject();
       npm.add("dependencies", dep);
       for (String v : fhirVersion) { 
         String vp = packageForVersion(v);
-        if (vp != null ) {
-          dep.addProperty(vp, v);
+        if (vp != null && !dep.has(vp) && !coreDependencyIsDeclared(ig, vp)) {
+          dep.add(vp, v);
         }
       }
-      for (ImplementationGuideDependsOnComponent d : ig.getDependsOn()) {
-        dep.addProperty(d.getPackageId(), d.getVersion());
+    }
+    List<ImplementationGuideDependsOnComponent> dependsOn = ig.getDependsOn();
+    for (int i = 0; i < dependsOn.size(); i++) {
+      ImplementationGuideDependsOnComponent d = dependsOn.get(i);
+      if (d.hasExtension(ExtensionDefinitions.EXT_IGDEP_NO_SAVE)) {
+        // ignore dependencies that are marked as "no save" - these are used for validation but not for package generation
+        continue;
+      }
+      if (!d.hasVersion()) {
+        dependencyWarnings.add(missingVersionMessage(ig, i, d));
+      }
+      if (dep != null) {
+        String key = d.getPackageIdElement().hasUserData(UserDataNames.IG_DEP_ALIASED)
+            ? d.getId() + "@npm:" + d.getPackageId()
+            : d.getPackageId();
+        if (d.hasVersion()) {
+          dep.add(key, d.getVersion());
+        } else if (d.hasPackageId() && !dep.has(key) && !dependsOnDeclaresPackage(ig, key)) {
+          // Existing code wrote the key with a JSON null and downstream tooling may key off its
+          // presence, so the output shape is preserved deliberately. The three guards are new
+          // and are not prior-consistent on purpose -- each one is a crash: without
+          // hasPackageId, add() throws "Name is null" (JsonObject.java:82); without has(), it
+          // throws on a key the auto-add already took (JsonObject.java:33-35); without
+          // dependsOnDeclaresPackage, a *later* versioned entry for the same packageId throws
+          // on the duplicate. In all three cases the more complete declaration wins.
+          dep.addNull(key);
+        }
       }
     }
+    for (String w : dependencyWarnings) {
+      log.warn(w);
+    }
     if (ig.hasPublisher()) {
-      npm.addProperty("author", ig.getPublisher());
+      npm.add("author", ig.getPublisher());
     }
     JsonArray m = new JsonArray();
     for (ContactDetail t : ig.getContact()) {
       String email = email(t.getTelecom());
       String url = url(t.getTelecom());
-      if (t.hasName() & (email != null || url != null)) {
+      if (t.hasName() && (email != null || url != null)) {
         JsonObject md = new JsonObject();
         m.add(md);
-        md.addProperty("name", t.getName());
+        md.add("name", t.getName());
         if (email != null)
-          md.addProperty("email", email);
+          md.add("email", email);
         if (url != null)
-          md.addProperty("url", url);
+          md.add("url", url);
       }
     }
     if (m.size() > 0)
       npm.add("maintainers", m);
     if (ig.getManifest().hasRendering())
-      npm.addProperty("homepage", ig.getManifest().getRendering());
+      npm.add("homepage", ig.getManifest().getRendering());
     JsonObject dir = new JsonObject();
     npm.add("directories", dir);
-    dir.addProperty("lib", "package");
-    dir.addProperty("example", "example");
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    String json = gson.toJson(npm);
+    dir.add("lib", "package");
+    dir.add("example", "examples");
+    if (ig.hasJurisdiction() && ig.getJurisdiction().size() == 1 && ig.getJurisdictionFirstRep().getCoding().size() == 1) {
+      Coding c = ig.getJurisdictionFirstRep().getCodingFirstRep();
+      npm.add("jurisdiction", c.getSystem()+"#"+c.getCode());
+    }
+    if (relatedIgs != null) {
+      JsonObject pd = npm.forceObject("peerDependencies");
+      for (String n : relatedIgs.keySet()) {
+        pd.add(n, relatedIgs.get(n));
+      }
+    }
+    String json = JsonParser.compose(npm, true);
     try {
       addFile(Category.RESOURCE, "package.json", json.getBytes("UTF-8"));
     } catch (UnsupportedEncodingException e) {
@@ -257,28 +349,207 @@ public class NPMPackageGenerator {
     packageJ = npm;
 
     packageManifest = new JsonObject();
-    packageManifest.addProperty("version", ig.getVersion());
-    packageManifest.addProperty("fhirVersion", fhirVersion.toString());
-    packageManifest.addProperty("date", dt);
-    packageManifest.addProperty("name", ig.getPackageId());
-
+    packageManifest.add("version", ig.getVersion());
+    JsonArray fv = new JsonArray();
+    for (String v : fhirVersion) {
+      fv.add(v);
+    }
+    packageManifest.add("fhirVersion", fv);
+    packageManifest.add("date", dt);
+    packageManifest.add("name", ig.getPackageId());
+    if (ig.hasJurisdiction() && ig.getJurisdiction().size() == 1 && ig.getJurisdictionFirstRep().getCoding().size() == 1) {
+      Coding c = ig.getJurisdictionFirstRep().getCodingFirstRep();
+      packageManifest.add("jurisdiction", c.getSystem()+"#"+c.getCode());
+    }
   }
 
 
-  private String packageForVersion(String v) {
-    if (v == null)
-      return null;
-    if (v.startsWith("1.0"))
-      return "hl7.fhir.r2.core";
-    if (v.startsWith("1.4"))
-      return "hl7.fhir.r2b.core";
-    if (v.startsWith("3.0"))
-      return "hl7.fhir.r3.core";
-    if (v.startsWith("4.0"))
-      return "hl7.fhir.r4.core";
-    if (v.startsWith("4.1"))
-      return "hl7.fhir.r4b.core";
+  /**
+   * Version-line prefixes actually published for each FHIR core package.
+   * VersionUtilities deliberately maps pre-ballot lines onto the *following* release's
+   * package (e.g. isR4Ver matches 3.2/3.3/3.5), but this class writes the raw version as
+   * the dependency value, so an unguarded mapping yields unresolvable entries such as
+   * "hl7.fhir.r4.core": "3.5.0". Only emit when the raw version belongs to the matched
+   * package's own release line.
+   */
+  // MIRROR: org.hl7.fhir.r4b/.../NPMPackageGenerator.java keeps a deliberate verbatim copy of this
+  // class's version-mapping and dependency-loop region -- this table, versionIsInPackageFamily,
+  // isPublishableVersion, labelStart, hasCiBuildLabel, isResolvableWildcardVersion,
+  // packageFromVersionPrefix, packageForVersion, missingVersionMessage and
+  // the dependsOn traversal. The two must be edited together; consolidating them into
+  // VersionUtilities was considered and deferred as an upstream API change. dependsOnDeclaresPackage
+  // below is deliberately r5-only: r4b has no UserDataNames.IG_DEP_ALIASED concept and Gson's
+  // JsonObject is last-write-wins, so a versioned core dependsOn already overwrites the auto-add
+  // there and the author still wins.
+  private static final Map<String, List<String>> CORE_PACKAGE_VERSION_PREFIXES = Map.of(
+      "hl7.fhir.r2.core",  List.of("1.0"),
+      "hl7.fhir.r2b.core", List.of("1.4"),
+      "hl7.fhir.r3.core",  List.of("3.0"),
+      "hl7.fhir.r4.core",  List.of("4.0"),
+      "hl7.fhir.r4b.core", List.of("4.1", "4.3"),
+      "hl7.fhir.r5.core",  List.of("4.5", "5.0"),
+      "hl7.fhir.r6.core",  List.of("6.0"));
+
+  private static final String CI_BUILD_LABEL = "cibuild";
+
+  /**
+   * Whether v is shaped like a version that gets published to the package registry.
+   * VersionUtilities answers "which release line is this?"; that is a different question from
+   * "can anyone install this?". Published core packages always carry a full major.minor.patch
+   * (or a legacy four-segment build code), and the ci-build label is never published.
+   */
+  private static boolean isPublishableVersion(String v) {
+    int cut = labelStart(v);
+    String numeric = cut < 0 ? v : v.substring(0, cut);
+    // The -1 limit is load-bearing: the default split drops trailing empty strings, so "5.0.0."
+    // would pass both checks below and be emitted raw as an unresolvable dependency value.
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //fixed literal-dot pattern, no user-supplied regex
+    String[] parts = numeric.split("\\.", -1);
+    if (parts.length < 3) {
+      return false;
+    }
+    for (String p : parts) {
+      if (!Utilities.isInteger(p)) {
+        return false;
+      }
+    }
+    return !hasCiBuildLabel(v);
+  }
+
+  /** Index of the first pre-release/build label separator in v, or -1 when it has none. */
+  private static int labelStart(String v) {
+    for (int i = 0; i < v.length(); i++) {
+      char c = v.charAt(i);
+      if (c == '-' || c == '+') {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  private static boolean hasCiBuildLabel(String v) {
+    int cut = labelStart(v);
+    // Locale.ROOT: CI_BUILD_LABEL is an ASCII keyword, and a tr/az default locale would
+    // lower-case "CIBUILD" to "cibuild" with a dotless i and let an unpublished ci-build
+    // version through as publishable.
+    return cut >= 0 && v.substring(cut + 1).toLowerCase(Locale.ROOT).startsWith(CI_BUILD_LABEL);
+  }
+
+  /**
+   * Master emitted a wildcard FHIR version verbatim -- "4.0.x" produced
+   * "hl7.fhir.r4.core": "4.0.x", which is a resolvable npm range
+   * (PackageCacheTests.java:51-52) -- so the publishable-shape gate must not swallow it.
+   * Which wildcard forms are legal is VersionUtilities' question, not this class's, so
+   * delegate rather than pattern-match here. Two-segment codes such as "4.0" are still
+   * dropped: isSemVerWithWildcards accepts them, but versionHasWildcards does not, and it is
+   * the wildcard that makes the difference -- "4.0.x" resolves end-to-end while "4.0" does
+   * not (VersionUtilities.versionMatches is exact-arity; VersionUtilitiesTest.java:480-481).
+   * A bare "x" or "*" is dropped by isSemVerWithWildcards, which requires an integer major
+   * (VersionUtilities.java:480); a minor-level "4.x" is dropped further down, because
+   * VersionUtilities.packageForVersion matches on a literal major.minor prefix and returns
+   * null. The ci-build exclusion is repeated because a wildcard version never reaches
+   * isPublishableVersion.
+   */
+  private static boolean isResolvableWildcardVersion(String v) {
+    return VersionUtilities.versionHasWildcards(v)
+        && VersionUtilities.isSemVerWithWildcards(v)
+        && !hasCiBuildLabel(v);
+  }
+
+  private boolean versionIsInPackageFamily(String packageId, String v) {
+    List<String> prefixes = CORE_PACKAGE_VERSION_PREFIXES.get(packageId);
+    if (prefixes == null) {
+      return false;
+    }
+    for (String prefix : prefixes) {
+      if (v.startsWith(prefix)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * The prefixes are mutually exclusive major.minor pairs, so at most one entry can match and
+   * the (unordered) Map.of iteration order does not affect the result.
+   */
+  private String packageFromVersionPrefix(String v) {
+    for (Map.Entry<String, List<String>> e : CORE_PACKAGE_VERSION_PREFIXES.entrySet()) {
+      for (String prefix : e.getValue()) {
+        if (v.startsWith(prefix)) {
+          return e.getKey();
+        }
+      }
+    }
     return null;
+  }
+
+  private String packageForVersion(String v) {
+    // "current" is handled here rather than left to VersionUtilities: that helper's
+    // "current" -> hl7.fhir.r5.core branch (VersionUtilities.java:169-171) is unreachable
+    // because isR2Ver throws from checkVersionValidWildcards first, so relying on it would
+    // make this behaviour depend on an upstream bug. CI-build IGs get no core dependency.
+    if (v == null || "current".equals(v)) {
+      return null;
+    }
+    if (!isPublishableVersion(v) && !isResolvableWildcardVersion(v)) {
+      return null;
+    }
+    try {
+      String vp = VersionUtilities.packageForVersion(v);
+      return vp != null && versionIsInPackageFamily(vp, v) ? vp : null;
+    } catch (FHIRException e) {
+      // Measured, not assumed. Three kinds of input reach this catch. (1) The historical
+      // four-segment FHIR build codes such as 3.0.1.11917 -- published, and the case this
+      // fallback exists for. (2) Versions whose numeric head clears isPublishableVersion but
+      // whose label tail SemverParser rejects: an empty label ("1.0.2-", "1.0.2+"), a
+      // non-alphanumeric one ("1.0.2-!!!", "1.0.2-+"), or a leading-zero numeric one ("1.0.2-01").
+      // (3) Leading-zero numeric heads such as "01.0.2", whose segments are all integers.
+      // Emitting the raw string for (2) is a deliberate tradeoff, the same one already accepted
+      // for (1): an unresolvable version fails loudly at npm-install time rather than the
+      // dependency silently going missing. An input matching no prefix emits nothing at all --
+      // "01.0.2" reaches here, but the table has no "01.0" entry, so this returns null.
+      // Wildcards do not reach here: SemverParser accepts "4.0.x" and "4.0.*", so the versions
+      // isResolvableWildcardVersion admits return from the try above instead.
+      return packageFromVersionPrefix(v);
+    }
+  }
+
+  /**
+   * True when a persisted -- i.e. non-suppressed -- versioned declaration already covers
+   * {@code packageId}, so a versionless entry must not overwrite it with a JSON null.
+   */
+  private boolean dependsOnDeclaresPackage(ImplementationGuide ig, String packageId) {
+    for (ImplementationGuideDependsOnComponent d : ig.getDependsOn()) {
+      if (!d.getPackageIdElement().hasUserData(UserDataNames.IG_DEP_ALIASED)
+          && !d.hasExtension(ExtensionDefinitions.EXT_IGDEP_NO_SAVE)
+          && d.hasVersion()
+          && packageId.equals(d.getPackageId())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * True when the author has already spoken about this core package -- either declaring it with a
+   * version, or suppressing it with {@code EXT_IGDEP_NO_SAVE}. Either way, do not auto-add it.
+   * <p>
+   * Deliberately <em>not</em> the same question as {@link #dependsOnDeclaresPackage}: that one
+   * asks whether a persisted entry would collide with a versionless JSON null write, and a
+   * suppressed entry is never persisted, so it must not answer yes there. Aliased entries are
+   * excluded from both, unchanged.
+   */
+  private boolean coreDependencyIsDeclared(ImplementationGuide ig, String packageId) {
+    for (ImplementationGuideDependsOnComponent d : ig.getDependsOn()) {
+      if (!d.getPackageIdElement().hasUserData(UserDataNames.IG_DEP_ALIASED)
+          && (d.hasVersion() || d.hasExtension(ExtensionDefinitions.EXT_IGDEP_NO_SAVE))
+          && packageId.equals(d.getPackageId())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private String timezone() {
@@ -315,20 +586,68 @@ public class NPMPackageGenerator {
     bufferedOutputStream = new BufferedOutputStream(OutputStream);
     gzipOutputStream = new GzipCompressorOutputStream(bufferedOutputStream);
     tar = new TarArchiveOutputStream(gzipOutputStream);
+    indexdb = Utilities.path("[tmp]", "tmp-"+UUID.randomUUID().toString()+".db");
     indexer = new NpmPackageIndexBuilder();
-    indexer.start();
+    indexer.start(indexdb);
   }
 
+  /**
+   * TarArchiveOutputStream rejects names of TarConstants.NAMELEN (100) bytes or more unless a
+   * long file mode is set.
+   */
+  static boolean tooLongForTar(String path) {
+    return path.getBytes(StandardCharsets.UTF_8).length >= TarConstants.NAMELEN;
+  }
 
+  /**
+   * Replacement for a file name that makes its path too long for a tar entry. The name is
+   * derived from a hash of the original name, not a random value, so the same file always
+   * gets the same name: hasFile() finds it, a second add is reported as a duplicate, and
+   * the package content is the same from one build to the next.
+   *
+   * Keeps the resource type prefix (the part before the first '-') and the extension when
+   * they fit.
+   */
+  static String shortenForTar(String folder, String name) {
+    String hash;
+    try {
+      byte[] digest = MessageDigest.getInstance("SHA-256").digest(name.getBytes(StandardCharsets.UTF_8));
+      hash = HexFormat.of().formatHex(digest).substring(0, 32);
+    } catch (NoSuchAlgorithmException e) {
+      throw new FHIRException(e);
+    }
+    int dot = name.lastIndexOf('.');
+    String ext = dot > 0 && name.length() - dot <= 10 ? name.substring(dot) : "";
+    int dash = name.indexOf('-');
+    String shortName = (dash > 0 ? name.substring(0, dash) + "-" : "") + hash + ext;
+    if (tooLongForTar(folder + shortName)) {
+      shortName = hash + ext;
+    }
+    if (tooLongForTar(folder + shortName)) {
+      throw new FHIRException("The folder name '" + folder + "' is too long for a package entry");
+    }
+    return shortName;
+  }
+
+  public boolean hasFile(Category cat, String name) throws IOException {
+    String path = cat.getDirectory()+name;
+    if (tooLongForTar(path)) {
+      name = shortenForTar(cat.getDirectory(), name);
+      path = cat.getDirectory()+name;
+    }
+      
+    return created.contains(path);    
+  }
+  
   public void addFile(Category cat, String name, byte[] content) throws IOException {
     String path = cat.getDirectory()+name;
-    if (path.length() > 100) {
-      name = name.substring(0, name.indexOf("-"))+"-"+UUID.randomUUID().toString();
-      path = cat.getDirectory()+name;      
+    if (tooLongForTar(path)) {
+      name = shortenForTar(cat.getDirectory(), name);
+      path = cat.getDirectory()+name;
     }
       
     if (created.contains(path)) {
-      System.out.println("Duplicate package file "+path);
+      log.warn("Duplicate package file "+path);
     } else {
       created.add(path);
       TarArchiveEntry entry = new TarArchiveEntry(path);
@@ -342,6 +661,31 @@ public class NPMPackageGenerator {
     }
   }
 
+  public void addFile(String folder, String name, byte[] content) throws IOException {
+    if (!folder.equals("package")) {
+      folder = "package/"+folder;
+    }
+    String path = folder+"/"+name;
+    if (tooLongForTar(path)) {
+      name = shortenForTar(folder+"/", name);
+      path = folder+"/"+name;
+    }
+      
+    if (created.contains(path)) {
+      log.warn("Duplicate package file "+path);
+    } else {
+      created.add(path);
+      TarArchiveEntry entry = new TarArchiveEntry(path);
+      entry.setSize(content.length);
+      tar.putArchiveEntry(entry);
+      tar.write(content);
+      tar.closeArchiveEntry();
+      if (folder.equals("package")) {
+        indexer.seeFile(name, content);
+      }
+    }
+  }
+
   public void finish() throws IOException {
     buildIndexJson();
     tar.finish();
@@ -349,16 +693,22 @@ public class NPMPackageGenerator {
     gzipOutputStream.close();
     bufferedOutputStream.close();
     OutputStream.close();
-    TextFile.bytesToFile(OutputStream.toByteArray(), destFile);
+    FileUtilities.bytesToFile(OutputStream.toByteArray(), destFile);
     // also, for cache management on current builds, generate a little manifest
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    String json = gson.toJson(packageManifest);
-    TextFile.stringToFile(json, Utilities.changeFileExt(destFile, ".manifest.json"), false);
+    if (packageManifest != null) {
+      String json = JsonParser.compose(packageManifest, true);
+      FileUtilities.stringToFile(json, FileUtilities.changeFileExt(destFile, ".manifest.json"));
+    }
   }
 
   private void buildIndexJson() throws IOException {
-    byte[] content = TextFile.stringToBytes(indexer.build(), false);
-    addFile(Category.RESOURCE, ".index.json", content); 
+    byte[] content = FileUtilities.stringToBytes(indexer.build());
+    addFile(Category.RESOURCE, ".index.json", content);
+    if (ManagedFileAccess.file(indexdb).exists()) {
+      content = FileUtilities.fileToBytes(indexdb);
+      ManagedFileAccess.file(indexdb).delete();
+      addFile(Category.RESOURCE, ".index.db", content);
+    }
   }
 
   public String filename() {
@@ -366,31 +716,138 @@ public class NPMPackageGenerator {
   }
 
   public void loadDir(String rootDir, String name) throws IOException {
-    loadFiles(rootDir, new File(Utilities.path(rootDir, name)));
+    loadFiles(rootDir, null, ManagedFileAccess.file(Utilities.path(rootDir, name)));
   }
 
-  public void loadFiles(String root, File dir, String... noload) throws IOException {
-    for (File f : dir.listFiles()) {
-      if (!Utilities.existsInList(f.getName(), noload)) {
-        if (f.isDirectory()) {
-          loadFiles(root, f);
-        } else {
-          String path = f.getAbsolutePath().substring(root.length()+1);
-          byte[] content = TextFile.fileToBytes(f);
-          if (created.contains(path)) 
-            System.out.println("Duplicate package file "+path);
-          else {
-            created.add(path);
-            TarArchiveEntry entry = new TarArchiveEntry(path);
-            entry.setSize(content.length);
-            tar.putArchiveEntry(entry);
-            tar.write(content);
-            tar.closeArchiveEntry();
-          }
+    public void loadFiles(String root, String ignoreFile, File dir, String... noload) throws IOException {
+        Path rootPath = Paths.get(root);
+        Path dirPath = dir == null ? rootPath : dir.toPath();
+        // Ensure the directory to scan is inside the root
+        Path normalizedRoot = rootPath.toAbsolutePath().normalize();
+        Path normalizedDir = dirPath.toAbsolutePath().normalize();
+        if (!normalizedDir.startsWith(normalizedRoot)) {
+            throw new IllegalArgumentException("dir must be root or a subdirectory of root");
         }
-      }
+        String ignoreFileName = null;
+        IgnoreNode rootIgnoreNode = new IgnoreNode();
+
+        if (ignoreFile != null && !ignoreFile.isEmpty()) {
+            if (!Paths.get(ignoreFile).getFileName().toString().equals(ignoreFile)) {
+                throw new IllegalArgumentException("ignoreFile must be a simple filename without any path separators");
+            }
+            ignoreFileName = ignoreFile;
+        }
+
+        if (ignoreFileName != null) {
+            loadAllIgnorePatternsRecursive(rootPath, rootPath, ignoreFileName, rootIgnoreNode);
+            String ignoreFilePattern = "**/" + ignoreFileName + "\n" + ignoreFileName;
+            rootIgnoreNode.parse(new ByteArrayInputStream(ignoreFilePattern.getBytes()));
+        }
+
+        for (String pattern : noload) {
+            String anchoredPattern = pattern.startsWith("/") ? pattern : "/" + pattern;
+            rootIgnoreNode.parse(new ByteArrayInputStream(anchoredPattern.getBytes()));
+        }
+
+        scanAndFilterFiles(rootPath, dirPath, ignoreFileName, rootIgnoreNode);
     }
-  }
+
+    private void loadAllIgnorePatternsRecursive(Path root, Path directory, String ignoreFileName, IgnoreNode rootIgnoreNode) throws IOException {
+        Path ignorePath = directory.resolve(ignoreFileName);
+        if (Files.exists(ignorePath)) {
+            try (var in = Files.newInputStream(ignorePath)) {
+                rootIgnoreNode.parse(in);
+            }
+        }
+
+        try (Stream<Path> paths = Files.list(directory)) {
+            paths.filter(Files::isDirectory)
+                .filter(p -> !p.getFileName().toString().startsWith("."))
+                .forEach(subDir -> {
+                    try {
+                        loadAllIgnorePatternsRecursive(root, subDir, ignoreFileName, rootIgnoreNode);
+                    } catch (IOException e) {
+                        // ignore and continue
+                    }
+                });
+        }
+    }
+
+    private void scanAndFilterFiles(Path root, Path startDir, String ignoreFileName, IgnoreNode rootIgnoreNode) throws IOException {
+        java.util.Map<String, Boolean> directoryIgnoreCache = new java.util.HashMap<>();
+        try (Stream<Path> paths = Files.walk(startDir)) {
+            paths.filter(Files::isRegularFile).forEach(f -> {
+                try {
+                    if (isNotIgnored(f, root, rootIgnoreNode, directoryIgnoreCache)) {
+                        Path rel = root.relativize(f);
+                        String path = rel.toString();
+                        if (created.contains(path))
+                            log.warn("Duplicate package file "+path);
+                        else {
+                            byte[] content = FileUtilities.fileToBytes(f.toFile());
+                            created.add(path);
+                            TarArchiveEntry entry = new TarArchiveEntry(path);
+                            entry.setSize(content.length);
+                            tar.putArchiveEntry(entry);
+                            tar.write(content);
+                            tar.closeArchiveEntry();
+                        }
+                    }
+                } catch (IOException e) {
+                    // ignore and continue
+                }
+            });
+        }
+    }
+
+    private boolean isNotIgnored(Path file, Path root, IgnoreNode rootIgnoreNode, java.util.Map<String, Boolean> directoryIgnoreCache) throws IOException {
+        Path relativePath = root.relativize(file);
+        String pathString = relativePath.toString().replace(File.separator, "/");
+
+        if (rootIgnoreNode.isIgnored(pathString, false) == IgnoreNode.MatchResult.IGNORED) {
+            return false;
+        }
+
+        Path parent = relativePath.getParent();
+        while (parent != null) {
+            String parentPath = parent.toString().replace(File.separator, "/");
+            Boolean cached = directoryIgnoreCache.get(parentPath);
+            if (cached != null) {
+                if (cached) return false;
+            } else {
+                boolean isIgnored = rootIgnoreNode.isIgnored(parentPath, true) == IgnoreNode.MatchResult.IGNORED;
+                directoryIgnoreCache.put(parentPath, isIgnored);
+                if (isIgnored) return false;
+            }
+            parent = parent.getParent();
+        }
+
+        return true;
+    }
+
+
+  // public void loadFiles(String root, File dir, String... noload) throws IOException {
+  //   for (File f : dir.listFiles()) {
+  //     if (!Utilities.existsInList(f.getName(), noload)) {
+  //       if (f.isDirectory()) {
+  //         loadFiles(root, f);
+  //       } else {
+  //         String path = f.getAbsolutePath().substring(root.length()+1);
+  //         byte[] content = FileUtilities.fileToBytes(f);
+  //         if (created.contains(path)) 
+  //           log.warn("Duplicate package file "+path);
+  //         else {
+  //           created.add(path);
+  //           TarArchiveEntry entry = new TarArchiveEntry(path);
+  //           entry.setSize(content.length);
+  //           tar.putArchiveEntry(entry);
+  //           tar.write(content);
+  //           tar.closeArchiveEntry();
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   public String version() {
     return igVersion;

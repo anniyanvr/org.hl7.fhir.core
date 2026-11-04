@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ConstraintSeverityEnumFactory implements EnumFactory<ConstraintSeverity> {
@@ -46,19 +42,21 @@ public class ConstraintSeverityEnumFactory implements EnumFactory<ConstraintSeve
       return ConstraintSeverity.ERROR;
     if ("warning".equals(codeString))
       return ConstraintSeverity.WARNING;
-    throw new IllegalArgumentException("Unknown ConstraintSeverity code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ConstraintSeverity code '" + codeString + "'");
   }
 
   public String toCode(ConstraintSeverity code) {
-    if (code == ConstraintSeverity.ERROR)
+       if (code == ConstraintSeverity.NULL)
+           return null;
+       if (code == ConstraintSeverity.ERROR)
       return "error";
     if (code == ConstraintSeverity.WARNING)
       return "warning";
     return "?";
-  }
+   }
 
-    public String toSystem(ConstraintSeverity code) {
-      return code.getSystem();
-      }
+  public String toSystem(ConstraintSeverity code) {
+    return code.getSystem();
+  }
 
 }

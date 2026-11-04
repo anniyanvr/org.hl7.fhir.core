@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class MeasurePopulationEnumFactory implements EnumFactory<MeasurePopulation> {
@@ -60,11 +56,13 @@ public class MeasurePopulationEnumFactory implements EnumFactory<MeasurePopulati
       return MeasurePopulation.MEASUREPOPULATIONEXCLUSION;
     if ("measure-observation".equals(codeString))
       return MeasurePopulation.MEASUREOBSERVATION;
-    throw new IllegalArgumentException("Unknown MeasurePopulation code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MeasurePopulation code '" + codeString + "'");
   }
 
   public String toCode(MeasurePopulation code) {
-    if (code == MeasurePopulation.INITIALPOPULATION)
+       if (code == MeasurePopulation.NULL)
+           return null;
+       if (code == MeasurePopulation.INITIALPOPULATION)
       return "initial-population";
     if (code == MeasurePopulation.NUMERATOR)
       return "numerator";
@@ -83,10 +81,10 @@ public class MeasurePopulationEnumFactory implements EnumFactory<MeasurePopulati
     if (code == MeasurePopulation.MEASUREOBSERVATION)
       return "measure-observation";
     return "?";
-  }
+   }
 
-    public String toSystem(MeasurePopulation code) {
-      return code.getSystem();
-      }
+  public String toSystem(MeasurePopulation code) {
+    return code.getSystem();
+  }
 
 }

@@ -29,8 +29,6 @@ package org.hl7.fhir.r4.utils;
   
  */
 
-
-
 /*
 Copyright (c) 2011+, HL7, Inc
 All rights reserved.
@@ -91,14 +89,15 @@ import org.hl7.fhir.r4.model.Questionnaire.QuestionnaireItemType;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.UriType;
+import org.hl7.fhir.r4.model.UrlType;
 import org.hl7.fhir.r4.model.ValueSet.ConceptReferenceComponent;
 import org.hl7.fhir.r4.model.ValueSet.ConceptSetComponent;
+import org.hl7.fhir.r4.model.BackboneElement;
 import org.hl7.fhir.utilities.StandardsStatus;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity;
 import org.hl7.fhir.utilities.validation.ValidationMessage.IssueType;
 import org.hl7.fhir.utilities.validation.ValidationMessage.Source;
-
 
 public class ToolingExtensions {
 
@@ -113,11 +112,11 @@ public class ToolingExtensions {
   public static final String EXT_ISSUE_SOURCE = "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-source";
   public static final String EXT_ISSUE_LINE = "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-line";
   public static final String EXT_ISSUE_COL = "http://hl7.org/fhir/StructureDefinition/operationoutcome-issue-col";
-  public static final String EXT_DISPLAY_HINT = "http://hl7.org/fhir/StructureDefinition/structuredefinition-display-hint"; 
+  public static final String EXT_DISPLAY_HINT = "http://hl7.org/fhir/StructureDefinition/structuredefinition-display-hint";
   public static final String EXT_REPLACED_BY = "http://hl7.org/fhir/StructureDefinition/valueset-replacedby";
-  public static final String EXT_REGEX = "http://hl7.org/fhir/StructureDefinition/regex"; 
-  public static final String EXT_CONTROL = "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl"; 
-  public static final String EXT_MINOCCURS = "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs"; 
+  public static final String EXT_REGEX = "http://hl7.org/fhir/StructureDefinition/regex";
+  public static final String EXT_CONTROL = "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl";
+  public static final String EXT_MINOCCURS = "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs";
   public static final String EXT_MAXOCCURS = "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs";
   public static final String EXT_ALLOWEDRESOURCE = "http://hl7.org/fhir/StructureDefinition/questionnaire-allowedResource";
   public static final String EXT_REFERENCEFILTER = "http://hl7.org/fhir/StructureDefinition/questionnaire-referenceFilter";
@@ -169,16 +168,20 @@ public class ToolingExtensions {
   public static final String EXT_MAPPING_TGTTYPE = "http://hl7.org/fhir/tools/StructureDefinition/conceptmap-target-type";
   public static final String EXT_MAPPING_TGTCARD = "http://hl7.org/fhir/tools/StructureDefinition/conceptmap-target-cardinality";
   public static final String EXT_PRIVATE_BASE = "http://hl7.org/fhir/tools/";
-  public static final String EXT_ALLOWED_TYPE =  "http://hl7.org/fhir/StructureDefinition/operationdefinition-allowed-type";
+  public static final String EXT_ALLOWED_TYPE = "http://hl7.org/fhir/StructureDefinition/operationdefinition-allowed-type";
   public static final String EXT_FHIR_TYPE = "http://hl7.org/fhir/StructureDefinition/structuredefinition-fhir-type";
   public static final String EXT_XML_TYPE = "http://hl7.org/fhir/StructureDefinition/structuredefinition-xml-type";
   public static final String EXT_JSON_TYPE = "http://hl7.org/fhir/StructureDefinition/structuredefinition-json-type";
+
+  public static final String EXT_ORIGINAL_ITEM_TYPE = "http://hl7.org/fhir/4.0/StructureDefinition/extension-Questionnaire.item.type";
+  public static final String EXT_ORIGINAL_VARIABLE_TYPE = "http://hl7.org/fhir/5.0/StructureDefinition/extension-StructureMap.group.rule.dependent.parameter";
 
   // specific extension helpers
 
   public static Extension makeIssueSource(Source source) {
     Extension ex = new Extension();
-    // todo: write this up and get it published with the pack (and handle the redirect?)
+    // todo: write this up and get it published with the pack (and handle the
+    // redirect?)
     ex.setUrl(ToolingExtensions.EXT_ISSUE_SOURCE);
     CodeType c = new CodeType();
     c.setValue(source.toString());
@@ -210,7 +213,7 @@ public class ToolingExtensions {
       if (ex != null)
         ex.setValue(new StringType(content));
       else
-        dr.getExtension().add(Factory.newExtension(url, new MarkdownType(content), true));   
+        dr.getExtension().add(Factory.newExtension(url, new MarkdownType(content), true));
     }
   }
 
@@ -220,7 +223,7 @@ public class ToolingExtensions {
       if (ex != null)
         ex.setValue(new StringType(content));
       else
-        e.getExtension().add(Factory.newExtension(url, new StringType(content), true));   
+        e.getExtension().add(Factory.newExtension(url, new StringType(content), true));
     }
   }
 
@@ -230,7 +233,7 @@ public class ToolingExtensions {
       if (ex != null)
         ex.setValue(new CodeType(content));
       else
-        e.getExtension().add(Factory.newExtension(url, new CodeType(content), true));   
+        e.getExtension().add(Factory.newExtension(url, new CodeType(content), true));
     }
   }
 
@@ -240,8 +243,16 @@ public class ToolingExtensions {
       if (ex != null)
         ex.setValue(new StringType(content));
       else
-        e.getExtension().add(Factory.newExtension(url, new StringType(content), true));   
+        e.getExtension().add(Factory.newExtension(url, new StringType(content), true));
     }
+  }
+
+  public static void addUrlExtension(Element e, String url, String value) {
+    Extension ex = getExtension(e, url);
+    if (ex != null)
+      ex.setValue(new UrlType(value));
+    else
+      e.getExtension().add(Factory.newExtension(url, new UrlType(value), true));
   }
 
   public static void addUriExtension(Element e, String url, String uri) {
@@ -249,7 +260,7 @@ public class ToolingExtensions {
     if (ex != null)
       ex.setValue(new UriType(uri));
     else
-      e.getExtension().add(Factory.newExtension(url, new UriType(uri), true));   
+      e.getExtension().add(Factory.newExtension(url, new UriType(uri), true));
   }
 
   public static void addBooleanExtension(Element e, String url, boolean content) {
@@ -257,7 +268,7 @@ public class ToolingExtensions {
     if (ex != null)
       ex.setValue(new BooleanType(content));
     else
-      e.getExtension().add(Factory.newExtension(url, new BooleanType(content), true));   
+      e.getExtension().add(Factory.newExtension(url, new BooleanType(content), true));
   }
 
   public static void addBooleanExtension(DomainResource e, String url, boolean content) {
@@ -265,7 +276,7 @@ public class ToolingExtensions {
     if (ex != null)
       ex.setValue(new BooleanType(content));
     else
-      e.getExtension().add(Factory.newExtension(url, new BooleanType(content), true));   
+      e.getExtension().add(Factory.newExtension(url, new BooleanType(content), true));
   }
 
   public static void addIntegerExtension(DomainResource dr, String url, int value) {
@@ -273,7 +284,7 @@ public class ToolingExtensions {
     if (ex != null)
       ex.setValue(new IntegerType(value));
     else
-      dr.getExtension().add(Factory.newExtension(url, new IntegerType(value), true));   
+      dr.getExtension().add(Factory.newExtension(url, new IntegerType(value), true));
   }
 
   public static void addCodeExtension(DomainResource dr, String url, String value) {
@@ -281,21 +292,22 @@ public class ToolingExtensions {
     if (ex != null)
       ex.setValue(new CodeType(value));
     else
-      dr.getExtension().add(Factory.newExtension(url, new CodeType(value), true));   
+      dr.getExtension().add(Factory.newExtension(url, new CodeType(value), true));
   }
 
   public static void addVSComment(ConceptSetComponent nc, String comment) {
     if (!StringUtils.isBlank(comment))
-      nc.getExtension().add(Factory.newExtension(EXT_VS_COMMENT, Factory.newString_(comment), true));   
+      nc.getExtension().add(Factory.newExtension(EXT_VS_COMMENT, Factory.newString_(comment), true));
   }
+
   public static void addVSComment(ConceptReferenceComponent nc, String comment) {
     if (!StringUtils.isBlank(comment))
-      nc.getExtension().add(Factory.newExtension(EXT_VS_COMMENT, Factory.newString_(comment), true));   
+      nc.getExtension().add(Factory.newExtension(EXT_VS_COMMENT, Factory.newString_(comment), true));
   }
 
   public static void addCSComment(ConceptDefinitionComponent nc, String comment) {
     if (!StringUtils.isBlank(comment))
-      nc.getExtension().add(Factory.newExtension(EXT_CS_COMMENT, Factory.newString_(comment), true));   
+      nc.getExtension().add(Factory.newExtension(EXT_CS_COMMENT, Factory.newString_(comment), true));
   }
 
 //  public static void markDeprecated(Element nc) {
@@ -305,16 +317,16 @@ public class ToolingExtensions {
 
   public static void addDefinition(Element nc, String definition) {
     if (!StringUtils.isBlank(definition))
-      nc.getExtension().add(Factory.newExtension(EXT_DEFINITION, Factory.newString_(definition), true));   
+      nc.getExtension().add(Factory.newExtension(EXT_DEFINITION, Factory.newString_(definition), true));
   }
 
   public static void addDisplayHint(Element def, String hint) {
     if (!StringUtils.isBlank(hint))
-      def.getExtension().add(Factory.newExtension(EXT_DISPLAY_HINT, Factory.newString_(hint), true));   
+      def.getExtension().add(Factory.newExtension(EXT_DISPLAY_HINT, Factory.newString_(hint), true));
   }
 
   public static String getDisplayHint(Element def) {
-    return readStringExtension(def, EXT_DISPLAY_HINT);    
+    return readStringExtension(def, EXT_DISPLAY_HINT);
   }
 
   public static String readStringExtension(Element c, String uri) {
@@ -416,7 +428,7 @@ public class ToolingExtensions {
   }
 
   public static String getCSComment(ConceptDefinitionComponent c) {
-    return readStringExtension(c, EXT_CS_COMMENT);    
+    return readStringExtension(c, EXT_CS_COMMENT);
   }
 //
 //  public static Boolean getDeprecated(Element c) {
@@ -424,48 +436,50 @@ public class ToolingExtensions {
 //  }
 
   public static boolean hasCSComment(ConceptDefinitionComponent c) {
-    return findStringExtension(c, EXT_CS_COMMENT);    
+    return findStringExtension(c, EXT_CS_COMMENT);
   }
 
 //  public static boolean hasDeprecated(Element c) {
 //    return findBooleanExtension(c, EXT_DEPRECATED);    
 //  }
 
-  public static void addFlyOver(QuestionnaireItemComponent item, String text){
+  public static void addFlyOver(QuestionnaireItemComponent item, String text) {
     if (!StringUtils.isBlank(text)) {
-    	QuestionnaireItemComponent display = item.addItem();
-    	display.setType(QuestionnaireItemType.DISPLAY);
-    	display.setText(text);
-    	display.getExtension().add(Factory.newExtension(EXT_CONTROL, Factory.newCodeableConcept("flyover", "http://hl7.org/fhir/questionnaire-item-control", "Fly-over"), true));
+      QuestionnaireItemComponent display = item.addItem();
+      display.setType(QuestionnaireItemType.DISPLAY);
+      display.setText(text);
+      display.getExtension().add(Factory.newExtension(EXT_CONTROL,
+          Factory.newCodeableConcept("flyover", "http://hl7.org/fhir/questionnaire-item-control", "Fly-over"), true));
     }
   }
 
   public static void addMin(QuestionnaireItemComponent item, int min) {
     item.getExtension().add(Factory.newExtension(EXT_MINOCCURS, Factory.newInteger(min), true));
   }
-  
+
   public static void addMax(QuestionnaireItemComponent item, int max) {
     item.getExtension().add(Factory.newExtension(EXT_MAXOCCURS, Factory.newInteger(max), true));
   }
-  
+
   public static void addFhirType(QuestionnaireItemComponent group, String value) {
-    group.getExtension().add(Factory.newExtension(EXT_FHIRTYPE, Factory.newString_(value), true));       
+    group.getExtension().add(Factory.newExtension(EXT_FHIRTYPE, Factory.newString_(value), true));
   }
 
   public static void addControl(QuestionnaireItemComponent group, String value) {
-    group.getExtension().add(Factory.newExtension(EXT_CONTROL, Factory.newCodeableConcept(value, "http://hl7.org/fhir/questionnaire-item-control", value), true));
+    group.getExtension().add(Factory.newExtension(EXT_CONTROL,
+        Factory.newCodeableConcept(value, "http://hl7.org/fhir/questionnaire-item-control", value), true));
   }
 
   public static void addAllowedResource(QuestionnaireItemComponent group, String value) {
-    group.getExtension().add(Factory.newExtension(EXT_ALLOWEDRESOURCE, Factory.newCode(value), true));       
+    group.getExtension().add(Factory.newExtension(EXT_ALLOWEDRESOURCE, Factory.newCode(value), true));
   }
 
   public static void addReferenceFilter(QuestionnaireItemComponent group, String value) {
-    group.getExtension().add(Factory.newExtension(EXT_REFERENCEFILTER, Factory.newString_(value), true));       
+    group.getExtension().add(Factory.newExtension(EXT_REFERENCEFILTER, Factory.newString_(value), true));
   }
 
   public static void addIdentifier(Element element, Identifier value) {
-    element.getExtension().add(Factory.newExtension(EXT_IDENTIFIER, value, true));       
+    element.getExtension().add(Factory.newExtension(EXT_IDENTIFIER, value, true));
   }
 
   /**
@@ -499,7 +513,7 @@ public class ToolingExtensions {
   public static void setStringExtension(DomainResource resource, String uri, String value) {
     if (Utilities.noString(value))
       return;
-        Extension ext = getExtension(resource, uri);
+    Extension ext = getExtension(resource, uri);
     if (ext != null)
       ext.setValue(new StringType(value));
     else
@@ -509,7 +523,7 @@ public class ToolingExtensions {
   public static void setStringExtension(Element resource, String uri, String value) {
     if (Utilities.noString(value))
       return;
-        Extension ext = getExtension(resource, uri);
+    Extension ext = getExtension(resource, uri);
     if (ext != null)
       ext.setValue(new StringType(value));
     else
@@ -519,7 +533,7 @@ public class ToolingExtensions {
   public static void setCodeExtension(DomainResource resource, String uri, String value) {
     if (Utilities.noString(value))
       return;
-    
+
     Extension ext = getExtension(resource, uri);
     if (ext != null)
       ext.setValue(new CodeType(value));
@@ -530,13 +544,37 @@ public class ToolingExtensions {
   public static void setCodeExtension(Element element, String uri, String value) {
     if (Utilities.noString(value))
       return;
-    
+
     Extension ext = getExtension(element, uri);
     if (ext != null)
       ext.setValue(new CodeType(value));
     else
       element.getExtension().add(new Extension(new UriType(uri)).setValue(new CodeType(value)));
   }
+  
+
+  public static void setCodeExtensionMod(DomainResource resource, String uri, String value) {
+    if (Utilities.noString(value))
+      return;
+
+    Extension ext = getExtension(resource, uri);
+    if (ext != null)
+      ext.setValue(new CodeType(value));
+    else
+      resource.getModifierExtension().add(new Extension(uri).setValue(new CodeType(value)));
+  }
+
+  public static void setCodeExtensionMod(BackboneElement resource, String uri, String value) {
+    if (Utilities.noString(value))
+      return;
+
+    Extension ext = getExtension(resource, uri);
+    if (ext != null)
+      ext.setValue(new CodeType(value));
+    else
+      resource.getModifierExtension().add(new Extension(uri).setValue(new CodeType(value)));
+  }
+  
 
   public static void setIntegerExtension(DomainResource resource, String uri, int value) {
     Extension ext = getExtension(resource, uri);
@@ -604,7 +642,7 @@ public class ToolingExtensions {
   public static void addLanguageTranslation(Element element, String lang, String value) {
     if (Utilities.noString(lang) || Utilities.noString(value))
       return;
-    
+
     Extension extension = new Extension().setUrl(EXT_TRANSLATION);
     extension.addExtension().setUrl("lang").setValue(new CodeType(lang));
     extension.addExtension().setUrl("content").setValue(new StringType(value));
@@ -612,14 +650,14 @@ public class ToolingExtensions {
   }
 
   public static Type getAllowedUnits(ElementDefinition eld) {
-    for (Extension e : eld.getExtension()) 
-      if (e.getUrl().equals(EXT_ALLOWABLE_UNITS)) 
+    for (Extension e : eld.getExtension())
+      if (e.getUrl().equals(EXT_ALLOWABLE_UNITS))
         return e.getValue();
     return null;
   }
 
   public static void setAllowableUnits(ElementDefinition eld, CodeableConcept cc) {
-    for (Extension e : eld.getExtension()) 
+    for (Extension e : eld.getExtension())
       if (e.getUrl().equals(EXT_ALLOWABLE_UNITS)) {
         e.setValue(cc);
         return;
@@ -662,12 +700,12 @@ public class ToolingExtensions {
 //  }
 
   public static void setExtension(Element focus, String url, Coding c) {
-    for (Extension e : focus.getExtension()) 
+    for (Extension e : focus.getExtension())
       if (e.getUrl().equals(url)) {
         e.setValue(c);
         return;
       }
-    focus.getExtension().add(new Extension().setUrl(url).setValue(c));    
+    focus.getExtension().add(new Extension().setUrl(url).setValue(c));
   }
 
   public static void removeExtension(DomainResource focus, String url) {
@@ -679,7 +717,7 @@ public class ToolingExtensions {
       }
     }
   }
-  
+
   public static void removeExtension(Element focus, String url) {
     Iterator<Extension> i = focus.getExtension().iterator();
     while (i.hasNext()) {
@@ -696,7 +734,7 @@ public class ToolingExtensions {
       return defaultValue;
     if (ex.getValue() instanceof IntegerType)
       return ((IntegerType) ex.getValue()).getValue();
-    throw new Error("Unable to read extension "+uri+" as an integer");
+    throw new Error("Unable to read extension " + uri + " as an integer");
   }
 
   public static int readIntegerExtension(Element e, String uri, int defaultValue) {
@@ -705,7 +743,7 @@ public class ToolingExtensions {
       return defaultValue;
     if (ex.getValue() instanceof IntegerType)
       return ((IntegerType) ex.getValue()).getValue();
-    throw new Error("Unable to read extension "+uri+" as an integer");
+    throw new Error("Unable to read extension " + uri + " as an integer");
   }
 
   public static Map<String, String> getLanguageTranslations(Element e) {
@@ -714,7 +752,7 @@ public class ToolingExtensions {
       if (ext.getUrl().equals(EXT_TRANSLATION)) {
         String lang = readStringExtension(ext, "lang");
         String value = readStringExtension(ext, "content");
-        res.put(lang,  value);
+        res.put(lang, value);
       }
     }
     return res;
@@ -759,55 +797,97 @@ public class ToolingExtensions {
       vm.setLocation(issue.getExpression().get(0).asStringValue());
     vm.setMessage(issue.getDetails().getText());
     if (issue.hasExtension("http://hl7.org/fhir/StructureDefinition/rendering-xhtml"))
-      vm.setHtml(ToolingExtensions.readStringExtension(issue, "http://hl7.org/fhir/StructureDefinition/rendering-xhtml"));
+      vm.setHtml(
+          ToolingExtensions.readStringExtension(issue, "http://hl7.org/fhir/StructureDefinition/rendering-xhtml"));
     return vm;
   }
 
   private static IssueType mapType(org.hl7.fhir.r4.model.OperationOutcome.IssueType code) {
     switch (code) {
-    case BUSINESSRULE: return IssueType.BUSINESSRULE;
-    case CODEINVALID: return IssueType.CODEINVALID;
-    case CONFLICT: return IssueType.CONFLICT;
-    case DELETED: return IssueType.DELETED;
-    case DUPLICATE: return IssueType.DUPLICATE;
-    case EXCEPTION: return IssueType.EXCEPTION;
-    case EXPIRED: return IssueType.EXPIRED;
-    case EXTENSION: return IssueType.EXTENSION;
-    case FORBIDDEN: return IssueType.FORBIDDEN;
-    case INCOMPLETE: return IssueType.INCOMPLETE;
-    case INFORMATIONAL: return IssueType.INFORMATIONAL;
-    case INVALID: return IssueType.INVALID;
-    case INVARIANT: return IssueType.INVARIANT;
-    case LOCKERROR: return IssueType.LOCKERROR;
-    case LOGIN: return IssueType.LOGIN;
-    case MULTIPLEMATCHES: return IssueType.MULTIPLEMATCHES;
-    case NOSTORE: return IssueType.NOSTORE;
-    case NOTFOUND: return IssueType.NOTFOUND;
-    case NOTSUPPORTED: return IssueType.NOTSUPPORTED;
-    case NULL: return IssueType.NULL;
-    case PROCESSING: return IssueType.PROCESSING;
-    case REQUIRED: return IssueType.REQUIRED;
-    case SECURITY: return IssueType.SECURITY;
-    case STRUCTURE: return IssueType.STRUCTURE;
-    case SUPPRESSED: return IssueType.SUPPRESSED;
-    case THROTTLED: return IssueType.THROTTLED;
-    case TIMEOUT: return IssueType.TIMEOUT;
-    case TOOCOSTLY: return IssueType.TOOCOSTLY;
-    case TOOLONG: return IssueType.TOOLONG;
-    case TRANSIENT: return IssueType.TRANSIENT;
-    case UNKNOWN: return IssueType.UNKNOWN;
-    case VALUE: return IssueType.VALUE;
-    default: return null;
+    case BUSINESSRULE:
+      return IssueType.BUSINESSRULE;
+    case CODEINVALID:
+      return IssueType.CODEINVALID;
+    case CONFLICT:
+      return IssueType.CONFLICT;
+    case DELETED:
+      return IssueType.DELETED;
+    case DUPLICATE:
+      return IssueType.DUPLICATE;
+    case EXCEPTION:
+      return IssueType.EXCEPTION;
+    case EXPIRED:
+      return IssueType.EXPIRED;
+    case EXTENSION:
+      return IssueType.EXTENSION;
+    case FORBIDDEN:
+      return IssueType.FORBIDDEN;
+    case INCOMPLETE:
+      return IssueType.INCOMPLETE;
+    case INFORMATIONAL:
+      return IssueType.INFORMATIONAL;
+    case INVALID:
+      return IssueType.INVALID;
+    case INVARIANT:
+      return IssueType.INVARIANT;
+    case LOCKERROR:
+      return IssueType.LOCKERROR;
+    case LOGIN:
+      return IssueType.LOGIN;
+    case MULTIPLEMATCHES:
+      return IssueType.MULTIPLEMATCHES;
+    case NOSTORE:
+      return IssueType.NOSTORE;
+    case NOTFOUND:
+      return IssueType.NOTFOUND;
+    case NOTSUPPORTED:
+      return IssueType.NOTSUPPORTED;
+    case NULL:
+      return IssueType.NULL;
+    case PROCESSING:
+      return IssueType.PROCESSING;
+    case REQUIRED:
+      return IssueType.REQUIRED;
+    case SECURITY:
+      return IssueType.SECURITY;
+    case STRUCTURE:
+      return IssueType.STRUCTURE;
+    case SUPPRESSED:
+      return IssueType.SUPPRESSED;
+    case THROTTLED:
+      return IssueType.THROTTLED;
+    case TIMEOUT:
+      return IssueType.TIMEOUT;
+    case TOOCOSTLY:
+      return IssueType.TOOCOSTLY;
+    case TOOLONG:
+      return IssueType.TOOLONG;
+    case TRANSIENT:
+      return IssueType.TRANSIENT;
+    case UNKNOWN:
+      return IssueType.UNKNOWN;
+    case VALUE:
+      return IssueType.VALUE;
+    default:
+      return null;
     }
   }
 
   private static IssueSeverity mapSeverity(org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity severity) {
+    if (severity == null) {
+      return null;
+    }
     switch (severity) {
-    case ERROR: return IssueSeverity.ERROR;
-    case FATAL: return IssueSeverity.FATAL;
-    case INFORMATION: return IssueSeverity.INFORMATION;
-    case WARNING: return IssueSeverity.WARNING;
-    default: return null;
+    case ERROR:
+      return IssueSeverity.ERROR;
+    case FATAL:
+      return IssueSeverity.FATAL;
+    case INFORMATION:
+      return IssueSeverity.INFORMATION;
+    case WARNING:
+      return IssueSeverity.WARNING;
+    default:
+      return null;
     }
   }
 
@@ -819,5 +899,5 @@ public class ToolingExtensions {
 //    return hasExtension(cs, EXT_OID);
 //  }
 //  
-  
+
 }

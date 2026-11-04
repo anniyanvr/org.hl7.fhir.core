@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ContractTermTypeEnumFactory implements EnumFactory<ContractTermType> {
@@ -46,19 +42,21 @@ public class ContractTermTypeEnumFactory implements EnumFactory<ContractTermType
       return ContractTermType.ORALHEALTH;
     if ("Vision".equals(codeString))
       return ContractTermType.VISION;
-    throw new IllegalArgumentException("Unknown ContractTermType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ContractTermType code '" + codeString + "'");
   }
 
   public String toCode(ContractTermType code) {
-    if (code == ContractTermType.ORALHEALTH)
+       if (code == ContractTermType.NULL)
+           return null;
+       if (code == ContractTermType.ORALHEALTH)
       return "OralHealth";
     if (code == ContractTermType.VISION)
       return "Vision";
     return "?";
-  }
+   }
 
-    public String toSystem(ContractTermType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ContractTermType code) {
+    return code.getSystem();
+  }
 
 }

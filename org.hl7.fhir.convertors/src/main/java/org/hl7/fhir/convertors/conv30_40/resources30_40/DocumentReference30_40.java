@@ -1,24 +1,30 @@
 package org.hl7.fhir.convertors.conv30_40.resources30_40;
 
+import org.hl7.fhir.convertors.VersionConvertorConstants;
 import org.hl7.fhir.convertors.context.ConversionContext30_40;
 import org.hl7.fhir.convertors.conv30_40.datatypes30_40.Reference30_40;
 import org.hl7.fhir.convertors.conv30_40.datatypes30_40.complextypes30_40.*;
+import org.hl7.fhir.convertors.conv30_40.datatypes30_40.primitivetypes30_40.DateTime30_40;
+import org.hl7.fhir.convertors.conv30_40.datatypes30_40.primitivetypes30_40.Instant30_40;
 import org.hl7.fhir.convertors.conv30_40.datatypes30_40.primitivetypes30_40.String30_40;
+import org.hl7.fhir.dstu3.model.DocumentReference;
+import org.hl7.fhir.dstu3.model.Enumeration;
+import org.hl7.fhir.dstu3.model.Enumerations;
 import org.hl7.fhir.exceptions.FHIRException;
+
+import java.util.Date;
 
 public class DocumentReference30_40 {
 
-  public static org.hl7.fhir.r4.model.InstantType convertDateTimeToInstant(org.hl7.fhir.dstu3.model.DateTimeType src) throws FHIRException {
-    org.hl7.fhir.r4.model.InstantType tgt = new org.hl7.fhir.r4.model.InstantType(src.getValueAsString());
-    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
-    return tgt;
-  }
+  private static final String[] IGNORED_EXTENSION_URLS = new String[]{
+    VersionConvertorConstants.EXT_DOC_REF_CREATED
+  };
 
   public static org.hl7.fhir.dstu3.model.DocumentReference convertDocumentReference(org.hl7.fhir.r4.model.DocumentReference src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.dstu3.model.DocumentReference tgt = new org.hl7.fhir.dstu3.model.DocumentReference();
-    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyDomainResource(src, tgt);
+    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyDomainResource(src, tgt, IGNORED_EXTENSION_URLS);
     if (src.hasMasterIdentifier())
       tgt.setMasterIdentifier(Identifier30_40.convertIdentifier(src.getMasterIdentifier()));
     for (org.hl7.fhir.r4.model.Identifier t : src.getIdentifier())
@@ -34,7 +40,9 @@ public class DocumentReference30_40 {
     if (src.hasSubject())
       tgt.setSubject(Reference30_40.convertReference(src.getSubject()));
     if (src.hasDateElement())
-      tgt.setCreatedElement(convertInstantToDateTime(src.getDateElement()));
+      tgt.setIndexedElement(Instant30_40.convertInstant(src.getDateElement()));
+    if (src.hasExtension(VersionConvertorConstants.EXT_DOC_REF_CREATED))
+      tgt.setCreatedElement(convertCreatedExtension(src));
     if (src.hasAuthenticator())
       tgt.setAuthenticator(Reference30_40.convertReference(src.getAuthenticator()));
     if (src.hasCustodian())
@@ -49,6 +57,8 @@ public class DocumentReference30_40 {
       tgt.addContent(convertDocumentReferenceContentComponent(t));
     if (src.hasContext())
       tgt.setContext(convertDocumentReferenceContextComponent(src.getContext()));
+    for (org.hl7.fhir.r4.model.Reference t : src.getAuthor())
+      tgt.addAuthor(Reference30_40.convertReference(t));
     return tgt;
   }
 
@@ -71,8 +81,10 @@ public class DocumentReference30_40 {
       tgt.addCategory(CodeableConcept30_40.convertCodeableConcept(src.getClass_()));
     if (src.hasSubject())
       tgt.setSubject(Reference30_40.convertReference(src.getSubject()));
+    if (src.hasIndexed())
+      tgt.setDateElement(Instant30_40.convertInstant(src.getIndexedElement()));
     if (src.hasCreated())
-      tgt.setDateElement(convertDateTimeToInstant(src.getCreatedElement()));
+      tgt.addExtension(getExtensionForDocumentReferenceCreated(src.getCreated()));
     if (src.hasAuthenticator())
       tgt.setAuthenticator(Reference30_40.convertReference(src.getAuthenticator()));
     if (src.hasCustodian())
@@ -87,6 +99,8 @@ public class DocumentReference30_40 {
       tgt.addContent(convertDocumentReferenceContentComponent(t));
     if (src.hasContext())
       tgt.setContext(convertDocumentReferenceContextComponent(src.getContext()));
+    for (org.hl7.fhir.dstu3.model.Reference t : src.getAuthor())
+      tgt.addAuthor(Reference30_40.convertReference(t));
     return tgt;
   }
 
@@ -94,7 +108,7 @@ public class DocumentReference30_40 {
     if (src == null)
       return null;
     org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentComponent tgt = new org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentComponent();
-    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
+    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyBackboneElement(src,tgt);
     if (src.hasAttachment())
       tgt.setAttachment(Attachment30_40.convertAttachment(src.getAttachment()));
     if (src.hasFormat())
@@ -106,7 +120,7 @@ public class DocumentReference30_40 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContentComponent tgt = new org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContentComponent();
-    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
+    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyBackboneElement(src,tgt);
     if (src.hasAttachment())
       tgt.setAttachment(Attachment30_40.convertAttachment(src.getAttachment()));
     if (src.hasFormat())
@@ -118,7 +132,7 @@ public class DocumentReference30_40 {
     if (src == null)
       return null;
     org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContextComponent tgt = new org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContextComponent();
-    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
+    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyBackboneElement(src,tgt);
     if (src.hasEncounter())
       tgt.setEncounter(Reference30_40.convertReference(src.getEncounterFirstRep()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getEvent())
@@ -140,7 +154,7 @@ public class DocumentReference30_40 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContextComponent tgt = new org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContextComponent();
-    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
+    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyBackboneElement(src,tgt);
     if (src.hasEncounter())
       tgt.addEncounter(Reference30_40.convertReference(src.getEncounter()));
     for (org.hl7.fhir.dstu3.model.CodeableConcept t : src.getEvent())
@@ -183,7 +197,7 @@ public class DocumentReference30_40 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceRelatesToComponent tgt = new org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceRelatesToComponent();
-    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
+    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyBackboneElement(src,tgt);
     if (src.hasCode())
       tgt.setCodeElement(convertDocumentRelationshipType(src.getCodeElement()));
     if (src.hasTarget())
@@ -195,7 +209,7 @@ public class DocumentReference30_40 {
     if (src == null)
       return null;
     org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceRelatesToComponent tgt = new org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceRelatesToComponent();
-    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
+    ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyBackboneElement(src,tgt);
     if (src.hasCode())
       tgt.setCodeElement(convertDocumentRelationshipType(src.getCodeElement()));
     if (src.hasTarget())
@@ -206,21 +220,25 @@ public class DocumentReference30_40 {
   static public org.hl7.fhir.dstu3.model.Enumeration<org.hl7.fhir.dstu3.model.Enumerations.DocumentReferenceStatus> convertDocumentReferenceStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus> src) throws FHIRException {
     if (src == null || src.isEmpty())
       return null;
-    org.hl7.fhir.dstu3.model.Enumeration<org.hl7.fhir.dstu3.model.Enumerations.DocumentReferenceStatus> tgt = new org.hl7.fhir.dstu3.model.Enumeration<>(new org.hl7.fhir.dstu3.model.Enumerations.DocumentReferenceStatusEnumFactory());
+    Enumeration<Enumerations.DocumentReferenceStatus> tgt = new Enumeration<>(new Enumerations.DocumentReferenceStatusEnumFactory());
     ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case CURRENT:
-        tgt.setValue(org.hl7.fhir.dstu3.model.Enumerations.DocumentReferenceStatus.CURRENT);
-        break;
-      case SUPERSEDED:
-        tgt.setValue(org.hl7.fhir.dstu3.model.Enumerations.DocumentReferenceStatus.SUPERSEDED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.dstu3.model.Enumerations.DocumentReferenceStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.dstu3.model.Enumerations.DocumentReferenceStatus.NULL);
-        break;
+    if (src.getValue() == null) {
+      tgt.setValue(null);
+    } else {
+      switch (src.getValue()) {
+        case CURRENT:
+          tgt.setValue(Enumerations.DocumentReferenceStatus.CURRENT);
+          break;
+        case SUPERSEDED:
+          tgt.setValue(Enumerations.DocumentReferenceStatus.SUPERSEDED);
+          break;
+        case ENTEREDINERROR:
+          tgt.setValue(Enumerations.DocumentReferenceStatus.ENTEREDINERROR);
+          break;
+        default:
+          tgt.setValue(Enumerations.DocumentReferenceStatus.NULL);
+          break;
+      }
     }
     return tgt;
   }
@@ -230,19 +248,23 @@ public class DocumentReference30_40 {
       return null;
     org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatusEnumFactory());
     ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case CURRENT:
-        tgt.setValue(org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus.CURRENT);
-        break;
-      case SUPERSEDED:
-        tgt.setValue(org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus.SUPERSEDED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus.NULL);
-        break;
+    if (src.getValue() == null) {
+      tgt.setValue(null);
+    } else {
+      switch (src.getValue()) {
+        case CURRENT:
+          tgt.setValue(org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus.CURRENT);
+          break;
+        case SUPERSEDED:
+          tgt.setValue(org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus.SUPERSEDED);
+          break;
+        case ENTEREDINERROR:
+          tgt.setValue(org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus.ENTEREDINERROR);
+          break;
+        default:
+          tgt.setValue(org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus.NULL);
+          break;
+      }
     }
     return tgt;
   }
@@ -264,23 +286,27 @@ public class DocumentReference30_40 {
       return null;
     org.hl7.fhir.dstu3.model.Enumeration<org.hl7.fhir.dstu3.model.DocumentReference.ReferredDocumentStatus> tgt = new org.hl7.fhir.dstu3.model.Enumeration<>(new org.hl7.fhir.dstu3.model.DocumentReference.ReferredDocumentStatusEnumFactory());
     ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case PRELIMINARY:
-        tgt.setValue(org.hl7.fhir.dstu3.model.DocumentReference.ReferredDocumentStatus.PRELIMINARY);
-        break;
-      case FINAL:
-        tgt.setValue(org.hl7.fhir.dstu3.model.DocumentReference.ReferredDocumentStatus.FINAL);
-        break;
-      case AMENDED:
-        tgt.setValue(org.hl7.fhir.dstu3.model.DocumentReference.ReferredDocumentStatus.AMENDED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.dstu3.model.DocumentReference.ReferredDocumentStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.dstu3.model.DocumentReference.ReferredDocumentStatus.NULL);
-        break;
-    }
+    if (src.getValue() == null) {
+    tgt.setValue(null);
+} else {
+      switch(src.getValue()) {
+        case PRELIMINARY:
+            tgt.setValue(DocumentReference.ReferredDocumentStatus.PRELIMINARY);
+            break;
+          case FINAL:
+            tgt.setValue(DocumentReference.ReferredDocumentStatus.FINAL);
+            break;
+          case AMENDED:
+            tgt.setValue(DocumentReference.ReferredDocumentStatus.AMENDED);
+            break;
+          case ENTEREDINERROR:
+            tgt.setValue(DocumentReference.ReferredDocumentStatus.ENTEREDINERROR);
+            break;
+          default:
+            tgt.setValue(DocumentReference.ReferredDocumentStatus.NULL);
+            break;
+       }
+}
     return tgt;
   }
 
@@ -289,22 +315,26 @@ public class DocumentReference30_40 {
       return null;
     org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatusEnumFactory());
     ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case PRELIMINARY:
-        tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.PRELIMINARY);
-        break;
-      case FINAL:
-        tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.FINAL);
-        break;
-      case AMENDED:
-        tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.AMENDED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.NULL);
-        break;
+    if (src.getValue() == null) {
+      tgt.setValue(null);
+    } else {
+      switch (src.getValue()) {
+        case PRELIMINARY:
+          tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.PRELIMINARY);
+          break;
+        case FINAL:
+          tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.FINAL);
+          break;
+        case AMENDED:
+          tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.AMENDED);
+          break;
+        case ENTEREDINERROR:
+          tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.ENTEREDINERROR);
+          break;
+        default:
+          tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.NULL);
+          break;
+      }
     }
     return tgt;
   }
@@ -314,26 +344,26 @@ public class DocumentReference30_40 {
     org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipTypeEnumFactory());
     ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
     if (src.getValue() == null) {
-      tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType.NULL);
-    } else {
-      switch (src.getValue()) {
+    tgt.setValue(null);
+} else {
+      switch(src.getValue()) {
         case REPLACES:
-          tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType.REPLACES);
-          break;
-        case TRANSFORMS:
-          tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType.TRANSFORMS);
-          break;
-        case SIGNS:
-          tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType.SIGNS);
-          break;
-        case APPENDS:
-          tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType.APPENDS);
-          break;
-        default:
-          tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType.NULL);
-          break;
-      }
-    }
+            tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType.REPLACES);
+            break;
+          case TRANSFORMS:
+            tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType.TRANSFORMS);
+            break;
+          case SIGNS:
+            tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType.SIGNS);
+            break;
+          case APPENDS:
+            tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType.APPENDS);
+            break;
+          default:
+            tgt.setValue(org.hl7.fhir.r4.model.DocumentReference.DocumentRelationshipType.NULL);
+            break;
+       }
+}
     return tgt;
   }
 
@@ -342,26 +372,45 @@ public class DocumentReference30_40 {
     org.hl7.fhir.dstu3.model.Enumeration<org.hl7.fhir.dstu3.model.DocumentReference.DocumentRelationshipType> tgt = new org.hl7.fhir.dstu3.model.Enumeration<>(new org.hl7.fhir.dstu3.model.DocumentReference.DocumentRelationshipTypeEnumFactory());
     ConversionContext30_40.INSTANCE.getVersionConvertor_30_40().copyElement(src, tgt);
     if (src.getValue() == null) {
-      tgt.setValue(org.hl7.fhir.dstu3.model.DocumentReference.DocumentRelationshipType.NULL);
-    } else {
-      switch (src.getValue()) {
+    tgt.setValue(null);
+} else {
+      switch(src.getValue()) {
         case REPLACES:
-          tgt.setValue(org.hl7.fhir.dstu3.model.DocumentReference.DocumentRelationshipType.REPLACES);
-          break;
-        case TRANSFORMS:
-          tgt.setValue(org.hl7.fhir.dstu3.model.DocumentReference.DocumentRelationshipType.TRANSFORMS);
-          break;
-        case SIGNS:
-          tgt.setValue(org.hl7.fhir.dstu3.model.DocumentReference.DocumentRelationshipType.SIGNS);
-          break;
-        case APPENDS:
-          tgt.setValue(org.hl7.fhir.dstu3.model.DocumentReference.DocumentRelationshipType.APPENDS);
-          break;
-        default:
-          tgt.setValue(org.hl7.fhir.dstu3.model.DocumentReference.DocumentRelationshipType.NULL);
-          break;
-      }
-    }
+            tgt.setValue(DocumentReference.DocumentRelationshipType.REPLACES);
+            break;
+          case TRANSFORMS:
+            tgt.setValue(DocumentReference.DocumentRelationshipType.TRANSFORMS);
+            break;
+          case SIGNS:
+            tgt.setValue(DocumentReference.DocumentRelationshipType.SIGNS);
+            break;
+          case APPENDS:
+            tgt.setValue(DocumentReference.DocumentRelationshipType.APPENDS);
+            break;
+          default:
+            tgt.setValue(DocumentReference.DocumentRelationshipType.NULL);
+            break;
+       }
+}
     return tgt;
+  }
+
+
+  private static org.hl7.fhir.dstu3.model.DateTimeType convertCreatedExtension(org.hl7.fhir.r4.model.DocumentReference src) {
+    org.hl7.fhir.r4.model.Extension extension = src.getExtensionByUrl(VersionConvertorConstants.EXT_DOC_REF_CREATED);
+    if (extension == null || extension.isEmpty()) {
+      return null;
+    }
+    if (extension.getValue() == null || extension.getValue().isEmpty()) {
+      return null;
+    }
+    return DateTime30_40.convertDateTime(extension.getValue().dateTimeValue());
+  }
+
+  public static org.hl7.fhir.r4.model.Extension getExtensionForDocumentReferenceCreated(Date created) {
+    org.hl7.fhir.r4.model.Extension extension = new org.hl7.fhir.r4.model.Extension();
+    extension.setUrl(VersionConvertorConstants.EXT_DOC_REF_CREATED);
+    extension.setValue(new org.hl7.fhir.r4.model.InstantType(created));
+    return extension;
   }
 }

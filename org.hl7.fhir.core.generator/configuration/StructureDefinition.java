@@ -10,3 +10,58 @@ public String describeType() {
       return "Definition";
     }
   }
+
+
+  public String getTypeName() { 
+    String t = getType(); 
+    return StructureDefinitionKind.LOGICAL.equals(getKind()) && t.contains("/") ? t.substring(t.lastIndexOf("/")+1) : t; 
+  } 
+
+  public String getTypeTail() { 
+    if (getType().contains("/")) { 
+      return getType().substring(getType().lastIndexOf("/")+1); 
+    } else { 
+      return getType(); 
+    } 
+  }
+
+  private boolean generatedSnapshot;
+  private boolean generatingSnapshot;
+
+  public boolean isGeneratedSnapshot() {
+    return generatedSnapshot;
+  }
+
+  public void setGeneratedSnapshot(boolean generatedSnapshot) {
+    this.generatedSnapshot = generatedSnapshot;
+  }
+
+  public boolean isGeneratingSnapshot() {
+    return generatingSnapshot;
+  }
+
+  public void setGeneratingSnapshot(boolean generatingSnapshot) {
+    this.generatingSnapshot = generatingSnapshot;
+  }
+
+  public String getBaseDefinitionNoVersion() {
+    String bd = getBaseDefinition();
+    if (bd != null && bd.contains("|")) {
+      bd = bd.substring(0, bd.indexOf("|"));
+    }
+    return bd;
+  }
+
+  private List<String> baseDefinitions;
+  public List<String> getBaseDefinitions() {
+    if (baseDefinitions == null) {
+      baseDefinitions = new ArrayList<>();
+      baseDefinitions.add(getBaseDefinition());
+      for (Extension ex : getExtensionsByUrl(ExtensionDefinitions.EXT_ADDITIONAL_BASE)) {
+        if (ex.hasValue() && ex.getValue().hasPrimitiveValue()) {
+          baseDefinitions.add(ex.getValue().primitiveValue());
+        }
+      }
+    }
+    return baseDefinitions;
+  }

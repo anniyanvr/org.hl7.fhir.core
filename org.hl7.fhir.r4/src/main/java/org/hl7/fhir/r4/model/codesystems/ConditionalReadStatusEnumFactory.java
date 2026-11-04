@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ConditionalReadStatusEnumFactory implements EnumFactory<ConditionalReadStatus> {
@@ -50,11 +46,13 @@ public class ConditionalReadStatusEnumFactory implements EnumFactory<Conditional
       return ConditionalReadStatus.NOTMATCH;
     if ("full-support".equals(codeString))
       return ConditionalReadStatus.FULLSUPPORT;
-    throw new IllegalArgumentException("Unknown ConditionalReadStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ConditionalReadStatus code '" + codeString + "'");
   }
 
   public String toCode(ConditionalReadStatus code) {
-    if (code == ConditionalReadStatus.NOTSUPPORTED)
+       if (code == ConditionalReadStatus.NULL)
+           return null;
+       if (code == ConditionalReadStatus.NOTSUPPORTED)
       return "not-supported";
     if (code == ConditionalReadStatus.MODIFIEDSINCE)
       return "modified-since";
@@ -63,10 +61,10 @@ public class ConditionalReadStatusEnumFactory implements EnumFactory<Conditional
     if (code == ConditionalReadStatus.FULLSUPPORT)
       return "full-support";
     return "?";
-  }
+   }
 
-    public String toSystem(ConditionalReadStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(ConditionalReadStatus code) {
+    return code.getSystem();
+  }
 
 }

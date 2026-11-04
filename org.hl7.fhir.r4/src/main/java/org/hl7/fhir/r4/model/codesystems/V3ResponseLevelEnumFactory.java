@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3ResponseLevelEnumFactory implements EnumFactory<V3ResponseLevel> {
@@ -56,11 +52,13 @@ public class V3ResponseLevelEnumFactory implements EnumFactory<V3ResponseLevel> 
       return V3ResponseLevel.R;
     if ("X".equals(codeString))
       return V3ResponseLevel.X;
-    throw new IllegalArgumentException("Unknown V3ResponseLevel code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ResponseLevel code '" + codeString + "'");
   }
 
   public String toCode(V3ResponseLevel code) {
-    if (code == V3ResponseLevel.C)
+       if (code == V3ResponseLevel.NULL)
+           return null;
+       if (code == V3ResponseLevel.C)
       return "C";
     if (code == V3ResponseLevel.D)
       return "D";
@@ -75,10 +73,10 @@ public class V3ResponseLevelEnumFactory implements EnumFactory<V3ResponseLevel> 
     if (code == V3ResponseLevel.X)
       return "X";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ResponseLevel code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ResponseLevel code) {
+    return code.getSystem();
+  }
 
 }

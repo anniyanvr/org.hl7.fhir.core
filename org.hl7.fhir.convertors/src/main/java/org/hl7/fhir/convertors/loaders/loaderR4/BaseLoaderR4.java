@@ -1,12 +1,13 @@
 package org.hl7.fhir.convertors.loaders.loaderR4;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import javax.annotation.Nonnull;
+
 import org.hl7.fhir.r4.context.SimpleWorkerContext.IContextResourceLoader;
 import org.hl7.fhir.r4.model.Resource;
 
-import javax.annotation.Nonnull;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Accessors(chain = true)
 public abstract class BaseLoaderR4 implements IContextResourceLoader {
@@ -16,7 +17,7 @@ public abstract class BaseLoaderR4 implements IContextResourceLoader {
   protected final String URL_DSTU2016MAY = "http://hl7.org/fhir/1.4/";
   protected final String URL_DSTU3 = "http://hl7.org/fhir/3.0/";
   protected final String URL_R4 = "http://hl7.org/fhir/4.0/";
-  protected final String URL_ELEMENT_DEF_NAMESPACE = "http://hl7.org/fhir/StructureDefinition/elementdefinition-namespace";
+  
   @Getter private final String[] types;
   private final ILoaderKnowledgeProviderR4 lkp;
   @Getter @Setter protected boolean patchUrls;

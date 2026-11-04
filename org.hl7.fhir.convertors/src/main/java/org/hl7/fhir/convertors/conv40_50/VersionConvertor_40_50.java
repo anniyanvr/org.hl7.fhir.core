@@ -1,13 +1,14 @@
 package org.hl7.fhir.convertors.conv40_50;
 
+import javax.annotation.Nonnull;
+
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_40_50;
 import org.hl7.fhir.convertors.context.ConversionContext40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.BackboneElement40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.Element40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.Type40_50;
 import org.hl7.fhir.convertors.conv40_50.resources40_50.Resource40_50;
 import org.hl7.fhir.exceptions.FHIRException;
-
-import javax.annotation.Nonnull;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -43,12 +44,15 @@ import javax.annotation.Nonnull;
 public class VersionConvertor_40_50 {
   private final BaseAdvisor_40_50 advisor;
   private final Element40_50 elementConvertor;
+
+  private final BackboneElement40_50 backboneElementConvertor;
   private final Resource40_50 resourceConvertor;
   private final Type40_50 typeConvertor;
 
   public VersionConvertor_40_50(@Nonnull BaseAdvisor_40_50 advisor) {
     this.advisor = advisor;
     this.elementConvertor = new Element40_50(advisor);
+    this.backboneElementConvertor = new BackboneElement40_50();
     this.resourceConvertor = new Resource40_50(advisor);
     this.typeConvertor = new Type40_50(advisor);
   }
@@ -68,60 +72,80 @@ public class VersionConvertor_40_50 {
   }
 
   public org.hl7.fhir.r5.model.Resource convertResource(@Nonnull org.hl7.fhir.r4.model.Resource src) throws FHIRException {
-    ConversionContext40_50.INSTANCE.init(this, src.fhirType());
+    ConversionContext40_50.INSTANCE.init(this);
     try {
       return resourceConvertor.convertResource(src);
     } finally {
-      ConversionContext40_50.INSTANCE.close(src.fhirType());
+      ConversionContext40_50.INSTANCE.close();
     }
   }
 
   public org.hl7.fhir.r4.model.Resource convertResource(@Nonnull org.hl7.fhir.r5.model.Resource src) throws FHIRException {
-    ConversionContext40_50.INSTANCE.init(this, src.fhirType());
+    ConversionContext40_50.INSTANCE.init(this);
     try {
       return resourceConvertor.convertResource(src);
     } finally {
-      ConversionContext40_50.INSTANCE.close(src.fhirType());
+      ConversionContext40_50.INSTANCE.close();
     }
   }
 
   public org.hl7.fhir.r5.model.DataType convertType(@Nonnull org.hl7.fhir.r4.model.Type src) throws FHIRException {
-    ConversionContext40_50.INSTANCE.init(this, src.fhirType());
+    ConversionContext40_50.INSTANCE.init(this);
     try {
       return typeConvertor.convertType(src);
     } finally {
-      ConversionContext40_50.INSTANCE.close(src.fhirType());
+      ConversionContext40_50.INSTANCE.close();
     }
   }
 
   public org.hl7.fhir.r4.model.Type convertType(@Nonnull org.hl7.fhir.r5.model.DataType src) throws FHIRException {
-    ConversionContext40_50.INSTANCE.init(this, src.fhirType());
+    ConversionContext40_50.INSTANCE.init(this);
     try {
       return typeConvertor.convertType(src);
     } finally {
-      ConversionContext40_50.INSTANCE.close(src.fhirType());
+      ConversionContext40_50.INSTANCE.close();
     }
   }
 
-  public void copyDomainResource(@Nonnull org.hl7.fhir.r4.model.DomainResource src,
-                                 @Nonnull org.hl7.fhir.r5.model.DomainResource tgt) throws FHIRException {
-    resourceConvertor.copyDomainResource(src, tgt);
+  public void copyDomainResource(
+    @Nonnull org.hl7.fhir.r4.model.DomainResource src,
+    @Nonnull org.hl7.fhir.r5.model.DomainResource tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    resourceConvertor.copyDomainResource(src, tgt, extensionUrlsToIgnore);
   }
 
-  public void copyDomainResource(@Nonnull org.hl7.fhir.r5.model.DomainResource src,
-                                 @Nonnull org.hl7.fhir.r4.model.DomainResource tgt) throws FHIRException {
-    resourceConvertor.copyDomainResource(src, tgt);
+  public void copyDomainResource(
+    @Nonnull org.hl7.fhir.r5.model.DomainResource src,
+    @Nonnull org.hl7.fhir.r4.model.DomainResource tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    resourceConvertor.copyDomainResource(src, tgt, extensionUrlsToIgnore);
   }
 
-  public void copyElement(@Nonnull org.hl7.fhir.r4.model.Element src,
-                          @Nonnull org.hl7.fhir.r5.model.Element tgt,
-                          String... var) throws FHIRException {
-    elementConvertor.copyElement(src, tgt, ConversionContext40_50.INSTANCE.path(), var);
+  public void copyElement(
+    @Nonnull org.hl7.fhir.r4.model.Element src,
+    @Nonnull org.hl7.fhir.r5.model.Element tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    elementConvertor.copyElement(src, tgt, extensionUrlsToIgnore);
   }
 
-  public void copyElement(@Nonnull org.hl7.fhir.r5.model.Element src,
-                          @Nonnull org.hl7.fhir.r4.model.Element tgt,
-                          String... var) throws FHIRException {
-    elementConvertor.copyElement(src, tgt, ConversionContext40_50.INSTANCE.path(), var);
+  public void copyElement(
+    @Nonnull org.hl7.fhir.r5.model.Element src,
+    @Nonnull org.hl7.fhir.r4.model.Element tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    elementConvertor.copyElement(src, tgt, extensionUrlsToIgnore);
+  }
+
+  public void copyBackboneElement(
+    @Nonnull org.hl7.fhir.r5.model.BackboneElement src,
+    @Nonnull org.hl7.fhir.r4.model.BackboneElement tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    backboneElementConvertor.copyBackboneElement(src, tgt, extensionUrlsToIgnore);
+  }
+
+  public void copyBackboneElement(
+    @Nonnull org.hl7.fhir.r4.model.BackboneElement src,
+    @Nonnull org.hl7.fhir.r5.model.BackboneElement tgt,
+    String... extensionUrlsToIgnore) throws FHIRException {
+    backboneElementConvertor.copyBackboneElement(src, tgt, extensionUrlsToIgnore);
   }
 }

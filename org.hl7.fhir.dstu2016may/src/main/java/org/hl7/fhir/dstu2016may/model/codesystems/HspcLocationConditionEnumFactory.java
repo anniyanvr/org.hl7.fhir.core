@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class HspcLocationConditionEnumFactory implements EnumFactory<HspcLocationCondition> {
@@ -48,21 +44,23 @@ public class HspcLocationConditionEnumFactory implements EnumFactory<HspcLocatio
       return HspcLocationCondition._528112801;
     if ("182843".equals(codeString))
       return HspcLocationCondition._182843;
-    throw new IllegalArgumentException("Unknown HspcLocationCondition code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown HspcLocationCondition code '" + codeString + "'");
   }
 
   public String toCode(HspcLocationCondition code) {
-    if (code == HspcLocationCondition._182845)
+       if (code == HspcLocationCondition.NULL)
+           return null;
+       if (code == HspcLocationCondition._182845)
       return "182845";
     if (code == HspcLocationCondition._528112801)
       return "528112801";
     if (code == HspcLocationCondition._182843)
       return "182843";
     return "?";
-  }
+   }
 
-    public String toSystem(HspcLocationCondition code) {
-      return code.getSystem();
-      }
+  public String toSystem(HspcLocationCondition code) {
+    return code.getSystem();
+  }
 
 }

@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -528,6 +528,29 @@ public class SubstanceProtein extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("subunit")) {
+          this.subunit = null;
+        } else if (name.equals("sequence")) {
+          this.sequence = null;
+        } else if (name.equals("length")) {
+          this.length = null;
+        } else if (name.equals("sequenceAttachment")) {
+          this.sequenceAttachment = null;
+        } else if (name.equals("nTerminalModificationId")) {
+          this.nTerminalModificationId = null;
+        } else if (name.equals("nTerminalModification")) {
+          this.nTerminalModification = null;
+        } else if (name.equals("cTerminalModificationId")) {
+          this.cTerminalModificationId = null;
+        } else if (name.equals("cTerminalModification")) {
+          this.cTerminalModification = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -563,13 +586,13 @@ public class SubstanceProtein extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("subunit")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SubstanceProtein.subunit.subunit");
+          throw new FHIRException("Cannot call addChild on a singleton property SubstanceProtein.subunit.subunit");
         }
         else if (name.equals("sequence")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SubstanceProtein.subunit.sequence");
+          throw new FHIRException("Cannot call addChild on a singleton property SubstanceProtein.subunit.sequence");
         }
         else if (name.equals("length")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SubstanceProtein.subunit.length");
+          throw new FHIRException("Cannot call addChild on a singleton property SubstanceProtein.subunit.length");
         }
         else if (name.equals("sequenceAttachment")) {
           this.sequenceAttachment = new Attachment();
@@ -580,14 +603,14 @@ public class SubstanceProtein extends DomainResource {
           return this.nTerminalModificationId;
         }
         else if (name.equals("nTerminalModification")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SubstanceProtein.subunit.nTerminalModification");
+          throw new FHIRException("Cannot call addChild on a singleton property SubstanceProtein.subunit.nTerminalModification");
         }
         else if (name.equals("cTerminalModificationId")) {
           this.cTerminalModificationId = new Identifier();
           return this.cTerminalModificationId;
         }
         else if (name.equals("cTerminalModification")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SubstanceProtein.subunit.cTerminalModification");
+          throw new FHIRException("Cannot call addChild on a singleton property SubstanceProtein.subunit.cTerminalModification");
         }
         else
           return super.addChild(name);
@@ -597,6 +620,10 @@ public class SubstanceProtein extends DomainResource {
         SubstanceProteinSubunitComponent dst = new SubstanceProteinSubunitComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SubstanceProteinSubunitComponent) dst);
       }
 
       public void copyValues(SubstanceProteinSubunitComponent dst) {
@@ -936,6 +963,21 @@ public class SubstanceProtein extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("sequenceType")) {
+          this.sequenceType = null;
+        } else if (name.equals("numberOfSubunits")) {
+          this.numberOfSubunits = null;
+        } else if (name.equals("disulfideLinkage")) {
+          this.getDisulfideLinkage().remove(value);
+        } else if (name.equals("subunit")) {
+          this.getSubunit().remove((SubstanceProteinSubunitComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -967,10 +1009,10 @@ public class SubstanceProtein extends DomainResource {
           return this.sequenceType;
         }
         else if (name.equals("numberOfSubunits")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SubstanceProtein.numberOfSubunits");
+          throw new FHIRException("Cannot call addChild on a singleton property SubstanceProtein.numberOfSubunits");
         }
         else if (name.equals("disulfideLinkage")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SubstanceProtein.disulfideLinkage");
+          throw new FHIRException("Cannot call addChild on a singleton property SubstanceProtein.disulfideLinkage");
         }
         else if (name.equals("subunit")) {
           return addSubunit();
@@ -988,6 +1030,10 @@ public class SubstanceProtein extends DomainResource {
         SubstanceProtein dst = new SubstanceProtein();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SubstanceProtein) dst);
       }
 
       public void copyValues(SubstanceProtein dst) {

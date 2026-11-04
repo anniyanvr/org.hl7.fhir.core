@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class GuidePageKindEnumFactory implements EnumFactory<GuidePageKind> {
@@ -58,11 +54,13 @@ public class GuidePageKindEnumFactory implements EnumFactory<GuidePageKind> {
       return GuidePageKind.TOC;
     if ("resource".equals(codeString))
       return GuidePageKind.RESOURCE;
-    throw new IllegalArgumentException("Unknown GuidePageKind code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown GuidePageKind code '" + codeString + "'");
   }
 
   public String toCode(GuidePageKind code) {
-    if (code == GuidePageKind.PAGE)
+       if (code == GuidePageKind.NULL)
+           return null;
+       if (code == GuidePageKind.PAGE)
       return "page";
     if (code == GuidePageKind.EXAMPLE)
       return "example";
@@ -79,10 +77,10 @@ public class GuidePageKindEnumFactory implements EnumFactory<GuidePageKind> {
     if (code == GuidePageKind.RESOURCE)
       return "resource";
     return "?";
-  }
+   }
 
-    public String toSystem(GuidePageKind code) {
-      return code.getSystem();
-      }
+  public String toSystem(GuidePageKind code) {
+    return code.getSystem();
+  }
 
 }

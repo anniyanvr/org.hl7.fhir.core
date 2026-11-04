@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +46,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for ContactPoint Type: Details for all kinds of technology mediated contact points for a person or organization, including telephone, email, etc.
+ * ContactPoint Type: Details for all kinds of technology mediated contact points for a person or organization, including telephone, email, etc.
  */
 @DatatypeDef(name="ContactPoint")
 public class ContactPoint extends DataType implements ICompositeType {
@@ -73,7 +73,7 @@ public class ContactPoint extends DataType implements ICompositeType {
          */
         URL, 
         /**
-         * A contact that can be used for sending an sms message (e.g. mobile phones, some landlines).
+         * A contact that can be used for sending a sms message (e.g. mobile phones, some landlines).
          */
         SMS, 
         /**
@@ -115,6 +115,7 @@ public class ContactPoint extends DataType implements ICompositeType {
             case URL: return "url";
             case SMS: return "sms";
             case OTHER: return "other";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -127,6 +128,7 @@ public class ContactPoint extends DataType implements ICompositeType {
             case URL: return "http://hl7.org/fhir/contact-point-system";
             case SMS: return "http://hl7.org/fhir/contact-point-system";
             case OTHER: return "http://hl7.org/fhir/contact-point-system";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -137,8 +139,9 @@ public class ContactPoint extends DataType implements ICompositeType {
             case EMAIL: return "The value is an email address.";
             case PAGER: return "The value is a pager number. These may be local pager numbers that are only usable on a particular pager system.";
             case URL: return "A contact that is not a phone, fax, pager or email address and is expressed as a URL.  This is intended for various institutional or personal contacts including web sites, blogs, Skype, Twitter, Facebook, etc. Do not use for email addresses.";
-            case SMS: return "A contact that can be used for sending an sms message (e.g. mobile phones, some landlines).";
+            case SMS: return "A contact that can be used for sending a sms message (e.g. mobile phones, some landlines).";
             case OTHER: return "A contact that is not a phone, fax, page or email address and is not expressible as a URL.  E.g. Internal mail address.  This SHOULD NOT be used for contacts that are expressible as a URL (e.g. Skype, Twitter, Facebook, etc.)  Extensions may be used to distinguish \"other\" contact types.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -151,6 +154,7 @@ public class ContactPoint extends DataType implements ICompositeType {
             case URL: return "URL";
             case SMS: return "SMS";
             case OTHER: return "Other";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -177,32 +181,34 @@ public class ContactPoint extends DataType implements ICompositeType {
           return ContactPointSystem.OTHER;
         throw new IllegalArgumentException("Unknown ContactPointSystem code '"+codeString+"'");
         }
-        public Enumeration<ContactPointSystem> fromType(Base code) throws FHIRException {
+        public Enumeration<ContactPointSystem> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<ContactPointSystem>(this);
+            return new Enumeration<ContactPointSystem>(this, ContactPointSystem.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<ContactPointSystem>(this, ContactPointSystem.NULL, code);
         if ("phone".equals(codeString))
-          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.PHONE);
+          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.PHONE, code);
         if ("fax".equals(codeString))
-          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.FAX);
+          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.FAX, code);
         if ("email".equals(codeString))
-          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.EMAIL);
+          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.EMAIL, code);
         if ("pager".equals(codeString))
-          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.PAGER);
+          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.PAGER, code);
         if ("url".equals(codeString))
-          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.URL);
+          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.URL, code);
         if ("sms".equals(codeString))
-          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.SMS);
+          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.SMS, code);
         if ("other".equals(codeString))
-          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.OTHER);
+          return new Enumeration<ContactPointSystem>(this, ContactPointSystem.OTHER, code);
         throw new FHIRException("Unknown ContactPointSystem code '"+codeString+"'");
         }
     public String toCode(ContactPointSystem code) {
-      if (code == ContactPointSystem.PHONE)
+       if (code == ContactPointSystem.NULL)
+           return null;
+       if (code == ContactPointSystem.PHONE)
         return "phone";
       if (code == ContactPointSystem.FAX)
         return "fax";
@@ -217,7 +223,7 @@ public class ContactPoint extends DataType implements ICompositeType {
       if (code == ContactPointSystem.OTHER)
         return "other";
       return "?";
-      }
+   }
     public String toSystem(ContactPointSystem code) {
       return code.getSystem();
       }
@@ -273,6 +279,7 @@ public class ContactPoint extends DataType implements ICompositeType {
             case TEMP: return "temp";
             case OLD: return "old";
             case MOBILE: return "mobile";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -283,6 +290,7 @@ public class ContactPoint extends DataType implements ICompositeType {
             case TEMP: return "http://hl7.org/fhir/contact-point-use";
             case OLD: return "http://hl7.org/fhir/contact-point-use";
             case MOBILE: return "http://hl7.org/fhir/contact-point-use";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -293,6 +301,7 @@ public class ContactPoint extends DataType implements ICompositeType {
             case TEMP: return "A temporary contact point. The period can provide more detailed information.";
             case OLD: return "This contact point is no longer in use (or was never correct, but retained for records).";
             case MOBILE: return "A telecommunication device that moves and stays with its owner. May have characteristics of all other use codes, suitable for urgent matters, not the first choice for routine business.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -303,6 +312,7 @@ public class ContactPoint extends DataType implements ICompositeType {
             case TEMP: return "Temp";
             case OLD: return "Old";
             case MOBILE: return "Mobile";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -325,28 +335,30 @@ public class ContactPoint extends DataType implements ICompositeType {
           return ContactPointUse.MOBILE;
         throw new IllegalArgumentException("Unknown ContactPointUse code '"+codeString+"'");
         }
-        public Enumeration<ContactPointUse> fromType(Base code) throws FHIRException {
+        public Enumeration<ContactPointUse> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<ContactPointUse>(this);
+            return new Enumeration<ContactPointUse>(this, ContactPointUse.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<ContactPointUse>(this, ContactPointUse.NULL, code);
         if ("home".equals(codeString))
-          return new Enumeration<ContactPointUse>(this, ContactPointUse.HOME);
+          return new Enumeration<ContactPointUse>(this, ContactPointUse.HOME, code);
         if ("work".equals(codeString))
-          return new Enumeration<ContactPointUse>(this, ContactPointUse.WORK);
+          return new Enumeration<ContactPointUse>(this, ContactPointUse.WORK, code);
         if ("temp".equals(codeString))
-          return new Enumeration<ContactPointUse>(this, ContactPointUse.TEMP);
+          return new Enumeration<ContactPointUse>(this, ContactPointUse.TEMP, code);
         if ("old".equals(codeString))
-          return new Enumeration<ContactPointUse>(this, ContactPointUse.OLD);
+          return new Enumeration<ContactPointUse>(this, ContactPointUse.OLD, code);
         if ("mobile".equals(codeString))
-          return new Enumeration<ContactPointUse>(this, ContactPointUse.MOBILE);
+          return new Enumeration<ContactPointUse>(this, ContactPointUse.MOBILE, code);
         throw new FHIRException("Unknown ContactPointUse code '"+codeString+"'");
         }
     public String toCode(ContactPointUse code) {
-      if (code == ContactPointUse.HOME)
+       if (code == ContactPointUse.NULL)
+           return null;
+       if (code == ContactPointUse.HOME)
         return "home";
       if (code == ContactPointUse.WORK)
         return "work";
@@ -357,7 +369,7 @@ public class ContactPoint extends DataType implements ICompositeType {
       if (code == ContactPointUse.MOBILE)
         return "mobile";
       return "?";
-      }
+   }
     public String toSystem(ContactPointUse code) {
       return code.getSystem();
       }
@@ -704,6 +716,25 @@ public class ContactPoint extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("system")) {
+          value = new ContactPointSystemEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.system = (Enumeration) value; // Enumeration<ContactPointSystem>
+        } else if (name.equals("value")) {
+          this.value = null;
+        } else if (name.equals("use")) {
+          value = new ContactPointUseEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.use = (Enumeration) value; // Enumeration<ContactPointUse>
+        } else if (name.equals("rank")) {
+          this.rank = null;
+        } else if (name.equals("period")) {
+          this.period = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -733,16 +764,16 @@ public class ContactPoint extends DataType implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("system")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ContactPoint.system");
+          throw new FHIRException("Cannot call addChild on a singleton property ContactPoint.system");
         }
         else if (name.equals("value")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ContactPoint.value");
+          throw new FHIRException("Cannot call addChild on a singleton property ContactPoint.value");
         }
         else if (name.equals("use")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ContactPoint.use");
+          throw new FHIRException("Cannot call addChild on a singleton property ContactPoint.use");
         }
         else if (name.equals("rank")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ContactPoint.rank");
+          throw new FHIRException("Cannot call addChild on a singleton property ContactPoint.rank");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -761,6 +792,10 @@ public class ContactPoint extends DataType implements ICompositeType {
         ContactPoint dst = new ContactPoint();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ContactPoint) dst);
       }
 
       public void copyValues(ContactPoint dst) {

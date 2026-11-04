@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class MetricOperationalStatusEnumFactory implements EnumFactory<MetricOperationalStatus> {
@@ -50,11 +46,13 @@ public class MetricOperationalStatusEnumFactory implements EnumFactory<MetricOpe
       return MetricOperationalStatus.STANDBY;
     if ("entered-in-error".equals(codeString))
       return MetricOperationalStatus.ENTEREDINERROR;
-    throw new IllegalArgumentException("Unknown MetricOperationalStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MetricOperationalStatus code '" + codeString + "'");
   }
 
   public String toCode(MetricOperationalStatus code) {
-    if (code == MetricOperationalStatus.ON)
+       if (code == MetricOperationalStatus.NULL)
+           return null;
+       if (code == MetricOperationalStatus.ON)
       return "on";
     if (code == MetricOperationalStatus.OFF)
       return "off";
@@ -63,10 +61,10 @@ public class MetricOperationalStatusEnumFactory implements EnumFactory<MetricOpe
     if (code == MetricOperationalStatus.ENTEREDINERROR)
       return "entered-in-error";
     return "?";
-  }
+   }
 
-    public String toSystem(MetricOperationalStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(MetricOperationalStatus code) {
+    return code.getSystem();
+  }
 
 }

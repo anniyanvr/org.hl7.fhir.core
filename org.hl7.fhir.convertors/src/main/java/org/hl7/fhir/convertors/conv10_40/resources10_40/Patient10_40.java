@@ -1,11 +1,20 @@
 package org.hl7.fhir.convertors.conv10_40.resources10_40;
 
+import org.hl7.fhir.convertors.VersionConvertorConstants;
 import org.hl7.fhir.convertors.context.ConversionContext10_40;
 import org.hl7.fhir.convertors.conv10_40.datatypes10_40.Reference10_40;
-import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.*;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Address10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Attachment10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.CodeableConcept10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.ContactPoint10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.HumanName10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Identifier10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Period10_40;
 import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Boolean10_40;
 import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Date10_40;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r4.model.Enumeration;
+import org.hl7.fhir.r4.model.Patient;
 
 public class Patient10_40 {
 
@@ -13,7 +22,7 @@ public class Patient10_40 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Extension tgt = new org.hl7.fhir.r4.model.Extension();
-    tgt.setUrl("http://hl7.org/fhir/StructureDefinition/patient-animal");
+    tgt.setUrl(VersionConvertorConstants.EXT_PAT_ANIMAL);
     ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyElement(src, tgt);
     if (src.hasSpecies())
       tgt.addExtension("species", CodeableConcept10_40.convertCodeableConcept(src.getSpecies()));
@@ -42,7 +51,7 @@ public class Patient10_40 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.r4.model.Patient.ContactComponent tgt = new org.hl7.fhir.r4.model.Patient.ContactComponent();
-    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyElement(src, tgt);
+    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyBackboneElement(src,tgt);
     for (org.hl7.fhir.dstu2.model.CodeableConcept t : src.getRelationship())
       tgt.addRelationship(CodeableConcept10_40.convertCodeableConcept(t));
     if (src.hasName())
@@ -64,7 +73,7 @@ public class Patient10_40 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.dstu2.model.Patient.ContactComponent tgt = new org.hl7.fhir.dstu2.model.Patient.ContactComponent();
-    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyElement(src, tgt);
+    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyBackboneElement(src,tgt);
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getRelationship())
       tgt.addRelationship(CodeableConcept10_40.convertCodeableConcept(t));
     if (src.hasName())
@@ -83,50 +92,58 @@ public class Patient10_40 {
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Patient.LinkType> convertLinkType(org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.Patient.LinkType> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Patient.LinkType> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Patient.LinkTypeEnumFactory());
-    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case REPLACE:
-        tgt.setValue(org.hl7.fhir.r4.model.Patient.LinkType.REPLACEDBY);
-        break;
-      case REFER:
-        tgt.setValue(org.hl7.fhir.r4.model.Patient.LinkType.REFER);
-        break;
-      case SEEALSO:
-        tgt.setValue(org.hl7.fhir.r4.model.Patient.LinkType.SEEALSO);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.Patient.LinkType.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Patient.LinkType> tgt = new Enumeration<>(new Patient.LinkTypeEnumFactory());
+      ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case REPLACE:
+                  tgt.setValue(Patient.LinkType.REPLACEDBY);
+                  break;
+              case REFER:
+                  tgt.setValue(Patient.LinkType.REFER);
+                  break;
+              case SEEALSO:
+                  tgt.setValue(Patient.LinkType.SEEALSO);
+                  break;
+              default:
+                  tgt.setValue(Patient.LinkType.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.Patient.LinkType> convertLinkType(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Patient.LinkType> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.Patient.LinkType> tgt = new org.hl7.fhir.dstu2.model.Enumeration<>(new org.hl7.fhir.dstu2.model.Patient.LinkTypeEnumFactory());
-    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case REPLACEDBY:
-        tgt.setValue(org.hl7.fhir.dstu2.model.Patient.LinkType.REPLACE);
-        break;
-      case REPLACES:
-        tgt.setValue(org.hl7.fhir.dstu2.model.Patient.LinkType.REPLACE);
-        break;
-      case REFER:
-        tgt.setValue(org.hl7.fhir.dstu2.model.Patient.LinkType.REFER);
-        break;
-      case SEEALSO:
-        tgt.setValue(org.hl7.fhir.dstu2.model.Patient.LinkType.SEEALSO);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.dstu2.model.Patient.LinkType.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.Patient.LinkType> tgt = new org.hl7.fhir.dstu2.model.Enumeration<>(new org.hl7.fhir.dstu2.model.Patient.LinkTypeEnumFactory());
+      ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case REPLACEDBY:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.Patient.LinkType.REPLACE);
+                  break;
+              case REPLACES:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.Patient.LinkType.REPLACE);
+                  break;
+              case REFER:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.Patient.LinkType.REFER);
+                  break;
+              case SEEALSO:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.Patient.LinkType.SEEALSO);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.Patient.LinkType.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r4.model.Patient convertPatient(org.hl7.fhir.dstu2.model.Patient src) throws FHIRException {
@@ -194,8 +211,8 @@ public class Patient10_40 {
     for (org.hl7.fhir.r4.model.Attachment t : src.getPhoto()) tgt.addPhoto(Attachment10_40.convertAttachment(t));
     for (org.hl7.fhir.r4.model.Patient.ContactComponent t : src.getContact())
       tgt.addContact(convertContactComponent(t));
-    if (src.hasExtension("http://hl7.org/fhir/StructureDefinition/patient-animal"))
-      tgt.setAnimal(convertAnimalComponent(src.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/patient-animal")));
+    if (src.hasExtension(VersionConvertorConstants.EXT_PAT_ANIMAL))
+      tgt.setAnimal(convertAnimalComponent(src.getExtensionByUrl(VersionConvertorConstants.EXT_PAT_ANIMAL)));
     for (org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent t : src.getCommunication())
       tgt.addCommunication(convertPatientCommunicationComponent(t));
     for (org.hl7.fhir.r4.model.Reference t : src.getGeneralPractitioner())
@@ -211,7 +228,7 @@ public class Patient10_40 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent tgt = new org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent();
-    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyElement(src, tgt);
+    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyBackboneElement(src,tgt);
     if (src.hasLanguage())
       tgt.setLanguage(CodeableConcept10_40.convertCodeableConcept(src.getLanguage()));
     if (src.hasPreferredElement())
@@ -223,7 +240,7 @@ public class Patient10_40 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.dstu2.model.Patient.PatientCommunicationComponent tgt = new org.hl7.fhir.dstu2.model.Patient.PatientCommunicationComponent();
-    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyElement(src, tgt);
+    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyBackboneElement(src,tgt);
     if (src.hasLanguage())
       tgt.setLanguage(CodeableConcept10_40.convertCodeableConcept(src.getLanguage()));
     if (src.hasPreferredElement())
@@ -235,7 +252,7 @@ public class Patient10_40 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.dstu2.model.Patient.PatientLinkComponent tgt = new org.hl7.fhir.dstu2.model.Patient.PatientLinkComponent();
-    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyElement(src, tgt);
+    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyBackboneElement(src,tgt);
     if (src.hasOther())
       tgt.setOther(Reference10_40.convertReference(src.getOther()));
     if (src.hasType())
@@ -247,7 +264,7 @@ public class Patient10_40 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.r4.model.Patient.PatientLinkComponent tgt = new org.hl7.fhir.r4.model.Patient.PatientLinkComponent();
-    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyElement(src, tgt);
+    ConversionContext10_40.INSTANCE.getVersionConvertor_10_40().copyBackboneElement(src,tgt);
     if (src.hasOther())
       tgt.setOther(Reference10_40.convertReference(src.getOther()));
     if (src.hasType())

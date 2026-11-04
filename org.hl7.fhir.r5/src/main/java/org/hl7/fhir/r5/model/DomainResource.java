@@ -29,29 +29,24 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import org.hl7.fhir.r5.model.Enumerations.*;
-import org.hl7.fhir.instance.model.api.IBaseBackboneElement;
-import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.instance.model.api.ICompositeType;
-import ca.uhn.fhir.model.api.annotation.ResourceDef;
-import ca.uhn.fhir.model.api.annotation.SearchParamDefinition;
-import org.hl7.fhir.instance.model.api.IBaseBackboneElement;
-import ca.uhn.fhir.model.api.annotation.Child;
-import ca.uhn.fhir.model.api.annotation.ChildOrder;
-import ca.uhn.fhir.model.api.annotation.Description;
-import ca.uhn.fhir.model.api.annotation.Block;
-
 import java.util.Collections;
-import  org.hl7.fhir.instance.model.api.IDomainResource;
-import  org.hl7.fhir.instance.model.api.IBaseDatatypeElement;
-import  org.hl7.fhir.instance.model.api.IBaseHasExtensions;
-import  org.hl7.fhir.instance.model.api.IBaseHasModifierExtensions;
-import  org.hl7.fhir.instance.model.api.IBaseBackboneElement;
+import java.util.List;
+
+import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.instance.model.api.IBaseHasExtensions;
+import org.hl7.fhir.instance.model.api.IBaseHasModifierExtensions;
+import org.hl7.fhir.instance.model.api.IDomainResource;
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
+
+import org.hl7.fhir.utilities.StandardsStatus;
+import org.hl7.fhir.utilities.Utilities;
+
+import ca.uhn.fhir.model.api.annotation.Child;
+import ca.uhn.fhir.model.api.annotation.Description;
+import ca.uhn.fhir.model.api.annotation.SearchParamDefinition;
 /**
  * A resource that includes narrative, extensions, and contained resources.
  */
@@ -65,26 +60,26 @@ public abstract class DomainResource extends Resource implements IBaseHasExtensi
     protected Narrative text;
 
     /**
-     * These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, nor can they have their own independent transaction scope.
+     * These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, nor can they have their own independent transaction scope. This is allowed to be a Parameters resource if and only if it is referenced by a resource that provides context/meaning.
      */
     @Child(name = "contained", type = {Resource.class}, order=1, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-    @Description(shortDefinition="Contained, inline Resources", formalDefinition="These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, nor can they have their own independent transaction scope." )
+    @Description(shortDefinition="Contained, inline Resources", formalDefinition="These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, nor can they have their own independent transaction scope. This is allowed to be a Parameters resource if and only if it is referenced by a resource that provides context/meaning." )
     protected List<Resource> contained;
 
     /**
-     * May be used to represent additional information that is not part of the basic definition of the resource. To make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.
+     * May be used to represent additional information that is not part of the basic definition of the resource. To make the use of extensions safe and managable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.
      */
     @Child(name = "extension", type = {Extension.class}, order=2, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-    @Description(shortDefinition="Additional content defined by implementations", formalDefinition="May be used to represent additional information that is not part of the basic definition of the resource. To make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension." )
+    @Description(shortDefinition="Additional content defined by implementations", formalDefinition="May be used to represent additional information that is not part of the basic definition of the resource. To make the use of extensions safe and managable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension." )
     protected List<Extension> extension;
 
     /**
-     * May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.
+     * May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.
 
 Modifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself).
      */
-    @Child(name = "modifierExtension", type = {Extension.class}, order=3, min=0, max=Child.MAX_UNLIMITED, modifier=true, summary=false)
-    @Description(shortDefinition="Extensions that cannot be ignored", formalDefinition="May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.\n\nModifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself)." )
+    @Child(name = "modifierExtension", type = {Extension.class}, order=3, min=0, max=Child.MAX_UNLIMITED, modifier=true, summary=true)
+    @Description(shortDefinition="Extensions that cannot be ignored", formalDefinition="May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.\n\nModifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself)." )
     protected List<Extension> modifierExtension;
 
     private static final long serialVersionUID = -970285559L;
@@ -121,7 +116,7 @@ Modifier extensions SHALL NOT change the meaning of any elements on Resource or 
     }
 
     /**
-     * @return {@link #contained} (These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, nor can they have their own independent transaction scope.)
+     * @return {@link #contained} (These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, nor can they have their own independent transaction scope. This is allowed to be a Parameters resource if and only if it is referenced by a resource that provides context/meaning.)
      */
     public List<Resource> getContained() { 
       if (this.contained == null)
@@ -156,12 +151,21 @@ Modifier extensions SHALL NOT change the meaning of any elements on Resource or 
     }
 
     /**
-     * @return {@link #extension} (May be used to represent additional information that is not part of the basic definition of the resource. To make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.)
+     * @return {@link #extension} (May be used to represent additional information that is not part of the basic definition of the resource. To make the use of extensions safe and managable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.)
      */
     public List<Extension> getExtension() { 
       if (this.extension == null)
         this.extension = new ArrayList<Extension>();
       return this.extension;
+    }
+
+    /**
+     * Read-only access to the extensions, for code that only searches them. Unlike
+     * {@link #getExtension()} this does not create (and store) an empty list when there are
+     * none, which both allocates and mutates elements that callers treat as read-only.
+     */
+    public List<Extension> getExtensionsForRead() { 
+      return this.extension == null ? java.util.Collections.<Extension>emptyList() : this.extension;
     }
 
     /**
@@ -172,7 +176,7 @@ Modifier extensions SHALL NOT change the meaning of any elements on Resource or 
       return this;
     }
 
-    public boolean hasExtension() { 
+    public boolean hasExtension() {
       if (this.extension == null)
         return false;
       for (Extension item : this.extension)
@@ -199,7 +203,7 @@ Modifier extensions SHALL NOT change the meaning of any elements on Resource or 
     }
 
     /**
-     * @return {@link #modifierExtension} (May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.
+     * @return {@link #modifierExtension} (May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.
 
 Modifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself).)
      */
@@ -207,6 +211,14 @@ Modifier extensions SHALL NOT change the meaning of any elements on Resource or 
       if (this.modifierExtension == null)
         this.modifierExtension = new ArrayList<Extension>();
       return this.modifierExtension;
+    }
+
+    /**
+     * Read-only access to the modifier extensions, for code that only searches them.
+     * See Element.getExtensionsForRead().
+     */
+    public List<Extension> getModifierExtensionsForRead() { 
+      return this.modifierExtension == null ? java.util.Collections.<Extension>emptyList() : this.modifierExtension;
     }
 
     /**
@@ -246,18 +258,18 @@ Modifier extensions SHALL NOT change the meaning of any elements on Resource or 
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
         children.add(new Property("text", "Narrative", "A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it \"clinically safe\" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.", 0, 1, text));
-        children.add(new Property("contained", "Resource", "These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, nor can they have their own independent transaction scope.", 0, java.lang.Integer.MAX_VALUE, contained));
-        children.add(new Property("extension", "Extension", "May be used to represent additional information that is not part of the basic definition of the resource. To make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.", 0, java.lang.Integer.MAX_VALUE, extension));
-        children.add(new Property("modifierExtension", "Extension", "May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.\n\nModifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself).", 0, java.lang.Integer.MAX_VALUE, modifierExtension));
+        children.add(new Property("contained", "Resource", "These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, nor can they have their own independent transaction scope. This is allowed to be a Parameters resource if and only if it is referenced by a resource that provides context/meaning.", 0, java.lang.Integer.MAX_VALUE, contained));
+        children.add(new Property("extension", "Extension", "May be used to represent additional information that is not part of the basic definition of the resource. To make the use of extensions safe and managable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.", 0, java.lang.Integer.MAX_VALUE, extension));
+        children.add(new Property("modifierExtension", "Extension", "May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.\n\nModifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself).", 0, java.lang.Integer.MAX_VALUE, modifierExtension));
       }
 
       @Override
       public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
         switch (_hash) {
         case 3556653: /*text*/  return new Property("text", "Narrative", "A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it \"clinically safe\" for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety.", 0, 1, text);
-        case -410956685: /*contained*/  return new Property("contained", "Resource", "These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, nor can they have their own independent transaction scope.", 0, java.lang.Integer.MAX_VALUE, contained);
-        case -612557761: /*extension*/  return new Property("extension", "Extension", "May be used to represent additional information that is not part of the basic definition of the resource. To make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.", 0, java.lang.Integer.MAX_VALUE, extension);
-        case -298878168: /*modifierExtension*/  return new Property("modifierExtension", "Extension", "May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.\n\nModifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself).", 0, java.lang.Integer.MAX_VALUE, modifierExtension);
+        case -410956685: /*contained*/  return new Property("contained", "Resource", "These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, nor can they have their own independent transaction scope. This is allowed to be a Parameters resource if and only if it is referenced by a resource that provides context/meaning.", 0, java.lang.Integer.MAX_VALUE, contained);
+        case -612557761: /*extension*/  return new Property("extension", "Extension", "May be used to represent additional information that is not part of the basic definition of the resource. To make the use of extensions safe and managable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.", 0, java.lang.Integer.MAX_VALUE, extension);
+        case -298878168: /*modifierExtension*/  return new Property("modifierExtension", "Extension", "May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer is allowed to define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.\n\nModifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself).", 0, java.lang.Integer.MAX_VALUE, modifierExtension);
         default: return super.getNamedProperty(_hash, _name, _checkValid);
         }
 
@@ -310,6 +322,21 @@ Modifier extensions SHALL NOT change the meaning of any elements on Resource or 
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("text")) {
+          this.text = null;
+        } else if (name.equals("contained")) {
+          this.getContained().remove(value);
+        } else if (name.equals("extension")) {
+          this.getExtension().remove(value);
+        } else if (name.equals("modifierExtension")) {
+          this.getModifierExtension().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -359,6 +386,10 @@ Modifier extensions SHALL NOT change the meaning of any elements on Resource or 
   }
 
       public abstract DomainResource copy();
+
+      public void assignValues(Base dst) {
+        copyValues((DomainResource) dst);
+      }
 
       public void copyValues(DomainResource dst) {
         super.copyValues(dst);
@@ -428,87 +459,211 @@ Modifier extensions SHALL NOT change the meaning of any elements on Resource or 
 
 // Manual code (from Configuration.txt):
 public void checkNoModifiers(String noun, String verb) throws FHIRException {
-        if (hasModifierExtension()) {
-          throw new FHIRException("Found unknown Modifier Exceptions on "+noun+" doing "+verb);
-        }
-        
+  if (hasModifierExtension()) {
+    throw new FHIRException("Found unknown Modifier Exceptions on " + noun + " doing " + verb);
   }
+
+}
 
   public void addExtension(String url, DataType value) {
     Extension ex = new Extension();
     ex.setUrl(url);
     ex.setValue(value);
-    getExtension().add(ex);    
+    getExtension().add(ex);
   }
-  
 
-
+  public boolean hasExtension(String... theUrls) {
+    for (Extension next : getModifierExtensionsForRead()) {
+      if (Utilities.existsInList(next.getUrl(), theUrls)) {
+        return true;
+      }
+    }
+    for (Extension next : getExtensionsForRead()) {
+      if (Utilities.existsInList(next.getUrl(), theUrls)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   public boolean hasExtension(String url) {
-    for (Extension e : getExtension())
+    for (Extension next : getModifierExtensionsForRead()) {
+      if (url.equals(next.getUrl())) {
+        return true;
+      }
+    }
+    for (Extension e : getExtensionsForRead())
       if (url.equals(e.getUrl()))
         return true;
     return false;
+  }
+
+  public boolean hasPrimitiveExtension(String url) {
+    for (Extension e : getModifierExtensionsForRead()) {
+      if (url.equals(e.getUrl()) && e.hasValue() && e.getValue().isPrimitive()) {
+        return true;
+      }
     }
+    for (Extension e : getExtensionsForRead()) {
+      if (url.equals(e.getUrl()) && e.hasValue() && e.getValue().isPrimitive()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public Extension getExtensionByUrl(String theUrl) {
+    org.apache.commons.lang3.Validate.notBlank(theUrl, "theUrl must not be blank or null");
+    ArrayList<Extension> retVal = new ArrayList<Extension>();
+
+    for (Extension next : getExtensionsForRead()) {
+      if (theUrl.equals(next.getUrl())) {
+        retVal.add(next);
+      }
+    }
+
+    for (Extension next : getModifierExtensionsForRead()) {
+      if (theUrl.equals(next.getUrl())) {
+        retVal.add(next);
+      }
+    }
+    if (retVal.size() == 0)
+      return null;
+    else {
+      org.apache.commons.lang3.Validate.isTrue(retVal.size() == 1, "Url " + theUrl + " must have only one match");
+      return retVal.get(0);
+    }
+  }
+
+
+  /**
+   * Returns the value as a string if this element has only one extension that matches the given URL, and that can be converted to a string.
+   * <p>
+   * Note: BackboneElements override this to check Modifier Extensions too
+   *
+   * @param theUrl The URL. Must not be blank or null.
+   */
+
+    /**
+     * The single extension matching the URL, or null if there is none. Scans in place rather
+     * than building a list - see Element.getSingleExtensionByUrl().
+     */
+    protected Extension getSingleExtensionByUrl(String theUrl) throws FHIRException {
+      org.apache.commons.lang3.Validate.notBlank(theUrl, "theUrl must be provided with a value");
+      return soleExtension(getModifierExtensionsForRead(), theUrl, soleExtension(getExtensionsForRead(), theUrl, null));
+    }
+
+    /**
+     * @param found an extension already matched by a caller scanning another list, or null
+     */
+    protected static Extension soleExtension(List<Extension> list, String theUrl, Extension found) throws FHIRException {
+      for (Extension next : list) {
+        if (theUrl.equals(next.getUrl())) {
+          if (found != null) {
+            throw new FHIRException("Multiple matching extensions found for extension '"+theUrl+"'");
+          }
+          found = next;
+        }
+      }
+      return found;
+    }
+
+  public String getExtensionString(String theUrl) throws FHIRException {
+    Extension ext = getSingleExtensionByUrl(theUrl);
+    if (ext == null)
+      return null;
+    if (!ext.hasValue())
+      return null;
+    if (!ext.getValue().isPrimitive())
+      throw new FHIRException("Extension '" + theUrl + "' could not be converted to a string");
+    return ext.getValue().primitiveValue();
+  }
+
+  public String getExtensionString(String... theUrls) throws FHIRException {
+    for (String url : theUrls) {
+      if (hasExtension(url)) {
+        return getExtensionString(url);
+      }
+    }
+    return null;
+  }
+
+
+  public Resource getContained(String ref) {
+    if (ref == null)
+      return null;
+
+    if (ref.startsWith("#"))
+      ref = ref.substring(1);
+    for (Resource r : getContained()) {
+      if (r.getId().equals(ref))
+        return r;
+    }
+    return null;
+  }
+
+  /**
+   * Returns a list of extensions from this element which have the given URL. Note that
+   * this list may not be modified (you can not add or remove elements from it)
+   */
+  public List<Extension> getExtensionsByUrl(String theUrl) {
+    org.apache.commons.lang3.Validate.notBlank(theUrl, "theUrl must be provided with a value");
+    ArrayList<Extension> retVal = new ArrayList<Extension>();
+    for (Extension next : getExtensionsForRead()) {
+      if (theUrl.equals(next.getUrl())) {
+        retVal.add(next);
+      }
+    }
+    for (Extension next : getModifierExtensionsForRead()) {
+      if (theUrl.equals(next.getUrl())) {
+        retVal.add(next);
+      }
+    }
+    return Collections.unmodifiableList(retVal);
+  }
+
+
+  public List<Extension> getExtensionsByUrl(String... theUrls) {
+    ArrayList<Extension> retVal = new ArrayList<>();
+
+    for (Extension next : getExtensionsForRead()) {
+      if (Utilities.existsInList(next.getUrl(), theUrls)) {
+        retVal.add(next);
+      }
+    }
+    for (Extension next : getModifierExtensionsForRead()) {
+      if (Utilities.existsInList(next.getUrl(), theUrls)) {
+        retVal.add(next);
+      }
+    }
+    return java.util.Collections.unmodifiableList(retVal);
+  }
+
+  /**
+   * Returns a list of modifier extensions from this element which have the given URL. Note that
+   * this list may not be modified (you can not add or remove elements from it)
+   */
+  public List<Extension> getModifierExtensionsByUrl(String theUrl) {
+    org.apache.commons.lang3.Validate.notBlank(theUrl, "theUrl must be provided with a value");
+    ArrayList<Extension> retVal = new ArrayList<Extension>();
+    for (Extension next : getModifierExtensionsForRead()) {
+      if (theUrl.equals(next.getUrl())) {
+        retVal.add(next);
+      }
+    }
+    return Collections.unmodifiableList(retVal);
+  }
+
+
+  public StandardsStatus getStandardsStatus() {
+    return ExtensionUtilities.getStandardsStatus(this);
+  }
+
+  public void setStandardsStatus(StandardsStatus status, String thisVersion) {
+    ExtensionUtilities.setStandardsStatus(this, status, null, thisVersion);
+  }
+
     
-       public Extension getExtensionByUrl(String theUrl) {
-     org.apache.commons.lang3.Validate.notBlank(theUrl, "theUrl must not be blank or null");
-     ArrayList<Extension> retVal = new ArrayList<Extension>();
-     for (Extension next : getExtension()) {
-       if (theUrl.equals(next.getUrl())) {
-         retVal.add(next);
-       }
-     }
-     if (retVal.size() == 0)
-       return null;
-     else {
-       org.apache.commons.lang3.Validate.isTrue(retVal.size() == 1, "Url "+theUrl+" must have only one match");
-       return retVal.get(0);
-     }
-   }
-  
-      public Resource getContained(String ref) {
-        if (ref == null)
-          return null;
-        
-        if (ref.startsWith("#"))
-          ref = ref.substring(1);
-        for (Resource r : getContained()) {
-          if (r.getId().equals(ref)) 
-            return r;
-        }
-        return null;
-      }
-
-    /**
-     * Returns a list of extensions from this element which have the given URL. Note that
-     * this list may not be modified (you can not add or remove elements from it)
-     */
-    public List<Extension> getExtensionsByUrl(String theUrl) {
-      org.apache.commons.lang3.Validate.notBlank(theUrl, "theUrl must be provided with a value");
-      ArrayList<Extension> retVal = new ArrayList<Extension>();
-      for (Extension next : getExtension()) {
-        if (theUrl.equals(next.getUrl())) {
-          retVal.add(next);
-        }
-      }
-      return Collections.unmodifiableList(retVal);
-    }
-
-    /**
-     * Returns a list of modifier extensions from this element which have the given URL. Note that
-     * this list may not be modified (you can not add or remove elements from it)
-     */
-    public List<Extension> getModifierExtensionsByUrl(String theUrl) {
-      org.apache.commons.lang3.Validate.notBlank(theUrl, "theUrl must be provided with a value");
-      ArrayList<Extension> retVal = new ArrayList<Extension>();
-      for (Extension next : getModifierExtension()) {
-        if (theUrl.equals(next.getUrl())) {
-          retVal.add(next);
-        }
-      }
-      return Collections.unmodifiableList(retVal);
-    }
 // end addition
 
 }

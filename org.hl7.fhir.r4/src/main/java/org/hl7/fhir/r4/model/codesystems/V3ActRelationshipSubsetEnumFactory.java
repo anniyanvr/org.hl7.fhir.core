@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -70,11 +66,13 @@ public class V3ActRelationshipSubsetEnumFactory implements EnumFactory<V3ActRela
       return V3ActRelationshipSubset.MAX;
     if ("MIN".equals(codeString))
       return V3ActRelationshipSubset.MIN;
-    throw new IllegalArgumentException("Unknown V3ActRelationshipSubset code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ActRelationshipSubset code '" + codeString + "'");
   }
 
   public String toCode(V3ActRelationshipSubset code) {
-    if (code == V3ActRelationshipSubset._PARTICIPATIONSUBSET)
+       if (code == V3ActRelationshipSubset.NULL)
+           return null;
+       if (code == V3ActRelationshipSubset._PARTICIPATIONSUBSET)
       return "_ParticipationSubset";
     if (code == V3ActRelationshipSubset.FUTURE)
       return "FUTURE";
@@ -103,10 +101,10 @@ public class V3ActRelationshipSubsetEnumFactory implements EnumFactory<V3ActRela
     if (code == V3ActRelationshipSubset.MIN)
       return "MIN";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ActRelationshipSubset code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ActRelationshipSubset code) {
+    return code.getSystem();
+  }
 
 }

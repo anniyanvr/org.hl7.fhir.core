@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class CompositionAltcodeKindEnumFactory implements EnumFactory<CompositionAltcodeKind> {
@@ -52,11 +48,13 @@ public class CompositionAltcodeKindEnumFactory implements EnumFactory<Compositio
       return CompositionAltcodeKind.CASESENSITIVE;
     if ("expression".equals(codeString))
       return CompositionAltcodeKind.EXPRESSION;
-    throw new IllegalArgumentException("Unknown CompositionAltcodeKind code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CompositionAltcodeKind code '" + codeString + "'");
   }
 
   public String toCode(CompositionAltcodeKind code) {
-    if (code == CompositionAltcodeKind.ALTERNATE)
+       if (code == CompositionAltcodeKind.NULL)
+           return null;
+       if (code == CompositionAltcodeKind.ALTERNATE)
       return "alternate";
     if (code == CompositionAltcodeKind.DEPRECATED)
       return "deprecated";
@@ -67,10 +65,10 @@ public class CompositionAltcodeKindEnumFactory implements EnumFactory<Compositio
     if (code == CompositionAltcodeKind.EXPRESSION)
       return "expression";
     return "?";
-  }
+   }
 
-    public String toSystem(CompositionAltcodeKind code) {
-      return code.getSystem();
-      }
+  public String toSystem(CompositionAltcodeKind code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ConditionCategoryEnumFactory implements EnumFactory<ConditionCategory> {
@@ -46,19 +42,21 @@ public class ConditionCategoryEnumFactory implements EnumFactory<ConditionCatego
       return ConditionCategory.PROBLEMLISTITEM;
     if ("encounter-diagnosis".equals(codeString))
       return ConditionCategory.ENCOUNTERDIAGNOSIS;
-    throw new IllegalArgumentException("Unknown ConditionCategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ConditionCategory code '" + codeString + "'");
   }
 
   public String toCode(ConditionCategory code) {
-    if (code == ConditionCategory.PROBLEMLISTITEM)
+       if (code == ConditionCategory.NULL)
+           return null;
+       if (code == ConditionCategory.PROBLEMLISTITEM)
       return "problem-list-item";
     if (code == ConditionCategory.ENCOUNTERDIAGNOSIS)
       return "encounter-diagnosis";
     return "?";
-  }
+   }
 
-    public String toSystem(ConditionCategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(ConditionCategory code) {
+    return code.getSystem();
+  }
 
 }

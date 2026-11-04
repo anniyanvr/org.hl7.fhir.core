@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class CdsRuleActionTypeEnumFactory implements EnumFactory<CdsRuleActionType> {
@@ -50,11 +46,13 @@ public class CdsRuleActionTypeEnumFactory implements EnumFactory<CdsRuleActionTy
       return CdsRuleActionType.REMOVE;
     if ("fire-event".equals(codeString))
       return CdsRuleActionType.FIREEVENT;
-    throw new IllegalArgumentException("Unknown CdsRuleActionType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CdsRuleActionType code '" + codeString + "'");
   }
 
   public String toCode(CdsRuleActionType code) {
-    if (code == CdsRuleActionType.CREATE)
+       if (code == CdsRuleActionType.NULL)
+           return null;
+       if (code == CdsRuleActionType.CREATE)
       return "create";
     if (code == CdsRuleActionType.UPDATE)
       return "update";
@@ -63,10 +61,10 @@ public class CdsRuleActionTypeEnumFactory implements EnumFactory<CdsRuleActionTy
     if (code == CdsRuleActionType.FIREEVENT)
       return "fire-event";
     return "?";
-  }
+   }
 
-    public String toSystem(CdsRuleActionType code) {
-      return code.getSystem();
-      }
+  public String toSystem(CdsRuleActionType code) {
+    return code.getSystem();
+  }
 
 }

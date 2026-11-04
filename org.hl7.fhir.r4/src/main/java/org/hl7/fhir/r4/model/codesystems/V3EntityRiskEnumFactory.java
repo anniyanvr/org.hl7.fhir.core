@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3EntityRiskEnumFactory implements EnumFactory<V3EntityRisk> {
@@ -64,11 +60,13 @@ public class V3EntityRiskEnumFactory implements EnumFactory<V3EntityRisk> {
       return V3EntityRisk.POI;
     if ("RAD".equals(codeString))
       return V3EntityRisk.RAD;
-    throw new IllegalArgumentException("Unknown V3EntityRisk code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3EntityRisk code '" + codeString + "'");
   }
 
   public String toCode(V3EntityRisk code) {
-    if (code == V3EntityRisk.AGG)
+       if (code == V3EntityRisk.NULL)
+           return null;
+       if (code == V3EntityRisk.AGG)
       return "AGG";
     if (code == V3EntityRisk.BIO)
       return "BIO";
@@ -91,10 +89,10 @@ public class V3EntityRiskEnumFactory implements EnumFactory<V3EntityRisk> {
     if (code == V3EntityRisk.RAD)
       return "RAD";
     return "?";
-  }
+   }
 
-    public String toSystem(V3EntityRisk code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3EntityRisk code) {
+    return code.getSystem();
+  }
 
 }

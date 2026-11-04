@@ -182,12 +182,12 @@ public class SupplyRequest extends DomainResource {
           return SupplyRequestStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown SupplyRequestStatus code '"+codeString+"'");
         }
-        public Enumeration<SupplyRequestStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<SupplyRequestStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<SupplyRequestStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -207,7 +207,9 @@ public class SupplyRequest extends DomainResource {
         throw new FHIRException("Unknown SupplyRequestStatus code '"+codeString+"'");
         }
     public String toCode(SupplyRequestStatus code) {
-      if (code == SupplyRequestStatus.DRAFT)
+       if (code == SupplyRequestStatus.NULL)
+           return null;
+       if (code == SupplyRequestStatus.DRAFT)
         return "draft";
       if (code == SupplyRequestStatus.ACTIVE)
         return "active";
@@ -222,7 +224,7 @@ public class SupplyRequest extends DomainResource {
       if (code == SupplyRequestStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(SupplyRequestStatus code) {
       return code.getSystem();
       }
@@ -322,12 +324,12 @@ public class SupplyRequest extends DomainResource {
           return RequestPriority.STAT;
         throw new IllegalArgumentException("Unknown RequestPriority code '"+codeString+"'");
         }
-        public Enumeration<RequestPriority> fromType(Base code) throws FHIRException {
+        public Enumeration<RequestPriority> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<RequestPriority>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("routine".equals(codeString))
@@ -341,7 +343,9 @@ public class SupplyRequest extends DomainResource {
         throw new FHIRException("Unknown RequestPriority code '"+codeString+"'");
         }
     public String toCode(RequestPriority code) {
-      if (code == RequestPriority.ROUTINE)
+       if (code == RequestPriority.NULL)
+           return null;
+       if (code == RequestPriority.ROUTINE)
         return "routine";
       if (code == RequestPriority.URGENT)
         return "urgent";
@@ -350,7 +354,7 @@ public class SupplyRequest extends DomainResource {
       if (code == RequestPriority.STAT)
         return "stat";
       return "?";
-      }
+   }
     public String toSystem(RequestPriority code) {
       return code.getSystem();
       }
@@ -432,8 +436,8 @@ public class SupplyRequest extends DomainResource {
           return (CodeableConcept) this.item;
         }
 
-        public boolean hasItemCodeableConcept() { 
-          return this != null && this.item instanceof CodeableConcept;
+        public boolean hasItemCodeableConcept() {
+          return this.item instanceof CodeableConcept;
         }
 
         /**
@@ -447,8 +451,8 @@ public class SupplyRequest extends DomainResource {
           return (Reference) this.item;
         }
 
-        public boolean hasItemReference() { 
-          return this != null && this.item instanceof Reference;
+        public boolean hasItemReference() {
+          return this.item instanceof Reference;
         }
 
         public boolean hasItem() { 
@@ -1147,8 +1151,8 @@ public class SupplyRequest extends DomainResource {
       return (DateTimeType) this.occurrence;
     }
 
-    public boolean hasOccurrenceDateTimeType() { 
-      return this != null && this.occurrence instanceof DateTimeType;
+    public boolean hasOccurrenceDateTimeType() {
+      return this.occurrence instanceof DateTimeType;
     }
 
     /**
@@ -1162,8 +1166,8 @@ public class SupplyRequest extends DomainResource {
       return (Period) this.occurrence;
     }
 
-    public boolean hasOccurrencePeriod() { 
-      return this != null && this.occurrence instanceof Period;
+    public boolean hasOccurrencePeriod() {
+      return this.occurrence instanceof Period;
     }
 
     /**
@@ -1177,8 +1181,8 @@ public class SupplyRequest extends DomainResource {
       return (Timing) this.occurrence;
     }
 
-    public boolean hasOccurrenceTiming() { 
-      return this != null && this.occurrence instanceof Timing;
+    public boolean hasOccurrenceTiming() {
+      return this.occurrence instanceof Timing;
     }
 
     public boolean hasOccurrence() { 
@@ -1322,28 +1326,6 @@ public class SupplyRequest extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Organization> getSupplierTarget() { 
-      if (this.supplierTarget == null)
-        this.supplierTarget = new ArrayList<Organization>();
-      return this.supplierTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Organization addSupplierTarget() { 
-      Organization r = new Organization();
-      if (this.supplierTarget == null)
-        this.supplierTarget = new ArrayList<Organization>();
-      this.supplierTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #reason} (Why the supply item was requested.)
      */
     public Type getReason() { 
@@ -1361,8 +1343,8 @@ public class SupplyRequest extends DomainResource {
       return (CodeableConcept) this.reason;
     }
 
-    public boolean hasReasonCodeableConcept() { 
-      return this != null && this.reason instanceof CodeableConcept;
+    public boolean hasReasonCodeableConcept() {
+      return this.reason instanceof CodeableConcept;
     }
 
     /**
@@ -1376,8 +1358,8 @@ public class SupplyRequest extends DomainResource {
       return (Reference) this.reason;
     }
 
-    public boolean hasReasonReference() { 
-      return this != null && this.reason instanceof Reference;
+    public boolean hasReasonReference() {
+      return this.reason instanceof Reference;
     }
 
     public boolean hasReason() { 
@@ -1663,14 +1645,14 @@ public class SupplyRequest extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SupplyRequest.status");
+          throw new FHIRException("Cannot call addChild on a singleton property SupplyRequest.status");
         }
         else if (name.equals("category")) {
           this.category = new CodeableConcept();
           return this.category;
         }
         else if (name.equals("priority")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SupplyRequest.priority");
+          throw new FHIRException("Cannot call addChild on a singleton property SupplyRequest.priority");
         }
         else if (name.equals("orderedItem")) {
           this.orderedItem = new SupplyRequestOrderedItemComponent();
@@ -1689,7 +1671,7 @@ public class SupplyRequest extends DomainResource {
           return this.occurrence;
         }
         else if (name.equals("authoredOn")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SupplyRequest.authoredOn");
+          throw new FHIRException("Cannot call addChild on a singleton property SupplyRequest.authoredOn");
         }
         else if (name.equals("requester")) {
           this.requester = new SupplyRequestRequesterComponent();

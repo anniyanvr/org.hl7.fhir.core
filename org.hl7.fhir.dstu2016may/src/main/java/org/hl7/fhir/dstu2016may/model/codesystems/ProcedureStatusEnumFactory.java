@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ProcedureStatusEnumFactory implements EnumFactory<ProcedureStatus> {
@@ -50,11 +46,13 @@ public class ProcedureStatusEnumFactory implements EnumFactory<ProcedureStatus> 
       return ProcedureStatus.COMPLETED;
     if ("entered-in-error".equals(codeString))
       return ProcedureStatus.ENTEREDINERROR;
-    throw new IllegalArgumentException("Unknown ProcedureStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ProcedureStatus code '" + codeString + "'");
   }
 
   public String toCode(ProcedureStatus code) {
-    if (code == ProcedureStatus.INPROGRESS)
+       if (code == ProcedureStatus.NULL)
+           return null;
+       if (code == ProcedureStatus.INPROGRESS)
       return "in-progress";
     if (code == ProcedureStatus.ABORTED)
       return "aborted";
@@ -63,10 +61,10 @@ public class ProcedureStatusEnumFactory implements EnumFactory<ProcedureStatus> 
     if (code == ProcedureStatus.ENTEREDINERROR)
       return "entered-in-error";
     return "?";
-  }
+   }
 
-    public String toSystem(ProcedureStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(ProcedureStatus code) {
+    return code.getSystem();
+  }
 
 }

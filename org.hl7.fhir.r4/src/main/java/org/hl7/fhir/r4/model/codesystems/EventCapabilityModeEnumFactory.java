@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class EventCapabilityModeEnumFactory implements EnumFactory<EventCapabilityMode> {
@@ -46,19 +42,21 @@ public class EventCapabilityModeEnumFactory implements EnumFactory<EventCapabili
       return EventCapabilityMode.SENDER;
     if ("receiver".equals(codeString))
       return EventCapabilityMode.RECEIVER;
-    throw new IllegalArgumentException("Unknown EventCapabilityMode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown EventCapabilityMode code '" + codeString + "'");
   }
 
   public String toCode(EventCapabilityMode code) {
-    if (code == EventCapabilityMode.SENDER)
+       if (code == EventCapabilityMode.NULL)
+           return null;
+       if (code == EventCapabilityMode.SENDER)
       return "sender";
     if (code == EventCapabilityMode.RECEIVER)
       return "receiver";
     return "?";
-  }
+   }
 
-    public String toSystem(EventCapabilityMode code) {
-      return code.getSystem();
-      }
+  public String toSystem(EventCapabilityMode code) {
+    return code.getSystem();
+  }
 
 }

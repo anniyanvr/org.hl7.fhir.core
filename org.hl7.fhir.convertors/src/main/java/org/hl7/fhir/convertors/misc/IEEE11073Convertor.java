@@ -1,5 +1,14 @@
 package org.hl7.fhir.convertors.misc;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,26 +43,32 @@ import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumService;
 import org.hl7.fhir.dstu3.formats.IParser.OutputStyle;
 import org.hl7.fhir.dstu3.formats.XmlParser;
-import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.CodeSystem;
 import org.hl7.fhir.dstu3.model.CodeSystem.CodeSystemContentMode;
 import org.hl7.fhir.dstu3.model.CodeSystem.ConceptDefinitionComponent;
 import org.hl7.fhir.dstu3.model.CodeSystem.PropertyType;
+import org.hl7.fhir.dstu3.model.CodeType;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.ConceptMap;
 import org.hl7.fhir.dstu3.model.ConceptMap.ConceptMapGroupComponent;
 import org.hl7.fhir.dstu3.model.ConceptMap.SourceElementComponent;
 import org.hl7.fhir.dstu3.model.ConceptMap.TargetElementComponent;
+import org.hl7.fhir.dstu3.model.ContactDetail;
+import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
+import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.Enumerations.ConceptMapEquivalence;
 import org.hl7.fhir.dstu3.model.Enumerations.PublicationStatus;
+import org.hl7.fhir.dstu3.model.Identifier;
+import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.dstu3.model.UriType;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.utilities.CSVReader;
 import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.*;
-
+@SuppressWarnings("checkstyle:systemout")
 public class IEEE11073Convertor {
 
   public static final String UCUM_PATH = "c:\\work\\org.hl7.fhir\\build\\implementations\\java\\org.hl7.fhir.convertors\\samples\\ucum-essence.xml";
@@ -98,7 +113,7 @@ public class IEEE11073Convertor {
     g.setSource("urn:iso:std:iso:11073:10101");
     g.setTarget("http://loinc.org");
 
-    CSVReader csv = new CSVReader(new FileInputStream(src));
+    CSVReader csv = new CSVReader(ManagedFileAccess.inStream(src));
     csv.readHeaders();
     while (csv.line()) {
       SourceElementComponent e = g.addElement();
@@ -109,13 +124,13 @@ public class IEEE11073Convertor {
       t.setCode(csv.cell("LOINC_NUM"));
       t.setDisplay(csv.cell("LOINC_LONG_COMMON_NAME"));
     }
-    new XmlParser().setOutputStyle(OutputStyle.PRETTY).compose(new FileOutputStream(Utilities.path(dst, "conceptmap-" + cm.getId() + ".xml")), cm);
+    new XmlParser().setOutputStyle(OutputStyle.PRETTY).compose(ManagedFileAccess.outStream(Utilities.path(dst, "conceptmap-" + cm.getId() + ".xml")), cm);
     System.out.println("Done");
     return cm;
   }
 
   public static CodeSystem generateMDC(String src, String dst, UcumService ucum) throws IOException, FHIRException {
-    CSVReader csv = new CSVReader(new FileInputStream(src));
+    CSVReader csv = new CSVReader(ManagedFileAccess.inStream(src));
     csv.readHeaders();
     CodeSystem cs = new CodeSystem();
     Map<String, String> ucumIssues = new HashMap<String, String>();
@@ -176,7 +191,10 @@ public class IEEE11073Convertor {
             c.addProperty().setCode("unit").setValue(new StringType().setValue(csv.cell("UOM_MDC")));
           if (csv.has("UOM_UCUM")) {
             CommaSeparatedStringBuilder ul = new CommaSeparatedStringBuilder();
-            for (String u : csv.cell("UOM_UCUM").split(" ")) {
+            @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+            //single literal character split
+            String[] ucumUnits = csv.cell("UOM_UCUM").split(" ");
+            for (String u : ucumUnits) {
               String msg = ucum.validate(u);
               if (msg != null) {
                 errorCount++;
@@ -191,7 +209,7 @@ public class IEEE11073Convertor {
       }
     }
     csv.close();
-    new XmlParser().setOutputStyle(OutputStyle.PRETTY).compose(new FileOutputStream(Utilities.path(dst, "codesystem-" + cs.getId() + ".xml")), cs);
+    new XmlParser().setOutputStyle(OutputStyle.PRETTY).compose(ManagedFileAccess.outStream(Utilities.path(dst, "codesystem-" + cs.getId() + ".xml")), cs);
     System.out.println(errorCount + "UCUM errors");
 
     for (String u : sorted(ucumIssues.keySet()))

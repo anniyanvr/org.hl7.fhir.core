@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,11 +79,11 @@ public class MedicationRequest extends DomainResource {
          */
         FILLERORDER, 
         /**
-         * The request represents an instance for the particular order, for example a medication administration record.
+         * The request represents an instance for the particular order and is used to generate a schedule of requests on a medication administration record (MAR).
          */
         INSTANCEORDER, 
         /**
-         * The request represents a component or option for a RequestGroup that establishes timing, conditionality and/or  other constraints among a set of requests.
+         * The request represents a component or option for a RequestOrchestration that establishes timing, conditionality and/or  other constraints among a set of requests.
          */
         OPTION, 
         /**
@@ -124,6 +124,7 @@ public class MedicationRequest extends DomainResource {
             case FILLERORDER: return "filler-order";
             case INSTANCEORDER: return "instance-order";
             case OPTION: return "option";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -137,6 +138,7 @@ public class MedicationRequest extends DomainResource {
             case FILLERORDER: return "http://hl7.org/fhir/CodeSystem/medicationrequest-intent";
             case INSTANCEORDER: return "http://hl7.org/fhir/CodeSystem/medicationrequest-intent";
             case OPTION: return "http://hl7.org/fhir/CodeSystem/medicationrequest-intent";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -148,8 +150,9 @@ public class MedicationRequest extends DomainResource {
             case ORIGINALORDER: return "The request represents the original authorization for the medication request.";
             case REFLEXORDER: return "The request represents an automatically generated supplemental authorization for action based on a parent authorization together with initial results of the action taken against that parent authorization..";
             case FILLERORDER: return "The request represents the view of an authorization instantiated by a fulfilling system representing the details of the fulfiller's intention to act upon a submitted order.";
-            case INSTANCEORDER: return "The request represents an instance for the particular order, for example a medication administration record.";
-            case OPTION: return "The request represents a component or option for a RequestGroup that establishes timing, conditionality and/or  other constraints among a set of requests.";
+            case INSTANCEORDER: return "The request represents an instance for the particular order and is used to generate a schedule of requests on a medication administration record (MAR).";
+            case OPTION: return "The request represents a component or option for a RequestOrchestration that establishes timing, conditionality and/or  other constraints among a set of requests.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -163,6 +166,7 @@ public class MedicationRequest extends DomainResource {
             case FILLERORDER: return "Filler Order";
             case INSTANCEORDER: return "Instance Order";
             case OPTION: return "Option";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -191,34 +195,36 @@ public class MedicationRequest extends DomainResource {
           return MedicationRequestIntent.OPTION;
         throw new IllegalArgumentException("Unknown MedicationRequestIntent code '"+codeString+"'");
         }
-        public Enumeration<MedicationRequestIntent> fromType(Base code) throws FHIRException {
+        public Enumeration<MedicationRequestIntent> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<MedicationRequestIntent>(this);
+            return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.NULL, code);
         if ("proposal".equals(codeString))
-          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.PROPOSAL);
+          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.PROPOSAL, code);
         if ("plan".equals(codeString))
-          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.PLAN);
+          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.PLAN, code);
         if ("order".equals(codeString))
-          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.ORDER);
+          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.ORDER, code);
         if ("original-order".equals(codeString))
-          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.ORIGINALORDER);
+          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.ORIGINALORDER, code);
         if ("reflex-order".equals(codeString))
-          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.REFLEXORDER);
+          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.REFLEXORDER, code);
         if ("filler-order".equals(codeString))
-          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.FILLERORDER);
+          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.FILLERORDER, code);
         if ("instance-order".equals(codeString))
-          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.INSTANCEORDER);
+          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.INSTANCEORDER, code);
         if ("option".equals(codeString))
-          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.OPTION);
+          return new Enumeration<MedicationRequestIntent>(this, MedicationRequestIntent.OPTION, code);
         throw new FHIRException("Unknown MedicationRequestIntent code '"+codeString+"'");
         }
     public String toCode(MedicationRequestIntent code) {
-      if (code == MedicationRequestIntent.PROPOSAL)
+       if (code == MedicationRequestIntent.NULL)
+           return null;
+       if (code == MedicationRequestIntent.PROPOSAL)
         return "proposal";
       if (code == MedicationRequestIntent.PLAN)
         return "plan";
@@ -235,7 +241,7 @@ public class MedicationRequest extends DomainResource {
       if (code == MedicationRequestIntent.OPTION)
         return "option";
       return "?";
-      }
+   }
     public String toSystem(MedicationRequestIntent code) {
       return code.getSystem();
       }
@@ -243,35 +249,39 @@ public class MedicationRequest extends DomainResource {
 
     public enum MedicationrequestStatus {
         /**
-         * The prescription is 'actionable', but not all actions that are implied by it have occurred yet.
+         * The request is 'actionable', but not all actions that are implied by it have occurred yet.
          */
         ACTIVE, 
         /**
-         * Actions implied by the prescription are to be temporarily halted. The prescription might or might not be resumed. May also be called 'suspended'.
+         * Actions implied by the request are to be temporarily halted. The request might or might not be resumed. May also be called 'suspended'.
          */
         ONHOLD, 
         /**
-         * The prescription has been withdrawn before any administrations have occurred
+         * The request is no longer active and the subject should no longer be taking the medication.
          */
-        CANCELLED, 
+        ENDED, 
         /**
-         * All actions that are implied by the prescription have occurred.
-         */
-        COMPLETED, 
-        /**
-         * The prescription was recorded against the wrong patient or for some reason should not have been recorded (e.g. wrong medication, wrong dose, etc). Some of the actions that are implied by the medication request may have occurred. For example, the medication may have been dispensed and the patient may have taken some of the medication.
-         */
-        ENTEREDINERROR, 
-        /**
-         * Actions implied by the prescription are to be permanently halted, before all of the administrations occurred. This should not be used if the original order was entered in error
+         * Actions implied by the request are to be permanently halted, before all of the administrations occurred. This should not be used if the original order was entered in error
          */
         STOPPED, 
         /**
-         * The prescription is not yet 'actionable', e.g. it is a work in progress, requires sign-off, verification or needs to be run through decision support process.
+         * All actions that are implied by the request have occurred.
+         */
+        COMPLETED, 
+        /**
+         * The request has been withdrawn before any administrations have occurred
+         */
+        CANCELLED, 
+        /**
+         * The request was recorded against the wrong patient or for some reason should not have been recorded (e.g. wrong medication, wrong dose, etc.). Some of the actions that are implied by the medication request may have occurred. For example, the medication may have been dispensed and the patient may have taken some of the medication.
+         */
+        ENTEREDINERROR, 
+        /**
+         * The request is not yet 'actionable', e.g. it is a work in progress, requires sign-off, verification or needs to be run through decision support process.
          */
         DRAFT, 
         /**
-         * The authoring/source system does not know which of the status values currently applies for this observation. Note: This concept is not to be used for 'other' - one of the listed statuses is presumed to apply, but the authoring/source system does not know which.
+         * The authoring/source system does not know which of the status values currently applies for this request. Note: This concept is not to be used for 'other' - one of the listed statuses is presumed to apply, but the authoring/source system does not know which.
          */
         UNKNOWN, 
         /**
@@ -285,14 +295,16 @@ public class MedicationRequest extends DomainResource {
           return ACTIVE;
         if ("on-hold".equals(codeString))
           return ONHOLD;
-        if ("cancelled".equals(codeString))
-          return CANCELLED;
-        if ("completed".equals(codeString))
-          return COMPLETED;
-        if ("entered-in-error".equals(codeString))
-          return ENTEREDINERROR;
+        if ("ended".equals(codeString))
+          return ENDED;
         if ("stopped".equals(codeString))
           return STOPPED;
+        if ("completed".equals(codeString))
+          return COMPLETED;
+        if ("cancelled".equals(codeString))
+          return CANCELLED;
+        if ("entered-in-error".equals(codeString))
+          return ENTEREDINERROR;
         if ("draft".equals(codeString))
           return DRAFT;
         if ("unknown".equals(codeString))
@@ -306,12 +318,14 @@ public class MedicationRequest extends DomainResource {
           switch (this) {
             case ACTIVE: return "active";
             case ONHOLD: return "on-hold";
-            case CANCELLED: return "cancelled";
-            case COMPLETED: return "completed";
-            case ENTEREDINERROR: return "entered-in-error";
+            case ENDED: return "ended";
             case STOPPED: return "stopped";
+            case COMPLETED: return "completed";
+            case CANCELLED: return "cancelled";
+            case ENTEREDINERROR: return "entered-in-error";
             case DRAFT: return "draft";
             case UNKNOWN: return "unknown";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -319,25 +333,29 @@ public class MedicationRequest extends DomainResource {
           switch (this) {
             case ACTIVE: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
             case ONHOLD: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
-            case CANCELLED: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
-            case COMPLETED: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
-            case ENTEREDINERROR: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
+            case ENDED: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
             case STOPPED: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
+            case COMPLETED: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
+            case CANCELLED: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
+            case ENTEREDINERROR: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
             case DRAFT: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
             case UNKNOWN: return "http://hl7.org/fhir/CodeSystem/medicationrequest-status";
+            case NULL: return null;
             default: return "?";
           }
         }
         public String getDefinition() {
           switch (this) {
-            case ACTIVE: return "The prescription is 'actionable', but not all actions that are implied by it have occurred yet.";
-            case ONHOLD: return "Actions implied by the prescription are to be temporarily halted. The prescription might or might not be resumed. May also be called 'suspended'.";
-            case CANCELLED: return "The prescription has been withdrawn before any administrations have occurred";
-            case COMPLETED: return "All actions that are implied by the prescription have occurred.";
-            case ENTEREDINERROR: return "The prescription was recorded against the wrong patient or for some reason should not have been recorded (e.g. wrong medication, wrong dose, etc). Some of the actions that are implied by the medication request may have occurred. For example, the medication may have been dispensed and the patient may have taken some of the medication.";
-            case STOPPED: return "Actions implied by the prescription are to be permanently halted, before all of the administrations occurred. This should not be used if the original order was entered in error";
-            case DRAFT: return "The prescription is not yet 'actionable', e.g. it is a work in progress, requires sign-off, verification or needs to be run through decision support process.";
-            case UNKNOWN: return "The authoring/source system does not know which of the status values currently applies for this observation. Note: This concept is not to be used for 'other' - one of the listed statuses is presumed to apply, but the authoring/source system does not know which.";
+            case ACTIVE: return "The request is 'actionable', but not all actions that are implied by it have occurred yet.";
+            case ONHOLD: return "Actions implied by the request are to be temporarily halted. The request might or might not be resumed. May also be called 'suspended'.";
+            case ENDED: return "The request is no longer active and the subject should no longer be taking the medication.";
+            case STOPPED: return "Actions implied by the request are to be permanently halted, before all of the administrations occurred. This should not be used if the original order was entered in error";
+            case COMPLETED: return "All actions that are implied by the request have occurred.";
+            case CANCELLED: return "The request has been withdrawn before any administrations have occurred";
+            case ENTEREDINERROR: return "The request was recorded against the wrong patient or for some reason should not have been recorded (e.g. wrong medication, wrong dose, etc.). Some of the actions that are implied by the medication request may have occurred. For example, the medication may have been dispensed and the patient may have taken some of the medication.";
+            case DRAFT: return "The request is not yet 'actionable', e.g. it is a work in progress, requires sign-off, verification or needs to be run through decision support process.";
+            case UNKNOWN: return "The authoring/source system does not know which of the status values currently applies for this request. Note: This concept is not to be used for 'other' - one of the listed statuses is presumed to apply, but the authoring/source system does not know which.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -345,12 +363,14 @@ public class MedicationRequest extends DomainResource {
           switch (this) {
             case ACTIVE: return "Active";
             case ONHOLD: return "On Hold";
-            case CANCELLED: return "Cancelled";
-            case COMPLETED: return "Completed";
-            case ENTEREDINERROR: return "Entered in Error";
+            case ENDED: return "Ended";
             case STOPPED: return "Stopped";
+            case COMPLETED: return "Completed";
+            case CANCELLED: return "Cancelled";
+            case ENTEREDINERROR: return "Entered in Error";
             case DRAFT: return "Draft";
             case UNKNOWN: return "Unknown";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -365,65 +385,73 @@ public class MedicationRequest extends DomainResource {
           return MedicationrequestStatus.ACTIVE;
         if ("on-hold".equals(codeString))
           return MedicationrequestStatus.ONHOLD;
-        if ("cancelled".equals(codeString))
-          return MedicationrequestStatus.CANCELLED;
-        if ("completed".equals(codeString))
-          return MedicationrequestStatus.COMPLETED;
-        if ("entered-in-error".equals(codeString))
-          return MedicationrequestStatus.ENTEREDINERROR;
+        if ("ended".equals(codeString))
+          return MedicationrequestStatus.ENDED;
         if ("stopped".equals(codeString))
           return MedicationrequestStatus.STOPPED;
+        if ("completed".equals(codeString))
+          return MedicationrequestStatus.COMPLETED;
+        if ("cancelled".equals(codeString))
+          return MedicationrequestStatus.CANCELLED;
+        if ("entered-in-error".equals(codeString))
+          return MedicationrequestStatus.ENTEREDINERROR;
         if ("draft".equals(codeString))
           return MedicationrequestStatus.DRAFT;
         if ("unknown".equals(codeString))
           return MedicationrequestStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown MedicationrequestStatus code '"+codeString+"'");
         }
-        public Enumeration<MedicationrequestStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<MedicationrequestStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<MedicationrequestStatus>(this);
+            return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.NULL, code);
         if ("active".equals(codeString))
-          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.ACTIVE);
+          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.ACTIVE, code);
         if ("on-hold".equals(codeString))
-          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.ONHOLD);
-        if ("cancelled".equals(codeString))
-          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.CANCELLED);
-        if ("completed".equals(codeString))
-          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.COMPLETED);
-        if ("entered-in-error".equals(codeString))
-          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.ENTEREDINERROR);
+          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.ONHOLD, code);
+        if ("ended".equals(codeString))
+          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.ENDED, code);
         if ("stopped".equals(codeString))
-          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.STOPPED);
+          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.STOPPED, code);
+        if ("completed".equals(codeString))
+          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.COMPLETED, code);
+        if ("cancelled".equals(codeString))
+          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.CANCELLED, code);
+        if ("entered-in-error".equals(codeString))
+          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.ENTEREDINERROR, code);
         if ("draft".equals(codeString))
-          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.DRAFT);
+          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.DRAFT, code);
         if ("unknown".equals(codeString))
-          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.UNKNOWN);
+          return new Enumeration<MedicationrequestStatus>(this, MedicationrequestStatus.UNKNOWN, code);
         throw new FHIRException("Unknown MedicationrequestStatus code '"+codeString+"'");
         }
     public String toCode(MedicationrequestStatus code) {
-      if (code == MedicationrequestStatus.ACTIVE)
+       if (code == MedicationrequestStatus.NULL)
+           return null;
+       if (code == MedicationrequestStatus.ACTIVE)
         return "active";
       if (code == MedicationrequestStatus.ONHOLD)
         return "on-hold";
-      if (code == MedicationrequestStatus.CANCELLED)
-        return "cancelled";
-      if (code == MedicationrequestStatus.COMPLETED)
-        return "completed";
-      if (code == MedicationrequestStatus.ENTEREDINERROR)
-        return "entered-in-error";
+      if (code == MedicationrequestStatus.ENDED)
+        return "ended";
       if (code == MedicationrequestStatus.STOPPED)
         return "stopped";
+      if (code == MedicationrequestStatus.COMPLETED)
+        return "completed";
+      if (code == MedicationrequestStatus.CANCELLED)
+        return "cancelled";
+      if (code == MedicationrequestStatus.ENTEREDINERROR)
+        return "entered-in-error";
       if (code == MedicationrequestStatus.DRAFT)
         return "draft";
       if (code == MedicationrequestStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(MedicationrequestStatus code) {
       return code.getSystem();
       }
@@ -877,6 +905,31 @@ public class MedicationRequest extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("initialFill")) {
+          this.initialFill = (MedicationRequestDispenseRequestInitialFillComponent) value; // MedicationRequestDispenseRequestInitialFillComponent
+        } else if (name.equals("dispenseInterval")) {
+          this.dispenseInterval = null;
+        } else if (name.equals("validityPeriod")) {
+          this.validityPeriod = null;
+        } else if (name.equals("numberOfRepeatsAllowed")) {
+          this.numberOfRepeatsAllowed = null;
+        } else if (name.equals("quantity")) {
+          this.quantity = null;
+        } else if (name.equals("expectedSupplyDuration")) {
+          this.expectedSupplyDuration = null;
+        } else if (name.equals("dispenser")) {
+          this.dispenser = null;
+        } else if (name.equals("dispenserInstruction")) {
+          this.getDispenserInstruction().remove(value);
+        } else if (name.equals("doseAdministrationAid")) {
+          this.doseAdministrationAid = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -926,7 +979,7 @@ public class MedicationRequest extends DomainResource {
           return this.validityPeriod;
         }
         else if (name.equals("numberOfRepeatsAllowed")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationRequest.dispenseRequest.numberOfRepeatsAllowed");
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationRequest.dispenseRequest.numberOfRepeatsAllowed");
         }
         else if (name.equals("quantity")) {
           this.quantity = new Quantity();
@@ -955,6 +1008,10 @@ public class MedicationRequest extends DomainResource {
         MedicationRequestDispenseRequestComponent dst = new MedicationRequestDispenseRequestComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((MedicationRequestDispenseRequestComponent) dst);
       }
 
       public void copyValues(MedicationRequestDispenseRequestComponent dst) {
@@ -1135,6 +1192,17 @@ public class MedicationRequest extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("quantity")) {
+          this.quantity = null;
+        } else if (name.equals("duration")) {
+          this.duration = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1173,6 +1241,10 @@ public class MedicationRequest extends DomainResource {
         MedicationRequestDispenseRequestInitialFillComponent dst = new MedicationRequestDispenseRequestInitialFillComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((MedicationRequestDispenseRequestInitialFillComponent) dst);
       }
 
       public void copyValues(MedicationRequestDispenseRequestInitialFillComponent dst) {
@@ -1265,8 +1337,8 @@ public class MedicationRequest extends DomainResource {
           return (BooleanType) this.allowed;
         }
 
-        public boolean hasAllowedBooleanType() { 
-          return this != null && this.allowed instanceof BooleanType;
+        public boolean hasAllowedBooleanType() {
+            return this.allowed instanceof BooleanType;
         }
 
         /**
@@ -1280,8 +1352,8 @@ public class MedicationRequest extends DomainResource {
           return (CodeableConcept) this.allowed;
         }
 
-        public boolean hasAllowedCodeableConcept() { 
-          return this != null && this.allowed instanceof CodeableConcept;
+        public boolean hasAllowedCodeableConcept() {
+            return this.allowed instanceof CodeableConcept;
         }
 
         public boolean hasAllowed() { 
@@ -1293,7 +1365,7 @@ public class MedicationRequest extends DomainResource {
          */
         public MedicationRequestSubstitutionComponent setAllowed(DataType value) { 
           if (value != null && !(value instanceof BooleanType || value instanceof CodeableConcept))
-            throw new Error("Not the right type for MedicationRequest.substitution.allowed[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for MedicationRequest.substitution.allowed[x]: "+value.fhirType());
           this.allowed = value;
           return this;
         }
@@ -1376,6 +1448,17 @@ public class MedicationRequest extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("allowed[x]")) {
+          this.allowed = null;
+        } else if (name.equals("reason")) {
+          this.reason = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1419,6 +1502,10 @@ public class MedicationRequest extends DomainResource {
         MedicationRequestSubstitutionComponent dst = new MedicationRequestSubstitutionComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((MedicationRequestSubstitutionComponent) dst);
       }
 
       public void copyValues(MedicationRequestSubstitutionComponent dst) {
@@ -1466,41 +1553,69 @@ public class MedicationRequest extends DomainResource {
     protected List<Identifier> identifier;
 
     /**
+     * A plan or request that is fulfilled in whole or in part by this medication request.
+     */
+    @Child(name = "basedOn", type = {CarePlan.class, MedicationRequest.class, ServiceRequest.class, ImmunizationRecommendation.class}, order=1, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Description(shortDefinition="A plan or request that is fulfilled in whole or in part by this medication request", formalDefinition="A plan or request that is fulfilled in whole or in part by this medication request." )
+    protected List<Reference> basedOn;
+
+    /**
+     * Reference to an order/prescription that is being replaced by this MedicationRequest.
+     */
+    @Child(name = "priorPrescription", type = {MedicationRequest.class}, order=2, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="Reference to an order/prescription that is being replaced by this MedicationRequest", formalDefinition="Reference to an order/prescription that is being replaced by this MedicationRequest." )
+    protected Reference priorPrescription;
+
+    /**
+     * A shared identifier common to multiple independent Request instances that were activated/authorized more or less simultaneously by a single author.  The presence of the same identifier on each request ties those requests together and may have business ramifications in terms of reporting of results, billing, etc.  E.g. a requisition number shared by a set of lab tests ordered together, or a prescription number shared by all meds ordered at one time.
+     */
+    @Child(name = "groupIdentifier", type = {Identifier.class}, order=3, min=0, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="Composite request this is part of", formalDefinition="A shared identifier common to multiple independent Request instances that were activated/authorized more or less simultaneously by a single author.  The presence of the same identifier on each request ties those requests together and may have business ramifications in terms of reporting of results, billing, etc.  E.g. a requisition number shared by a set of lab tests ordered together, or a prescription number shared by all meds ordered at one time." )
+    protected Identifier groupIdentifier;
+
+    /**
      * A code specifying the current state of the order.  Generally, this will be active or completed state.
      */
-    @Child(name = "status", type = {CodeType.class}, order=1, min=1, max=1, modifier=true, summary=true)
-    @Description(shortDefinition="active | on-hold | cancelled | completed | entered-in-error | stopped | draft | unknown", formalDefinition="A code specifying the current state of the order.  Generally, this will be active or completed state." )
+    @Child(name = "status", type = {CodeType.class}, order=4, min=1, max=1, modifier=true, summary=true)
+    @Description(shortDefinition="active | on-hold | ended | stopped | completed | cancelled | entered-in-error | draft | unknown", formalDefinition="A code specifying the current state of the order.  Generally, this will be active or completed state." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/medicationrequest-status")
     protected Enumeration<MedicationrequestStatus> status;
 
     /**
      * Captures the reason for the current state of the MedicationRequest.
      */
-    @Child(name = "statusReason", type = {CodeableConcept.class}, order=2, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "statusReason", type = {CodeableConcept.class}, order=5, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Reason for current status", formalDefinition="Captures the reason for the current state of the MedicationRequest." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/medicationrequest-status-reason")
     protected CodeableConcept statusReason;
 
     /**
+     * The date (and perhaps time) when the status was changed.
+     */
+    @Child(name = "statusChanged", type = {DateTimeType.class}, order=6, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="When the status was changed", formalDefinition="The date (and perhaps time) when the status was changed." )
+    protected DateTimeType statusChanged;
+
+    /**
      * Whether the request is a proposal, plan, or an original order.
      */
-    @Child(name = "intent", type = {CodeType.class}, order=3, min=1, max=1, modifier=true, summary=true)
+    @Child(name = "intent", type = {CodeType.class}, order=7, min=1, max=1, modifier=true, summary=true)
     @Description(shortDefinition="proposal | plan | order | original-order | reflex-order | filler-order | instance-order | option", formalDefinition="Whether the request is a proposal, plan, or an original order." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/medicationrequest-intent")
     protected Enumeration<MedicationRequestIntent> intent;
 
     /**
-     * Indicates the grouping or category of medication request (for example, drug classification like ATC, where meds would be administered, legal category of the medication.).
+     * An arbitrary categorization or grouping of the medication request.  It could be used for indicating where meds are intended to be administered, eg. in an inpatient setting or in a patient's home, or a legal category of the medication.
      */
-    @Child(name = "category", type = {CodeableConcept.class}, order=4, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-    @Description(shortDefinition="Grouping or category of medication request", formalDefinition="Indicates the grouping or category of medication request (for example, drug classification like ATC, where meds would be administered, legal category of the medication.)." )
+    @Child(name = "category", type = {CodeableConcept.class}, order=8, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Description(shortDefinition="Grouping or category of medication request", formalDefinition="An arbitrary categorization or grouping of the medication request.  It could be used for indicating where meds are intended to be administered, eg. in an inpatient setting or in a patient's home, or a legal category of the medication." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/medicationrequest-admin-location")
     protected List<CodeableConcept> category;
 
     /**
      * Indicates how quickly the Medication Request should be addressed with respect to other requests.
      */
-    @Child(name = "priority", type = {CodeType.class}, order=5, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "priority", type = {CodeType.class}, order=9, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="routine | urgent | asap | stat", formalDefinition="Indicates how quickly the Medication Request should be addressed with respect to other requests." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/request-priority")
     protected Enumeration<RequestPriority> priority;
@@ -1508,129 +1623,108 @@ public class MedicationRequest extends DomainResource {
     /**
      * If true, indicates that the provider is asking for the patient to either stop taking or to not start taking the specified medication. For example, the patient is taking an existing medication and the provider is changing their medication. They want to create two seperate requests: one to stop using the current medication and another to start the new medication.
      */
-    @Child(name = "doNotPerform", type = {BooleanType.class}, order=6, min=0, max=1, modifier=true, summary=true)
+    @Child(name = "doNotPerform", type = {BooleanType.class}, order=10, min=0, max=1, modifier=true, summary=true)
     @Description(shortDefinition="True if patient is to stop taking or not to start taking the medication", formalDefinition="If true, indicates that the provider is asking for the patient to either stop taking or to not start taking the specified medication. For example, the patient is taking an existing medication and the provider is changing their medication. They want to create two seperate requests: one to stop using the current medication and another to start the new medication." )
     protected BooleanType doNotPerform;
 
     /**
-     * Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.
-     */
-    @Child(name = "reported", type = {BooleanType.class}, order=7, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Reported rather than primary record", formalDefinition="Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report." )
-    protected BooleanType reported;
-
-    /**
-     * The person or organization who provided the information about this request, if the source is someone other than the requestor.  This is often used when the MedicationRequest is reported by another person.
-     */
-    @Child(name = "informationSource", type = {Patient.class, Practitioner.class, PractitionerRole.class, RelatedPerson.class, Organization.class}, order=8, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="The person or organization who provided the information about this request, if the source is someone other than the requestor", formalDefinition="The person or organization who provided the information about this request, if the source is someone other than the requestor.  This is often used when the MedicationRequest is reported by another person." )
-    protected Reference informationSource;
-
-    /**
      * Identifies the medication being requested. This is a link to a resource that represents the medication which may be the details of the medication or simply an attribute carrying a code that identifies the medication from a known list of medications.
      */
-    @Child(name = "medication", type = {CodeableReference.class}, order=9, min=1, max=1, modifier=false, summary=true)
+    @Child(name = "medication", type = {CodeableReference.class}, order=11, min=1, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Medication to be taken", formalDefinition="Identifies the medication being requested. This is a link to a resource that represents the medication which may be the details of the medication or simply an attribute carrying a code that identifies the medication from a known list of medications." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/medication-codes")
     protected CodeableReference medication;
 
     /**
-     * A link to a resource representing the person or set of individuals to whom the medication will be given.
+     * The individual or group for whom the medication has been requested.
      */
-    @Child(name = "subject", type = {Patient.class, Group.class}, order=10, min=1, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Who or group medication request is for", formalDefinition="A link to a resource representing the person or set of individuals to whom the medication will be given." )
+    @Child(name = "subject", type = {Patient.class, Group.class}, order=12, min=1, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="Individual or group for whom the medication has been requested", formalDefinition="The individual or group for whom the medication has been requested." )
     protected Reference subject;
+
+    /**
+     * The person or organization who provided the information about this request, if the source is someone other than the requestor.  This is often used when the MedicationRequest is reported by another person.
+     */
+    @Child(name = "informationSource", type = {Patient.class, Practitioner.class, PractitionerRole.class, RelatedPerson.class, Organization.class}, order=13, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Description(shortDefinition="The person or organization who provided the information about this request, if the source is someone other than the requestor", formalDefinition="The person or organization who provided the information about this request, if the source is someone other than the requestor.  This is often used when the MedicationRequest is reported by another person." )
+    protected List<Reference> informationSource;
 
     /**
      * The Encounter during which this [x] was created or to which the creation of this record is tightly associated.
      */
-    @Child(name = "encounter", type = {Encounter.class}, order=11, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "encounter", type = {Encounter.class}, order=14, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Encounter created as part of encounter/admission/stay", formalDefinition="The Encounter during which this [x] was created or to which the creation of this record is tightly associated." )
     protected Reference encounter;
 
     /**
-     * Include additional information (for example, patient height and weight, a MedicationUsage for the patient) that supports the ordering of the medication.
+     * Information to support fulfilling (i.e. dispensing or administering) of the medication, for example, patient height and weight, a MedicationStatement for the patient).
      */
-    @Child(name = "supportingInformation", type = {Reference.class}, order=12, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-    @Description(shortDefinition="Information to support ordering of the medication", formalDefinition="Include additional information (for example, patient height and weight, a MedicationUsage for the patient) that supports the ordering of the medication." )
+    @Child(name = "supportingInformation", type = {Reference.class}, order=15, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Description(shortDefinition="Information to support fulfilling of the medication", formalDefinition="Information to support fulfilling (i.e. dispensing or administering) of the medication, for example, patient height and weight, a MedicationStatement for the patient)." )
     protected List<Reference> supportingInformation;
 
     /**
      * The date (and perhaps time) when the prescription was initially written or authored on.
      */
-    @Child(name = "authoredOn", type = {DateTimeType.class}, order=13, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "authoredOn", type = {DateTimeType.class}, order=16, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="When request was initially authored", formalDefinition="The date (and perhaps time) when the prescription was initially written or authored on." )
     protected DateTimeType authoredOn;
 
     /**
      * The individual, organization, or device that initiated the request and has responsibility for its activation.
      */
-    @Child(name = "requester", type = {Practitioner.class, PractitionerRole.class, Organization.class, Patient.class, RelatedPerson.class, Device.class}, order=14, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "requester", type = {Practitioner.class, PractitionerRole.class, Organization.class, Patient.class, RelatedPerson.class, Device.class}, order=17, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Who/What requested the Request", formalDefinition="The individual, organization, or device that initiated the request and has responsibility for its activation." )
     protected Reference requester;
 
     /**
-     * The specified desired performer of the medication treatment (e.g. the performer of the medication administration).
+     * Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.
      */
-    @Child(name = "performer", type = {Practitioner.class, PractitionerRole.class, Organization.class, Patient.class, Device.class, RelatedPerson.class, CareTeam.class, HealthcareService.class}, order=15, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="Intended performer of administration", formalDefinition="The specified desired performer of the medication treatment (e.g. the performer of the medication administration)." )
-    protected Reference performer;
+    @Child(name = "reported", type = {BooleanType.class}, order=18, min=0, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="Reported rather than primary record", formalDefinition="Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report." )
+    protected BooleanType reported;
 
     /**
      * Indicates the type of performer of the administration of the medication.
      */
-    @Child(name = "performerType", type = {CodeableConcept.class}, order=16, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "performerType", type = {CodeableConcept.class}, order=19, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Desired kind of performer of the medication administration", formalDefinition="Indicates the type of performer of the administration of the medication." )
-    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/performer-role")
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/medication-intended-performer-role")
     protected CodeableConcept performerType;
+
+    /**
+     * The specified desired performer of the medication treatment (e.g. the performer of the medication administration).  For devices, this is the device that is intended to perform the administration of the medication.  An IV Pump would be an example of a device that is performing the administration.  Both the IV Pump and the practitioner that set the rate or bolus on the pump can be listed as performers.
+     */
+    @Child(name = "performer", type = {Practitioner.class, PractitionerRole.class, Organization.class, Patient.class, DeviceDefinition.class, RelatedPerson.class, CareTeam.class, HealthcareService.class}, order=20, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Description(shortDefinition="Intended performer of administration", formalDefinition="The specified desired performer of the medication treatment (e.g. the performer of the medication administration).  For devices, this is the device that is intended to perform the administration of the medication.  An IV Pump would be an example of a device that is performing the administration.  Both the IV Pump and the practitioner that set the rate or bolus on the pump can be listed as performers." )
+    protected List<Reference> performer;
+
+    /**
+     * The intended type of device that is to be used for the administration of the medication (for example, PCA Pump).
+     */
+    @Child(name = "device", type = {CodeableReference.class}, order=21, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Description(shortDefinition="Intended type of device for the administration", formalDefinition="The intended type of device that is to be used for the administration of the medication (for example, PCA Pump)." )
+    protected List<CodeableReference> device;
 
     /**
      * The person who entered the order on behalf of another individual for example in the case of a verbal or a telephone order.
      */
-    @Child(name = "recorder", type = {Practitioner.class, PractitionerRole.class}, order=17, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "recorder", type = {Practitioner.class, PractitionerRole.class}, order=22, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Person who entered the request", formalDefinition="The person who entered the order on behalf of another individual for example in the case of a verbal or a telephone order." )
     protected Reference recorder;
 
     /**
      * The reason or the indication for ordering or not ordering the medication.
      */
-    @Child(name = "reason", type = {CodeableReference.class}, order=18, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "reason", type = {CodeableReference.class}, order=23, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Reason or indication for ordering or not ordering the medication", formalDefinition="The reason or the indication for ordering or not ordering the medication." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/condition-code")
     protected List<CodeableReference> reason;
 
     /**
-     * The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.
-     */
-    @Child(name = "instantiatesCanonical", type = {CanonicalType.class}, order=19, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
-    @Description(shortDefinition="Instantiates FHIR protocol or definition", formalDefinition="The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest." )
-    protected List<CanonicalType> instantiatesCanonical;
-
-    /**
-     * The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest.
-     */
-    @Child(name = "instantiatesUri", type = {UriType.class}, order=20, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
-    @Description(shortDefinition="Instantiates external protocol or definition", formalDefinition="The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest." )
-    protected List<UriType> instantiatesUri;
-
-    /**
-     * A plan or request that is fulfilled in whole or in part by this medication request.
-     */
-    @Child(name = "basedOn", type = {CarePlan.class, MedicationRequest.class, ServiceRequest.class, ImmunizationRecommendation.class}, order=21, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
-    @Description(shortDefinition="What request fulfills", formalDefinition="A plan or request that is fulfilled in whole or in part by this medication request." )
-    protected List<Reference> basedOn;
-
-    /**
-     * A shared identifier common to all requests that were authorized more or less simultaneously by a single author, representing the identifier of the requisition or prescription.
-     */
-    @Child(name = "groupIdentifier", type = {Identifier.class}, order=22, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Composite request this is part of", formalDefinition="A shared identifier common to all requests that were authorized more or less simultaneously by a single author, representing the identifier of the requisition or prescription." )
-    protected Identifier groupIdentifier;
-
-    /**
      * The description of the overall pattern of the administration of the medication to the patient.
      */
-    @Child(name = "courseOfTherapyType", type = {CodeableConcept.class}, order=23, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "courseOfTherapyType", type = {CodeableConcept.class}, order=24, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Overall pattern of medication administration", formalDefinition="The description of the overall pattern of the administration of the medication to the patient." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/medicationrequest-course-of-therapy")
     protected CodeableConcept courseOfTherapyType;
@@ -1638,58 +1732,51 @@ public class MedicationRequest extends DomainResource {
     /**
      * Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be required for delivering the requested service.
      */
-    @Child(name = "insurance", type = {Coverage.class, ClaimResponse.class}, order=24, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "insurance", type = {Coverage.class, ClaimResponse.class}, order=25, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Associated insurance coverage", formalDefinition="Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be required for delivering the requested service." )
     protected List<Reference> insurance;
 
     /**
      * Extra information about the prescription that could not be conveyed by the other attributes.
      */
-    @Child(name = "note", type = {Annotation.class}, order=25, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Child(name = "note", type = {Annotation.class}, order=26, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Information about the prescription", formalDefinition="Extra information about the prescription that could not be conveyed by the other attributes." )
     protected List<Annotation> note;
 
     /**
      * The full representation of the dose of the medication included in all dosage instructions.  To be used when multiple dosage instructions are included to represent complex dosing such as increasing or tapering doses.
      */
-    @Child(name = "renderedDosageInstruction", type = {StringType.class}, order=26, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "renderedDosageInstruction", type = {MarkdownType.class}, order=27, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Full representation of the dosage instructions", formalDefinition="The full representation of the dose of the medication included in all dosage instructions.  To be used when multiple dosage instructions are included to represent complex dosing such as increasing or tapering doses." )
-    protected StringType renderedDosageInstruction;
+    protected MarkdownType renderedDosageInstruction;
 
     /**
-     * Indicates how the medication is to be used by the patient.
+     * The period over which the medication is to be taken.  Where there are multiple dosageInstruction lines (for example, tapering doses), this is the earliest date and the latest end date of the dosageInstructions.
      */
-    @Child(name = "dosageInstruction", type = {Dosage.class}, order=27, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-    @Description(shortDefinition="How the medication should be taken", formalDefinition="Indicates how the medication is to be used by the patient." )
+    @Child(name = "effectiveDosePeriod", type = {Period.class}, order=28, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="Period over which the medication is to be taken", formalDefinition="The period over which the medication is to be taken.  Where there are multiple dosageInstruction lines (for example, tapering doses), this is the earliest date and the latest end date of the dosageInstructions." )
+    protected Period effectiveDosePeriod;
+
+    /**
+     * Specific instructions for how the medication is to be used by the patient.
+     */
+    @Child(name = "dosageInstruction", type = {Dosage.class}, order=29, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
+    @Description(shortDefinition="Specific instructions for how the medication should be taken", formalDefinition="Specific instructions for how the medication is to be used by the patient." )
     protected List<Dosage> dosageInstruction;
 
     /**
      * Indicates the specific details for the dispense or medication supply part of a medication request (also known as a Medication Prescription or Medication Order).  Note that this information is not always sent with the order.  There may be in some settings (e.g. hospitals) institutional or system support for completing the dispense details in the pharmacy department.
      */
-    @Child(name = "dispenseRequest", type = {}, order=28, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "dispenseRequest", type = {}, order=30, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Medication supply authorization", formalDefinition="Indicates the specific details for the dispense or medication supply part of a medication request (also known as a Medication Prescription or Medication Order).  Note that this information is not always sent with the order.  There may be in some settings (e.g. hospitals) institutional or system support for completing the dispense details in the pharmacy department." )
     protected MedicationRequestDispenseRequestComponent dispenseRequest;
 
     /**
      * Indicates whether or not substitution can or should be part of the dispense. In some cases, substitution must happen, in other cases substitution must not happen. This block explains the prescriber's intent. If nothing is specified substitution may be done.
      */
-    @Child(name = "substitution", type = {}, order=29, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "substitution", type = {}, order=31, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Any restrictions on medication substitution", formalDefinition="Indicates whether or not substitution can or should be part of the dispense. In some cases, substitution must happen, in other cases substitution must not happen. This block explains the prescriber's intent. If nothing is specified substitution may be done." )
     protected MedicationRequestSubstitutionComponent substitution;
-
-    /**
-     * A link to a resource representing an earlier order related order or prescription.
-     */
-    @Child(name = "priorPrescription", type = {MedicationRequest.class}, order=30, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="An order/prescription that is being replaced", formalDefinition="A link to a resource representing an earlier order related order or prescription." )
-    protected Reference priorPrescription;
-
-    /**
-     * Indicates an actual or potential clinical issue with or between one or more active or proposed clinical actions for a patient; e.g. Drug-drug interaction, duplicate therapy, dosage alert etc.
-     */
-    @Child(name = "detectedIssue", type = {DetectedIssue.class}, order=31, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-    @Description(shortDefinition="Clinical Issue with action", formalDefinition="Indicates an actual or potential clinical issue with or between one or more active or proposed clinical actions for a patient; e.g. Drug-drug interaction, duplicate therapy, dosage alert etc." )
-    protected List<Reference> detectedIssue;
 
     /**
      * Links to Provenance records for past versions of this resource or fulfilling request or event resources that identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the resource.
@@ -1698,7 +1785,7 @@ public class MedicationRequest extends DomainResource {
     @Description(shortDefinition="A list of events of interest in the lifecycle", formalDefinition="Links to Provenance records for past versions of this resource or fulfilling request or event resources that identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the resource." )
     protected List<Reference> eventHistory;
 
-    private static final long serialVersionUID = 2057320535L;
+    private static final long serialVersionUID = 1013423544L;
 
   /**
    * Constructor
@@ -1772,6 +1859,107 @@ public class MedicationRequest extends DomainResource {
     }
 
     /**
+     * @return {@link #basedOn} (A plan or request that is fulfilled in whole or in part by this medication request.)
+     */
+    public List<Reference> getBasedOn() { 
+      if (this.basedOn == null)
+        this.basedOn = new ArrayList<Reference>();
+      return this.basedOn;
+    }
+
+    /**
+     * @return Returns a reference to <code>this</code> for easy method chaining
+     */
+    public MedicationRequest setBasedOn(List<Reference> theBasedOn) { 
+      this.basedOn = theBasedOn;
+      return this;
+    }
+
+    public boolean hasBasedOn() { 
+      if (this.basedOn == null)
+        return false;
+      for (Reference item : this.basedOn)
+        if (!item.isEmpty())
+          return true;
+      return false;
+    }
+
+    public Reference addBasedOn() { //3
+      Reference t = new Reference();
+      if (this.basedOn == null)
+        this.basedOn = new ArrayList<Reference>();
+      this.basedOn.add(t);
+      return t;
+    }
+
+    public MedicationRequest addBasedOn(Reference t) { //3
+      if (t == null)
+        return this;
+      if (this.basedOn == null)
+        this.basedOn = new ArrayList<Reference>();
+      this.basedOn.add(t);
+      return this;
+    }
+
+    /**
+     * @return The first repetition of repeating field {@link #basedOn}, creating it if it does not already exist {3}
+     */
+    public Reference getBasedOnFirstRep() { 
+      if (getBasedOn().isEmpty()) {
+        addBasedOn();
+      }
+      return getBasedOn().get(0);
+    }
+
+    /**
+     * @return {@link #priorPrescription} (Reference to an order/prescription that is being replaced by this MedicationRequest.)
+     */
+    public Reference getPriorPrescription() { 
+      if (this.priorPrescription == null)
+        if (Configuration.errorOnAutoCreate())
+          throw new Error("Attempt to auto-create MedicationRequest.priorPrescription");
+        else if (Configuration.doAutoCreate())
+          this.priorPrescription = new Reference(); // cc
+      return this.priorPrescription;
+    }
+
+    public boolean hasPriorPrescription() { 
+      return this.priorPrescription != null && !this.priorPrescription.isEmpty();
+    }
+
+    /**
+     * @param value {@link #priorPrescription} (Reference to an order/prescription that is being replaced by this MedicationRequest.)
+     */
+    public MedicationRequest setPriorPrescription(Reference value) { 
+      this.priorPrescription = value;
+      return this;
+    }
+
+    /**
+     * @return {@link #groupIdentifier} (A shared identifier common to multiple independent Request instances that were activated/authorized more or less simultaneously by a single author.  The presence of the same identifier on each request ties those requests together and may have business ramifications in terms of reporting of results, billing, etc.  E.g. a requisition number shared by a set of lab tests ordered together, or a prescription number shared by all meds ordered at one time.)
+     */
+    public Identifier getGroupIdentifier() { 
+      if (this.groupIdentifier == null)
+        if (Configuration.errorOnAutoCreate())
+          throw new Error("Attempt to auto-create MedicationRequest.groupIdentifier");
+        else if (Configuration.doAutoCreate())
+          this.groupIdentifier = new Identifier(); // cc
+      return this.groupIdentifier;
+    }
+
+    public boolean hasGroupIdentifier() { 
+      return this.groupIdentifier != null && !this.groupIdentifier.isEmpty();
+    }
+
+    /**
+     * @param value {@link #groupIdentifier} (A shared identifier common to multiple independent Request instances that were activated/authorized more or less simultaneously by a single author.  The presence of the same identifier on each request ties those requests together and may have business ramifications in terms of reporting of results, billing, etc.  E.g. a requisition number shared by a set of lab tests ordered together, or a prescription number shared by all meds ordered at one time.)
+     */
+    public MedicationRequest setGroupIdentifier(Identifier value) { 
+      this.groupIdentifier = value;
+      return this;
+    }
+
+    /**
      * @return {@link #status} (A code specifying the current state of the order.  Generally, this will be active or completed state.). This is the underlying object with id, value and extensions. The accessor "getStatus" gives direct access to the value
      */
     public Enumeration<MedicationrequestStatus> getStatusElement() { 
@@ -1841,6 +2029,55 @@ public class MedicationRequest extends DomainResource {
     }
 
     /**
+     * @return {@link #statusChanged} (The date (and perhaps time) when the status was changed.). This is the underlying object with id, value and extensions. The accessor "getStatusChanged" gives direct access to the value
+     */
+    public DateTimeType getStatusChangedElement() { 
+      if (this.statusChanged == null)
+        if (Configuration.errorOnAutoCreate())
+          throw new Error("Attempt to auto-create MedicationRequest.statusChanged");
+        else if (Configuration.doAutoCreate())
+          this.statusChanged = new DateTimeType(); // bb
+      return this.statusChanged;
+    }
+
+    public boolean hasStatusChangedElement() { 
+      return this.statusChanged != null && !this.statusChanged.isEmpty();
+    }
+
+    public boolean hasStatusChanged() { 
+      return this.statusChanged != null && !this.statusChanged.isEmpty();
+    }
+
+    /**
+     * @param value {@link #statusChanged} (The date (and perhaps time) when the status was changed.). This is the underlying object with id, value and extensions. The accessor "getStatusChanged" gives direct access to the value
+     */
+    public MedicationRequest setStatusChangedElement(DateTimeType value) { 
+      this.statusChanged = value;
+      return this;
+    }
+
+    /**
+     * @return The date (and perhaps time) when the status was changed.
+     */
+    public Date getStatusChanged() { 
+      return this.statusChanged == null ? null : this.statusChanged.getValue();
+    }
+
+    /**
+     * @param value The date (and perhaps time) when the status was changed.
+     */
+    public MedicationRequest setStatusChanged(Date value) { 
+      if (value == null)
+        this.statusChanged = null;
+      else {
+        if (this.statusChanged == null)
+          this.statusChanged = new DateTimeType();
+        this.statusChanged.setValue(value);
+      }
+      return this;
+    }
+
+    /**
      * @return {@link #intent} (Whether the request is a proposal, plan, or an original order.). This is the underlying object with id, value and extensions. The accessor "getIntent" gives direct access to the value
      */
     public Enumeration<MedicationRequestIntent> getIntentElement() { 
@@ -1886,7 +2123,7 @@ public class MedicationRequest extends DomainResource {
     }
 
     /**
-     * @return {@link #category} (Indicates the grouping or category of medication request (for example, drug classification like ATC, where meds would be administered, legal category of the medication.).)
+     * @return {@link #category} (An arbitrary categorization or grouping of the medication request.  It could be used for indicating where meds are intended to be administered, eg. in an inpatient setting or in a patient's home, or a legal category of the medication.)
      */
     public List<CodeableConcept> getCategory() { 
       if (this.category == null)
@@ -2033,75 +2270,6 @@ public class MedicationRequest extends DomainResource {
     }
 
     /**
-     * @return {@link #reported} (Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.). This is the underlying object with id, value and extensions. The accessor "getReported" gives direct access to the value
-     */
-    public BooleanType getReportedElement() { 
-      if (this.reported == null)
-        if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create MedicationRequest.reported");
-        else if (Configuration.doAutoCreate())
-          this.reported = new BooleanType(); // bb
-      return this.reported;
-    }
-
-    public boolean hasReportedElement() { 
-      return this.reported != null && !this.reported.isEmpty();
-    }
-
-    public boolean hasReported() { 
-      return this.reported != null && !this.reported.isEmpty();
-    }
-
-    /**
-     * @param value {@link #reported} (Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.). This is the underlying object with id, value and extensions. The accessor "getReported" gives direct access to the value
-     */
-    public MedicationRequest setReportedElement(BooleanType value) { 
-      this.reported = value;
-      return this;
-    }
-
-    /**
-     * @return Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.
-     */
-    public boolean getReported() { 
-      return this.reported == null || this.reported.isEmpty() ? false : this.reported.getValue();
-    }
-
-    /**
-     * @param value Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.
-     */
-    public MedicationRequest setReported(boolean value) { 
-        if (this.reported == null)
-          this.reported = new BooleanType();
-        this.reported.setValue(value);
-      return this;
-    }
-
-    /**
-     * @return {@link #informationSource} (The person or organization who provided the information about this request, if the source is someone other than the requestor.  This is often used when the MedicationRequest is reported by another person.)
-     */
-    public Reference getInformationSource() { 
-      if (this.informationSource == null)
-        if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create MedicationRequest.informationSource");
-        else if (Configuration.doAutoCreate())
-          this.informationSource = new Reference(); // cc
-      return this.informationSource;
-    }
-
-    public boolean hasInformationSource() { 
-      return this.informationSource != null && !this.informationSource.isEmpty();
-    }
-
-    /**
-     * @param value {@link #informationSource} (The person or organization who provided the information about this request, if the source is someone other than the requestor.  This is often used when the MedicationRequest is reported by another person.)
-     */
-    public MedicationRequest setInformationSource(Reference value) { 
-      this.informationSource = value;
-      return this;
-    }
-
-    /**
      * @return {@link #medication} (Identifies the medication being requested. This is a link to a resource that represents the medication which may be the details of the medication or simply an attribute carrying a code that identifies the medication from a known list of medications.)
      */
     public CodeableReference getMedication() { 
@@ -2126,7 +2294,7 @@ public class MedicationRequest extends DomainResource {
     }
 
     /**
-     * @return {@link #subject} (A link to a resource representing the person or set of individuals to whom the medication will be given.)
+     * @return {@link #subject} (The individual or group for whom the medication has been requested.)
      */
     public Reference getSubject() { 
       if (this.subject == null)
@@ -2142,11 +2310,64 @@ public class MedicationRequest extends DomainResource {
     }
 
     /**
-     * @param value {@link #subject} (A link to a resource representing the person or set of individuals to whom the medication will be given.)
+     * @param value {@link #subject} (The individual or group for whom the medication has been requested.)
      */
     public MedicationRequest setSubject(Reference value) { 
       this.subject = value;
       return this;
+    }
+
+    /**
+     * @return {@link #informationSource} (The person or organization who provided the information about this request, if the source is someone other than the requestor.  This is often used when the MedicationRequest is reported by another person.)
+     */
+    public List<Reference> getInformationSource() { 
+      if (this.informationSource == null)
+        this.informationSource = new ArrayList<Reference>();
+      return this.informationSource;
+    }
+
+    /**
+     * @return Returns a reference to <code>this</code> for easy method chaining
+     */
+    public MedicationRequest setInformationSource(List<Reference> theInformationSource) { 
+      this.informationSource = theInformationSource;
+      return this;
+    }
+
+    public boolean hasInformationSource() { 
+      if (this.informationSource == null)
+        return false;
+      for (Reference item : this.informationSource)
+        if (!item.isEmpty())
+          return true;
+      return false;
+    }
+
+    public Reference addInformationSource() { //3
+      Reference t = new Reference();
+      if (this.informationSource == null)
+        this.informationSource = new ArrayList<Reference>();
+      this.informationSource.add(t);
+      return t;
+    }
+
+    public MedicationRequest addInformationSource(Reference t) { //3
+      if (t == null)
+        return this;
+      if (this.informationSource == null)
+        this.informationSource = new ArrayList<Reference>();
+      this.informationSource.add(t);
+      return this;
+    }
+
+    /**
+     * @return The first repetition of repeating field {@link #informationSource}, creating it if it does not already exist {3}
+     */
+    public Reference getInformationSourceFirstRep() { 
+      if (getInformationSource().isEmpty()) {
+        addInformationSource();
+      }
+      return getInformationSource().get(0);
     }
 
     /**
@@ -2174,7 +2395,7 @@ public class MedicationRequest extends DomainResource {
     }
 
     /**
-     * @return {@link #supportingInformation} (Include additional information (for example, patient height and weight, a MedicationUsage for the patient) that supports the ordering of the medication.)
+     * @return {@link #supportingInformation} (Information to support fulfilling (i.e. dispensing or administering) of the medication, for example, patient height and weight, a MedicationStatement for the patient).)
      */
     public List<Reference> getSupportingInformation() { 
       if (this.supportingInformation == null)
@@ -2300,26 +2521,47 @@ public class MedicationRequest extends DomainResource {
     }
 
     /**
-     * @return {@link #performer} (The specified desired performer of the medication treatment (e.g. the performer of the medication administration).)
+     * @return {@link #reported} (Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.). This is the underlying object with id, value and extensions. The accessor "getReported" gives direct access to the value
      */
-    public Reference getPerformer() { 
-      if (this.performer == null)
+    public BooleanType getReportedElement() { 
+      if (this.reported == null)
         if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create MedicationRequest.performer");
+          throw new Error("Attempt to auto-create MedicationRequest.reported");
         else if (Configuration.doAutoCreate())
-          this.performer = new Reference(); // cc
-      return this.performer;
+          this.reported = new BooleanType(); // bb
+      return this.reported;
     }
 
-    public boolean hasPerformer() { 
-      return this.performer != null && !this.performer.isEmpty();
+    public boolean hasReportedElement() { 
+      return this.reported != null && !this.reported.isEmpty();
+    }
+
+    public boolean hasReported() { 
+      return this.reported != null && !this.reported.isEmpty();
     }
 
     /**
-     * @param value {@link #performer} (The specified desired performer of the medication treatment (e.g. the performer of the medication administration).)
+     * @param value {@link #reported} (Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.). This is the underlying object with id, value and extensions. The accessor "getReported" gives direct access to the value
      */
-    public MedicationRequest setPerformer(Reference value) { 
-      this.performer = value;
+    public MedicationRequest setReportedElement(BooleanType value) { 
+      this.reported = value;
+      return this;
+    }
+
+    /**
+     * @return Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.
+     */
+    public boolean getReported() { 
+      return this.reported == null || this.reported.isEmpty() ? false : this.reported.getValue();
+    }
+
+    /**
+     * @param value Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.
+     */
+    public MedicationRequest setReported(boolean value) { 
+        if (this.reported == null)
+          this.reported = new BooleanType();
+        this.reported.setValue(value);
       return this;
     }
 
@@ -2345,6 +2587,112 @@ public class MedicationRequest extends DomainResource {
     public MedicationRequest setPerformerType(CodeableConcept value) { 
       this.performerType = value;
       return this;
+    }
+
+    /**
+     * @return {@link #performer} (The specified desired performer of the medication treatment (e.g. the performer of the medication administration).  For devices, this is the device that is intended to perform the administration of the medication.  An IV Pump would be an example of a device that is performing the administration.  Both the IV Pump and the practitioner that set the rate or bolus on the pump can be listed as performers.)
+     */
+    public List<Reference> getPerformer() { 
+      if (this.performer == null)
+        this.performer = new ArrayList<Reference>();
+      return this.performer;
+    }
+
+    /**
+     * @return Returns a reference to <code>this</code> for easy method chaining
+     */
+    public MedicationRequest setPerformer(List<Reference> thePerformer) { 
+      this.performer = thePerformer;
+      return this;
+    }
+
+    public boolean hasPerformer() { 
+      if (this.performer == null)
+        return false;
+      for (Reference item : this.performer)
+        if (!item.isEmpty())
+          return true;
+      return false;
+    }
+
+    public Reference addPerformer() { //3
+      Reference t = new Reference();
+      if (this.performer == null)
+        this.performer = new ArrayList<Reference>();
+      this.performer.add(t);
+      return t;
+    }
+
+    public MedicationRequest addPerformer(Reference t) { //3
+      if (t == null)
+        return this;
+      if (this.performer == null)
+        this.performer = new ArrayList<Reference>();
+      this.performer.add(t);
+      return this;
+    }
+
+    /**
+     * @return The first repetition of repeating field {@link #performer}, creating it if it does not already exist {3}
+     */
+    public Reference getPerformerFirstRep() { 
+      if (getPerformer().isEmpty()) {
+        addPerformer();
+      }
+      return getPerformer().get(0);
+    }
+
+    /**
+     * @return {@link #device} (The intended type of device that is to be used for the administration of the medication (for example, PCA Pump).)
+     */
+    public List<CodeableReference> getDevice() { 
+      if (this.device == null)
+        this.device = new ArrayList<CodeableReference>();
+      return this.device;
+    }
+
+    /**
+     * @return Returns a reference to <code>this</code> for easy method chaining
+     */
+    public MedicationRequest setDevice(List<CodeableReference> theDevice) { 
+      this.device = theDevice;
+      return this;
+    }
+
+    public boolean hasDevice() { 
+      if (this.device == null)
+        return false;
+      for (CodeableReference item : this.device)
+        if (!item.isEmpty())
+          return true;
+      return false;
+    }
+
+    public CodeableReference addDevice() { //3
+      CodeableReference t = new CodeableReference();
+      if (this.device == null)
+        this.device = new ArrayList<CodeableReference>();
+      this.device.add(t);
+      return t;
+    }
+
+    public MedicationRequest addDevice(CodeableReference t) { //3
+      if (t == null)
+        return this;
+      if (this.device == null)
+        this.device = new ArrayList<CodeableReference>();
+      this.device.add(t);
+      return this;
+    }
+
+    /**
+     * @return The first repetition of repeating field {@link #device}, creating it if it does not already exist {3}
+     */
+    public CodeableReference getDeviceFirstRep() { 
+      if (getDevice().isEmpty()) {
+        addDevice();
+      }
+      return getDevice().get(0);
     }
 
     /**
@@ -2422,205 +2770,6 @@ public class MedicationRequest extends DomainResource {
         addReason();
       }
       return getReason().get(0);
-    }
-
-    /**
-     * @return {@link #instantiatesCanonical} (The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.)
-     */
-    public List<CanonicalType> getInstantiatesCanonical() { 
-      if (this.instantiatesCanonical == null)
-        this.instantiatesCanonical = new ArrayList<CanonicalType>();
-      return this.instantiatesCanonical;
-    }
-
-    /**
-     * @return Returns a reference to <code>this</code> for easy method chaining
-     */
-    public MedicationRequest setInstantiatesCanonical(List<CanonicalType> theInstantiatesCanonical) { 
-      this.instantiatesCanonical = theInstantiatesCanonical;
-      return this;
-    }
-
-    public boolean hasInstantiatesCanonical() { 
-      if (this.instantiatesCanonical == null)
-        return false;
-      for (CanonicalType item : this.instantiatesCanonical)
-        if (!item.isEmpty())
-          return true;
-      return false;
-    }
-
-    /**
-     * @return {@link #instantiatesCanonical} (The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.)
-     */
-    public CanonicalType addInstantiatesCanonicalElement() {//2 
-      CanonicalType t = new CanonicalType();
-      if (this.instantiatesCanonical == null)
-        this.instantiatesCanonical = new ArrayList<CanonicalType>();
-      this.instantiatesCanonical.add(t);
-      return t;
-    }
-
-    /**
-     * @param value {@link #instantiatesCanonical} (The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.)
-     */
-    public MedicationRequest addInstantiatesCanonical(String value) { //1
-      CanonicalType t = new CanonicalType();
-      t.setValue(value);
-      if (this.instantiatesCanonical == null)
-        this.instantiatesCanonical = new ArrayList<CanonicalType>();
-      this.instantiatesCanonical.add(t);
-      return this;
-    }
-
-    /**
-     * @param value {@link #instantiatesCanonical} (The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.)
-     */
-    public boolean hasInstantiatesCanonical(String value) { 
-      if (this.instantiatesCanonical == null)
-        return false;
-      for (CanonicalType v : this.instantiatesCanonical)
-        if (v.getValue().equals(value)) // canonical
-          return true;
-      return false;
-    }
-
-    /**
-     * @return {@link #instantiatesUri} (The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest.)
-     */
-    public List<UriType> getInstantiatesUri() { 
-      if (this.instantiatesUri == null)
-        this.instantiatesUri = new ArrayList<UriType>();
-      return this.instantiatesUri;
-    }
-
-    /**
-     * @return Returns a reference to <code>this</code> for easy method chaining
-     */
-    public MedicationRequest setInstantiatesUri(List<UriType> theInstantiatesUri) { 
-      this.instantiatesUri = theInstantiatesUri;
-      return this;
-    }
-
-    public boolean hasInstantiatesUri() { 
-      if (this.instantiatesUri == null)
-        return false;
-      for (UriType item : this.instantiatesUri)
-        if (!item.isEmpty())
-          return true;
-      return false;
-    }
-
-    /**
-     * @return {@link #instantiatesUri} (The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest.)
-     */
-    public UriType addInstantiatesUriElement() {//2 
-      UriType t = new UriType();
-      if (this.instantiatesUri == null)
-        this.instantiatesUri = new ArrayList<UriType>();
-      this.instantiatesUri.add(t);
-      return t;
-    }
-
-    /**
-     * @param value {@link #instantiatesUri} (The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest.)
-     */
-    public MedicationRequest addInstantiatesUri(String value) { //1
-      UriType t = new UriType();
-      t.setValue(value);
-      if (this.instantiatesUri == null)
-        this.instantiatesUri = new ArrayList<UriType>();
-      this.instantiatesUri.add(t);
-      return this;
-    }
-
-    /**
-     * @param value {@link #instantiatesUri} (The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest.)
-     */
-    public boolean hasInstantiatesUri(String value) { 
-      if (this.instantiatesUri == null)
-        return false;
-      for (UriType v : this.instantiatesUri)
-        if (v.getValue().equals(value)) // uri
-          return true;
-      return false;
-    }
-
-    /**
-     * @return {@link #basedOn} (A plan or request that is fulfilled in whole or in part by this medication request.)
-     */
-    public List<Reference> getBasedOn() { 
-      if (this.basedOn == null)
-        this.basedOn = new ArrayList<Reference>();
-      return this.basedOn;
-    }
-
-    /**
-     * @return Returns a reference to <code>this</code> for easy method chaining
-     */
-    public MedicationRequest setBasedOn(List<Reference> theBasedOn) { 
-      this.basedOn = theBasedOn;
-      return this;
-    }
-
-    public boolean hasBasedOn() { 
-      if (this.basedOn == null)
-        return false;
-      for (Reference item : this.basedOn)
-        if (!item.isEmpty())
-          return true;
-      return false;
-    }
-
-    public Reference addBasedOn() { //3
-      Reference t = new Reference();
-      if (this.basedOn == null)
-        this.basedOn = new ArrayList<Reference>();
-      this.basedOn.add(t);
-      return t;
-    }
-
-    public MedicationRequest addBasedOn(Reference t) { //3
-      if (t == null)
-        return this;
-      if (this.basedOn == null)
-        this.basedOn = new ArrayList<Reference>();
-      this.basedOn.add(t);
-      return this;
-    }
-
-    /**
-     * @return The first repetition of repeating field {@link #basedOn}, creating it if it does not already exist {3}
-     */
-    public Reference getBasedOnFirstRep() { 
-      if (getBasedOn().isEmpty()) {
-        addBasedOn();
-      }
-      return getBasedOn().get(0);
-    }
-
-    /**
-     * @return {@link #groupIdentifier} (A shared identifier common to all requests that were authorized more or less simultaneously by a single author, representing the identifier of the requisition or prescription.)
-     */
-    public Identifier getGroupIdentifier() { 
-      if (this.groupIdentifier == null)
-        if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create MedicationRequest.groupIdentifier");
-        else if (Configuration.doAutoCreate())
-          this.groupIdentifier = new Identifier(); // cc
-      return this.groupIdentifier;
-    }
-
-    public boolean hasGroupIdentifier() { 
-      return this.groupIdentifier != null && !this.groupIdentifier.isEmpty();
-    }
-
-    /**
-     * @param value {@link #groupIdentifier} (A shared identifier common to all requests that were authorized more or less simultaneously by a single author, representing the identifier of the requisition or prescription.)
-     */
-    public MedicationRequest setGroupIdentifier(Identifier value) { 
-      this.groupIdentifier = value;
-      return this;
     }
 
     /**
@@ -2756,12 +2905,12 @@ public class MedicationRequest extends DomainResource {
     /**
      * @return {@link #renderedDosageInstruction} (The full representation of the dose of the medication included in all dosage instructions.  To be used when multiple dosage instructions are included to represent complex dosing such as increasing or tapering doses.). This is the underlying object with id, value and extensions. The accessor "getRenderedDosageInstruction" gives direct access to the value
      */
-    public StringType getRenderedDosageInstructionElement() { 
+    public MarkdownType getRenderedDosageInstructionElement() { 
       if (this.renderedDosageInstruction == null)
         if (Configuration.errorOnAutoCreate())
           throw new Error("Attempt to auto-create MedicationRequest.renderedDosageInstruction");
         else if (Configuration.doAutoCreate())
-          this.renderedDosageInstruction = new StringType(); // bb
+          this.renderedDosageInstruction = new MarkdownType(); // bb
       return this.renderedDosageInstruction;
     }
 
@@ -2776,7 +2925,7 @@ public class MedicationRequest extends DomainResource {
     /**
      * @param value {@link #renderedDosageInstruction} (The full representation of the dose of the medication included in all dosage instructions.  To be used when multiple dosage instructions are included to represent complex dosing such as increasing or tapering doses.). This is the underlying object with id, value and extensions. The accessor "getRenderedDosageInstruction" gives direct access to the value
      */
-    public MedicationRequest setRenderedDosageInstructionElement(StringType value) { 
+    public MedicationRequest setRenderedDosageInstructionElement(MarkdownType value) { 
       this.renderedDosageInstruction = value;
       return this;
     }
@@ -2796,14 +2945,38 @@ public class MedicationRequest extends DomainResource {
         this.renderedDosageInstruction = null;
       else {
         if (this.renderedDosageInstruction == null)
-          this.renderedDosageInstruction = new StringType();
+          this.renderedDosageInstruction = new MarkdownType();
         this.renderedDosageInstruction.setValue(value);
       }
       return this;
     }
 
     /**
-     * @return {@link #dosageInstruction} (Indicates how the medication is to be used by the patient.)
+     * @return {@link #effectiveDosePeriod} (The period over which the medication is to be taken.  Where there are multiple dosageInstruction lines (for example, tapering doses), this is the earliest date and the latest end date of the dosageInstructions.)
+     */
+    public Period getEffectiveDosePeriod() { 
+      if (this.effectiveDosePeriod == null)
+        if (Configuration.errorOnAutoCreate())
+          throw new Error("Attempt to auto-create MedicationRequest.effectiveDosePeriod");
+        else if (Configuration.doAutoCreate())
+          this.effectiveDosePeriod = new Period(); // cc
+      return this.effectiveDosePeriod;
+    }
+
+    public boolean hasEffectiveDosePeriod() { 
+      return this.effectiveDosePeriod != null && !this.effectiveDosePeriod.isEmpty();
+    }
+
+    /**
+     * @param value {@link #effectiveDosePeriod} (The period over which the medication is to be taken.  Where there are multiple dosageInstruction lines (for example, tapering doses), this is the earliest date and the latest end date of the dosageInstructions.)
+     */
+    public MedicationRequest setEffectiveDosePeriod(Period value) { 
+      this.effectiveDosePeriod = value;
+      return this;
+    }
+
+    /**
+     * @return {@link #dosageInstruction} (Specific instructions for how the medication is to be used by the patient.)
      */
     public List<Dosage> getDosageInstruction() { 
       if (this.dosageInstruction == null)
@@ -2904,83 +3077,6 @@ public class MedicationRequest extends DomainResource {
     }
 
     /**
-     * @return {@link #priorPrescription} (A link to a resource representing an earlier order related order or prescription.)
-     */
-    public Reference getPriorPrescription() { 
-      if (this.priorPrescription == null)
-        if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create MedicationRequest.priorPrescription");
-        else if (Configuration.doAutoCreate())
-          this.priorPrescription = new Reference(); // cc
-      return this.priorPrescription;
-    }
-
-    public boolean hasPriorPrescription() { 
-      return this.priorPrescription != null && !this.priorPrescription.isEmpty();
-    }
-
-    /**
-     * @param value {@link #priorPrescription} (A link to a resource representing an earlier order related order or prescription.)
-     */
-    public MedicationRequest setPriorPrescription(Reference value) { 
-      this.priorPrescription = value;
-      return this;
-    }
-
-    /**
-     * @return {@link #detectedIssue} (Indicates an actual or potential clinical issue with or between one or more active or proposed clinical actions for a patient; e.g. Drug-drug interaction, duplicate therapy, dosage alert etc.)
-     */
-    public List<Reference> getDetectedIssue() { 
-      if (this.detectedIssue == null)
-        this.detectedIssue = new ArrayList<Reference>();
-      return this.detectedIssue;
-    }
-
-    /**
-     * @return Returns a reference to <code>this</code> for easy method chaining
-     */
-    public MedicationRequest setDetectedIssue(List<Reference> theDetectedIssue) { 
-      this.detectedIssue = theDetectedIssue;
-      return this;
-    }
-
-    public boolean hasDetectedIssue() { 
-      if (this.detectedIssue == null)
-        return false;
-      for (Reference item : this.detectedIssue)
-        if (!item.isEmpty())
-          return true;
-      return false;
-    }
-
-    public Reference addDetectedIssue() { //3
-      Reference t = new Reference();
-      if (this.detectedIssue == null)
-        this.detectedIssue = new ArrayList<Reference>();
-      this.detectedIssue.add(t);
-      return t;
-    }
-
-    public MedicationRequest addDetectedIssue(Reference t) { //3
-      if (t == null)
-        return this;
-      if (this.detectedIssue == null)
-        this.detectedIssue = new ArrayList<Reference>();
-      this.detectedIssue.add(t);
-      return this;
-    }
-
-    /**
-     * @return The first repetition of repeating field {@link #detectedIssue}, creating it if it does not already exist {3}
-     */
-    public Reference getDetectedIssueFirstRep() { 
-      if (getDetectedIssue().isEmpty()) {
-        addDetectedIssue();
-      }
-      return getDetectedIssue().get(0);
-    }
-
-    /**
      * @return {@link #eventHistory} (Links to Provenance records for past versions of this resource or fulfilling request or event resources that identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the resource.)
      */
     public List<Reference> getEventHistory() { 
@@ -3036,37 +3132,37 @@ public class MedicationRequest extends DomainResource {
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
         children.add(new Property("identifier", "Identifier", "Identifiers associated with this medication request that are defined by business processes and/or used to refer to it when a direct URL reference to the resource itself is not appropriate. They are business identifiers assigned to this resource by the performer or other systems and remain constant as the resource is updated and propagates from server to server.", 0, java.lang.Integer.MAX_VALUE, identifier));
+        children.add(new Property("basedOn", "Reference(CarePlan|MedicationRequest|ServiceRequest|ImmunizationRecommendation)", "A plan or request that is fulfilled in whole or in part by this medication request.", 0, java.lang.Integer.MAX_VALUE, basedOn));
+        children.add(new Property("priorPrescription", "Reference(MedicationRequest)", "Reference to an order/prescription that is being replaced by this MedicationRequest.", 0, 1, priorPrescription));
+        children.add(new Property("groupIdentifier", "Identifier", "A shared identifier common to multiple independent Request instances that were activated/authorized more or less simultaneously by a single author.  The presence of the same identifier on each request ties those requests together and may have business ramifications in terms of reporting of results, billing, etc.  E.g. a requisition number shared by a set of lab tests ordered together, or a prescription number shared by all meds ordered at one time.", 0, 1, groupIdentifier));
         children.add(new Property("status", "code", "A code specifying the current state of the order.  Generally, this will be active or completed state.", 0, 1, status));
         children.add(new Property("statusReason", "CodeableConcept", "Captures the reason for the current state of the MedicationRequest.", 0, 1, statusReason));
+        children.add(new Property("statusChanged", "dateTime", "The date (and perhaps time) when the status was changed.", 0, 1, statusChanged));
         children.add(new Property("intent", "code", "Whether the request is a proposal, plan, or an original order.", 0, 1, intent));
-        children.add(new Property("category", "CodeableConcept", "Indicates the grouping or category of medication request (for example, drug classification like ATC, where meds would be administered, legal category of the medication.).", 0, java.lang.Integer.MAX_VALUE, category));
+        children.add(new Property("category", "CodeableConcept", "An arbitrary categorization or grouping of the medication request.  It could be used for indicating where meds are intended to be administered, eg. in an inpatient setting or in a patient's home, or a legal category of the medication.", 0, java.lang.Integer.MAX_VALUE, category));
         children.add(new Property("priority", "code", "Indicates how quickly the Medication Request should be addressed with respect to other requests.", 0, 1, priority));
         children.add(new Property("doNotPerform", "boolean", "If true, indicates that the provider is asking for the patient to either stop taking or to not start taking the specified medication. For example, the patient is taking an existing medication and the provider is changing their medication. They want to create two seperate requests: one to stop using the current medication and another to start the new medication.", 0, 1, doNotPerform));
-        children.add(new Property("reported", "boolean", "Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.", 0, 1, reported));
-        children.add(new Property("informationSource", "Reference(Patient|Practitioner|PractitionerRole|RelatedPerson|Organization)", "The person or organization who provided the information about this request, if the source is someone other than the requestor.  This is often used when the MedicationRequest is reported by another person.", 0, 1, informationSource));
         children.add(new Property("medication", "CodeableReference(Medication)", "Identifies the medication being requested. This is a link to a resource that represents the medication which may be the details of the medication or simply an attribute carrying a code that identifies the medication from a known list of medications.", 0, 1, medication));
-        children.add(new Property("subject", "Reference(Patient|Group)", "A link to a resource representing the person or set of individuals to whom the medication will be given.", 0, 1, subject));
+        children.add(new Property("subject", "Reference(Patient|Group)", "The individual or group for whom the medication has been requested.", 0, 1, subject));
+        children.add(new Property("informationSource", "Reference(Patient|Practitioner|PractitionerRole|RelatedPerson|Organization)", "The person or organization who provided the information about this request, if the source is someone other than the requestor.  This is often used when the MedicationRequest is reported by another person.", 0, java.lang.Integer.MAX_VALUE, informationSource));
         children.add(new Property("encounter", "Reference(Encounter)", "The Encounter during which this [x] was created or to which the creation of this record is tightly associated.", 0, 1, encounter));
-        children.add(new Property("supportingInformation", "Reference(Any)", "Include additional information (for example, patient height and weight, a MedicationUsage for the patient) that supports the ordering of the medication.", 0, java.lang.Integer.MAX_VALUE, supportingInformation));
+        children.add(new Property("supportingInformation", "Reference(Any)", "Information to support fulfilling (i.e. dispensing or administering) of the medication, for example, patient height and weight, a MedicationStatement for the patient).", 0, java.lang.Integer.MAX_VALUE, supportingInformation));
         children.add(new Property("authoredOn", "dateTime", "The date (and perhaps time) when the prescription was initially written or authored on.", 0, 1, authoredOn));
         children.add(new Property("requester", "Reference(Practitioner|PractitionerRole|Organization|Patient|RelatedPerson|Device)", "The individual, organization, or device that initiated the request and has responsibility for its activation.", 0, 1, requester));
-        children.add(new Property("performer", "Reference(Practitioner|PractitionerRole|Organization|Patient|Device|RelatedPerson|CareTeam|HealthcareService)", "The specified desired performer of the medication treatment (e.g. the performer of the medication administration).", 0, 1, performer));
+        children.add(new Property("reported", "boolean", "Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.", 0, 1, reported));
         children.add(new Property("performerType", "CodeableConcept", "Indicates the type of performer of the administration of the medication.", 0, 1, performerType));
+        children.add(new Property("performer", "Reference(Practitioner|PractitionerRole|Organization|Patient|DeviceDefinition|RelatedPerson|CareTeam|HealthcareService)", "The specified desired performer of the medication treatment (e.g. the performer of the medication administration).  For devices, this is the device that is intended to perform the administration of the medication.  An IV Pump would be an example of a device that is performing the administration.  Both the IV Pump and the practitioner that set the rate or bolus on the pump can be listed as performers.", 0, java.lang.Integer.MAX_VALUE, performer));
+        children.add(new Property("device", "CodeableReference(DeviceDefinition)", "The intended type of device that is to be used for the administration of the medication (for example, PCA Pump).", 0, java.lang.Integer.MAX_VALUE, device));
         children.add(new Property("recorder", "Reference(Practitioner|PractitionerRole)", "The person who entered the order on behalf of another individual for example in the case of a verbal or a telephone order.", 0, 1, recorder));
         children.add(new Property("reason", "CodeableReference(Condition|Observation)", "The reason or the indication for ordering or not ordering the medication.", 0, java.lang.Integer.MAX_VALUE, reason));
-        children.add(new Property("instantiatesCanonical", "canonical(PlanDefinition|ActivityDefinition)", "The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.", 0, java.lang.Integer.MAX_VALUE, instantiatesCanonical));
-        children.add(new Property("instantiatesUri", "uri", "The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest.", 0, java.lang.Integer.MAX_VALUE, instantiatesUri));
-        children.add(new Property("basedOn", "Reference(CarePlan|MedicationRequest|ServiceRequest|ImmunizationRecommendation)", "A plan or request that is fulfilled in whole or in part by this medication request.", 0, java.lang.Integer.MAX_VALUE, basedOn));
-        children.add(new Property("groupIdentifier", "Identifier", "A shared identifier common to all requests that were authorized more or less simultaneously by a single author, representing the identifier of the requisition or prescription.", 0, 1, groupIdentifier));
         children.add(new Property("courseOfTherapyType", "CodeableConcept", "The description of the overall pattern of the administration of the medication to the patient.", 0, 1, courseOfTherapyType));
         children.add(new Property("insurance", "Reference(Coverage|ClaimResponse)", "Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be required for delivering the requested service.", 0, java.lang.Integer.MAX_VALUE, insurance));
         children.add(new Property("note", "Annotation", "Extra information about the prescription that could not be conveyed by the other attributes.", 0, java.lang.Integer.MAX_VALUE, note));
-        children.add(new Property("renderedDosageInstruction", "string", "The full representation of the dose of the medication included in all dosage instructions.  To be used when multiple dosage instructions are included to represent complex dosing such as increasing or tapering doses.", 0, 1, renderedDosageInstruction));
-        children.add(new Property("dosageInstruction", "Dosage", "Indicates how the medication is to be used by the patient.", 0, java.lang.Integer.MAX_VALUE, dosageInstruction));
+        children.add(new Property("renderedDosageInstruction", "markdown", "The full representation of the dose of the medication included in all dosage instructions.  To be used when multiple dosage instructions are included to represent complex dosing such as increasing or tapering doses.", 0, 1, renderedDosageInstruction));
+        children.add(new Property("effectiveDosePeriod", "Period", "The period over which the medication is to be taken.  Where there are multiple dosageInstruction lines (for example, tapering doses), this is the earliest date and the latest end date of the dosageInstructions.", 0, 1, effectiveDosePeriod));
+        children.add(new Property("dosageInstruction", "Dosage", "Specific instructions for how the medication is to be used by the patient.", 0, java.lang.Integer.MAX_VALUE, dosageInstruction));
         children.add(new Property("dispenseRequest", "", "Indicates the specific details for the dispense or medication supply part of a medication request (also known as a Medication Prescription or Medication Order).  Note that this information is not always sent with the order.  There may be in some settings (e.g. hospitals) institutional or system support for completing the dispense details in the pharmacy department.", 0, 1, dispenseRequest));
         children.add(new Property("substitution", "", "Indicates whether or not substitution can or should be part of the dispense. In some cases, substitution must happen, in other cases substitution must not happen. This block explains the prescriber's intent. If nothing is specified substitution may be done.", 0, 1, substitution));
-        children.add(new Property("priorPrescription", "Reference(MedicationRequest)", "A link to a resource representing an earlier order related order or prescription.", 0, 1, priorPrescription));
-        children.add(new Property("detectedIssue", "Reference(DetectedIssue)", "Indicates an actual or potential clinical issue with or between one or more active or proposed clinical actions for a patient; e.g. Drug-drug interaction, duplicate therapy, dosage alert etc.", 0, java.lang.Integer.MAX_VALUE, detectedIssue));
         children.add(new Property("eventHistory", "Reference(Provenance)", "Links to Provenance records for past versions of this resource or fulfilling request or event resources that identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the resource.", 0, java.lang.Integer.MAX_VALUE, eventHistory));
       }
 
@@ -3074,37 +3170,37 @@ public class MedicationRequest extends DomainResource {
       public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
         switch (_hash) {
         case -1618432855: /*identifier*/  return new Property("identifier", "Identifier", "Identifiers associated with this medication request that are defined by business processes and/or used to refer to it when a direct URL reference to the resource itself is not appropriate. They are business identifiers assigned to this resource by the performer or other systems and remain constant as the resource is updated and propagates from server to server.", 0, java.lang.Integer.MAX_VALUE, identifier);
+        case -332612366: /*basedOn*/  return new Property("basedOn", "Reference(CarePlan|MedicationRequest|ServiceRequest|ImmunizationRecommendation)", "A plan or request that is fulfilled in whole or in part by this medication request.", 0, java.lang.Integer.MAX_VALUE, basedOn);
+        case -486355964: /*priorPrescription*/  return new Property("priorPrescription", "Reference(MedicationRequest)", "Reference to an order/prescription that is being replaced by this MedicationRequest.", 0, 1, priorPrescription);
+        case -445338488: /*groupIdentifier*/  return new Property("groupIdentifier", "Identifier", "A shared identifier common to multiple independent Request instances that were activated/authorized more or less simultaneously by a single author.  The presence of the same identifier on each request ties those requests together and may have business ramifications in terms of reporting of results, billing, etc.  E.g. a requisition number shared by a set of lab tests ordered together, or a prescription number shared by all meds ordered at one time.", 0, 1, groupIdentifier);
         case -892481550: /*status*/  return new Property("status", "code", "A code specifying the current state of the order.  Generally, this will be active or completed state.", 0, 1, status);
         case 2051346646: /*statusReason*/  return new Property("statusReason", "CodeableConcept", "Captures the reason for the current state of the MedicationRequest.", 0, 1, statusReason);
+        case -1174686110: /*statusChanged*/  return new Property("statusChanged", "dateTime", "The date (and perhaps time) when the status was changed.", 0, 1, statusChanged);
         case -1183762788: /*intent*/  return new Property("intent", "code", "Whether the request is a proposal, plan, or an original order.", 0, 1, intent);
-        case 50511102: /*category*/  return new Property("category", "CodeableConcept", "Indicates the grouping or category of medication request (for example, drug classification like ATC, where meds would be administered, legal category of the medication.).", 0, java.lang.Integer.MAX_VALUE, category);
+        case 50511102: /*category*/  return new Property("category", "CodeableConcept", "An arbitrary categorization or grouping of the medication request.  It could be used for indicating where meds are intended to be administered, eg. in an inpatient setting or in a patient's home, or a legal category of the medication.", 0, java.lang.Integer.MAX_VALUE, category);
         case -1165461084: /*priority*/  return new Property("priority", "code", "Indicates how quickly the Medication Request should be addressed with respect to other requests.", 0, 1, priority);
         case -1788508167: /*doNotPerform*/  return new Property("doNotPerform", "boolean", "If true, indicates that the provider is asking for the patient to either stop taking or to not start taking the specified medication. For example, the patient is taking an existing medication and the provider is changing their medication. They want to create two seperate requests: one to stop using the current medication and another to start the new medication.", 0, 1, doNotPerform);
-        case -427039533: /*reported*/  return new Property("reported", "boolean", "Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.", 0, 1, reported);
-        case -2123220889: /*informationSource*/  return new Property("informationSource", "Reference(Patient|Practitioner|PractitionerRole|RelatedPerson|Organization)", "The person or organization who provided the information about this request, if the source is someone other than the requestor.  This is often used when the MedicationRequest is reported by another person.", 0, 1, informationSource);
         case 1998965455: /*medication*/  return new Property("medication", "CodeableReference(Medication)", "Identifies the medication being requested. This is a link to a resource that represents the medication which may be the details of the medication or simply an attribute carrying a code that identifies the medication from a known list of medications.", 0, 1, medication);
-        case -1867885268: /*subject*/  return new Property("subject", "Reference(Patient|Group)", "A link to a resource representing the person or set of individuals to whom the medication will be given.", 0, 1, subject);
+        case -1867885268: /*subject*/  return new Property("subject", "Reference(Patient|Group)", "The individual or group for whom the medication has been requested.", 0, 1, subject);
+        case -2123220889: /*informationSource*/  return new Property("informationSource", "Reference(Patient|Practitioner|PractitionerRole|RelatedPerson|Organization)", "The person or organization who provided the information about this request, if the source is someone other than the requestor.  This is often used when the MedicationRequest is reported by another person.", 0, java.lang.Integer.MAX_VALUE, informationSource);
         case 1524132147: /*encounter*/  return new Property("encounter", "Reference(Encounter)", "The Encounter during which this [x] was created or to which the creation of this record is tightly associated.", 0, 1, encounter);
-        case -1248768647: /*supportingInformation*/  return new Property("supportingInformation", "Reference(Any)", "Include additional information (for example, patient height and weight, a MedicationUsage for the patient) that supports the ordering of the medication.", 0, java.lang.Integer.MAX_VALUE, supportingInformation);
+        case -1248768647: /*supportingInformation*/  return new Property("supportingInformation", "Reference(Any)", "Information to support fulfilling (i.e. dispensing or administering) of the medication, for example, patient height and weight, a MedicationStatement for the patient).", 0, java.lang.Integer.MAX_VALUE, supportingInformation);
         case -1500852503: /*authoredOn*/  return new Property("authoredOn", "dateTime", "The date (and perhaps time) when the prescription was initially written or authored on.", 0, 1, authoredOn);
         case 693933948: /*requester*/  return new Property("requester", "Reference(Practitioner|PractitionerRole|Organization|Patient|RelatedPerson|Device)", "The individual, organization, or device that initiated the request and has responsibility for its activation.", 0, 1, requester);
-        case 481140686: /*performer*/  return new Property("performer", "Reference(Practitioner|PractitionerRole|Organization|Patient|Device|RelatedPerson|CareTeam|HealthcareService)", "The specified desired performer of the medication treatment (e.g. the performer of the medication administration).", 0, 1, performer);
+        case -427039533: /*reported*/  return new Property("reported", "boolean", "Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.", 0, 1, reported);
         case -901444568: /*performerType*/  return new Property("performerType", "CodeableConcept", "Indicates the type of performer of the administration of the medication.", 0, 1, performerType);
+        case 481140686: /*performer*/  return new Property("performer", "Reference(Practitioner|PractitionerRole|Organization|Patient|DeviceDefinition|RelatedPerson|CareTeam|HealthcareService)", "The specified desired performer of the medication treatment (e.g. the performer of the medication administration).  For devices, this is the device that is intended to perform the administration of the medication.  An IV Pump would be an example of a device that is performing the administration.  Both the IV Pump and the practitioner that set the rate or bolus on the pump can be listed as performers.", 0, java.lang.Integer.MAX_VALUE, performer);
+        case -1335157162: /*device*/  return new Property("device", "CodeableReference(DeviceDefinition)", "The intended type of device that is to be used for the administration of the medication (for example, PCA Pump).", 0, java.lang.Integer.MAX_VALUE, device);
         case -799233858: /*recorder*/  return new Property("recorder", "Reference(Practitioner|PractitionerRole)", "The person who entered the order on behalf of another individual for example in the case of a verbal or a telephone order.", 0, 1, recorder);
         case -934964668: /*reason*/  return new Property("reason", "CodeableReference(Condition|Observation)", "The reason or the indication for ordering or not ordering the medication.", 0, java.lang.Integer.MAX_VALUE, reason);
-        case 8911915: /*instantiatesCanonical*/  return new Property("instantiatesCanonical", "canonical(PlanDefinition|ActivityDefinition)", "The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.", 0, java.lang.Integer.MAX_VALUE, instantiatesCanonical);
-        case -1926393373: /*instantiatesUri*/  return new Property("instantiatesUri", "uri", "The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest.", 0, java.lang.Integer.MAX_VALUE, instantiatesUri);
-        case -332612366: /*basedOn*/  return new Property("basedOn", "Reference(CarePlan|MedicationRequest|ServiceRequest|ImmunizationRecommendation)", "A plan or request that is fulfilled in whole or in part by this medication request.", 0, java.lang.Integer.MAX_VALUE, basedOn);
-        case -445338488: /*groupIdentifier*/  return new Property("groupIdentifier", "Identifier", "A shared identifier common to all requests that were authorized more or less simultaneously by a single author, representing the identifier of the requisition or prescription.", 0, 1, groupIdentifier);
         case -447282031: /*courseOfTherapyType*/  return new Property("courseOfTherapyType", "CodeableConcept", "The description of the overall pattern of the administration of the medication to the patient.", 0, 1, courseOfTherapyType);
         case 73049818: /*insurance*/  return new Property("insurance", "Reference(Coverage|ClaimResponse)", "Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be required for delivering the requested service.", 0, java.lang.Integer.MAX_VALUE, insurance);
         case 3387378: /*note*/  return new Property("note", "Annotation", "Extra information about the prescription that could not be conveyed by the other attributes.", 0, java.lang.Integer.MAX_VALUE, note);
-        case 1718902050: /*renderedDosageInstruction*/  return new Property("renderedDosageInstruction", "string", "The full representation of the dose of the medication included in all dosage instructions.  To be used when multiple dosage instructions are included to represent complex dosing such as increasing or tapering doses.", 0, 1, renderedDosageInstruction);
-        case -1201373865: /*dosageInstruction*/  return new Property("dosageInstruction", "Dosage", "Indicates how the medication is to be used by the patient.", 0, java.lang.Integer.MAX_VALUE, dosageInstruction);
+        case 1718902050: /*renderedDosageInstruction*/  return new Property("renderedDosageInstruction", "markdown", "The full representation of the dose of the medication included in all dosage instructions.  To be used when multiple dosage instructions are included to represent complex dosing such as increasing or tapering doses.", 0, 1, renderedDosageInstruction);
+        case 322608453: /*effectiveDosePeriod*/  return new Property("effectiveDosePeriod", "Period", "The period over which the medication is to be taken.  Where there are multiple dosageInstruction lines (for example, tapering doses), this is the earliest date and the latest end date of the dosageInstructions.", 0, 1, effectiveDosePeriod);
+        case -1201373865: /*dosageInstruction*/  return new Property("dosageInstruction", "Dosage", "Specific instructions for how the medication is to be used by the patient.", 0, java.lang.Integer.MAX_VALUE, dosageInstruction);
         case 824620658: /*dispenseRequest*/  return new Property("dispenseRequest", "", "Indicates the specific details for the dispense or medication supply part of a medication request (also known as a Medication Prescription or Medication Order).  Note that this information is not always sent with the order.  There may be in some settings (e.g. hospitals) institutional or system support for completing the dispense details in the pharmacy department.", 0, 1, dispenseRequest);
         case 826147581: /*substitution*/  return new Property("substitution", "", "Indicates whether or not substitution can or should be part of the dispense. In some cases, substitution must happen, in other cases substitution must not happen. This block explains the prescriber's intent. If nothing is specified substitution may be done.", 0, 1, substitution);
-        case -486355964: /*priorPrescription*/  return new Property("priorPrescription", "Reference(MedicationRequest)", "A link to a resource representing an earlier order related order or prescription.", 0, 1, priorPrescription);
-        case 51602295: /*detectedIssue*/  return new Property("detectedIssue", "Reference(DetectedIssue)", "Indicates an actual or potential clinical issue with or between one or more active or proposed clinical actions for a patient; e.g. Drug-drug interaction, duplicate therapy, dosage alert etc.", 0, java.lang.Integer.MAX_VALUE, detectedIssue);
         case 1835190426: /*eventHistory*/  return new Property("eventHistory", "Reference(Provenance)", "Links to Provenance records for past versions of this resource or fulfilling request or event resources that identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the resource.", 0, java.lang.Integer.MAX_VALUE, eventHistory);
         default: return super.getNamedProperty(_hash, _name, _checkValid);
         }
@@ -3115,37 +3211,37 @@ public class MedicationRequest extends DomainResource {
       public Base[] getProperty(int hash, String name, boolean checkValid) throws FHIRException {
         switch (hash) {
         case -1618432855: /*identifier*/ return this.identifier == null ? new Base[0] : this.identifier.toArray(new Base[this.identifier.size()]); // Identifier
+        case -332612366: /*basedOn*/ return this.basedOn == null ? new Base[0] : this.basedOn.toArray(new Base[this.basedOn.size()]); // Reference
+        case -486355964: /*priorPrescription*/ return this.priorPrescription == null ? new Base[0] : new Base[] {this.priorPrescription}; // Reference
+        case -445338488: /*groupIdentifier*/ return this.groupIdentifier == null ? new Base[0] : new Base[] {this.groupIdentifier}; // Identifier
         case -892481550: /*status*/ return this.status == null ? new Base[0] : new Base[] {this.status}; // Enumeration<MedicationrequestStatus>
         case 2051346646: /*statusReason*/ return this.statusReason == null ? new Base[0] : new Base[] {this.statusReason}; // CodeableConcept
+        case -1174686110: /*statusChanged*/ return this.statusChanged == null ? new Base[0] : new Base[] {this.statusChanged}; // DateTimeType
         case -1183762788: /*intent*/ return this.intent == null ? new Base[0] : new Base[] {this.intent}; // Enumeration<MedicationRequestIntent>
         case 50511102: /*category*/ return this.category == null ? new Base[0] : this.category.toArray(new Base[this.category.size()]); // CodeableConcept
         case -1165461084: /*priority*/ return this.priority == null ? new Base[0] : new Base[] {this.priority}; // Enumeration<RequestPriority>
         case -1788508167: /*doNotPerform*/ return this.doNotPerform == null ? new Base[0] : new Base[] {this.doNotPerform}; // BooleanType
-        case -427039533: /*reported*/ return this.reported == null ? new Base[0] : new Base[] {this.reported}; // BooleanType
-        case -2123220889: /*informationSource*/ return this.informationSource == null ? new Base[0] : new Base[] {this.informationSource}; // Reference
         case 1998965455: /*medication*/ return this.medication == null ? new Base[0] : new Base[] {this.medication}; // CodeableReference
         case -1867885268: /*subject*/ return this.subject == null ? new Base[0] : new Base[] {this.subject}; // Reference
+        case -2123220889: /*informationSource*/ return this.informationSource == null ? new Base[0] : this.informationSource.toArray(new Base[this.informationSource.size()]); // Reference
         case 1524132147: /*encounter*/ return this.encounter == null ? new Base[0] : new Base[] {this.encounter}; // Reference
         case -1248768647: /*supportingInformation*/ return this.supportingInformation == null ? new Base[0] : this.supportingInformation.toArray(new Base[this.supportingInformation.size()]); // Reference
         case -1500852503: /*authoredOn*/ return this.authoredOn == null ? new Base[0] : new Base[] {this.authoredOn}; // DateTimeType
         case 693933948: /*requester*/ return this.requester == null ? new Base[0] : new Base[] {this.requester}; // Reference
-        case 481140686: /*performer*/ return this.performer == null ? new Base[0] : new Base[] {this.performer}; // Reference
+        case -427039533: /*reported*/ return this.reported == null ? new Base[0] : new Base[] {this.reported}; // BooleanType
         case -901444568: /*performerType*/ return this.performerType == null ? new Base[0] : new Base[] {this.performerType}; // CodeableConcept
+        case 481140686: /*performer*/ return this.performer == null ? new Base[0] : this.performer.toArray(new Base[this.performer.size()]); // Reference
+        case -1335157162: /*device*/ return this.device == null ? new Base[0] : this.device.toArray(new Base[this.device.size()]); // CodeableReference
         case -799233858: /*recorder*/ return this.recorder == null ? new Base[0] : new Base[] {this.recorder}; // Reference
         case -934964668: /*reason*/ return this.reason == null ? new Base[0] : this.reason.toArray(new Base[this.reason.size()]); // CodeableReference
-        case 8911915: /*instantiatesCanonical*/ return this.instantiatesCanonical == null ? new Base[0] : this.instantiatesCanonical.toArray(new Base[this.instantiatesCanonical.size()]); // CanonicalType
-        case -1926393373: /*instantiatesUri*/ return this.instantiatesUri == null ? new Base[0] : this.instantiatesUri.toArray(new Base[this.instantiatesUri.size()]); // UriType
-        case -332612366: /*basedOn*/ return this.basedOn == null ? new Base[0] : this.basedOn.toArray(new Base[this.basedOn.size()]); // Reference
-        case -445338488: /*groupIdentifier*/ return this.groupIdentifier == null ? new Base[0] : new Base[] {this.groupIdentifier}; // Identifier
         case -447282031: /*courseOfTherapyType*/ return this.courseOfTherapyType == null ? new Base[0] : new Base[] {this.courseOfTherapyType}; // CodeableConcept
         case 73049818: /*insurance*/ return this.insurance == null ? new Base[0] : this.insurance.toArray(new Base[this.insurance.size()]); // Reference
         case 3387378: /*note*/ return this.note == null ? new Base[0] : this.note.toArray(new Base[this.note.size()]); // Annotation
-        case 1718902050: /*renderedDosageInstruction*/ return this.renderedDosageInstruction == null ? new Base[0] : new Base[] {this.renderedDosageInstruction}; // StringType
+        case 1718902050: /*renderedDosageInstruction*/ return this.renderedDosageInstruction == null ? new Base[0] : new Base[] {this.renderedDosageInstruction}; // MarkdownType
+        case 322608453: /*effectiveDosePeriod*/ return this.effectiveDosePeriod == null ? new Base[0] : new Base[] {this.effectiveDosePeriod}; // Period
         case -1201373865: /*dosageInstruction*/ return this.dosageInstruction == null ? new Base[0] : this.dosageInstruction.toArray(new Base[this.dosageInstruction.size()]); // Dosage
         case 824620658: /*dispenseRequest*/ return this.dispenseRequest == null ? new Base[0] : new Base[] {this.dispenseRequest}; // MedicationRequestDispenseRequestComponent
         case 826147581: /*substitution*/ return this.substitution == null ? new Base[0] : new Base[] {this.substitution}; // MedicationRequestSubstitutionComponent
-        case -486355964: /*priorPrescription*/ return this.priorPrescription == null ? new Base[0] : new Base[] {this.priorPrescription}; // Reference
-        case 51602295: /*detectedIssue*/ return this.detectedIssue == null ? new Base[0] : this.detectedIssue.toArray(new Base[this.detectedIssue.size()]); // Reference
         case 1835190426: /*eventHistory*/ return this.eventHistory == null ? new Base[0] : this.eventHistory.toArray(new Base[this.eventHistory.size()]); // Reference
         default: return super.getProperty(hash, name, checkValid);
         }
@@ -3158,12 +3254,24 @@ public class MedicationRequest extends DomainResource {
         case -1618432855: // identifier
           this.getIdentifier().add(TypeConvertor.castToIdentifier(value)); // Identifier
           return value;
+        case -332612366: // basedOn
+          this.getBasedOn().add(TypeConvertor.castToReference(value)); // Reference
+          return value;
+        case -486355964: // priorPrescription
+          this.priorPrescription = TypeConvertor.castToReference(value); // Reference
+          return value;
+        case -445338488: // groupIdentifier
+          this.groupIdentifier = TypeConvertor.castToIdentifier(value); // Identifier
+          return value;
         case -892481550: // status
           value = new MedicationrequestStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.status = (Enumeration) value; // Enumeration<MedicationrequestStatus>
           return value;
         case 2051346646: // statusReason
           this.statusReason = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
+          return value;
+        case -1174686110: // statusChanged
+          this.statusChanged = TypeConvertor.castToDateTime(value); // DateTimeType
           return value;
         case -1183762788: // intent
           value = new MedicationRequestIntentEnumFactory().fromType(TypeConvertor.castToCode(value));
@@ -3179,17 +3287,14 @@ public class MedicationRequest extends DomainResource {
         case -1788508167: // doNotPerform
           this.doNotPerform = TypeConvertor.castToBoolean(value); // BooleanType
           return value;
-        case -427039533: // reported
-          this.reported = TypeConvertor.castToBoolean(value); // BooleanType
-          return value;
-        case -2123220889: // informationSource
-          this.informationSource = TypeConvertor.castToReference(value); // Reference
-          return value;
         case 1998965455: // medication
           this.medication = TypeConvertor.castToCodeableReference(value); // CodeableReference
           return value;
         case -1867885268: // subject
           this.subject = TypeConvertor.castToReference(value); // Reference
+          return value;
+        case -2123220889: // informationSource
+          this.getInformationSource().add(TypeConvertor.castToReference(value)); // Reference
           return value;
         case 1524132147: // encounter
           this.encounter = TypeConvertor.castToReference(value); // Reference
@@ -3203,29 +3308,23 @@ public class MedicationRequest extends DomainResource {
         case 693933948: // requester
           this.requester = TypeConvertor.castToReference(value); // Reference
           return value;
-        case 481140686: // performer
-          this.performer = TypeConvertor.castToReference(value); // Reference
+        case -427039533: // reported
+          this.reported = TypeConvertor.castToBoolean(value); // BooleanType
           return value;
         case -901444568: // performerType
           this.performerType = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
+          return value;
+        case 481140686: // performer
+          this.getPerformer().add(TypeConvertor.castToReference(value)); // Reference
+          return value;
+        case -1335157162: // device
+          this.getDevice().add(TypeConvertor.castToCodeableReference(value)); // CodeableReference
           return value;
         case -799233858: // recorder
           this.recorder = TypeConvertor.castToReference(value); // Reference
           return value;
         case -934964668: // reason
           this.getReason().add(TypeConvertor.castToCodeableReference(value)); // CodeableReference
-          return value;
-        case 8911915: // instantiatesCanonical
-          this.getInstantiatesCanonical().add(TypeConvertor.castToCanonical(value)); // CanonicalType
-          return value;
-        case -1926393373: // instantiatesUri
-          this.getInstantiatesUri().add(TypeConvertor.castToUri(value)); // UriType
-          return value;
-        case -332612366: // basedOn
-          this.getBasedOn().add(TypeConvertor.castToReference(value)); // Reference
-          return value;
-        case -445338488: // groupIdentifier
-          this.groupIdentifier = TypeConvertor.castToIdentifier(value); // Identifier
           return value;
         case -447282031: // courseOfTherapyType
           this.courseOfTherapyType = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
@@ -3237,7 +3336,10 @@ public class MedicationRequest extends DomainResource {
           this.getNote().add(TypeConvertor.castToAnnotation(value)); // Annotation
           return value;
         case 1718902050: // renderedDosageInstruction
-          this.renderedDosageInstruction = TypeConvertor.castToString(value); // StringType
+          this.renderedDosageInstruction = TypeConvertor.castToMarkdown(value); // MarkdownType
+          return value;
+        case 322608453: // effectiveDosePeriod
+          this.effectiveDosePeriod = TypeConvertor.castToPeriod(value); // Period
           return value;
         case -1201373865: // dosageInstruction
           this.getDosageInstruction().add(TypeConvertor.castToDosage(value)); // Dosage
@@ -3247,12 +3349,6 @@ public class MedicationRequest extends DomainResource {
           return value;
         case 826147581: // substitution
           this.substitution = (MedicationRequestSubstitutionComponent) value; // MedicationRequestSubstitutionComponent
-          return value;
-        case -486355964: // priorPrescription
-          this.priorPrescription = TypeConvertor.castToReference(value); // Reference
-          return value;
-        case 51602295: // detectedIssue
-          this.getDetectedIssue().add(TypeConvertor.castToReference(value)); // Reference
           return value;
         case 1835190426: // eventHistory
           this.getEventHistory().add(TypeConvertor.castToReference(value)); // Reference
@@ -3266,11 +3362,19 @@ public class MedicationRequest extends DomainResource {
       public Base setProperty(String name, Base value) throws FHIRException {
         if (name.equals("identifier")) {
           this.getIdentifier().add(TypeConvertor.castToIdentifier(value));
+        } else if (name.equals("basedOn")) {
+          this.getBasedOn().add(TypeConvertor.castToReference(value));
+        } else if (name.equals("priorPrescription")) {
+          this.priorPrescription = TypeConvertor.castToReference(value); // Reference
+        } else if (name.equals("groupIdentifier")) {
+          this.groupIdentifier = TypeConvertor.castToIdentifier(value); // Identifier
         } else if (name.equals("status")) {
           value = new MedicationrequestStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.status = (Enumeration) value; // Enumeration<MedicationrequestStatus>
         } else if (name.equals("statusReason")) {
           this.statusReason = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
+        } else if (name.equals("statusChanged")) {
+          this.statusChanged = TypeConvertor.castToDateTime(value); // DateTimeType
         } else if (name.equals("intent")) {
           value = new MedicationRequestIntentEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.intent = (Enumeration) value; // Enumeration<MedicationRequestIntent>
@@ -3281,14 +3385,12 @@ public class MedicationRequest extends DomainResource {
           this.priority = (Enumeration) value; // Enumeration<RequestPriority>
         } else if (name.equals("doNotPerform")) {
           this.doNotPerform = TypeConvertor.castToBoolean(value); // BooleanType
-        } else if (name.equals("reported")) {
-          this.reported = TypeConvertor.castToBoolean(value); // BooleanType
-        } else if (name.equals("informationSource")) {
-          this.informationSource = TypeConvertor.castToReference(value); // Reference
         } else if (name.equals("medication")) {
           this.medication = TypeConvertor.castToCodeableReference(value); // CodeableReference
         } else if (name.equals("subject")) {
           this.subject = TypeConvertor.castToReference(value); // Reference
+        } else if (name.equals("informationSource")) {
+          this.getInformationSource().add(TypeConvertor.castToReference(value));
         } else if (name.equals("encounter")) {
           this.encounter = TypeConvertor.castToReference(value); // Reference
         } else if (name.equals("supportingInformation")) {
@@ -3297,22 +3399,18 @@ public class MedicationRequest extends DomainResource {
           this.authoredOn = TypeConvertor.castToDateTime(value); // DateTimeType
         } else if (name.equals("requester")) {
           this.requester = TypeConvertor.castToReference(value); // Reference
-        } else if (name.equals("performer")) {
-          this.performer = TypeConvertor.castToReference(value); // Reference
+        } else if (name.equals("reported")) {
+          this.reported = TypeConvertor.castToBoolean(value); // BooleanType
         } else if (name.equals("performerType")) {
           this.performerType = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
+        } else if (name.equals("performer")) {
+          this.getPerformer().add(TypeConvertor.castToReference(value));
+        } else if (name.equals("device")) {
+          this.getDevice().add(TypeConvertor.castToCodeableReference(value));
         } else if (name.equals("recorder")) {
           this.recorder = TypeConvertor.castToReference(value); // Reference
         } else if (name.equals("reason")) {
           this.getReason().add(TypeConvertor.castToCodeableReference(value));
-        } else if (name.equals("instantiatesCanonical")) {
-          this.getInstantiatesCanonical().add(TypeConvertor.castToCanonical(value));
-        } else if (name.equals("instantiatesUri")) {
-          this.getInstantiatesUri().add(TypeConvertor.castToUri(value));
-        } else if (name.equals("basedOn")) {
-          this.getBasedOn().add(TypeConvertor.castToReference(value));
-        } else if (name.equals("groupIdentifier")) {
-          this.groupIdentifier = TypeConvertor.castToIdentifier(value); // Identifier
         } else if (name.equals("courseOfTherapyType")) {
           this.courseOfTherapyType = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
         } else if (name.equals("insurance")) {
@@ -3320,17 +3418,15 @@ public class MedicationRequest extends DomainResource {
         } else if (name.equals("note")) {
           this.getNote().add(TypeConvertor.castToAnnotation(value));
         } else if (name.equals("renderedDosageInstruction")) {
-          this.renderedDosageInstruction = TypeConvertor.castToString(value); // StringType
+          this.renderedDosageInstruction = TypeConvertor.castToMarkdown(value); // MarkdownType
+        } else if (name.equals("effectiveDosePeriod")) {
+          this.effectiveDosePeriod = TypeConvertor.castToPeriod(value); // Period
         } else if (name.equals("dosageInstruction")) {
           this.getDosageInstruction().add(TypeConvertor.castToDosage(value));
         } else if (name.equals("dispenseRequest")) {
           this.dispenseRequest = (MedicationRequestDispenseRequestComponent) value; // MedicationRequestDispenseRequestComponent
         } else if (name.equals("substitution")) {
           this.substitution = (MedicationRequestSubstitutionComponent) value; // MedicationRequestSubstitutionComponent
-        } else if (name.equals("priorPrescription")) {
-          this.priorPrescription = TypeConvertor.castToReference(value); // Reference
-        } else if (name.equals("detectedIssue")) {
-          this.getDetectedIssue().add(TypeConvertor.castToReference(value));
         } else if (name.equals("eventHistory")) {
           this.getEventHistory().add(TypeConvertor.castToReference(value));
         } else
@@ -3338,41 +3434,117 @@ public class MedicationRequest extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("identifier")) {
+          this.getIdentifier().remove(value);
+        } else if (name.equals("basedOn")) {
+          this.getBasedOn().remove(value);
+        } else if (name.equals("priorPrescription")) {
+          this.priorPrescription = null;
+        } else if (name.equals("groupIdentifier")) {
+          this.groupIdentifier = null;
+        } else if (name.equals("status")) {
+          value = new MedicationrequestStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<MedicationrequestStatus>
+        } else if (name.equals("statusReason")) {
+          this.statusReason = null;
+        } else if (name.equals("statusChanged")) {
+          this.statusChanged = null;
+        } else if (name.equals("intent")) {
+          value = new MedicationRequestIntentEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.intent = (Enumeration) value; // Enumeration<MedicationRequestIntent>
+        } else if (name.equals("category")) {
+          this.getCategory().remove(value);
+        } else if (name.equals("priority")) {
+          value = new RequestPriorityEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.priority = (Enumeration) value; // Enumeration<RequestPriority>
+        } else if (name.equals("doNotPerform")) {
+          this.doNotPerform = null;
+        } else if (name.equals("medication")) {
+          this.medication = null;
+        } else if (name.equals("subject")) {
+          this.subject = null;
+        } else if (name.equals("informationSource")) {
+          this.getInformationSource().remove(value);
+        } else if (name.equals("encounter")) {
+          this.encounter = null;
+        } else if (name.equals("supportingInformation")) {
+          this.getSupportingInformation().remove(value);
+        } else if (name.equals("authoredOn")) {
+          this.authoredOn = null;
+        } else if (name.equals("requester")) {
+          this.requester = null;
+        } else if (name.equals("reported")) {
+          this.reported = null;
+        } else if (name.equals("performerType")) {
+          this.performerType = null;
+        } else if (name.equals("performer")) {
+          this.getPerformer().remove(value);
+        } else if (name.equals("device")) {
+          this.getDevice().remove(value);
+        } else if (name.equals("recorder")) {
+          this.recorder = null;
+        } else if (name.equals("reason")) {
+          this.getReason().remove(value);
+        } else if (name.equals("courseOfTherapyType")) {
+          this.courseOfTherapyType = null;
+        } else if (name.equals("insurance")) {
+          this.getInsurance().remove(value);
+        } else if (name.equals("note")) {
+          this.getNote().remove(value);
+        } else if (name.equals("renderedDosageInstruction")) {
+          this.renderedDosageInstruction = null;
+        } else if (name.equals("effectiveDosePeriod")) {
+          this.effectiveDosePeriod = null;
+        } else if (name.equals("dosageInstruction")) {
+          this.getDosageInstruction().remove(value);
+        } else if (name.equals("dispenseRequest")) {
+          this.dispenseRequest = (MedicationRequestDispenseRequestComponent) value; // MedicationRequestDispenseRequestComponent
+        } else if (name.equals("substitution")) {
+          this.substitution = (MedicationRequestSubstitutionComponent) value; // MedicationRequestSubstitutionComponent
+        } else if (name.equals("eventHistory")) {
+          this.getEventHistory().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
         case -1618432855:  return addIdentifier(); 
+        case -332612366:  return addBasedOn(); 
+        case -486355964:  return getPriorPrescription();
+        case -445338488:  return getGroupIdentifier();
         case -892481550:  return getStatusElement();
         case 2051346646:  return getStatusReason();
+        case -1174686110:  return getStatusChangedElement();
         case -1183762788:  return getIntentElement();
         case 50511102:  return addCategory(); 
         case -1165461084:  return getPriorityElement();
         case -1788508167:  return getDoNotPerformElement();
-        case -427039533:  return getReportedElement();
-        case -2123220889:  return getInformationSource();
         case 1998965455:  return getMedication();
         case -1867885268:  return getSubject();
+        case -2123220889:  return addInformationSource(); 
         case 1524132147:  return getEncounter();
         case -1248768647:  return addSupportingInformation(); 
         case -1500852503:  return getAuthoredOnElement();
         case 693933948:  return getRequester();
-        case 481140686:  return getPerformer();
+        case -427039533:  return getReportedElement();
         case -901444568:  return getPerformerType();
+        case 481140686:  return addPerformer(); 
+        case -1335157162:  return addDevice(); 
         case -799233858:  return getRecorder();
         case -934964668:  return addReason(); 
-        case 8911915:  return addInstantiatesCanonicalElement();
-        case -1926393373:  return addInstantiatesUriElement();
-        case -332612366:  return addBasedOn(); 
-        case -445338488:  return getGroupIdentifier();
         case -447282031:  return getCourseOfTherapyType();
         case 73049818:  return addInsurance(); 
         case 3387378:  return addNote(); 
         case 1718902050:  return getRenderedDosageInstructionElement();
+        case 322608453:  return getEffectiveDosePeriod();
         case -1201373865:  return addDosageInstruction(); 
         case 824620658:  return getDispenseRequest();
         case 826147581:  return getSubstitution();
-        case -486355964:  return getPriorPrescription();
-        case 51602295:  return addDetectedIssue(); 
         case 1835190426:  return addEventHistory(); 
         default: return super.makeProperty(hash, name);
         }
@@ -3383,37 +3555,37 @@ public class MedicationRequest extends DomainResource {
       public String[] getTypesForProperty(int hash, String name) throws FHIRException {
         switch (hash) {
         case -1618432855: /*identifier*/ return new String[] {"Identifier"};
+        case -332612366: /*basedOn*/ return new String[] {"Reference"};
+        case -486355964: /*priorPrescription*/ return new String[] {"Reference"};
+        case -445338488: /*groupIdentifier*/ return new String[] {"Identifier"};
         case -892481550: /*status*/ return new String[] {"code"};
         case 2051346646: /*statusReason*/ return new String[] {"CodeableConcept"};
+        case -1174686110: /*statusChanged*/ return new String[] {"dateTime"};
         case -1183762788: /*intent*/ return new String[] {"code"};
         case 50511102: /*category*/ return new String[] {"CodeableConcept"};
         case -1165461084: /*priority*/ return new String[] {"code"};
         case -1788508167: /*doNotPerform*/ return new String[] {"boolean"};
-        case -427039533: /*reported*/ return new String[] {"boolean"};
-        case -2123220889: /*informationSource*/ return new String[] {"Reference"};
         case 1998965455: /*medication*/ return new String[] {"CodeableReference"};
         case -1867885268: /*subject*/ return new String[] {"Reference"};
+        case -2123220889: /*informationSource*/ return new String[] {"Reference"};
         case 1524132147: /*encounter*/ return new String[] {"Reference"};
         case -1248768647: /*supportingInformation*/ return new String[] {"Reference"};
         case -1500852503: /*authoredOn*/ return new String[] {"dateTime"};
         case 693933948: /*requester*/ return new String[] {"Reference"};
-        case 481140686: /*performer*/ return new String[] {"Reference"};
+        case -427039533: /*reported*/ return new String[] {"boolean"};
         case -901444568: /*performerType*/ return new String[] {"CodeableConcept"};
+        case 481140686: /*performer*/ return new String[] {"Reference"};
+        case -1335157162: /*device*/ return new String[] {"CodeableReference"};
         case -799233858: /*recorder*/ return new String[] {"Reference"};
         case -934964668: /*reason*/ return new String[] {"CodeableReference"};
-        case 8911915: /*instantiatesCanonical*/ return new String[] {"canonical"};
-        case -1926393373: /*instantiatesUri*/ return new String[] {"uri"};
-        case -332612366: /*basedOn*/ return new String[] {"Reference"};
-        case -445338488: /*groupIdentifier*/ return new String[] {"Identifier"};
         case -447282031: /*courseOfTherapyType*/ return new String[] {"CodeableConcept"};
         case 73049818: /*insurance*/ return new String[] {"Reference"};
         case 3387378: /*note*/ return new String[] {"Annotation"};
-        case 1718902050: /*renderedDosageInstruction*/ return new String[] {"string"};
+        case 1718902050: /*renderedDosageInstruction*/ return new String[] {"markdown"};
+        case 322608453: /*effectiveDosePeriod*/ return new String[] {"Period"};
         case -1201373865: /*dosageInstruction*/ return new String[] {"Dosage"};
         case 824620658: /*dispenseRequest*/ return new String[] {};
         case 826147581: /*substitution*/ return new String[] {};
-        case -486355964: /*priorPrescription*/ return new String[] {"Reference"};
-        case 51602295: /*detectedIssue*/ return new String[] {"Reference"};
         case 1835190426: /*eventHistory*/ return new String[] {"Reference"};
         default: return super.getTypesForProperty(hash, name);
         }
@@ -3425,31 +3597,38 @@ public class MedicationRequest extends DomainResource {
         if (name.equals("identifier")) {
           return addIdentifier();
         }
+        else if (name.equals("basedOn")) {
+          return addBasedOn();
+        }
+        else if (name.equals("priorPrescription")) {
+          this.priorPrescription = new Reference();
+          return this.priorPrescription;
+        }
+        else if (name.equals("groupIdentifier")) {
+          this.groupIdentifier = new Identifier();
+          return this.groupIdentifier;
+        }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationRequest.status");
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationRequest.status");
         }
         else if (name.equals("statusReason")) {
           this.statusReason = new CodeableConcept();
           return this.statusReason;
         }
+        else if (name.equals("statusChanged")) {
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationRequest.statusChanged");
+        }
         else if (name.equals("intent")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationRequest.intent");
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationRequest.intent");
         }
         else if (name.equals("category")) {
           return addCategory();
         }
         else if (name.equals("priority")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationRequest.priority");
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationRequest.priority");
         }
         else if (name.equals("doNotPerform")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationRequest.doNotPerform");
-        }
-        else if (name.equals("reported")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationRequest.reported");
-        }
-        else if (name.equals("informationSource")) {
-          this.informationSource = new Reference();
-          return this.informationSource;
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationRequest.doNotPerform");
         }
         else if (name.equals("medication")) {
           this.medication = new CodeableReference();
@@ -3459,6 +3638,9 @@ public class MedicationRequest extends DomainResource {
           this.subject = new Reference();
           return this.subject;
         }
+        else if (name.equals("informationSource")) {
+          return addInformationSource();
+        }
         else if (name.equals("encounter")) {
           this.encounter = new Reference();
           return this.encounter;
@@ -3467,19 +3649,24 @@ public class MedicationRequest extends DomainResource {
           return addSupportingInformation();
         }
         else if (name.equals("authoredOn")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationRequest.authoredOn");
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationRequest.authoredOn");
         }
         else if (name.equals("requester")) {
           this.requester = new Reference();
           return this.requester;
         }
-        else if (name.equals("performer")) {
-          this.performer = new Reference();
-          return this.performer;
+        else if (name.equals("reported")) {
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationRequest.reported");
         }
         else if (name.equals("performerType")) {
           this.performerType = new CodeableConcept();
           return this.performerType;
+        }
+        else if (name.equals("performer")) {
+          return addPerformer();
+        }
+        else if (name.equals("device")) {
+          return addDevice();
         }
         else if (name.equals("recorder")) {
           this.recorder = new Reference();
@@ -3487,19 +3674,6 @@ public class MedicationRequest extends DomainResource {
         }
         else if (name.equals("reason")) {
           return addReason();
-        }
-        else if (name.equals("instantiatesCanonical")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationRequest.instantiatesCanonical");
-        }
-        else if (name.equals("instantiatesUri")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationRequest.instantiatesUri");
-        }
-        else if (name.equals("basedOn")) {
-          return addBasedOn();
-        }
-        else if (name.equals("groupIdentifier")) {
-          this.groupIdentifier = new Identifier();
-          return this.groupIdentifier;
         }
         else if (name.equals("courseOfTherapyType")) {
           this.courseOfTherapyType = new CodeableConcept();
@@ -3512,7 +3686,11 @@ public class MedicationRequest extends DomainResource {
           return addNote();
         }
         else if (name.equals("renderedDosageInstruction")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationRequest.renderedDosageInstruction");
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationRequest.renderedDosageInstruction");
+        }
+        else if (name.equals("effectiveDosePeriod")) {
+          this.effectiveDosePeriod = new Period();
+          return this.effectiveDosePeriod;
         }
         else if (name.equals("dosageInstruction")) {
           return addDosageInstruction();
@@ -3524,13 +3702,6 @@ public class MedicationRequest extends DomainResource {
         else if (name.equals("substitution")) {
           this.substitution = new MedicationRequestSubstitutionComponent();
           return this.substitution;
-        }
-        else if (name.equals("priorPrescription")) {
-          this.priorPrescription = new Reference();
-          return this.priorPrescription;
-        }
-        else if (name.equals("detectedIssue")) {
-          return addDetectedIssue();
         }
         else if (name.equals("eventHistory")) {
           return addEventHistory();
@@ -3550,6 +3721,10 @@ public class MedicationRequest extends DomainResource {
         return dst;
       }
 
+      public void assignValues(Base dst) {
+        copyValues((MedicationRequest) dst);
+      }
+
       public void copyValues(MedicationRequest dst) {
         super.copyValues(dst);
         if (identifier != null) {
@@ -3557,8 +3732,16 @@ public class MedicationRequest extends DomainResource {
           for (Identifier i : identifier)
             dst.identifier.add(i.copy());
         };
+        if (basedOn != null) {
+          dst.basedOn = new ArrayList<Reference>();
+          for (Reference i : basedOn)
+            dst.basedOn.add(i.copy());
+        };
+        dst.priorPrescription = priorPrescription == null ? null : priorPrescription.copy();
+        dst.groupIdentifier = groupIdentifier == null ? null : groupIdentifier.copy();
         dst.status = status == null ? null : status.copy();
         dst.statusReason = statusReason == null ? null : statusReason.copy();
+        dst.statusChanged = statusChanged == null ? null : statusChanged.copy();
         dst.intent = intent == null ? null : intent.copy();
         if (category != null) {
           dst.category = new ArrayList<CodeableConcept>();
@@ -3567,10 +3750,13 @@ public class MedicationRequest extends DomainResource {
         };
         dst.priority = priority == null ? null : priority.copy();
         dst.doNotPerform = doNotPerform == null ? null : doNotPerform.copy();
-        dst.reported = reported == null ? null : reported.copy();
-        dst.informationSource = informationSource == null ? null : informationSource.copy();
         dst.medication = medication == null ? null : medication.copy();
         dst.subject = subject == null ? null : subject.copy();
+        if (informationSource != null) {
+          dst.informationSource = new ArrayList<Reference>();
+          for (Reference i : informationSource)
+            dst.informationSource.add(i.copy());
+        };
         dst.encounter = encounter == null ? null : encounter.copy();
         if (supportingInformation != null) {
           dst.supportingInformation = new ArrayList<Reference>();
@@ -3579,30 +3765,24 @@ public class MedicationRequest extends DomainResource {
         };
         dst.authoredOn = authoredOn == null ? null : authoredOn.copy();
         dst.requester = requester == null ? null : requester.copy();
-        dst.performer = performer == null ? null : performer.copy();
+        dst.reported = reported == null ? null : reported.copy();
         dst.performerType = performerType == null ? null : performerType.copy();
+        if (performer != null) {
+          dst.performer = new ArrayList<Reference>();
+          for (Reference i : performer)
+            dst.performer.add(i.copy());
+        };
+        if (device != null) {
+          dst.device = new ArrayList<CodeableReference>();
+          for (CodeableReference i : device)
+            dst.device.add(i.copy());
+        };
         dst.recorder = recorder == null ? null : recorder.copy();
         if (reason != null) {
           dst.reason = new ArrayList<CodeableReference>();
           for (CodeableReference i : reason)
             dst.reason.add(i.copy());
         };
-        if (instantiatesCanonical != null) {
-          dst.instantiatesCanonical = new ArrayList<CanonicalType>();
-          for (CanonicalType i : instantiatesCanonical)
-            dst.instantiatesCanonical.add(i.copy());
-        };
-        if (instantiatesUri != null) {
-          dst.instantiatesUri = new ArrayList<UriType>();
-          for (UriType i : instantiatesUri)
-            dst.instantiatesUri.add(i.copy());
-        };
-        if (basedOn != null) {
-          dst.basedOn = new ArrayList<Reference>();
-          for (Reference i : basedOn)
-            dst.basedOn.add(i.copy());
-        };
-        dst.groupIdentifier = groupIdentifier == null ? null : groupIdentifier.copy();
         dst.courseOfTherapyType = courseOfTherapyType == null ? null : courseOfTherapyType.copy();
         if (insurance != null) {
           dst.insurance = new ArrayList<Reference>();
@@ -3615,6 +3795,7 @@ public class MedicationRequest extends DomainResource {
             dst.note.add(i.copy());
         };
         dst.renderedDosageInstruction = renderedDosageInstruction == null ? null : renderedDosageInstruction.copy();
+        dst.effectiveDosePeriod = effectiveDosePeriod == null ? null : effectiveDosePeriod.copy();
         if (dosageInstruction != null) {
           dst.dosageInstruction = new ArrayList<Dosage>();
           for (Dosage i : dosageInstruction)
@@ -3622,12 +3803,6 @@ public class MedicationRequest extends DomainResource {
         };
         dst.dispenseRequest = dispenseRequest == null ? null : dispenseRequest.copy();
         dst.substitution = substitution == null ? null : substitution.copy();
-        dst.priorPrescription = priorPrescription == null ? null : priorPrescription.copy();
-        if (detectedIssue != null) {
-          dst.detectedIssue = new ArrayList<Reference>();
-          for (Reference i : detectedIssue)
-            dst.detectedIssue.add(i.copy());
-        };
         if (eventHistory != null) {
           dst.eventHistory = new ArrayList<Reference>();
           for (Reference i : eventHistory)
@@ -3646,20 +3821,21 @@ public class MedicationRequest extends DomainResource {
         if (!(other_ instanceof MedicationRequest))
           return false;
         MedicationRequest o = (MedicationRequest) other_;
-        return compareDeep(identifier, o.identifier, true) && compareDeep(status, o.status, true) && compareDeep(statusReason, o.statusReason, true)
+        return compareDeep(identifier, o.identifier, true) && compareDeep(basedOn, o.basedOn, true) && compareDeep(priorPrescription, o.priorPrescription, true)
+           && compareDeep(groupIdentifier, o.groupIdentifier, true) && compareDeep(status, o.status, true)
+           && compareDeep(statusReason, o.statusReason, true) && compareDeep(statusChanged, o.statusChanged, true)
            && compareDeep(intent, o.intent, true) && compareDeep(category, o.category, true) && compareDeep(priority, o.priority, true)
-           && compareDeep(doNotPerform, o.doNotPerform, true) && compareDeep(reported, o.reported, true) && compareDeep(informationSource, o.informationSource, true)
-           && compareDeep(medication, o.medication, true) && compareDeep(subject, o.subject, true) && compareDeep(encounter, o.encounter, true)
-           && compareDeep(supportingInformation, o.supportingInformation, true) && compareDeep(authoredOn, o.authoredOn, true)
-           && compareDeep(requester, o.requester, true) && compareDeep(performer, o.performer, true) && compareDeep(performerType, o.performerType, true)
-           && compareDeep(recorder, o.recorder, true) && compareDeep(reason, o.reason, true) && compareDeep(instantiatesCanonical, o.instantiatesCanonical, true)
-           && compareDeep(instantiatesUri, o.instantiatesUri, true) && compareDeep(basedOn, o.basedOn, true)
-           && compareDeep(groupIdentifier, o.groupIdentifier, true) && compareDeep(courseOfTherapyType, o.courseOfTherapyType, true)
-           && compareDeep(insurance, o.insurance, true) && compareDeep(note, o.note, true) && compareDeep(renderedDosageInstruction, o.renderedDosageInstruction, true)
-           && compareDeep(dosageInstruction, o.dosageInstruction, true) && compareDeep(dispenseRequest, o.dispenseRequest, true)
-           && compareDeep(substitution, o.substitution, true) && compareDeep(priorPrescription, o.priorPrescription, true)
-           && compareDeep(detectedIssue, o.detectedIssue, true) && compareDeep(eventHistory, o.eventHistory, true)
-          ;
+           && compareDeep(doNotPerform, o.doNotPerform, true) && compareDeep(medication, o.medication, true)
+           && compareDeep(subject, o.subject, true) && compareDeep(informationSource, o.informationSource, true)
+           && compareDeep(encounter, o.encounter, true) && compareDeep(supportingInformation, o.supportingInformation, true)
+           && compareDeep(authoredOn, o.authoredOn, true) && compareDeep(requester, o.requester, true) && compareDeep(reported, o.reported, true)
+           && compareDeep(performerType, o.performerType, true) && compareDeep(performer, o.performer, true)
+           && compareDeep(device, o.device, true) && compareDeep(recorder, o.recorder, true) && compareDeep(reason, o.reason, true)
+           && compareDeep(courseOfTherapyType, o.courseOfTherapyType, true) && compareDeep(insurance, o.insurance, true)
+           && compareDeep(note, o.note, true) && compareDeep(renderedDosageInstruction, o.renderedDosageInstruction, true)
+           && compareDeep(effectiveDosePeriod, o.effectiveDosePeriod, true) && compareDeep(dosageInstruction, o.dosageInstruction, true)
+           && compareDeep(dispenseRequest, o.dispenseRequest, true) && compareDeep(substitution, o.substitution, true)
+           && compareDeep(eventHistory, o.eventHistory, true);
       }
 
       @Override
@@ -3669,359 +3845,25 @@ public class MedicationRequest extends DomainResource {
         if (!(other_ instanceof MedicationRequest))
           return false;
         MedicationRequest o = (MedicationRequest) other_;
-        return compareValues(status, o.status, true) && compareValues(intent, o.intent, true) && compareValues(priority, o.priority, true)
-           && compareValues(doNotPerform, o.doNotPerform, true) && compareValues(reported, o.reported, true) && compareValues(authoredOn, o.authoredOn, true)
-           && compareValues(instantiatesCanonical, o.instantiatesCanonical, true) && compareValues(instantiatesUri, o.instantiatesUri, true)
-           && compareValues(renderedDosageInstruction, o.renderedDosageInstruction, true);
+        return compareValues(status, o.status, true) && compareValues(statusChanged, o.statusChanged, true)
+           && compareValues(intent, o.intent, true) && compareValues(priority, o.priority, true) && compareValues(doNotPerform, o.doNotPerform, true)
+           && compareValues(authoredOn, o.authoredOn, true) && compareValues(reported, o.reported, true) && compareValues(renderedDosageInstruction, o.renderedDosageInstruction, true)
+          ;
       }
 
       public boolean isEmpty() {
-        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(identifier, status, statusReason
-          , intent, category, priority, doNotPerform, reported, informationSource, medication
-          , subject, encounter, supportingInformation, authoredOn, requester, performer, performerType
-          , recorder, reason, instantiatesCanonical, instantiatesUri, basedOn, groupIdentifier
-          , courseOfTherapyType, insurance, note, renderedDosageInstruction, dosageInstruction
-          , dispenseRequest, substitution, priorPrescription, detectedIssue, eventHistory);
+        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(identifier, basedOn, priorPrescription
+          , groupIdentifier, status, statusReason, statusChanged, intent, category, priority
+          , doNotPerform, medication, subject, informationSource, encounter, supportingInformation
+          , authoredOn, requester, reported, performerType, performer, device, recorder
+          , reason, courseOfTherapyType, insurance, note, renderedDosageInstruction, effectiveDosePeriod
+          , dosageInstruction, dispenseRequest, substitution, eventHistory);
       }
 
   @Override
   public ResourceType getResourceType() {
     return ResourceType.MedicationRequest;
    }
-
- /**
-   * Search parameter: <b>code</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [AllergyIntolerance](allergyintolerance.html): Code that identifies the allergy or intolerance
-* [Condition](condition.html): Code for the condition
-* [DeviceRequest](devicerequest.html): Code for what is being requested/ordered
-* [DiagnosticReport](diagnosticreport.html): The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result
-* [FamilyMemberHistory](familymemberhistory.html): A search by a condition code
-* [List](list.html): What the purpose of this list is
-* [Medication](medication.html): Returns medications for a specific code
-* [MedicationAdministration](medicationadministration.html): Return administrations of this medication code
-* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine code
-* [MedicationRequest](medicationrequest.html): Return prescriptions of this medication code
-* [MedicationUsage](medicationusage.html): Return statements of this medication code
-* [Observation](observation.html): The code of the observation type
-* [Procedure](procedure.html): A code to identify a  procedure
-* [ServiceRequest](servicerequest.html): What is being requested/ordered
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>AllergyIntolerance.code | AllergyIntolerance.reaction.substance | Condition.code | DeviceRequest.code.concept | DiagnosticReport.code | FamilyMemberHistory.condition.code | List.code | Medication.code | MedicationAdministration.medication.concept | MedicationDispense.medication.concept | MedicationRequest.medication.concept | MedicationUsage.medication.concept | Observation.code | Procedure.code | ServiceRequest.code</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="code", path="AllergyIntolerance.code | AllergyIntolerance.reaction.substance | Condition.code | DeviceRequest.code.concept | DiagnosticReport.code | FamilyMemberHistory.condition.code | List.code | Medication.code | MedicationAdministration.medication.concept | MedicationDispense.medication.concept | MedicationRequest.medication.concept | MedicationUsage.medication.concept | Observation.code | Procedure.code | ServiceRequest.code", description="Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): Code that identifies the allergy or intolerance\r\n* [Condition](condition.html): Code for the condition\r\n* [DeviceRequest](devicerequest.html): Code for what is being requested/ordered\r\n* [DiagnosticReport](diagnosticreport.html): The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a condition code\r\n* [List](list.html): What the purpose of this list is\r\n* [Medication](medication.html): Returns medications for a specific code\r\n* [MedicationAdministration](medicationadministration.html): Return administrations of this medication code\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine code\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions of this medication code\r\n* [MedicationUsage](medicationusage.html): Return statements of this medication code\r\n* [Observation](observation.html): The code of the observation type\r\n* [Procedure](procedure.html): A code to identify a  procedure\r\n* [ServiceRequest](servicerequest.html): What is being requested/ordered\r\n", type="token" )
-  public static final String SP_CODE = "code";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>code</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [AllergyIntolerance](allergyintolerance.html): Code that identifies the allergy or intolerance
-* [Condition](condition.html): Code for the condition
-* [DeviceRequest](devicerequest.html): Code for what is being requested/ordered
-* [DiagnosticReport](diagnosticreport.html): The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result
-* [FamilyMemberHistory](familymemberhistory.html): A search by a condition code
-* [List](list.html): What the purpose of this list is
-* [Medication](medication.html): Returns medications for a specific code
-* [MedicationAdministration](medicationadministration.html): Return administrations of this medication code
-* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine code
-* [MedicationRequest](medicationrequest.html): Return prescriptions of this medication code
-* [MedicationUsage](medicationusage.html): Return statements of this medication code
-* [Observation](observation.html): The code of the observation type
-* [Procedure](procedure.html): A code to identify a  procedure
-* [ServiceRequest](servicerequest.html): What is being requested/ordered
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>AllergyIntolerance.code | AllergyIntolerance.reaction.substance | Condition.code | DeviceRequest.code.concept | DiagnosticReport.code | FamilyMemberHistory.condition.code | List.code | Medication.code | MedicationAdministration.medication.concept | MedicationDispense.medication.concept | MedicationRequest.medication.concept | MedicationUsage.medication.concept | Observation.code | Procedure.code | ServiceRequest.code</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam CODE = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_CODE);
-
- /**
-   * Search parameter: <b>identifier</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [AllergyIntolerance](allergyintolerance.html): External ids for this item
-* [CarePlan](careplan.html): External Ids for this plan
-* [CareTeam](careteam.html): External Ids for this team
-* [Composition](composition.html): Version-independent identifier for the Composition
-* [Condition](condition.html): A unique identifier of the condition record
-* [Consent](consent.html): Identifier for this record (external references)
-* [DetectedIssue](detectedissue.html): Unique id for the detected issue
-* [DeviceRequest](devicerequest.html): Business identifier for request/order
-* [DiagnosticReport](diagnosticreport.html): An identifier for the report
-* [DocumentManifest](documentmanifest.html): Unique Identifier for the set of documents
-* [DocumentReference](documentreference.html): Identifier of the attachment binary
-* [Encounter](encounter.html): Identifier(s) by which this encounter is known
-* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare
-* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier
-* [Goal](goal.html): External Ids for this goal
-* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID
-* [Immunization](immunization.html): Business identifier
-* [List](list.html): Business identifier
-* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier
-* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier
-* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier
-* [MedicationUsage](medicationusage.html): Return statements with this external identifier
-* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier
-* [Observation](observation.html): The unique id for a particular observation
-* [Procedure](procedure.html): A unique identifier for a procedure
-* [RiskAssessment](riskassessment.html): Unique identifier for the assessment
-* [ServiceRequest](servicerequest.html): Identifiers assigned to this order
-* [SupplyDelivery](supplydelivery.html): External identifier
-* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest
-* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>AllergyIntolerance.identifier | CarePlan.identifier | CareTeam.identifier | Composition.identifier | Condition.identifier | Consent.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DiagnosticReport.identifier | DocumentManifest.masterIdentifier | DocumentManifest.identifier | DocumentReference.content.identifier | DocumentReference.identifier | Encounter.identifier | EpisodeOfCare.identifier | FamilyMemberHistory.identifier | Goal.identifier | ImagingStudy.identifier | Immunization.identifier | List.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationUsage.identifier | NutritionOrder.identifier | Observation.identifier | Procedure.identifier | RiskAssessment.identifier | ServiceRequest.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | VisionPrescription.identifier</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="identifier", path="AllergyIntolerance.identifier | CarePlan.identifier | CareTeam.identifier | Composition.identifier | Condition.identifier | Consent.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DiagnosticReport.identifier | DocumentManifest.masterIdentifier | DocumentManifest.identifier | DocumentReference.content.identifier | DocumentReference.identifier | Encounter.identifier | EpisodeOfCare.identifier | FamilyMemberHistory.identifier | Goal.identifier | ImagingStudy.identifier | Immunization.identifier | List.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationUsage.identifier | NutritionOrder.identifier | Observation.identifier | Procedure.identifier | RiskAssessment.identifier | ServiceRequest.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | VisionPrescription.identifier", description="Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): External ids for this item\r\n* [CarePlan](careplan.html): External Ids for this plan\r\n* [CareTeam](careteam.html): External Ids for this team\r\n* [Composition](composition.html): Version-independent identifier for the Composition\r\n* [Condition](condition.html): A unique identifier of the condition record\r\n* [Consent](consent.html): Identifier for this record (external references)\r\n* [DetectedIssue](detectedissue.html): Unique id for the detected issue\r\n* [DeviceRequest](devicerequest.html): Business identifier for request/order\r\n* [DiagnosticReport](diagnosticreport.html): An identifier for the report\r\n* [DocumentManifest](documentmanifest.html): Unique Identifier for the set of documents\r\n* [DocumentReference](documentreference.html): Identifier of the attachment binary\r\n* [Encounter](encounter.html): Identifier(s) by which this encounter is known\r\n* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier\r\n* [Goal](goal.html): External Ids for this goal\r\n* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID\r\n* [Immunization](immunization.html): Business identifier\r\n* [List](list.html): Business identifier\r\n* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier\r\n* [MedicationUsage](medicationusage.html): Return statements with this external identifier\r\n* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier\r\n* [Observation](observation.html): The unique id for a particular observation\r\n* [Procedure](procedure.html): A unique identifier for a procedure\r\n* [RiskAssessment](riskassessment.html): Unique identifier for the assessment\r\n* [ServiceRequest](servicerequest.html): Identifiers assigned to this order\r\n* [SupplyDelivery](supplydelivery.html): External identifier\r\n* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest\r\n* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier\r\n", type="token" )
-  public static final String SP_IDENTIFIER = "identifier";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>identifier</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [AllergyIntolerance](allergyintolerance.html): External ids for this item
-* [CarePlan](careplan.html): External Ids for this plan
-* [CareTeam](careteam.html): External Ids for this team
-* [Composition](composition.html): Version-independent identifier for the Composition
-* [Condition](condition.html): A unique identifier of the condition record
-* [Consent](consent.html): Identifier for this record (external references)
-* [DetectedIssue](detectedissue.html): Unique id for the detected issue
-* [DeviceRequest](devicerequest.html): Business identifier for request/order
-* [DiagnosticReport](diagnosticreport.html): An identifier for the report
-* [DocumentManifest](documentmanifest.html): Unique Identifier for the set of documents
-* [DocumentReference](documentreference.html): Identifier of the attachment binary
-* [Encounter](encounter.html): Identifier(s) by which this encounter is known
-* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare
-* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier
-* [Goal](goal.html): External Ids for this goal
-* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID
-* [Immunization](immunization.html): Business identifier
-* [List](list.html): Business identifier
-* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier
-* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier
-* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier
-* [MedicationUsage](medicationusage.html): Return statements with this external identifier
-* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier
-* [Observation](observation.html): The unique id for a particular observation
-* [Procedure](procedure.html): A unique identifier for a procedure
-* [RiskAssessment](riskassessment.html): Unique identifier for the assessment
-* [ServiceRequest](servicerequest.html): Identifiers assigned to this order
-* [SupplyDelivery](supplydelivery.html): External identifier
-* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest
-* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>AllergyIntolerance.identifier | CarePlan.identifier | CareTeam.identifier | Composition.identifier | Condition.identifier | Consent.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DiagnosticReport.identifier | DocumentManifest.masterIdentifier | DocumentManifest.identifier | DocumentReference.content.identifier | DocumentReference.identifier | Encounter.identifier | EpisodeOfCare.identifier | FamilyMemberHistory.identifier | Goal.identifier | ImagingStudy.identifier | Immunization.identifier | List.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationUsage.identifier | NutritionOrder.identifier | Observation.identifier | Procedure.identifier | RiskAssessment.identifier | ServiceRequest.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | VisionPrescription.identifier</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
-
- /**
-   * Search parameter: <b>patient</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for
-* [CarePlan](careplan.html): Who the care plan is for
-* [CareTeam](careteam.html): Who care team is for
-* [ClinicalImpression](clinicalimpression.html): Patient or group assessed
-* [Composition](composition.html): Who and/or what the composition is about
-* [Condition](condition.html): Who has the condition?
-* [Consent](consent.html): Who the consent applies to
-* [DetectedIssue](detectedissue.html): Associated patient
-* [DeviceRequest](devicerequest.html): Individual the service is ordered for
-* [DeviceUsage](deviceusage.html): Search by subject - a patient
-* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient
-* [DocumentManifest](documentmanifest.html): The subject of the set of documents
-* [DocumentReference](documentreference.html): Who/what is the subject of the document
-* [Encounter](encounter.html): The patient or group present at the encounter
-* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care
-* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for
-* [Flag](flag.html): The identity of a subject to list flags for
-* [Goal](goal.html): Who this goal is intended for
-* [ImagingStudy](imagingstudy.html): Who the study is about
-* [Immunization](immunization.html): The patient for the vaccination record
-* [List](list.html): If all resources have the same subject
-* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for
-* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for
-* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient
-* [MedicationUsage](medicationusage.html): Returns statements for a specific patient.
-* [NutritionOrder](nutritionorder.html): The identity of the person who requires the diet, formula or nutritional supplement
-* [Observation](observation.html): The subject that the observation is about (if patient)
-* [Procedure](procedure.html): Search by subject - a patient
-* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?
-* [ServiceRequest](servicerequest.html): Search by subject - a patient
-* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied
-* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for
-</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>AllergyIntolerance.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ClinicalImpression.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | DetectedIssue.patient | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.subject | DiagnosticReport.subject.where(resolve() is Patient) | DocumentManifest.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EpisodeOfCare.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | List.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationUsage.subject.where(resolve() is Patient) | NutritionOrder.patient | Observation.subject.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | SupplyDelivery.patient | VisionPrescription.patient</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="patient", path="AllergyIntolerance.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ClinicalImpression.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | DetectedIssue.patient | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.subject | DiagnosticReport.subject.where(resolve() is Patient) | DocumentManifest.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EpisodeOfCare.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | List.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationUsage.subject.where(resolve() is Patient) | NutritionOrder.patient | Observation.subject.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | SupplyDelivery.patient | VisionPrescription.patient", description="Multiple Resources: \r\n\r\n* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for\r\n* [CarePlan](careplan.html): Who the care plan is for\r\n* [CareTeam](careteam.html): Who care team is for\r\n* [ClinicalImpression](clinicalimpression.html): Patient or group assessed\r\n* [Composition](composition.html): Who and/or what the composition is about\r\n* [Condition](condition.html): Who has the condition?\r\n* [Consent](consent.html): Who the consent applies to\r\n* [DetectedIssue](detectedissue.html): Associated patient\r\n* [DeviceRequest](devicerequest.html): Individual the service is ordered for\r\n* [DeviceUsage](deviceusage.html): Search by subject - a patient\r\n* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient\r\n* [DocumentManifest](documentmanifest.html): The subject of the set of documents\r\n* [DocumentReference](documentreference.html): Who/what is the subject of the document\r\n* [Encounter](encounter.html): The patient or group present at the encounter\r\n* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care\r\n* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for\r\n* [Flag](flag.html): The identity of a subject to list flags for\r\n* [Goal](goal.html): Who this goal is intended for\r\n* [ImagingStudy](imagingstudy.html): Who the study is about\r\n* [Immunization](immunization.html): The patient for the vaccination record\r\n* [List](list.html): If all resources have the same subject\r\n* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for\r\n* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for\r\n* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient\r\n* [MedicationUsage](medicationusage.html): Returns statements for a specific patient.\r\n* [NutritionOrder](nutritionorder.html): The identity of the person who requires the diet, formula or nutritional supplement\r\n* [Observation](observation.html): The subject that the observation is about (if patient)\r\n* [Procedure](procedure.html): Search by subject - a patient\r\n* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?\r\n* [ServiceRequest](servicerequest.html): Search by subject - a patient\r\n* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied\r\n* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for\r\n", type="reference", target={Account.class, ActivityDefinition.class, AdministrableProductDefinition.class, AdverseEvent.class, AllergyIntolerance.class, Appointment.class, AppointmentResponse.class, AuditEvent.class, Basic.class, Binary.class, BiologicallyDerivedProduct.class, BodyStructure.class, Bundle.class, CapabilityStatement.class, CapabilityStatement2.class, CarePlan.class, CareTeam.class, CatalogEntry.class, ChargeItem.class, ChargeItemDefinition.class, Citation.class, Claim.class, ClaimResponse.class, ClinicalImpression.class, ClinicalUseIssue.class, CodeSystem.class, Communication.class, CommunicationRequest.class, CompartmentDefinition.class, Composition.class, ConceptMap.class, Condition.class, ConditionDefinition.class, Consent.class, Contract.class, Coverage.class, CoverageEligibilityRequest.class, CoverageEligibilityResponse.class, DetectedIssue.class, Device.class, DeviceDefinition.class, DeviceMetric.class, DeviceRequest.class, DeviceUsage.class, DiagnosticReport.class, DocumentManifest.class, DocumentReference.class, Encounter.class, Endpoint.class, EnrollmentRequest.class, EnrollmentResponse.class, EpisodeOfCare.class, EventDefinition.class, Evidence.class, EvidenceReport.class, EvidenceVariable.class, ExampleScenario.class, ExplanationOfBenefit.class, FamilyMemberHistory.class, Flag.class, Goal.class, GraphDefinition.class, Group.class, GuidanceResponse.class, HealthcareService.class, ImagingStudy.class, Immunization.class, ImmunizationEvaluation.class, ImmunizationRecommendation.class, ImplementationGuide.class, Ingredient.class, InsurancePlan.class, InventoryReport.class, Invoice.class, Library.class, Linkage.class, ListResource.class, Location.class, ManufacturedItemDefinition.class, Measure.class, MeasureReport.class, Medication.class, MedicationAdministration.class, MedicationDispense.class, MedicationKnowledge.class, MedicationRequest.class, MedicationUsage.class, MedicinalProductDefinition.class, MessageDefinition.class, MessageHeader.class, MolecularSequence.class, NamingSystem.class, NutritionIntake.class, NutritionOrder.class, NutritionProduct.class, Observation.class, ObservationDefinition.class, OperationDefinition.class, OperationOutcome.class, Organization.class, OrganizationAffiliation.class, PackagedProductDefinition.class, Patient.class, PaymentNotice.class, PaymentReconciliation.class, Permission.class, Person.class, PlanDefinition.class, Practitioner.class, PractitionerRole.class, Procedure.class, Provenance.class, Questionnaire.class, QuestionnaireResponse.class, RegulatedAuthorization.class, RelatedPerson.class, RequestGroup.class, ResearchStudy.class, ResearchSubject.class, RiskAssessment.class, Schedule.class, SearchParameter.class, ServiceRequest.class, Slot.class, Specimen.class, SpecimenDefinition.class, StructureDefinition.class, StructureMap.class, Subscription.class, SubscriptionStatus.class, SubscriptionTopic.class, Substance.class, SubstanceDefinition.class, SubstanceNucleicAcid.class, SubstancePolymer.class, SubstanceProtein.class, SubstanceReferenceInformation.class, SubstanceSourceMaterial.class, SupplyDelivery.class, SupplyRequest.class, Task.class, TerminologyCapabilities.class, TestReport.class, TestScript.class, ValueSet.class, VerificationResult.class, VisionPrescription.class } )
-  public static final String SP_PATIENT = "patient";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>patient</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for
-* [CarePlan](careplan.html): Who the care plan is for
-* [CareTeam](careteam.html): Who care team is for
-* [ClinicalImpression](clinicalimpression.html): Patient or group assessed
-* [Composition](composition.html): Who and/or what the composition is about
-* [Condition](condition.html): Who has the condition?
-* [Consent](consent.html): Who the consent applies to
-* [DetectedIssue](detectedissue.html): Associated patient
-* [DeviceRequest](devicerequest.html): Individual the service is ordered for
-* [DeviceUsage](deviceusage.html): Search by subject - a patient
-* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient
-* [DocumentManifest](documentmanifest.html): The subject of the set of documents
-* [DocumentReference](documentreference.html): Who/what is the subject of the document
-* [Encounter](encounter.html): The patient or group present at the encounter
-* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care
-* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for
-* [Flag](flag.html): The identity of a subject to list flags for
-* [Goal](goal.html): Who this goal is intended for
-* [ImagingStudy](imagingstudy.html): Who the study is about
-* [Immunization](immunization.html): The patient for the vaccination record
-* [List](list.html): If all resources have the same subject
-* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for
-* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for
-* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient
-* [MedicationUsage](medicationusage.html): Returns statements for a specific patient.
-* [NutritionOrder](nutritionorder.html): The identity of the person who requires the diet, formula or nutritional supplement
-* [Observation](observation.html): The subject that the observation is about (if patient)
-* [Procedure](procedure.html): Search by subject - a patient
-* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?
-* [ServiceRequest](servicerequest.html): Search by subject - a patient
-* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied
-* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for
-</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>AllergyIntolerance.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ClinicalImpression.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | DetectedIssue.patient | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.subject | DiagnosticReport.subject.where(resolve() is Patient) | DocumentManifest.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EpisodeOfCare.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | List.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationUsage.subject.where(resolve() is Patient) | NutritionOrder.patient | Observation.subject.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | SupplyDelivery.patient | VisionPrescription.patient</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam PATIENT = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_PATIENT);
-
-/**
-   * Constant for fluent queries to be used to add include statements. Specifies
-   * the path value of "<b>MedicationRequest:patient</b>".
-   */
-  public static final ca.uhn.fhir.model.api.Include INCLUDE_PATIENT = new ca.uhn.fhir.model.api.Include("MedicationRequest:patient").toLocked();
-
- /**
-   * Search parameter: <b>encounter</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [MedicationAdministration](medicationadministration.html): Return administrations that share this encounter
-* [MedicationRequest](medicationrequest.html): Return prescriptions with this encounter identifier
-</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>MedicationAdministration.encounter | MedicationRequest.encounter</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="encounter", path="MedicationAdministration.encounter | MedicationRequest.encounter", description="Multiple Resources: \r\n\r\n* [MedicationAdministration](medicationadministration.html): Return administrations that share this encounter\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions with this encounter identifier\r\n", type="reference", providesMembershipIn={ @ca.uhn.fhir.model.api.annotation.Compartment(name="Base FHIR compartment definition for Encounter") }, target={Encounter.class } )
-  public static final String SP_ENCOUNTER = "encounter";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>encounter</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [MedicationAdministration](medicationadministration.html): Return administrations that share this encounter
-* [MedicationRequest](medicationrequest.html): Return prescriptions with this encounter identifier
-</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>MedicationAdministration.encounter | MedicationRequest.encounter</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam ENCOUNTER = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_ENCOUNTER);
-
-/**
-   * Constant for fluent queries to be used to add include statements. Specifies
-   * the path value of "<b>MedicationRequest:encounter</b>".
-   */
-  public static final ca.uhn.fhir.model.api.Include INCLUDE_ENCOUNTER = new ca.uhn.fhir.model.api.Include("MedicationRequest:encounter").toLocked();
-
- /**
-   * Search parameter: <b>medication</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [MedicationAdministration](medicationadministration.html): Return administrations of this medication reference
-* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine resource
-* [MedicationRequest](medicationrequest.html): Return prescriptions for this medication reference
-* [MedicationUsage](medicationusage.html): Return statements of this medication reference
-</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>MedicationAdministration.medication.reference | MedicationDispense.medication.reference | MedicationRequest.medication.reference | MedicationUsage.medication.reference</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="medication", path="MedicationAdministration.medication.reference | MedicationDispense.medication.reference | MedicationRequest.medication.reference | MedicationUsage.medication.reference", description="Multiple Resources: \r\n\r\n* [MedicationAdministration](medicationadministration.html): Return administrations of this medication reference\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine resource\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions for this medication reference\r\n* [MedicationUsage](medicationusage.html): Return statements of this medication reference\r\n", type="reference" )
-  public static final String SP_MEDICATION = "medication";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>medication</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [MedicationAdministration](medicationadministration.html): Return administrations of this medication reference
-* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine resource
-* [MedicationRequest](medicationrequest.html): Return prescriptions for this medication reference
-* [MedicationUsage](medicationusage.html): Return statements of this medication reference
-</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>MedicationAdministration.medication.reference | MedicationDispense.medication.reference | MedicationRequest.medication.reference | MedicationUsage.medication.reference</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam MEDICATION = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_MEDICATION);
-
-/**
-   * Constant for fluent queries to be used to add include statements. Specifies
-   * the path value of "<b>MedicationRequest:medication</b>".
-   */
-  public static final ca.uhn.fhir.model.api.Include INCLUDE_MEDICATION = new ca.uhn.fhir.model.api.Include("MedicationRequest:medication").toLocked();
-
- /**
-   * Search parameter: <b>status</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [MedicationAdministration](medicationadministration.html): MedicationAdministration event status (for example one of active/paused/completed/nullified)
-* [MedicationDispense](medicationdispense.html): Returns dispenses with a specified dispense status
-* [MedicationRequest](medicationrequest.html): Status of the prescription
-* [MedicationUsage](medicationusage.html): Return statements that match the given status
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>MedicationAdministration.status | MedicationDispense.status | MedicationRequest.status | MedicationUsage.status</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="status", path="MedicationAdministration.status | MedicationDispense.status | MedicationRequest.status | MedicationUsage.status", description="Multiple Resources: \r\n\r\n* [MedicationAdministration](medicationadministration.html): MedicationAdministration event status (for example one of active/paused/completed/nullified)\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses with a specified dispense status\r\n* [MedicationRequest](medicationrequest.html): Status of the prescription\r\n* [MedicationUsage](medicationusage.html): Return statements that match the given status\r\n", type="token" )
-  public static final String SP_STATUS = "status";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>status</b>
-   * <p>
-   * Description: <b>Multiple Resources: 
-
-* [MedicationAdministration](medicationadministration.html): MedicationAdministration event status (for example one of active/paused/completed/nullified)
-* [MedicationDispense](medicationdispense.html): Returns dispenses with a specified dispense status
-* [MedicationRequest](medicationrequest.html): Status of the prescription
-* [MedicationUsage](medicationusage.html): Return statements that match the given status
-</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>MedicationAdministration.status | MedicationDispense.status | MedicationRequest.status | MedicationUsage.status</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
 
  /**
    * Search parameter: <b>authoredon</b>
@@ -4068,20 +3910,40 @@ public class MedicationRequest extends DomainResource {
    * <p>
    * Description: <b>Returns medication request to be administered on a specific date or within a date range</b><br>
    * Type: <b>date</b><br>
-   * Path: <b>MedicationRequest.dosageInstruction.timing.event | (MedicationRequest.dosageInstruction.timing.repeat.bounds as Period)</b><br>
+   * Path: <b>MedicationRequest.dosageInstruction.timing.event | (MedicationRequest.dosageInstruction.timing.repeat.bounds.ofType(Period))</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="combo-date", path="MedicationRequest.dosageInstruction.timing.event | (MedicationRequest.dosageInstruction.timing.repeat.bounds as Period)", description="Returns medication request to be administered on a specific date or within a date range", type="date" )
+  @SearchParamDefinition(name="combo-date", path="MedicationRequest.dosageInstruction.timing.event | (MedicationRequest.dosageInstruction.timing.repeat.bounds.ofType(Period))", description="Returns medication request to be administered on a specific date or within a date range", type="date" )
   public static final String SP_COMBO_DATE = "combo-date";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>combo-date</b>
    * <p>
    * Description: <b>Returns medication request to be administered on a specific date or within a date range</b><br>
    * Type: <b>date</b><br>
-   * Path: <b>MedicationRequest.dosageInstruction.timing.event | (MedicationRequest.dosageInstruction.timing.repeat.bounds as Period)</b><br>
+   * Path: <b>MedicationRequest.dosageInstruction.timing.event | (MedicationRequest.dosageInstruction.timing.repeat.bounds.ofType(Period))</b><br>
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.DateClientParam COMBO_DATE = new ca.uhn.fhir.rest.gclient.DateClientParam(SP_COMBO_DATE);
+
+ /**
+   * Search parameter: <b>group-identifier</b>
+   * <p>
+   * Description: <b>Composite request this is part of</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>MedicationRequest.groupIdentifier</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="group-identifier", path="MedicationRequest.groupIdentifier", description="Composite request this is part of", type="token" )
+  public static final String SP_GROUP_IDENTIFIER = "group-identifier";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>group-identifier</b>
+   * <p>
+   * Description: <b>Composite request this is part of</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>MedicationRequest.groupIdentifier</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam GROUP_IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_GROUP_IDENTIFIER);
 
  /**
    * Search parameter: <b>intended-dispenser</b>
@@ -4117,7 +3979,7 @@ public class MedicationRequest extends DomainResource {
    * Path: <b>MedicationRequest.performer</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="intended-performer", path="MedicationRequest.performer", description="Returns the intended performer of the administration of the medication request", type="reference", target={CareTeam.class, Device.class, HealthcareService.class, Organization.class, Patient.class, Practitioner.class, PractitionerRole.class, RelatedPerson.class } )
+  @SearchParamDefinition(name="intended-performer", path="MedicationRequest.performer", description="Returns the intended performer of the administration of the medication request", type="reference", target={CareTeam.class, DeviceDefinition.class, HealthcareService.class, Organization.class, Patient.class, Practitioner.class, PractitionerRole.class, RelatedPerson.class } )
   public static final String SP_INTENDED_PERFORMER = "intended-performer";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>intended-performer</b>
@@ -4246,6 +4108,494 @@ public class MedicationRequest extends DomainResource {
    * the path value of "<b>MedicationRequest:subject</b>".
    */
   public static final ca.uhn.fhir.model.api.Include INCLUDE_SUBJECT = new ca.uhn.fhir.model.api.Include("MedicationRequest:subject").toLocked();
+
+ /**
+   * Search parameter: <b>code</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [AdverseEvent](adverseevent.html): Event or incident that occurred or was averted
+* [AllergyIntolerance](allergyintolerance.html): Code that identifies the allergy or intolerance
+* [AuditEvent](auditevent.html): More specific code for the event
+* [Basic](basic.html): Kind of Resource
+* [ChargeItem](chargeitem.html): A code that identifies the charge, like a billing code
+* [Condition](condition.html): Code for the condition
+* [DetectedIssue](detectedissue.html): Issue Type, e.g. drug-drug, duplicate therapy, etc.
+* [DeviceRequest](devicerequest.html): Code for what is being requested/ordered
+* [DiagnosticReport](diagnosticreport.html): The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result
+* [FamilyMemberHistory](familymemberhistory.html): A search by a condition code
+* [ImagingSelection](imagingselection.html): The imaging selection status
+* [List](list.html): What the purpose of this list is
+* [Medication](medication.html): Returns medications for a specific code
+* [MedicationAdministration](medicationadministration.html): Return administrations of this medication code
+* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine code
+* [MedicationRequest](medicationrequest.html): Return prescriptions of this medication code
+* [MedicationStatement](medicationstatement.html): Return statements of this medication code
+* [NutritionIntake](nutritionintake.html): Returns statements of this code of NutritionIntake
+* [Observation](observation.html): The code of the observation type
+* [Procedure](procedure.html): A code to identify a  procedure
+* [RequestOrchestration](requestorchestration.html): The code of the request orchestration
+* [Task](task.html): Search by task code
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>AdverseEvent.code | AllergyIntolerance.code | AllergyIntolerance.reaction.substance | AuditEvent.code | Basic.code | ChargeItem.code | Condition.code | DetectedIssue.code | DeviceRequest.code.concept | DiagnosticReport.code | FamilyMemberHistory.condition.code | ImagingSelection.status | List.code | Medication.code | MedicationAdministration.medication.concept | MedicationDispense.medication.concept | MedicationRequest.medication.concept | MedicationStatement.medication.concept | NutritionIntake.code | Observation.code | Procedure.code | RequestOrchestration.code | Task.code</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="code", path="AdverseEvent.code | AllergyIntolerance.code | AllergyIntolerance.reaction.substance | AuditEvent.code | Basic.code | ChargeItem.code | Condition.code | DetectedIssue.code | DeviceRequest.code.concept | DiagnosticReport.code | FamilyMemberHistory.condition.code | ImagingSelection.status | List.code | Medication.code | MedicationAdministration.medication.concept | MedicationDispense.medication.concept | MedicationRequest.medication.concept | MedicationStatement.medication.concept | NutritionIntake.code | Observation.code | Procedure.code | RequestOrchestration.code | Task.code", description="Multiple Resources: \r\n\r\n* [AdverseEvent](adverseevent.html): Event or incident that occurred or was averted\r\n* [AllergyIntolerance](allergyintolerance.html): Code that identifies the allergy or intolerance\r\n* [AuditEvent](auditevent.html): More specific code for the event\r\n* [Basic](basic.html): Kind of Resource\r\n* [ChargeItem](chargeitem.html): A code that identifies the charge, like a billing code\r\n* [Condition](condition.html): Code for the condition\r\n* [DetectedIssue](detectedissue.html): Issue Type, e.g. drug-drug, duplicate therapy, etc.\r\n* [DeviceRequest](devicerequest.html): Code for what is being requested/ordered\r\n* [DiagnosticReport](diagnosticreport.html): The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a condition code\r\n* [ImagingSelection](imagingselection.html): The imaging selection status\r\n* [List](list.html): What the purpose of this list is\r\n* [Medication](medication.html): Returns medications for a specific code\r\n* [MedicationAdministration](medicationadministration.html): Return administrations of this medication code\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine code\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions of this medication code\r\n* [MedicationStatement](medicationstatement.html): Return statements of this medication code\r\n* [NutritionIntake](nutritionintake.html): Returns statements of this code of NutritionIntake\r\n* [Observation](observation.html): The code of the observation type\r\n* [Procedure](procedure.html): A code to identify a  procedure\r\n* [RequestOrchestration](requestorchestration.html): The code of the request orchestration\r\n* [Task](task.html): Search by task code\r\n", type="token" )
+  public static final String SP_CODE = "code";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>code</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [AdverseEvent](adverseevent.html): Event or incident that occurred or was averted
+* [AllergyIntolerance](allergyintolerance.html): Code that identifies the allergy or intolerance
+* [AuditEvent](auditevent.html): More specific code for the event
+* [Basic](basic.html): Kind of Resource
+* [ChargeItem](chargeitem.html): A code that identifies the charge, like a billing code
+* [Condition](condition.html): Code for the condition
+* [DetectedIssue](detectedissue.html): Issue Type, e.g. drug-drug, duplicate therapy, etc.
+* [DeviceRequest](devicerequest.html): Code for what is being requested/ordered
+* [DiagnosticReport](diagnosticreport.html): The code for the report, as opposed to codes for the atomic results, which are the names on the observation resource referred to from the result
+* [FamilyMemberHistory](familymemberhistory.html): A search by a condition code
+* [ImagingSelection](imagingselection.html): The imaging selection status
+* [List](list.html): What the purpose of this list is
+* [Medication](medication.html): Returns medications for a specific code
+* [MedicationAdministration](medicationadministration.html): Return administrations of this medication code
+* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine code
+* [MedicationRequest](medicationrequest.html): Return prescriptions of this medication code
+* [MedicationStatement](medicationstatement.html): Return statements of this medication code
+* [NutritionIntake](nutritionintake.html): Returns statements of this code of NutritionIntake
+* [Observation](observation.html): The code of the observation type
+* [Procedure](procedure.html): A code to identify a  procedure
+* [RequestOrchestration](requestorchestration.html): The code of the request orchestration
+* [Task](task.html): Search by task code
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>AdverseEvent.code | AllergyIntolerance.code | AllergyIntolerance.reaction.substance | AuditEvent.code | Basic.code | ChargeItem.code | Condition.code | DetectedIssue.code | DeviceRequest.code.concept | DiagnosticReport.code | FamilyMemberHistory.condition.code | ImagingSelection.status | List.code | Medication.code | MedicationAdministration.medication.concept | MedicationDispense.medication.concept | MedicationRequest.medication.concept | MedicationStatement.medication.concept | NutritionIntake.code | Observation.code | Procedure.code | RequestOrchestration.code | Task.code</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam CODE = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_CODE);
+
+ /**
+   * Search parameter: <b>identifier</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): Account number
+* [AdverseEvent](adverseevent.html): Business identifier for the event
+* [AllergyIntolerance](allergyintolerance.html): External ids for this item
+* [Appointment](appointment.html): An Identifier of the Appointment
+* [AppointmentResponse](appointmentresponse.html): An Identifier in this appointment response
+* [Basic](basic.html): Business identifier
+* [BodyStructure](bodystructure.html): Bodystructure identifier
+* [CarePlan](careplan.html): External Ids for this plan
+* [CareTeam](careteam.html): External Ids for this team
+* [ChargeItem](chargeitem.html): Business Identifier for item
+* [Claim](claim.html): The primary identifier of the financial resource
+* [ClaimResponse](claimresponse.html): The identity of the ClaimResponse
+* [ClinicalImpression](clinicalimpression.html): Business identifier
+* [Communication](communication.html): Unique identifier
+* [CommunicationRequest](communicationrequest.html): Unique identifier
+* [Composition](composition.html): Version-independent identifier for the Composition
+* [Condition](condition.html): A unique identifier of the condition record
+* [Consent](consent.html): Identifier for this record (external references)
+* [Contract](contract.html): The identity of the contract
+* [Coverage](coverage.html): The primary identifier of the insured and the coverage
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The business identifier of the Eligibility
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The business identifier
+* [DetectedIssue](detectedissue.html): Unique id for the detected issue
+* [DeviceRequest](devicerequest.html): Business identifier for request/order
+* [DeviceUsage](deviceusage.html): Search by identifier
+* [DiagnosticReport](diagnosticreport.html): An identifier for the report
+* [DocumentReference](documentreference.html): Identifier of the attachment binary
+* [Encounter](encounter.html): Identifier(s) by which this encounter is known
+* [EnrollmentRequest](enrollmentrequest.html): The business identifier of the Enrollment
+* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare
+* [ExplanationOfBenefit](explanationofbenefit.html): The business identifier of the Explanation of Benefit
+* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier
+* [Flag](flag.html): Business identifier
+* [Goal](goal.html): External Ids for this goal
+* [GuidanceResponse](guidanceresponse.html): The identifier of the guidance response
+* [ImagingSelection](imagingselection.html): Identifiers for the imaging selection
+* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID
+* [Immunization](immunization.html): Business identifier
+* [ImmunizationEvaluation](immunizationevaluation.html): ID of the evaluation
+* [ImmunizationRecommendation](immunizationrecommendation.html): Business identifier
+* [Invoice](invoice.html): Business Identifier for item
+* [List](list.html): Business identifier
+* [MeasureReport](measurereport.html): External identifier of the measure report to be returned
+* [Medication](medication.html): Returns medications with this external identifier
+* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier
+* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier
+* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier
+* [MedicationStatement](medicationstatement.html): Return statements with this external identifier
+* [MolecularSequence](molecularsequence.html): The unique identity for a particular sequence
+* [NutritionIntake](nutritionintake.html): Return statements with this external identifier
+* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier
+* [Observation](observation.html): The unique id for a particular observation
+* [Person](person.html): A person Identifier
+* [Procedure](procedure.html): A unique identifier for a procedure
+* [QuestionnaireResponse](questionnaireresponse.html): The unique identifier for the questionnaire response
+* [RelatedPerson](relatedperson.html): An Identifier of the RelatedPerson
+* [RequestOrchestration](requestorchestration.html): External identifiers for the request orchestration
+* [ResearchSubject](researchsubject.html): Business Identifier for research subject in a study
+* [RiskAssessment](riskassessment.html): Unique identifier for the assessment
+* [ServiceRequest](servicerequest.html): Identifiers assigned to this order
+* [Specimen](specimen.html): The unique identifier associated with the specimen
+* [SupplyDelivery](supplydelivery.html): External identifier
+* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest
+* [Task](task.html): Search for a task instance by its business identifier
+* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>Account.identifier | AdverseEvent.identifier | AllergyIntolerance.identifier | Appointment.identifier | AppointmentResponse.identifier | Basic.identifier | BodyStructure.identifier | CarePlan.identifier | CareTeam.identifier | ChargeItem.identifier | Claim.identifier | ClaimResponse.identifier | ClinicalImpression.identifier | Communication.identifier | CommunicationRequest.identifier | Composition.identifier | Condition.identifier | Consent.identifier | Contract.identifier | Coverage.identifier | CoverageEligibilityRequest.identifier | CoverageEligibilityResponse.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DeviceUsage.identifier | DiagnosticReport.identifier | DocumentReference.identifier | Encounter.identifier | EnrollmentRequest.identifier | EpisodeOfCare.identifier | ExplanationOfBenefit.identifier | FamilyMemberHistory.identifier | Flag.identifier | Goal.identifier | GuidanceResponse.identifier | ImagingSelection.identifier | ImagingStudy.identifier | Immunization.identifier | ImmunizationEvaluation.identifier | ImmunizationRecommendation.identifier | Invoice.identifier | List.identifier | MeasureReport.identifier | Medication.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationStatement.identifier | MolecularSequence.identifier | NutritionIntake.identifier | NutritionOrder.identifier | Observation.identifier | Person.identifier | Procedure.identifier | QuestionnaireResponse.identifier | RelatedPerson.identifier | RequestOrchestration.identifier | ResearchSubject.identifier | RiskAssessment.identifier | ServiceRequest.identifier | Specimen.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | Task.identifier | VisionPrescription.identifier</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="identifier", path="Account.identifier | AdverseEvent.identifier | AllergyIntolerance.identifier | Appointment.identifier | AppointmentResponse.identifier | Basic.identifier | BodyStructure.identifier | CarePlan.identifier | CareTeam.identifier | ChargeItem.identifier | Claim.identifier | ClaimResponse.identifier | ClinicalImpression.identifier | Communication.identifier | CommunicationRequest.identifier | Composition.identifier | Condition.identifier | Consent.identifier | Contract.identifier | Coverage.identifier | CoverageEligibilityRequest.identifier | CoverageEligibilityResponse.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DeviceUsage.identifier | DiagnosticReport.identifier | DocumentReference.identifier | Encounter.identifier | EnrollmentRequest.identifier | EpisodeOfCare.identifier | ExplanationOfBenefit.identifier | FamilyMemberHistory.identifier | Flag.identifier | Goal.identifier | GuidanceResponse.identifier | ImagingSelection.identifier | ImagingStudy.identifier | Immunization.identifier | ImmunizationEvaluation.identifier | ImmunizationRecommendation.identifier | Invoice.identifier | List.identifier | MeasureReport.identifier | Medication.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationStatement.identifier | MolecularSequence.identifier | NutritionIntake.identifier | NutritionOrder.identifier | Observation.identifier | Person.identifier | Procedure.identifier | QuestionnaireResponse.identifier | RelatedPerson.identifier | RequestOrchestration.identifier | ResearchSubject.identifier | RiskAssessment.identifier | ServiceRequest.identifier | Specimen.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | Task.identifier | VisionPrescription.identifier", description="Multiple Resources: \r\n\r\n* [Account](account.html): Account number\r\n* [AdverseEvent](adverseevent.html): Business identifier for the event\r\n* [AllergyIntolerance](allergyintolerance.html): External ids for this item\r\n* [Appointment](appointment.html): An Identifier of the Appointment\r\n* [AppointmentResponse](appointmentresponse.html): An Identifier in this appointment response\r\n* [Basic](basic.html): Business identifier\r\n* [BodyStructure](bodystructure.html): Bodystructure identifier\r\n* [CarePlan](careplan.html): External Ids for this plan\r\n* [CareTeam](careteam.html): External Ids for this team\r\n* [ChargeItem](chargeitem.html): Business Identifier for item\r\n* [Claim](claim.html): The primary identifier of the financial resource\r\n* [ClaimResponse](claimresponse.html): The identity of the ClaimResponse\r\n* [ClinicalImpression](clinicalimpression.html): Business identifier\r\n* [Communication](communication.html): Unique identifier\r\n* [CommunicationRequest](communicationrequest.html): Unique identifier\r\n* [Composition](composition.html): Version-independent identifier for the Composition\r\n* [Condition](condition.html): A unique identifier of the condition record\r\n* [Consent](consent.html): Identifier for this record (external references)\r\n* [Contract](contract.html): The identity of the contract\r\n* [Coverage](coverage.html): The primary identifier of the insured and the coverage\r\n* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The business identifier of the Eligibility\r\n* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The business identifier\r\n* [DetectedIssue](detectedissue.html): Unique id for the detected issue\r\n* [DeviceRequest](devicerequest.html): Business identifier for request/order\r\n* [DeviceUsage](deviceusage.html): Search by identifier\r\n* [DiagnosticReport](diagnosticreport.html): An identifier for the report\r\n* [DocumentReference](documentreference.html): Identifier of the attachment binary\r\n* [Encounter](encounter.html): Identifier(s) by which this encounter is known\r\n* [EnrollmentRequest](enrollmentrequest.html): The business identifier of the Enrollment\r\n* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare\r\n* [ExplanationOfBenefit](explanationofbenefit.html): The business identifier of the Explanation of Benefit\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier\r\n* [Flag](flag.html): Business identifier\r\n* [Goal](goal.html): External Ids for this goal\r\n* [GuidanceResponse](guidanceresponse.html): The identifier of the guidance response\r\n* [ImagingSelection](imagingselection.html): Identifiers for the imaging selection\r\n* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID\r\n* [Immunization](immunization.html): Business identifier\r\n* [ImmunizationEvaluation](immunizationevaluation.html): ID of the evaluation\r\n* [ImmunizationRecommendation](immunizationrecommendation.html): Business identifier\r\n* [Invoice](invoice.html): Business Identifier for item\r\n* [List](list.html): Business identifier\r\n* [MeasureReport](measurereport.html): External identifier of the measure report to be returned\r\n* [Medication](medication.html): Returns medications with this external identifier\r\n* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier\r\n* [MedicationStatement](medicationstatement.html): Return statements with this external identifier\r\n* [MolecularSequence](molecularsequence.html): The unique identity for a particular sequence\r\n* [NutritionIntake](nutritionintake.html): Return statements with this external identifier\r\n* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier\r\n* [Observation](observation.html): The unique id for a particular observation\r\n* [Person](person.html): A person Identifier\r\n* [Procedure](procedure.html): A unique identifier for a procedure\r\n* [QuestionnaireResponse](questionnaireresponse.html): The unique identifier for the questionnaire response\r\n* [RelatedPerson](relatedperson.html): An Identifier of the RelatedPerson\r\n* [RequestOrchestration](requestorchestration.html): External identifiers for the request orchestration\r\n* [ResearchSubject](researchsubject.html): Business Identifier for research subject in a study\r\n* [RiskAssessment](riskassessment.html): Unique identifier for the assessment\r\n* [ServiceRequest](servicerequest.html): Identifiers assigned to this order\r\n* [Specimen](specimen.html): The unique identifier associated with the specimen\r\n* [SupplyDelivery](supplydelivery.html): External identifier\r\n* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest\r\n* [Task](task.html): Search for a task instance by its business identifier\r\n* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier\r\n", type="token" )
+  public static final String SP_IDENTIFIER = "identifier";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>identifier</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): Account number
+* [AdverseEvent](adverseevent.html): Business identifier for the event
+* [AllergyIntolerance](allergyintolerance.html): External ids for this item
+* [Appointment](appointment.html): An Identifier of the Appointment
+* [AppointmentResponse](appointmentresponse.html): An Identifier in this appointment response
+* [Basic](basic.html): Business identifier
+* [BodyStructure](bodystructure.html): Bodystructure identifier
+* [CarePlan](careplan.html): External Ids for this plan
+* [CareTeam](careteam.html): External Ids for this team
+* [ChargeItem](chargeitem.html): Business Identifier for item
+* [Claim](claim.html): The primary identifier of the financial resource
+* [ClaimResponse](claimresponse.html): The identity of the ClaimResponse
+* [ClinicalImpression](clinicalimpression.html): Business identifier
+* [Communication](communication.html): Unique identifier
+* [CommunicationRequest](communicationrequest.html): Unique identifier
+* [Composition](composition.html): Version-independent identifier for the Composition
+* [Condition](condition.html): A unique identifier of the condition record
+* [Consent](consent.html): Identifier for this record (external references)
+* [Contract](contract.html): The identity of the contract
+* [Coverage](coverage.html): The primary identifier of the insured and the coverage
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The business identifier of the Eligibility
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The business identifier
+* [DetectedIssue](detectedissue.html): Unique id for the detected issue
+* [DeviceRequest](devicerequest.html): Business identifier for request/order
+* [DeviceUsage](deviceusage.html): Search by identifier
+* [DiagnosticReport](diagnosticreport.html): An identifier for the report
+* [DocumentReference](documentreference.html): Identifier of the attachment binary
+* [Encounter](encounter.html): Identifier(s) by which this encounter is known
+* [EnrollmentRequest](enrollmentrequest.html): The business identifier of the Enrollment
+* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare
+* [ExplanationOfBenefit](explanationofbenefit.html): The business identifier of the Explanation of Benefit
+* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier
+* [Flag](flag.html): Business identifier
+* [Goal](goal.html): External Ids for this goal
+* [GuidanceResponse](guidanceresponse.html): The identifier of the guidance response
+* [ImagingSelection](imagingselection.html): Identifiers for the imaging selection
+* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID
+* [Immunization](immunization.html): Business identifier
+* [ImmunizationEvaluation](immunizationevaluation.html): ID of the evaluation
+* [ImmunizationRecommendation](immunizationrecommendation.html): Business identifier
+* [Invoice](invoice.html): Business Identifier for item
+* [List](list.html): Business identifier
+* [MeasureReport](measurereport.html): External identifier of the measure report to be returned
+* [Medication](medication.html): Returns medications with this external identifier
+* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier
+* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier
+* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier
+* [MedicationStatement](medicationstatement.html): Return statements with this external identifier
+* [MolecularSequence](molecularsequence.html): The unique identity for a particular sequence
+* [NutritionIntake](nutritionintake.html): Return statements with this external identifier
+* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier
+* [Observation](observation.html): The unique id for a particular observation
+* [Person](person.html): A person Identifier
+* [Procedure](procedure.html): A unique identifier for a procedure
+* [QuestionnaireResponse](questionnaireresponse.html): The unique identifier for the questionnaire response
+* [RelatedPerson](relatedperson.html): An Identifier of the RelatedPerson
+* [RequestOrchestration](requestorchestration.html): External identifiers for the request orchestration
+* [ResearchSubject](researchsubject.html): Business Identifier for research subject in a study
+* [RiskAssessment](riskassessment.html): Unique identifier for the assessment
+* [ServiceRequest](servicerequest.html): Identifiers assigned to this order
+* [Specimen](specimen.html): The unique identifier associated with the specimen
+* [SupplyDelivery](supplydelivery.html): External identifier
+* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest
+* [Task](task.html): Search for a task instance by its business identifier
+* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>Account.identifier | AdverseEvent.identifier | AllergyIntolerance.identifier | Appointment.identifier | AppointmentResponse.identifier | Basic.identifier | BodyStructure.identifier | CarePlan.identifier | CareTeam.identifier | ChargeItem.identifier | Claim.identifier | ClaimResponse.identifier | ClinicalImpression.identifier | Communication.identifier | CommunicationRequest.identifier | Composition.identifier | Condition.identifier | Consent.identifier | Contract.identifier | Coverage.identifier | CoverageEligibilityRequest.identifier | CoverageEligibilityResponse.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DeviceUsage.identifier | DiagnosticReport.identifier | DocumentReference.identifier | Encounter.identifier | EnrollmentRequest.identifier | EpisodeOfCare.identifier | ExplanationOfBenefit.identifier | FamilyMemberHistory.identifier | Flag.identifier | Goal.identifier | GuidanceResponse.identifier | ImagingSelection.identifier | ImagingStudy.identifier | Immunization.identifier | ImmunizationEvaluation.identifier | ImmunizationRecommendation.identifier | Invoice.identifier | List.identifier | MeasureReport.identifier | Medication.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationStatement.identifier | MolecularSequence.identifier | NutritionIntake.identifier | NutritionOrder.identifier | Observation.identifier | Person.identifier | Procedure.identifier | QuestionnaireResponse.identifier | RelatedPerson.identifier | RequestOrchestration.identifier | ResearchSubject.identifier | RiskAssessment.identifier | ServiceRequest.identifier | Specimen.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | Task.identifier | VisionPrescription.identifier</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
+
+ /**
+   * Search parameter: <b>patient</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): The entity that caused the expenses
+* [AdverseEvent](adverseevent.html): Subject impacted by event
+* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for
+* [Appointment](appointment.html): One of the individuals of the appointment is this patient
+* [AppointmentResponse](appointmentresponse.html): This Response is for this Patient
+* [AuditEvent](auditevent.html): Where the activity involved patient data
+* [Basic](basic.html): Identifies the focus of this resource
+* [BodyStructure](bodystructure.html): Who this is about
+* [CarePlan](careplan.html): Who the care plan is for
+* [CareTeam](careteam.html): Who care team is for
+* [ChargeItem](chargeitem.html): Individual service was done for/to
+* [Claim](claim.html): Patient receiving the products or services
+* [ClaimResponse](claimresponse.html): The subject of care
+* [ClinicalImpression](clinicalimpression.html): Patient assessed
+* [Communication](communication.html): Focus of message
+* [CommunicationRequest](communicationrequest.html): Focus of message
+* [Composition](composition.html): Who and/or what the composition is about
+* [Condition](condition.html): Who has the condition?
+* [Consent](consent.html): Who the consent applies to
+* [Contract](contract.html): The identity of the subject of the contract (if a patient)
+* [Coverage](coverage.html): Retrieve coverages for a patient
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The reference to the patient
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The reference to the patient
+* [DetectedIssue](detectedissue.html): Associated patient
+* [DeviceRequest](devicerequest.html): Individual the service is ordered for
+* [DeviceUsage](deviceusage.html): Search by patient who used / uses the device
+* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient
+* [DocumentReference](documentreference.html): Who/what is the subject of the document
+* [Encounter](encounter.html): The patient present at the encounter
+* [EnrollmentRequest](enrollmentrequest.html): The party to be enrolled
+* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care
+* [ExplanationOfBenefit](explanationofbenefit.html): The reference to the patient
+* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for
+* [Flag](flag.html): The identity of a subject to list flags for
+* [Goal](goal.html): Who this goal is intended for
+* [GuidanceResponse](guidanceresponse.html): The identity of a patient to search for guidance response results
+* [ImagingSelection](imagingselection.html): Who the study is about
+* [ImagingStudy](imagingstudy.html): Who the study is about
+* [Immunization](immunization.html): The patient for the vaccination record
+* [ImmunizationEvaluation](immunizationevaluation.html): The patient being evaluated
+* [ImmunizationRecommendation](immunizationrecommendation.html): Who this profile is for
+* [Invoice](invoice.html): Recipient(s) of goods and services
+* [List](list.html): If all resources have the same subject
+* [MeasureReport](measurereport.html): The identity of a patient to search for individual measure report results for
+* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for
+* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for
+* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient
+* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.
+* [MolecularSequence](molecularsequence.html): The subject that the sequence is about
+* [NutritionIntake](nutritionintake.html): Returns statements for a specific patient.
+* [NutritionOrder](nutritionorder.html): The identity of the individual or set of individuals who requires the diet, formula or nutritional supplement
+* [Observation](observation.html): The subject that the observation is about (if patient)
+* [Person](person.html): The Person links to this Patient
+* [Procedure](procedure.html): Search by subject - a patient
+* [Provenance](provenance.html): Where the activity involved patient data
+* [QuestionnaireResponse](questionnaireresponse.html): The patient that is the subject of the questionnaire response
+* [RelatedPerson](relatedperson.html): The patient this related person is related to
+* [RequestOrchestration](requestorchestration.html): The identity of a patient to search for request orchestrations
+* [ResearchSubject](researchsubject.html): Who or what is part of study
+* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?
+* [ServiceRequest](servicerequest.html): Search by subject - a patient
+* [Specimen](specimen.html): The patient the specimen comes from
+* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied
+* [SupplyRequest](supplyrequest.html): The patient or subject for whom the supply is destined
+* [Task](task.html): Search by patient
+* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>Account.subject.where(resolve() is Patient) | AdverseEvent.subject.where(resolve() is Patient) | AllergyIntolerance.patient | Appointment.participant.actor.where(resolve() is Patient) | Appointment.subject.where(resolve() is Patient) | AppointmentResponse.actor.where(resolve() is Patient) | AuditEvent.patient | Basic.subject.where(resolve() is Patient) | BodyStructure.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ChargeItem.subject.where(resolve() is Patient) | Claim.patient | ClaimResponse.patient | ClinicalImpression.subject.where(resolve() is Patient) | Communication.subject.where(resolve() is Patient) | CommunicationRequest.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | Contract.subject.where(resolve() is Patient) | Coverage.beneficiary | CoverageEligibilityRequest.patient | CoverageEligibilityResponse.patient | DetectedIssue.subject.where(resolve() is Patient) | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.patient | DiagnosticReport.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EnrollmentRequest.candidate | EpisodeOfCare.patient | ExplanationOfBenefit.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | GuidanceResponse.subject.where(resolve() is Patient) | ImagingSelection.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | ImmunizationEvaluation.patient | ImmunizationRecommendation.patient | Invoice.subject.where(resolve() is Patient) | List.subject.where(resolve() is Patient) | MeasureReport.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationStatement.subject.where(resolve() is Patient) | MolecularSequence.subject.where(resolve() is Patient) | NutritionIntake.subject.where(resolve() is Patient) | NutritionOrder.subject.where(resolve() is Patient) | Observation.subject.where(resolve() is Patient) | Person.link.target.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | Provenance.patient | QuestionnaireResponse.subject.where(resolve() is Patient) | RelatedPerson.patient | RequestOrchestration.subject.where(resolve() is Patient) | ResearchSubject.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | Specimen.subject.where(resolve() is Patient) | SupplyDelivery.patient | SupplyRequest.deliverFor | Task.for.where(resolve() is Patient) | VisionPrescription.patient</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="patient", path="Account.subject.where(resolve() is Patient) | AdverseEvent.subject.where(resolve() is Patient) | AllergyIntolerance.patient | Appointment.participant.actor.where(resolve() is Patient) | Appointment.subject.where(resolve() is Patient) | AppointmentResponse.actor.where(resolve() is Patient) | AuditEvent.patient | Basic.subject.where(resolve() is Patient) | BodyStructure.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ChargeItem.subject.where(resolve() is Patient) | Claim.patient | ClaimResponse.patient | ClinicalImpression.subject.where(resolve() is Patient) | Communication.subject.where(resolve() is Patient) | CommunicationRequest.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | Contract.subject.where(resolve() is Patient) | Coverage.beneficiary | CoverageEligibilityRequest.patient | CoverageEligibilityResponse.patient | DetectedIssue.subject.where(resolve() is Patient) | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.patient | DiagnosticReport.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EnrollmentRequest.candidate | EpisodeOfCare.patient | ExplanationOfBenefit.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | GuidanceResponse.subject.where(resolve() is Patient) | ImagingSelection.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | ImmunizationEvaluation.patient | ImmunizationRecommendation.patient | Invoice.subject.where(resolve() is Patient) | List.subject.where(resolve() is Patient) | MeasureReport.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationStatement.subject.where(resolve() is Patient) | MolecularSequence.subject.where(resolve() is Patient) | NutritionIntake.subject.where(resolve() is Patient) | NutritionOrder.subject.where(resolve() is Patient) | Observation.subject.where(resolve() is Patient) | Person.link.target.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | Provenance.patient | QuestionnaireResponse.subject.where(resolve() is Patient) | RelatedPerson.patient | RequestOrchestration.subject.where(resolve() is Patient) | ResearchSubject.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | Specimen.subject.where(resolve() is Patient) | SupplyDelivery.patient | SupplyRequest.deliverFor | Task.for.where(resolve() is Patient) | VisionPrescription.patient", description="Multiple Resources: \r\n\r\n* [Account](account.html): The entity that caused the expenses\r\n* [AdverseEvent](adverseevent.html): Subject impacted by event\r\n* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for\r\n* [Appointment](appointment.html): One of the individuals of the appointment is this patient\r\n* [AppointmentResponse](appointmentresponse.html): This Response is for this Patient\r\n* [AuditEvent](auditevent.html): Where the activity involved patient data\r\n* [Basic](basic.html): Identifies the focus of this resource\r\n* [BodyStructure](bodystructure.html): Who this is about\r\n* [CarePlan](careplan.html): Who the care plan is for\r\n* [CareTeam](careteam.html): Who care team is for\r\n* [ChargeItem](chargeitem.html): Individual service was done for/to\r\n* [Claim](claim.html): Patient receiving the products or services\r\n* [ClaimResponse](claimresponse.html): The subject of care\r\n* [ClinicalImpression](clinicalimpression.html): Patient assessed\r\n* [Communication](communication.html): Focus of message\r\n* [CommunicationRequest](communicationrequest.html): Focus of message\r\n* [Composition](composition.html): Who and/or what the composition is about\r\n* [Condition](condition.html): Who has the condition?\r\n* [Consent](consent.html): Who the consent applies to\r\n* [Contract](contract.html): The identity of the subject of the contract (if a patient)\r\n* [Coverage](coverage.html): Retrieve coverages for a patient\r\n* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The reference to the patient\r\n* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The reference to the patient\r\n* [DetectedIssue](detectedissue.html): Associated patient\r\n* [DeviceRequest](devicerequest.html): Individual the service is ordered for\r\n* [DeviceUsage](deviceusage.html): Search by patient who used / uses the device\r\n* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient\r\n* [DocumentReference](documentreference.html): Who/what is the subject of the document\r\n* [Encounter](encounter.html): The patient present at the encounter\r\n* [EnrollmentRequest](enrollmentrequest.html): The party to be enrolled\r\n* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care\r\n* [ExplanationOfBenefit](explanationofbenefit.html): The reference to the patient\r\n* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for\r\n* [Flag](flag.html): The identity of a subject to list flags for\r\n* [Goal](goal.html): Who this goal is intended for\r\n* [GuidanceResponse](guidanceresponse.html): The identity of a patient to search for guidance response results\r\n* [ImagingSelection](imagingselection.html): Who the study is about\r\n* [ImagingStudy](imagingstudy.html): Who the study is about\r\n* [Immunization](immunization.html): The patient for the vaccination record\r\n* [ImmunizationEvaluation](immunizationevaluation.html): The patient being evaluated\r\n* [ImmunizationRecommendation](immunizationrecommendation.html): Who this profile is for\r\n* [Invoice](invoice.html): Recipient(s) of goods and services\r\n* [List](list.html): If all resources have the same subject\r\n* [MeasureReport](measurereport.html): The identity of a patient to search for individual measure report results for\r\n* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for\r\n* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for\r\n* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient\r\n* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.\r\n* [MolecularSequence](molecularsequence.html): The subject that the sequence is about\r\n* [NutritionIntake](nutritionintake.html): Returns statements for a specific patient.\r\n* [NutritionOrder](nutritionorder.html): The identity of the individual or set of individuals who requires the diet, formula or nutritional supplement\r\n* [Observation](observation.html): The subject that the observation is about (if patient)\r\n* [Person](person.html): The Person links to this Patient\r\n* [Procedure](procedure.html): Search by subject - a patient\r\n* [Provenance](provenance.html): Where the activity involved patient data\r\n* [QuestionnaireResponse](questionnaireresponse.html): The patient that is the subject of the questionnaire response\r\n* [RelatedPerson](relatedperson.html): The patient this related person is related to\r\n* [RequestOrchestration](requestorchestration.html): The identity of a patient to search for request orchestrations\r\n* [ResearchSubject](researchsubject.html): Who or what is part of study\r\n* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?\r\n* [ServiceRequest](servicerequest.html): Search by subject - a patient\r\n* [Specimen](specimen.html): The patient the specimen comes from\r\n* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied\r\n* [SupplyRequest](supplyrequest.html): The patient or subject for whom the supply is destined\r\n* [Task](task.html): Search by patient\r\n* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for\r\n", type="reference", target={Patient.class } )
+  public static final String SP_PATIENT = "patient";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>patient</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): The entity that caused the expenses
+* [AdverseEvent](adverseevent.html): Subject impacted by event
+* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for
+* [Appointment](appointment.html): One of the individuals of the appointment is this patient
+* [AppointmentResponse](appointmentresponse.html): This Response is for this Patient
+* [AuditEvent](auditevent.html): Where the activity involved patient data
+* [Basic](basic.html): Identifies the focus of this resource
+* [BodyStructure](bodystructure.html): Who this is about
+* [CarePlan](careplan.html): Who the care plan is for
+* [CareTeam](careteam.html): Who care team is for
+* [ChargeItem](chargeitem.html): Individual service was done for/to
+* [Claim](claim.html): Patient receiving the products or services
+* [ClaimResponse](claimresponse.html): The subject of care
+* [ClinicalImpression](clinicalimpression.html): Patient assessed
+* [Communication](communication.html): Focus of message
+* [CommunicationRequest](communicationrequest.html): Focus of message
+* [Composition](composition.html): Who and/or what the composition is about
+* [Condition](condition.html): Who has the condition?
+* [Consent](consent.html): Who the consent applies to
+* [Contract](contract.html): The identity of the subject of the contract (if a patient)
+* [Coverage](coverage.html): Retrieve coverages for a patient
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The reference to the patient
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The reference to the patient
+* [DetectedIssue](detectedissue.html): Associated patient
+* [DeviceRequest](devicerequest.html): Individual the service is ordered for
+* [DeviceUsage](deviceusage.html): Search by patient who used / uses the device
+* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient
+* [DocumentReference](documentreference.html): Who/what is the subject of the document
+* [Encounter](encounter.html): The patient present at the encounter
+* [EnrollmentRequest](enrollmentrequest.html): The party to be enrolled
+* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care
+* [ExplanationOfBenefit](explanationofbenefit.html): The reference to the patient
+* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for
+* [Flag](flag.html): The identity of a subject to list flags for
+* [Goal](goal.html): Who this goal is intended for
+* [GuidanceResponse](guidanceresponse.html): The identity of a patient to search for guidance response results
+* [ImagingSelection](imagingselection.html): Who the study is about
+* [ImagingStudy](imagingstudy.html): Who the study is about
+* [Immunization](immunization.html): The patient for the vaccination record
+* [ImmunizationEvaluation](immunizationevaluation.html): The patient being evaluated
+* [ImmunizationRecommendation](immunizationrecommendation.html): Who this profile is for
+* [Invoice](invoice.html): Recipient(s) of goods and services
+* [List](list.html): If all resources have the same subject
+* [MeasureReport](measurereport.html): The identity of a patient to search for individual measure report results for
+* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for
+* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for
+* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient
+* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.
+* [MolecularSequence](molecularsequence.html): The subject that the sequence is about
+* [NutritionIntake](nutritionintake.html): Returns statements for a specific patient.
+* [NutritionOrder](nutritionorder.html): The identity of the individual or set of individuals who requires the diet, formula or nutritional supplement
+* [Observation](observation.html): The subject that the observation is about (if patient)
+* [Person](person.html): The Person links to this Patient
+* [Procedure](procedure.html): Search by subject - a patient
+* [Provenance](provenance.html): Where the activity involved patient data
+* [QuestionnaireResponse](questionnaireresponse.html): The patient that is the subject of the questionnaire response
+* [RelatedPerson](relatedperson.html): The patient this related person is related to
+* [RequestOrchestration](requestorchestration.html): The identity of a patient to search for request orchestrations
+* [ResearchSubject](researchsubject.html): Who or what is part of study
+* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?
+* [ServiceRequest](servicerequest.html): Search by subject - a patient
+* [Specimen](specimen.html): The patient the specimen comes from
+* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied
+* [SupplyRequest](supplyrequest.html): The patient or subject for whom the supply is destined
+* [Task](task.html): Search by patient
+* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>Account.subject.where(resolve() is Patient) | AdverseEvent.subject.where(resolve() is Patient) | AllergyIntolerance.patient | Appointment.participant.actor.where(resolve() is Patient) | Appointment.subject.where(resolve() is Patient) | AppointmentResponse.actor.where(resolve() is Patient) | AuditEvent.patient | Basic.subject.where(resolve() is Patient) | BodyStructure.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ChargeItem.subject.where(resolve() is Patient) | Claim.patient | ClaimResponse.patient | ClinicalImpression.subject.where(resolve() is Patient) | Communication.subject.where(resolve() is Patient) | CommunicationRequest.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | Contract.subject.where(resolve() is Patient) | Coverage.beneficiary | CoverageEligibilityRequest.patient | CoverageEligibilityResponse.patient | DetectedIssue.subject.where(resolve() is Patient) | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.patient | DiagnosticReport.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EnrollmentRequest.candidate | EpisodeOfCare.patient | ExplanationOfBenefit.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | GuidanceResponse.subject.where(resolve() is Patient) | ImagingSelection.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | ImmunizationEvaluation.patient | ImmunizationRecommendation.patient | Invoice.subject.where(resolve() is Patient) | List.subject.where(resolve() is Patient) | MeasureReport.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationStatement.subject.where(resolve() is Patient) | MolecularSequence.subject.where(resolve() is Patient) | NutritionIntake.subject.where(resolve() is Patient) | NutritionOrder.subject.where(resolve() is Patient) | Observation.subject.where(resolve() is Patient) | Person.link.target.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | Provenance.patient | QuestionnaireResponse.subject.where(resolve() is Patient) | RelatedPerson.patient | RequestOrchestration.subject.where(resolve() is Patient) | ResearchSubject.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | Specimen.subject.where(resolve() is Patient) | SupplyDelivery.patient | SupplyRequest.deliverFor | Task.for.where(resolve() is Patient) | VisionPrescription.patient</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam PATIENT = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_PATIENT);
+
+/**
+   * Constant for fluent queries to be used to add include statements. Specifies
+   * the path value of "<b>MedicationRequest:patient</b>".
+   */
+  public static final ca.uhn.fhir.model.api.Include INCLUDE_PATIENT = new ca.uhn.fhir.model.api.Include("MedicationRequest:patient").toLocked();
+
+ /**
+   * Search parameter: <b>encounter</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [MedicationAdministration](medicationadministration.html): Return administrations that share this encounter
+* [MedicationRequest](medicationrequest.html): Return prescriptions with this encounter identifier
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>MedicationAdministration.encounter | MedicationRequest.encounter</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="encounter", path="MedicationAdministration.encounter | MedicationRequest.encounter", description="Multiple Resources: \r\n\r\n* [MedicationAdministration](medicationadministration.html): Return administrations that share this encounter\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions with this encounter identifier\r\n", type="reference", providesMembershipIn={ @ca.uhn.fhir.model.api.annotation.Compartment(name="Base FHIR compartment definition for Encounter") }, target={Encounter.class } )
+  public static final String SP_ENCOUNTER = "encounter";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>encounter</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [MedicationAdministration](medicationadministration.html): Return administrations that share this encounter
+* [MedicationRequest](medicationrequest.html): Return prescriptions with this encounter identifier
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>MedicationAdministration.encounter | MedicationRequest.encounter</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam ENCOUNTER = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_ENCOUNTER);
+
+/**
+   * Constant for fluent queries to be used to add include statements. Specifies
+   * the path value of "<b>MedicationRequest:encounter</b>".
+   */
+  public static final ca.uhn.fhir.model.api.Include INCLUDE_ENCOUNTER = new ca.uhn.fhir.model.api.Include("MedicationRequest:encounter").toLocked();
+
+ /**
+   * Search parameter: <b>medication</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [MedicationAdministration](medicationadministration.html): Return administrations of this medication reference
+* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine resource
+* [MedicationRequest](medicationrequest.html): Return prescriptions for this medication reference
+* [MedicationStatement](medicationstatement.html): Return statements of this medication reference
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>MedicationAdministration.medication.reference | MedicationDispense.medication.reference | MedicationRequest.medication.reference | MedicationStatement.medication.reference</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="medication", path="MedicationAdministration.medication.reference | MedicationDispense.medication.reference | MedicationRequest.medication.reference | MedicationStatement.medication.reference", description="Multiple Resources: \r\n\r\n* [MedicationAdministration](medicationadministration.html): Return administrations of this medication reference\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine resource\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions for this medication reference\r\n* [MedicationStatement](medicationstatement.html): Return statements of this medication reference\r\n", type="reference", target={Medication.class } )
+  public static final String SP_MEDICATION = "medication";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>medication</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [MedicationAdministration](medicationadministration.html): Return administrations of this medication reference
+* [MedicationDispense](medicationdispense.html): Returns dispenses of this medicine resource
+* [MedicationRequest](medicationrequest.html): Return prescriptions for this medication reference
+* [MedicationStatement](medicationstatement.html): Return statements of this medication reference
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>MedicationAdministration.medication.reference | MedicationDispense.medication.reference | MedicationRequest.medication.reference | MedicationStatement.medication.reference</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam MEDICATION = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_MEDICATION);
+
+/**
+   * Constant for fluent queries to be used to add include statements. Specifies
+   * the path value of "<b>MedicationRequest:medication</b>".
+   */
+  public static final ca.uhn.fhir.model.api.Include INCLUDE_MEDICATION = new ca.uhn.fhir.model.api.Include("MedicationRequest:medication").toLocked();
+
+ /**
+   * Search parameter: <b>status</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [MedicationAdministration](medicationadministration.html): MedicationAdministration event status (for example one of active/paused/completed/nullified)
+* [MedicationDispense](medicationdispense.html): Returns dispenses with a specified dispense status
+* [MedicationRequest](medicationrequest.html): Status of the prescription
+* [MedicationStatement](medicationstatement.html): Return statements that match the given status
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>MedicationAdministration.status | MedicationDispense.status | MedicationRequest.status | MedicationStatement.status</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="status", path="MedicationAdministration.status | MedicationDispense.status | MedicationRequest.status | MedicationStatement.status", description="Multiple Resources: \r\n\r\n* [MedicationAdministration](medicationadministration.html): MedicationAdministration event status (for example one of active/paused/completed/nullified)\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses with a specified dispense status\r\n* [MedicationRequest](medicationrequest.html): Status of the prescription\r\n* [MedicationStatement](medicationstatement.html): Return statements that match the given status\r\n", type="token" )
+  public static final String SP_STATUS = "status";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>status</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [MedicationAdministration](medicationadministration.html): MedicationAdministration event status (for example one of active/paused/completed/nullified)
+* [MedicationDispense](medicationdispense.html): Returns dispenses with a specified dispense status
+* [MedicationRequest](medicationrequest.html): Status of the prescription
+* [MedicationStatement](medicationstatement.html): Return statements that match the given status
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>MedicationAdministration.status | MedicationDispense.status | MedicationRequest.status | MedicationStatement.status</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam STATUS = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_STATUS);
 
 
 }

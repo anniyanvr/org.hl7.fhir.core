@@ -9,6 +9,8 @@ import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Narrative40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r4.model.Composition;
+import org.hl7.fhir.r5.model.*;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -47,7 +49,7 @@ public class Composition40_50 {
     org.hl7.fhir.r5.model.Composition tgt = new org.hl7.fhir.r5.model.Composition();
     ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyDomainResource(src, tgt);
     if (src.hasIdentifier())
-      tgt.setIdentifier(Identifier40_50.convertIdentifier(src.getIdentifier()));
+      tgt.addIdentifier(Identifier40_50.convertIdentifier(src.getIdentifier()));
     if (src.hasStatus())
       tgt.setStatusElement(convertCompositionStatus(src.getStatusElement()));
     if (src.hasType())
@@ -55,7 +57,7 @@ public class Composition40_50 {
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getCategory())
       tgt.addCategory(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasSubject())
-      tgt.setSubject(Reference40_50.convertReference(src.getSubject()));
+      tgt.addSubject(Reference40_50.convertReference(src.getSubject()));
     if (src.hasEncounter())
       tgt.setEncounter(Reference40_50.convertReference(src.getEncounter()));
     if (src.hasDate())
@@ -64,7 +66,7 @@ public class Composition40_50 {
     if (src.hasTitle())
       tgt.setTitleElement(String40_50.convertString(src.getTitleElement()));
     if (src.hasConfidentiality())
-      tgt.setConfidentialityElement(convertDocumentConfidentiality(src.getConfidentialityElement()));
+      tgt.getMeta().addSecurity().setCode(src.getConfidentiality().toCode());
     for (org.hl7.fhir.r4.model.Composition.CompositionAttesterComponent t : src.getAttester())
       tgt.addAttester(convertCompositionAttesterComponent(t));
     if (src.hasCustodian())
@@ -84,7 +86,7 @@ public class Composition40_50 {
     org.hl7.fhir.r4.model.Composition tgt = new org.hl7.fhir.r4.model.Composition();
     ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyDomainResource(src, tgt);
     if (src.hasIdentifier())
-      tgt.setIdentifier(Identifier40_50.convertIdentifier(src.getIdentifier()));
+      tgt.setIdentifier(Identifier40_50.convertIdentifier(src.getIdentifierFirstRep()));
     if (src.hasStatus())
       tgt.setStatusElement(convertCompositionStatus(src.getStatusElement()));
     if (src.hasType())
@@ -92,7 +94,7 @@ public class Composition40_50 {
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getCategory())
       tgt.addCategory(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasSubject())
-      tgt.setSubject(Reference40_50.convertReference(src.getSubject()));
+      tgt.setSubject(Reference40_50.convertReference(src.getSubjectFirstRep()));
     if (src.hasEncounter())
       tgt.setEncounter(Reference40_50.convertReference(src.getEncounter()));
     if (src.hasDate())
@@ -100,13 +102,13 @@ public class Composition40_50 {
     for (org.hl7.fhir.r5.model.Reference t : src.getAuthor()) tgt.addAuthor(Reference40_50.convertReference(t));
     if (src.hasTitle())
       tgt.setTitleElement(String40_50.convertString(src.getTitleElement()));
-    if (src.hasConfidentiality())
-      tgt.setConfidentialityElement(convertDocumentConfidentiality(src.getConfidentialityElement()));
+    if (src.getMeta().hasSecurity())
+      tgt.setConfidentialityElement(convertDocumentConfidentiality(src.getMeta().getSecurityFirstRep()));
     for (org.hl7.fhir.r5.model.Composition.CompositionAttesterComponent t : src.getAttester())
       tgt.addAttester(convertCompositionAttesterComponent(t));
     if (src.hasCustodian())
       tgt.setCustodian(Reference40_50.convertReference(src.getCustodian()));
-    for (org.hl7.fhir.r5.model.Composition.CompositionRelatesToComponent t : src.getRelatesTo())
+    for (RelatedArtifact t : src.getRelatesTo())
       tgt.addRelatesTo(convertCompositionRelatesToComponent(t));
     for (org.hl7.fhir.r5.model.Composition.CompositionEventComponent t : src.getEvent())
       tgt.addEvent(convertCompositionEventComponent(t));
@@ -116,70 +118,78 @@ public class Composition40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.CompositionStatus> convertCompositionStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.CompositionStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.CompositionStatus> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Enumerations.CompositionStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case PRELIMINARY:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.CompositionStatus.PRELIMINARY);
-        break;
-      case FINAL:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.CompositionStatus.FINAL);
-        break;
-      case AMENDED:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.CompositionStatus.AMENDED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.CompositionStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.CompositionStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Enumerations.CompositionStatus> tgt = new Enumeration<>(new Enumerations.CompositionStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case PRELIMINARY:
+                  tgt.setValue(Enumerations.CompositionStatus.PRELIMINARY);
+                  break;
+              case FINAL:
+                  tgt.setValue(Enumerations.CompositionStatus.FINAL);
+                  break;
+              case AMENDED:
+                  tgt.setValue(Enumerations.CompositionStatus.AMENDED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(Enumerations.CompositionStatus.ENTEREDINERROR);
+                  break;
+              default:
+                  tgt.setValue(Enumerations.CompositionStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.CompositionStatus> convertCompositionStatus(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.CompositionStatus> src) throws FHIRException {
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<Composition.CompositionStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new Composition.CompositionStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case PRELIMINARY:
+                  tgt.setValue(Composition.CompositionStatus.PRELIMINARY);
+                  break;
+              case FINAL:
+                  tgt.setValue(Composition.CompositionStatus.FINAL);
+                  break;
+              case AMENDED:
+                  tgt.setValue(Composition.CompositionStatus.AMENDED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(Composition.CompositionStatus.ENTEREDINERROR);
+                  break;
+              default:
+                  tgt.setValue(Composition.CompositionStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
+  }
+
+  static public org.hl7.fhir.r5.model.Coding convertDocumentConfidentiality(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.DocumentConfidentiality> src) throws FHIRException {
     if (src == null || src.isEmpty())
       return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.CompositionStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Composition.CompositionStatusEnumFactory());
+    org.hl7.fhir.r5.model.Coding tgt = new org.hl7.fhir.r5.model.Coding();
     ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case PRELIMINARY:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.CompositionStatus.PRELIMINARY);
-        break;
-      case FINAL:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.CompositionStatus.FINAL);
-        break;
-      case AMENDED:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.CompositionStatus.AMENDED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.CompositionStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.CompositionStatus.NULL);
-        break;
-    }
+    tgt.setCode(src.getValue().toCode());
     return tgt;
   }
 
-  static public org.hl7.fhir.r5.model.CodeType convertDocumentConfidentiality(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.DocumentConfidentiality> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.CodeType tgt = new org.hl7.fhir.r5.model.CodeType();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    tgt.setValue(src.getValue().toCode());
-    return tgt;
-  }
-
-  static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.DocumentConfidentiality> convertDocumentConfidentiality(org.hl7.fhir.r5.model.CodeType src) throws FHIRException {
+  static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.DocumentConfidentiality> convertDocumentConfidentiality(org.hl7.fhir.r5.model.Coding src) throws FHIRException {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.DocumentConfidentiality> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Composition.DocumentConfidentialityEnumFactory());
     ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
+    switch (src.getCode()) {
       case "U":
         tgt.setValue(org.hl7.fhir.r4.model.Composition.DocumentConfidentiality.U);
         break;
@@ -209,9 +219,9 @@ public class Composition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Composition.CompositionAttesterComponent tgt = new org.hl7.fhir.r5.model.Composition.CompositionAttesterComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasMode())
-      tgt.setModeElement(convertCompositionAttestationMode(src.getModeElement()));
+      tgt.setMode(convertCompositionAttestationMode(src.getModeElement()));
     if (src.hasTime())
       tgt.setTimeElement(DateTime40_50.convertDateTime(src.getTimeElement()));
     if (src.hasParty())
@@ -223,9 +233,9 @@ public class Composition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Composition.CompositionAttesterComponent tgt = new org.hl7.fhir.r4.model.Composition.CompositionAttesterComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasMode())
-      tgt.setModeElement(convertCompositionAttestationMode(src.getModeElement()));
+      tgt.setModeElement(convertCompositionAttestationMode(src.getMode()));
     if (src.hasTime())
       tgt.setTimeElement(DateTime40_50.convertDateTime(src.getTimeElement()));
     if (src.hasParty())
@@ -233,47 +243,50 @@ public class Composition40_50 {
     return tgt;
   }
 
-  static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Composition.CompositionAttestationMode> convertCompositionAttestationMode(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.CompositionAttestationMode> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Composition.CompositionAttestationMode> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Composition.CompositionAttestationModeEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case PERSONAL:
-        tgt.setValue(org.hl7.fhir.r5.model.Composition.CompositionAttestationMode.PERSONAL);
-        break;
-      case PROFESSIONAL:
-        tgt.setValue(org.hl7.fhir.r5.model.Composition.CompositionAttestationMode.PROFESSIONAL);
-        break;
-      case LEGAL:
-        tgt.setValue(org.hl7.fhir.r5.model.Composition.CompositionAttestationMode.LEGAL);
-        break;
-      case OFFICIAL:
-        tgt.setValue(org.hl7.fhir.r5.model.Composition.CompositionAttestationMode.OFFICIAL);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Composition.CompositionAttestationMode.NULL);
-        break;
-    }
-    return tgt;
+  static public org.hl7.fhir.r5.model.CodeableConcept convertCompositionAttestationMode(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.CompositionAttestationMode> src) throws FHIRException {
+      if (src == null || src.isEmpty())
+          return null;
+      CodeableConcept tgt = new CodeableConcept();
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+        // Add nothing
+      } else {
+          switch (src.getValue()) {
+              case PERSONAL:
+                  tgt.addCoding().setSystem("http://hl7.org/fhir/composition-attestation-mode").setCode("personal");
+                  break;
+              case PROFESSIONAL:
+                  tgt.addCoding().setSystem("http://hl7.org/fhir/composition-attestation-mode").setCode("professional");
+                  break;
+              case LEGAL:
+                  tgt.addCoding().setSystem("http://hl7.org/fhir/composition-attestation-mode").setCode("legal");
+                  break;
+              case OFFICIAL:
+                  tgt.addCoding().setSystem("http://hl7.org/fhir/composition-attestation-mode").setCode("official");
+                  break;
+              default:
+                  break;
+          }
+      }
+      return tgt;
   }
 
-  static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.CompositionAttestationMode> convertCompositionAttestationMode(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Composition.CompositionAttestationMode> src) throws FHIRException {
+  static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.CompositionAttestationMode> convertCompositionAttestationMode(org.hl7.fhir.r5.model.CodeableConcept src) throws FHIRException {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.CompositionAttestationMode> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Composition.CompositionAttestationModeEnumFactory());
     ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case PERSONAL:
+    switch (src.getCode("http://hl7.org/fhir/composition-attestation-mode")) {
+      case "personal":
         tgt.setValue(org.hl7.fhir.r4.model.Composition.CompositionAttestationMode.PERSONAL);
         break;
-      case PROFESSIONAL:
+      case "professional":
         tgt.setValue(org.hl7.fhir.r4.model.Composition.CompositionAttestationMode.PROFESSIONAL);
         break;
-      case LEGAL:
+      case "legal":
         tgt.setValue(org.hl7.fhir.r4.model.Composition.CompositionAttestationMode.LEGAL);
         break;
-      case OFFICIAL:
+      case "official":
         tgt.setValue(org.hl7.fhir.r4.model.Composition.CompositionAttestationMode.OFFICIAL);
         break;
       default:
@@ -283,90 +296,98 @@ public class Composition40_50 {
     return tgt;
   }
 
-  public static org.hl7.fhir.r5.model.Composition.CompositionRelatesToComponent convertCompositionRelatesToComponent(org.hl7.fhir.r4.model.Composition.CompositionRelatesToComponent src) throws FHIRException {
+  public static org.hl7.fhir.r5.model.RelatedArtifact convertCompositionRelatesToComponent(org.hl7.fhir.r4.model.Composition.CompositionRelatesToComponent src) throws FHIRException {
     if (src == null)
       return null;
-    org.hl7.fhir.r5.model.Composition.CompositionRelatesToComponent tgt = new org.hl7.fhir.r5.model.Composition.CompositionRelatesToComponent();
+    org.hl7.fhir.r5.model.RelatedArtifact tgt = new org.hl7.fhir.r5.model.RelatedArtifact();
     ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
     if (src.hasCode())
-      tgt.setCodeElement(convertDocumentRelationshipType(src.getCodeElement()));
-    if (src.hasTarget())
-      tgt.setTarget(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getTarget()));
+      tgt.setTypeElement(convertDocumentRelationshipType(src.getCodeElement()));
+    if (src.hasTargetReference())
+      tgt.setResourceReference(Reference40_50.convertReference(src.getTargetReference()));
     return tgt;
   }
 
-  public static org.hl7.fhir.r4.model.Composition.CompositionRelatesToComponent convertCompositionRelatesToComponent(org.hl7.fhir.r5.model.Composition.CompositionRelatesToComponent src) throws FHIRException {
+  public static org.hl7.fhir.r4.model.Composition.CompositionRelatesToComponent convertCompositionRelatesToComponent(org.hl7.fhir.r5.model.RelatedArtifact src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Composition.CompositionRelatesToComponent tgt = new org.hl7.fhir.r4.model.Composition.CompositionRelatesToComponent();
     ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    if (src.hasCode())
-      tgt.setCodeElement(convertDocumentRelationshipType(src.getCodeElement()));
-    if (src.hasTarget())
-      tgt.setTarget(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getTarget()));
+    if (src.hasType())
+      tgt.setCodeElement(convertDocumentRelationshipType(src.getTypeElement()));
+    if (src.hasResourceReference())
+      tgt.setTarget(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getResourceReference()));
     return tgt;
   }
 
-  static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.DocumentRelationshipType> convertDocumentRelationshipType(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.DocumentRelationshipType> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.DocumentRelationshipType> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Enumerations.DocumentRelationshipTypeEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case REPLACES:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DocumentRelationshipType.REPLACES);
-        break;
-      case TRANSFORMS:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DocumentRelationshipType.TRANSFORMS);
-        break;
-      case SIGNS:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DocumentRelationshipType.SIGNS);
-        break;
-      case APPENDS:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DocumentRelationshipType.APPENDS);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.DocumentRelationshipType.NULL);
-        break;
-    }
-    return tgt;
+  static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.RelatedArtifact.RelatedArtifactType> convertDocumentRelationshipType(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.DocumentRelationshipType> src) throws FHIRException {
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<RelatedArtifact.RelatedArtifactType> tgt = new Enumeration<>(new RelatedArtifact.RelatedArtifactTypeEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case REPLACES:
+                  tgt.setValue(RelatedArtifact.RelatedArtifactType.REPLACES);
+                  break;
+              case TRANSFORMS:
+                  tgt.setValue(RelatedArtifact.RelatedArtifactType.TRANSFORMS);
+                  break;
+              case SIGNS:
+                  tgt.setValue(RelatedArtifact.RelatedArtifactType.SIGNS);
+                  break;
+              case APPENDS:
+                  tgt.setValue(RelatedArtifact.RelatedArtifactType.APPENDS);
+                  break;
+              default:
+                  tgt.setValue(RelatedArtifact.RelatedArtifactType.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
-  static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.DocumentRelationshipType> convertDocumentRelationshipType(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.DocumentRelationshipType> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.DocumentRelationshipType> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Composition.DocumentRelationshipTypeEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case REPLACES:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.DocumentRelationshipType.REPLACES);
-        break;
-      case TRANSFORMS:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.DocumentRelationshipType.TRANSFORMS);
-        break;
-      case SIGNS:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.DocumentRelationshipType.SIGNS);
-        break;
-      case APPENDS:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.DocumentRelationshipType.APPENDS);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.DocumentRelationshipType.NULL);
-        break;
-    }
-    return tgt;
+  static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.DocumentRelationshipType> convertDocumentRelationshipType(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.RelatedArtifact.RelatedArtifactType> src) throws FHIRException {
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<Composition.DocumentRelationshipType> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new Composition.DocumentRelationshipTypeEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case REPLACES:
+                  tgt.setValue(Composition.DocumentRelationshipType.REPLACES);
+                  break;
+              case TRANSFORMS:
+                  tgt.setValue(Composition.DocumentRelationshipType.TRANSFORMS);
+                  break;
+              case SIGNS:
+                  tgt.setValue(Composition.DocumentRelationshipType.SIGNS);
+                  break;
+              case APPENDS:
+                  tgt.setValue(Composition.DocumentRelationshipType.APPENDS);
+                  break;
+              default:
+                  tgt.setValue(Composition.DocumentRelationshipType.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r5.model.Composition.CompositionEventComponent convertCompositionEventComponent(org.hl7.fhir.r4.model.Composition.CompositionEventComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Composition.CompositionEventComponent tgt = new org.hl7.fhir.r5.model.Composition.CompositionEventComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getCode())
-      tgt.addCode(CodeableConcept40_50.convertCodeableConcept(t));
+      tgt.addDetail().setConcept(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasPeriod())
       tgt.setPeriod(Period40_50.convertPeriod(src.getPeriod()));
-    for (org.hl7.fhir.r4.model.Reference t : src.getDetail()) tgt.addDetail(Reference40_50.convertReference(t));
+    for (org.hl7.fhir.r4.model.Reference t : src.getDetail()) tgt.addDetail().setReference(Reference40_50.convertReference(t));
     return tgt;
   }
 
@@ -374,12 +395,17 @@ public class Composition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Composition.CompositionEventComponent tgt = new org.hl7.fhir.r4.model.Composition.CompositionEventComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getCode())
-      tgt.addCode(CodeableConcept40_50.convertCodeableConcept(t));
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasPeriod())
       tgt.setPeriod(Period40_50.convertPeriod(src.getPeriod()));
-    for (org.hl7.fhir.r5.model.Reference t : src.getDetail()) tgt.addDetail(Reference40_50.convertReference(t));
+    for (CodeableReference t : src.getDetail()) {
+      if (t.hasConcept()) {
+        tgt.addCode(CodeableConcept40_50.convertCodeableConcept(t.getConcept()));
+      }
+      if (t.hasReference()) {
+        tgt.addDetail(Reference40_50.convertReference(t.getReference()));
+      }
+    }
     return tgt;
   }
 
@@ -387,7 +413,7 @@ public class Composition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Composition.SectionComponent tgt = new org.hl7.fhir.r5.model.Composition.SectionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasTitle())
       tgt.setTitleElement(String40_50.convertString(src.getTitleElement()));
     if (src.hasCode())
@@ -397,8 +423,8 @@ public class Composition40_50 {
       tgt.setFocus(Reference40_50.convertReference(src.getFocus()));
     if (src.hasText())
       tgt.setText(Narrative40_50.convertNarrative(src.getText()));
-    if (src.hasMode())
-      tgt.setModeElement(convertSectionMode(src.getModeElement()));
+//    if (src.hasMode())
+//      tgt.setModeElement(convertSectionMode(src.getModeElement()));
     if (src.hasOrderedBy())
       tgt.setOrderedBy(CodeableConcept40_50.convertCodeableConcept(src.getOrderedBy()));
     for (org.hl7.fhir.r4.model.Reference t : src.getEntry()) tgt.addEntry(Reference40_50.convertReference(t));
@@ -413,7 +439,7 @@ public class Composition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Composition.SectionComponent tgt = new org.hl7.fhir.r4.model.Composition.SectionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasTitle())
       tgt.setTitleElement(String40_50.convertString(src.getTitleElement()));
     if (src.hasCode())
@@ -423,8 +449,8 @@ public class Composition40_50 {
       tgt.setFocus(Reference40_50.convertReference(src.getFocus()));
     if (src.hasText())
       tgt.setText(Narrative40_50.convertNarrative(src.getText()));
-    if (src.hasMode())
-      tgt.setModeElement(convertSectionMode(src.getModeElement()));
+//    if (src.hasMode())
+//      tgt.setModeElement(convertSectionMode(src.getModeElement()));
     if (src.hasOrderedBy())
       tgt.setOrderedBy(CodeableConcept40_50.convertCodeableConcept(src.getOrderedBy()));
     for (org.hl7.fhir.r5.model.Reference t : src.getEntry()) tgt.addEntry(Reference40_50.convertReference(t));
@@ -436,46 +462,54 @@ public class Composition40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.ListMode> convertSectionMode(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.SectionMode> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.ListMode> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Enumerations.ListModeEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case WORKING:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ListMode.WORKING);
-        break;
-      case SNAPSHOT:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ListMode.SNAPSHOT);
-        break;
-      case CHANGES:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ListMode.CHANGES);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Enumerations.ListMode.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Enumerations.ListMode> tgt = new Enumeration<>(new Enumerations.ListModeEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case WORKING:
+                  tgt.setValue(Enumerations.ListMode.WORKING);
+                  break;
+              case SNAPSHOT:
+                  tgt.setValue(Enumerations.ListMode.SNAPSHOT);
+                  break;
+              case CHANGES:
+                  tgt.setValue(Enumerations.ListMode.CHANGES);
+                  break;
+              default:
+                  tgt.setValue(Enumerations.ListMode.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.SectionMode> convertSectionMode(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Enumerations.ListMode> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Composition.SectionMode> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Composition.SectionModeEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case WORKING:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.SectionMode.WORKING);
-        break;
-      case SNAPSHOT:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.SectionMode.SNAPSHOT);
-        break;
-      case CHANGES:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.SectionMode.CHANGES);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.Composition.SectionMode.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<Composition.SectionMode> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new Composition.SectionModeEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case WORKING:
+                  tgt.setValue(Composition.SectionMode.WORKING);
+                  break;
+              case SNAPSHOT:
+                  tgt.setValue(Composition.SectionMode.SNAPSHOT);
+                  break;
+              case CHANGES:
+                  tgt.setValue(Composition.SectionMode.CHANGES);
+                  break;
+              default:
+                  tgt.setValue(Composition.SectionMode.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 }

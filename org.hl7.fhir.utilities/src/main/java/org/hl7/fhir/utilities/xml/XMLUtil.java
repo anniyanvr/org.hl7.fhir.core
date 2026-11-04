@@ -32,19 +32,19 @@ package org.hl7.fhir.utilities.xml;
 
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.*;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -55,17 +55,28 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
 
 public class XMLUtil {
 
 	public static final String SPACE_CHAR = "\u00A0";
+  public static final String SAX_FEATURES_EXTERNAL_GENERAL_ENTITIES = "http://xml.org/sax/features/external-general-entities";
+  public static final String APACHE_XML_FEATURES_DISALLOW_DOCTYPE_DECL = "http://apache.org/xml/features/disallow-doctype-decl";
+  // JAXP limit (JDK 8+) that bounds element nesting depth so a deeply nested document fails with a
+  // SAXParseException during parsing rather than a StackOverflowError inside the parser itself.
+  public static final String JDK_XML_MAX_ELEMENT_DEPTH = "jdk.xml.maxElementDepth";
+  public static final int MAX_ELEMENT_DEPTH = 1000;
 
   public static boolean isNMToken(String name) {
 		if (name == null)
@@ -273,9 +284,9 @@ public class XMLUtil {
 
 			for (int i = 0; i < rawContent.length(); i++) {
 				char ch = rawContent.charAt(i);
-				if (ch == '\'')
-					sb.append("&#39;");
-				else if (ch == '&')
+				// We don't escape ' because our code always spits out attributes surrounded by "", which means
+				// it's not necessary to escape ' - and it's *much* less ugly and more bandwidth-efficient when we don't.
+				if (ch == '&')
 					sb.append("&amp;");
 				else if (ch == '"')
 					sb.append("&quot;");
@@ -311,9 +322,13 @@ public class XMLUtil {
 
   public static Element getNamedChild(Element e, String name) {
     Element c = getFirstChild(e);
-    while (c != null && !name.equals(c.getLocalName()) && !name.equals(c.getNodeName()))
+    while (c != null && !name.equals(c.getLocalName()) && !name.equals(getLocalName(c.getNodeName())) && !name.equals(c.getNodeName()))
       c = getNextSibling(c);
     return c;
+  }
+
+  private static String getLocalName(String name) {
+    return name.contains(":") ? name.substring(name.indexOf(":")+1) : name;
   }
 
   public static Element getNamedChildByAttribute(Element e, String name, String nname, String nvalue) {
@@ -434,31 +449,49 @@ public class XMLUtil {
   }
 
   public static Document parseToDom(String content) throws ParserConfigurationException, SAXException, IOException  {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    factory.setNamespaceAware(false);
-    DocumentBuilder builder = factory.newDocumentBuilder();
-    return builder.parse(new ByteArrayInputStream(content.getBytes()));
+    return parseToDom(content.getBytes(StandardCharsets.UTF_8));
   }
 
   public static Document parseToDom(byte[] content) throws ParserConfigurationException, SAXException, IOException  {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory factory = XMLUtil.newXXEProtectedDocumentBuilderFactory();
     factory.setNamespaceAware(false);
     DocumentBuilder builder = factory.newDocumentBuilder();
     return builder.parse(new ByteArrayInputStream(content));
   }
 
+  public static Document parseToDom(String content, boolean ns) throws ParserConfigurationException, SAXException, IOException  {
+    return parseToDom(content.getBytes(), ns);
+  }
+
   public static Document parseToDom(byte[] content, boolean ns) throws ParserConfigurationException, SAXException, IOException  {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory factory = XMLUtil.newXXEProtectedDocumentBuilderFactory();
     factory.setNamespaceAware(ns);
     DocumentBuilder builder = factory.newDocumentBuilder();
     return builder.parse(new ByteArrayInputStream(content));
   }
 
   public static Document parseFileToDom(String filename) throws ParserConfigurationException, SAXException, IOException  {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory factory = XMLUtil.newXXEProtectedDocumentBuilderFactory();
     factory.setNamespaceAware(false);
     DocumentBuilder builder = factory.newDocumentBuilder();
-    return builder.parse(new FileInputStream(filename));
+    FileInputStream fs = ManagedFileAccess.inStream(filename);
+    try {
+      return builder.parse(fs);
+    } finally {
+      fs.close();
+    }  
+  }
+
+  public static Document parseFileToDom(String filename, boolean ns) throws ParserConfigurationException, SAXException, IOException  {
+    DocumentBuilderFactory factory = XMLUtil.newXXEProtectedDocumentBuilderFactory();
+    factory.setNamespaceAware(ns);
+    DocumentBuilder builder = factory.newDocumentBuilder();
+    FileInputStream fs = ManagedFileAccess.inStream(filename);
+    try {
+      return builder.parse(fs);
+    } finally {
+      fs.close();
+    }
   }
 
   public static Element getLastChild(Element e) {
@@ -482,16 +515,106 @@ public class XMLUtil {
     return e == null ? null : e.getAttribute(aname);
   }
 
-  public static void writeDomToFile(Document doc, String filename) throws TransformerException {
-    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+  /**
+   * This method is used to create a new TransformerFactory instance with external processing features configured
+   * securely.
+   * <p/>
+   * <b>IMPORTANT</b> This method should be the only place where TransformerFactory is instantiated in this project.
+   *
+   * @return A TransformerFactory instance external processing features configured securely.
+   */
+  @SuppressWarnings("checkstyle:transformerFactoryNewInstance")
+  public static TransformerFactory newXXEProtectedTransformerFactory() {
+    final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+    transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+    return transformerFactory;
+  }
+
+  /**
+   * This method is used to create a new DocumentBuilderFactory instance with external processing features configured
+   * securely.
+   * <p/>
+   * <b>IMPORTANT</b> This method should be the only place where DocumentBuilderFactory is instantiated in this project.
+   *
+   * @return A DocumentBuilderFactory instance external processing features configured securely.
+   * @throws ParserConfigurationException If a DocumentBuilder cannot be configured with the requested features.
+   */
+  @SuppressWarnings("checkstyle:documentBuilderFactoryNewInstance")
+  public static DocumentBuilderFactory newXXEProtectedDocumentBuilderFactory() throws ParserConfigurationException {
+    final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    documentBuilderFactory.setFeature(APACHE_XML_FEATURES_DISALLOW_DOCTYPE_DECL, true);
+    documentBuilderFactory.setXIncludeAware(false);
+    // Bound element nesting depth. Secure processing enables entity-expansion limits but leaves
+    // maxElementDepth unlimited (0) by default, so set it explicitly. Guarded because not every
+    // parser implementation recognises the attribute; XXE protection above still applies regardless.
+    try {
+      documentBuilderFactory.setAttribute(JDK_XML_MAX_ELEMENT_DEPTH, Integer.toString(MAX_ELEMENT_DEPTH));
+    } catch (IllegalArgumentException e) {
+      // attribute not supported by this parser implementation; ignore
+    }
+    return documentBuilderFactory;
+  }
+
+  /**
+   * This method is used to create a new SAXParserFactory instance with external processing features configured
+   * securely.
+   * <p/>
+   * <b>IMPORTANT</b> This method should be the only place where SAXParserFactory is instantiated in this project.
+   *
+   * @return A SAXParserFactory instance external processing features configured securely.
+   * @throws SAXNotSupportedException When the underlying XMLReader recognizes the property name but doesn't support
+   * the property.
+   * @throws SAXNotRecognizedException When the underlying XMLReader does not recognize the property name.
+   * @throws ParserConfigurationException If a SAXParser cannot be configured with the requested features.
+   */
+  @SuppressWarnings("checkstyle:saxParserFactoryNewInstance")
+  public static SAXParserFactory newXXEProtectedSaxParserFactory() throws SAXNotSupportedException, SAXNotRecognizedException, ParserConfigurationException {
+    final SAXParserFactory spf = SAXParserFactory.newInstance();
+    spf.setFeature(SAX_FEATURES_EXTERNAL_GENERAL_ENTITIES, false);
+    spf.setFeature(APACHE_XML_FEATURES_DISALLOW_DOCTYPE_DECL, true);
+    return spf;
+  }
+
+  /**
+   * This method is used to create a new XMLReader instance from a passed SAXParserFactory with external processing
+   * features configured securely.
+   * <p/>
+   * <b>IMPORTANT</b> This method should be the only place where getXMLReader() is called in this project.
+   *
+   * @param spf The SAXParserFactory to create the XMLReader from.
+   * @return A XMLReader instance external processing features configured securely.
+   * @throws ParserConfigurationException If a SAXParser cannot be configured with the requested features.
+   * @throws SAXException If any SAX exceptions occur during the creation of the XMLReader.
+   */
+  @SuppressWarnings("checkstyle:getXMLReader")
+  public static XMLReader getXXEProtectedXMLReader(SAXParserFactory spf) throws ParserConfigurationException, SAXException {
+    final SAXParser saxParser = spf.newSAXParser();
+    final XMLReader xmlReader = saxParser.getXMLReader();
+
+    final boolean externalGeneralEntitiesFeatureValue = spf.getFeature(SAX_FEATURES_EXTERNAL_GENERAL_ENTITIES);
+    if (externalGeneralEntitiesFeatureValue) {
+      throw new IllegalArgumentException("SAXParserFactory has insecure feature setting:" + SAX_FEATURES_EXTERNAL_GENERAL_ENTITIES+ "=" + externalGeneralEntitiesFeatureValue);
+    }
+    final boolean disallowDocTypeDeclFeatureValue = spf.getFeature(APACHE_XML_FEATURES_DISALLOW_DOCTYPE_DECL);
+    if (!disallowDocTypeDeclFeatureValue) {
+      throw new IllegalArgumentException("SAXParserFactory has insecure feature setting:" + APACHE_XML_FEATURES_DISALLOW_DOCTYPE_DECL + "=" + disallowDocTypeDeclFeatureValue);
+    }
+    xmlReader.setFeature(SAX_FEATURES_EXTERNAL_GENERAL_ENTITIES, false);
+    xmlReader.setFeature(APACHE_XML_FEATURES_DISALLOW_DOCTYPE_DECL, true);
+    return xmlReader;
+  }
+  public static void writeDomToFile(Document doc, String filename) throws TransformerException, IOException {
+    TransformerFactory transformerFactory = XMLUtil.newXXEProtectedTransformerFactory();
     Transformer transformer = transformerFactory.newTransformer();
     DOMSource source = new DOMSource(doc);
-    StreamResult streamResult =  new StreamResult(new File(filename));
+    StreamResult streamResult =  new StreamResult(ManagedFileAccess.file(filename));
     transformer.transform(source, streamResult);    
   }
 
   public static String getXsiType(org.w3c.dom.Element element) {
-    Attr a = element.getAttributeNodeNS("http://www.w3.org/2001/XMLSchema-instance", "type");
+    Attr a = element.getAttributeNodeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
     return (a == null ? null : a.getTextContent());
     
   }
@@ -526,6 +649,14 @@ public class XMLUtil {
     return res;
   }
 
+  public static Element addChild(Document doc, Element element, String name, String namespace, int indent) {
+    Node node = doc.createTextNode("\n"+Utilities.padLeft("", ' ', indent));
+    Element child = doc.createElementNS(namespace, name);
+    element.appendChild(child);
+    element.appendChild(node);
+    return child;
+  }
+
   public static Element insertChild(Document doc, Element element, String name, String namespace, int indent) {
     Node node = doc.createTextNode("\n"+Utilities.padLeft("", ' ', indent));
     Element child = doc.createElementNS(namespace, name);
@@ -556,18 +687,25 @@ public class XMLUtil {
     child.setAttribute("value", text);    
   }
 
+  public static Element addTextTag(Document doc, Element element, String name, String text, int indent) {
+    Node node = doc.createTextNode("\n"+Utilities.padLeft("", ' ', indent));
+    element.appendChild(node);
+    Element child = doc.createElement(name);
+    element.appendChild(child);
+    child.appendChild(doc.createTextNode(text));
+    return child;
+  }
+
   public static void saveToFile(Element root, OutputStream stream) throws TransformerException {
-    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+    Transformer transformer = XMLUtil.newXXEProtectedTransformerFactory().newTransformer();
     Result output = new StreamResult(stream);
     Source input = new DOMSource(root);
-
     transformer.transform(input, output);
   }
 
   public static void spacer(Document doc, Element element, int indent) {
     Node node = doc.createTextNode("\n"+Utilities.padLeft("", ' ', indent));
     element.appendChild(node);
-   
   }
 
   public static String getNamedChildText(Element element, String name) {
@@ -575,5 +713,35 @@ public class XMLUtil {
     return e == null ? null : e.getTextContent();
   }
 
- 	
+  public static Element getFirstChild(Element res, String... names) {
+    Element node = getFirstChild(res);
+    while (node != null && !Utilities.existsInList(node.getLocalName(), names)) {
+      node = getNextSibling(node);
+    }
+    return node;
+  }
+
+  public static Element getLastChild(Element res, String... names) {
+    Element result = null;
+    Element node = getFirstChild(res);
+    while (node != null) {
+      if (Utilities.existsInList(node.getLocalName(), names)) {
+        result = node;
+      }
+      node = getNextSibling(node);
+    }
+    return result;
+  }
+
+  public static void clearChildren(Node node) {
+    NodeList nodeList = node.getChildNodes();
+    for (int i = nodeList.getLength() - 1; i >= 0; i--) {
+      Node item = nodeList.item(i);
+      if (item.hasChildNodes()) {
+        clearChildren(item);
+      }
+      node.removeChild(item);
+    };
+  }
+
 }

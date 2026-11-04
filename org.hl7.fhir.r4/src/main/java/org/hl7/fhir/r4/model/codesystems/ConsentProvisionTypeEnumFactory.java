@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ConsentProvisionTypeEnumFactory implements EnumFactory<ConsentProvisionType> {
@@ -46,19 +42,21 @@ public class ConsentProvisionTypeEnumFactory implements EnumFactory<ConsentProvi
       return ConsentProvisionType.DENY;
     if ("permit".equals(codeString))
       return ConsentProvisionType.PERMIT;
-    throw new IllegalArgumentException("Unknown ConsentProvisionType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ConsentProvisionType code '" + codeString + "'");
   }
 
   public String toCode(ConsentProvisionType code) {
-    if (code == ConsentProvisionType.DENY)
+       if (code == ConsentProvisionType.NULL)
+           return null;
+       if (code == ConsentProvisionType.DENY)
       return "deny";
     if (code == ConsentProvisionType.PERMIT)
       return "permit";
     return "?";
-  }
+   }
 
-    public String toSystem(ConsentProvisionType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ConsentProvisionType code) {
+    return code.getSystem();
+  }
 
 }

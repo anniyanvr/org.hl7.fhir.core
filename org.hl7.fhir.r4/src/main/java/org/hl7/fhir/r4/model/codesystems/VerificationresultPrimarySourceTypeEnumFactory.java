@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,10 +31,10 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
-public class VerificationresultPrimarySourceTypeEnumFactory implements EnumFactory<VerificationresultPrimarySourceType> {
+public class VerificationresultPrimarySourceTypeEnumFactory
+    implements EnumFactory<VerificationresultPrimarySourceType> {
 
   public VerificationresultPrimarySourceType fromCode(String codeString) throws IllegalArgumentException {
     if (codeString == null || "".equals(codeString))
@@ -60,11 +57,13 @@ public class VerificationresultPrimarySourceTypeEnumFactory implements EnumFacto
       return VerificationresultPrimarySourceType.ISSUER;
     if ("auth-source".equals(codeString))
       return VerificationresultPrimarySourceType.AUTHSOURCE;
-    throw new IllegalArgumentException("Unknown VerificationresultPrimarySourceType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown VerificationresultPrimarySourceType code '" + codeString + "'");
   }
 
   public String toCode(VerificationresultPrimarySourceType code) {
-    if (code == VerificationresultPrimarySourceType.LICBOARD)
+       if (code == VerificationresultPrimarySourceType.NULL)
+           return null;
+       if (code == VerificationresultPrimarySourceType.LICBOARD)
       return "lic-board";
     if (code == VerificationresultPrimarySourceType.PRIM)
       return "prim";
@@ -83,10 +82,10 @@ public class VerificationresultPrimarySourceTypeEnumFactory implements EnumFacto
     if (code == VerificationresultPrimarySourceType.AUTHSOURCE)
       return "auth-source";
     return "?";
-  }
+   }
 
-    public String toSystem(VerificationresultPrimarySourceType code) {
-      return code.getSystem();
-      }
+  public String toSystem(VerificationresultPrimarySourceType code) {
+    return code.getSystem();
+  }
 
 }

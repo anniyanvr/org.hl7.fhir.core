@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ExplanationofbenefitStatusEnumFactory implements EnumFactory<ExplanationofbenefitStatus> {
@@ -50,11 +46,13 @@ public class ExplanationofbenefitStatusEnumFactory implements EnumFactory<Explan
       return ExplanationofbenefitStatus.DRAFT;
     if ("entered-in-error".equals(codeString))
       return ExplanationofbenefitStatus.ENTEREDINERROR;
-    throw new IllegalArgumentException("Unknown ExplanationofbenefitStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ExplanationofbenefitStatus code '" + codeString + "'");
   }
 
   public String toCode(ExplanationofbenefitStatus code) {
-    if (code == ExplanationofbenefitStatus.ACTIVE)
+       if (code == ExplanationofbenefitStatus.NULL)
+           return null;
+       if (code == ExplanationofbenefitStatus.ACTIVE)
       return "active";
     if (code == ExplanationofbenefitStatus.CANCELLED)
       return "cancelled";
@@ -63,10 +61,10 @@ public class ExplanationofbenefitStatusEnumFactory implements EnumFactory<Explan
     if (code == ExplanationofbenefitStatus.ENTEREDINERROR)
       return "entered-in-error";
     return "?";
-  }
+   }
 
-    public String toSystem(ExplanationofbenefitStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(ExplanationofbenefitStatus code) {
+    return code.getSystem();
+  }
 
 }

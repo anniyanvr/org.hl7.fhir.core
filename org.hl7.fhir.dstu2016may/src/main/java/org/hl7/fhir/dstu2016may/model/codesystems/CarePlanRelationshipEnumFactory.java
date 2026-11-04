@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class CarePlanRelationshipEnumFactory implements EnumFactory<CarePlanRelationship> {
@@ -48,21 +44,23 @@ public class CarePlanRelationshipEnumFactory implements EnumFactory<CarePlanRela
       return CarePlanRelationship.REPLACES;
     if ("fulfills".equals(codeString))
       return CarePlanRelationship.FULFILLS;
-    throw new IllegalArgumentException("Unknown CarePlanRelationship code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CarePlanRelationship code '" + codeString + "'");
   }
 
   public String toCode(CarePlanRelationship code) {
-    if (code == CarePlanRelationship.INCLUDES)
+       if (code == CarePlanRelationship.NULL)
+           return null;
+       if (code == CarePlanRelationship.INCLUDES)
       return "includes";
     if (code == CarePlanRelationship.REPLACES)
       return "replaces";
     if (code == CarePlanRelationship.FULFILLS)
       return "fulfills";
     return "?";
-  }
+   }
 
-    public String toSystem(CarePlanRelationship code) {
-      return code.getSystem();
-      }
+  public String toSystem(CarePlanRelationship code) {
+    return code.getSystem();
+  }
 
 }

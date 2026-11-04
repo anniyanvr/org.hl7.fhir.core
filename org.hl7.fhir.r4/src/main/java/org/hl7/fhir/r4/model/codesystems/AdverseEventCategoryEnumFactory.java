@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -70,11 +66,13 @@ public class AdverseEventCategoryEnumFactory implements EnumFactory<AdverseEvent
       return AdverseEventCategory.PROBLEMDIFFERENTMANUFACTURER;
     if ("unsafe-physical-environment".equals(codeString))
       return AdverseEventCategory.UNSAFEPHYSICALENVIRONMENT;
-    throw new IllegalArgumentException("Unknown AdverseEventCategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown AdverseEventCategory code '" + codeString + "'");
   }
 
   public String toCode(AdverseEventCategory code) {
-    if (code == AdverseEventCategory.PRODUCTPROBLEM)
+       if (code == AdverseEventCategory.NULL)
+           return null;
+       if (code == AdverseEventCategory.PRODUCTPROBLEM)
       return "product-problem";
     if (code == AdverseEventCategory.PRODUCTQUALITY)
       return "product-quality";
@@ -103,10 +101,10 @@ public class AdverseEventCategoryEnumFactory implements EnumFactory<AdverseEvent
     if (code == AdverseEventCategory.UNSAFEPHYSICALENVIRONMENT)
       return "unsafe-physical-environment";
     return "?";
-  }
+   }
 
-    public String toSystem(AdverseEventCategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(AdverseEventCategory code) {
+    return code.getSystem();
+  }
 
 }

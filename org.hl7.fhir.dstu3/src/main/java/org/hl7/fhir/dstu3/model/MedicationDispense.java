@@ -170,12 +170,12 @@ public class MedicationDispense extends DomainResource {
           return MedicationDispenseStatus.STOPPED;
         throw new IllegalArgumentException("Unknown MedicationDispenseStatus code '"+codeString+"'");
         }
-        public Enumeration<MedicationDispenseStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<MedicationDispenseStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<MedicationDispenseStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("preparation".equals(codeString))
@@ -193,7 +193,9 @@ public class MedicationDispense extends DomainResource {
         throw new FHIRException("Unknown MedicationDispenseStatus code '"+codeString+"'");
         }
     public String toCode(MedicationDispenseStatus code) {
-      if (code == MedicationDispenseStatus.PREPARATION)
+       if (code == MedicationDispenseStatus.NULL)
+           return null;
+       if (code == MedicationDispenseStatus.PREPARATION)
         return "preparation";
       if (code == MedicationDispenseStatus.INPROGRESS)
         return "in-progress";
@@ -206,7 +208,7 @@ public class MedicationDispense extends DomainResource {
       if (code == MedicationDispenseStatus.STOPPED)
         return "stopped";
       return "?";
-      }
+   }
     public String toSystem(MedicationDispenseStatus code) {
       return code.getSystem();
       }
@@ -691,28 +693,6 @@ public class MedicationDispense extends DomainResource {
           return getResponsibleParty().get(0);
         }
 
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Practitioner> getResponsiblePartyTarget() { 
-          if (this.responsiblePartyTarget == null)
-            this.responsiblePartyTarget = new ArrayList<Practitioner>();
-          return this.responsiblePartyTarget;
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public Practitioner addResponsiblePartyTarget() { 
-          Practitioner r = new Practitioner();
-          if (this.responsiblePartyTarget == null)
-            this.responsiblePartyTarget = new ArrayList<Practitioner>();
-          this.responsiblePartyTarget.add(r);
-          return r;
-        }
-
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
           children.add(new Property("wasSubstituted", "boolean", "True if the dispenser dispensed a different drug or product from what was prescribed.", 0, 1, wasSubstituted));
@@ -807,7 +787,7 @@ public class MedicationDispense extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("wasSubstituted")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationDispense.wasSubstituted");
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationDispense.wasSubstituted");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
@@ -1215,28 +1195,6 @@ public class MedicationDispense extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Procedure> getPartOfTarget() { 
-      if (this.partOfTarget == null)
-        this.partOfTarget = new ArrayList<Procedure>();
-      return this.partOfTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Procedure addPartOfTarget() { 
-      Procedure r = new Procedure();
-      if (this.partOfTarget == null)
-        this.partOfTarget = new ArrayList<Procedure>();
-      this.partOfTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #status} (A code specifying the state of the set of dispense events.). This is the underlying object with id, value and extensions. The accessor "getStatus" gives direct access to the value
      */
     public Enumeration<MedicationDispenseStatus> getStatusElement() { 
@@ -1327,8 +1285,8 @@ public class MedicationDispense extends DomainResource {
       return (CodeableConcept) this.medication;
     }
 
-    public boolean hasMedicationCodeableConcept() { 
-      return this != null && this.medication instanceof CodeableConcept;
+    public boolean hasMedicationCodeableConcept() {
+        return this.medication instanceof CodeableConcept;
     }
 
     /**
@@ -1342,8 +1300,8 @@ public class MedicationDispense extends DomainResource {
       return (Reference) this.medication;
     }
 
-    public boolean hasMedicationReference() { 
-      return this != null && this.medication instanceof Reference;
+    public boolean hasMedicationReference() {
+        return this.medication instanceof Reference;
     }
 
     public boolean hasMedication() { 
@@ -1492,16 +1450,6 @@ public class MedicationDispense extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getSupportingInformationTarget() { 
-      if (this.supportingInformationTarget == null)
-        this.supportingInformationTarget = new ArrayList<Resource>();
-      return this.supportingInformationTarget;
-    }
-
-    /**
      * @return {@link #performer} (Indicates who or what performed the event.  It should be assumed that the performer is the dispenser of the medication.)
      */
     public List<MedicationDispensePerformerComponent> getPerformer() { 
@@ -1605,28 +1553,6 @@ public class MedicationDispense extends DomainResource {
         addAuthorizingPrescription();
       }
       return getAuthorizingPrescription().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<MedicationRequest> getAuthorizingPrescriptionTarget() { 
-      if (this.authorizingPrescriptionTarget == null)
-        this.authorizingPrescriptionTarget = new ArrayList<MedicationRequest>();
-      return this.authorizingPrescriptionTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public MedicationRequest addAuthorizingPrescriptionTarget() { 
-      MedicationRequest r = new MedicationRequest();
-      if (this.authorizingPrescriptionTarget == null)
-        this.authorizingPrescriptionTarget = new ArrayList<MedicationRequest>();
-      this.authorizingPrescriptionTarget.add(r);
-      return r;
     }
 
     /**
@@ -1897,16 +1823,6 @@ public class MedicationDispense extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getReceiverTarget() { 
-      if (this.receiverTarget == null)
-        this.receiverTarget = new ArrayList<Resource>();
-      return this.receiverTarget;
-    }
-
-    /**
      * @return {@link #note} (Extra information about the dispense that could not be conveyed in the other attributes.)
      */
     public List<Annotation> getNote() { 
@@ -2090,28 +2006,6 @@ public class MedicationDispense extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<DetectedIssue> getDetectedIssueTarget() { 
-      if (this.detectedIssueTarget == null)
-        this.detectedIssueTarget = new ArrayList<DetectedIssue>();
-      return this.detectedIssueTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public DetectedIssue addDetectedIssueTarget() { 
-      DetectedIssue r = new DetectedIssue();
-      if (this.detectedIssueTarget == null)
-        this.detectedIssueTarget = new ArrayList<DetectedIssue>();
-      this.detectedIssueTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #notDone} (True if the dispense was not performed for some reason.). This is the underlying object with id, value and extensions. The accessor "getNotDone" gives direct access to the value
      */
     public BooleanType getNotDoneElement() { 
@@ -2174,8 +2068,8 @@ public class MedicationDispense extends DomainResource {
       return (CodeableConcept) this.notDoneReason;
     }
 
-    public boolean hasNotDoneReasonCodeableConcept() { 
-      return this != null && this.notDoneReason instanceof CodeableConcept;
+    public boolean hasNotDoneReasonCodeableConcept() {
+        return this.notDoneReason instanceof CodeableConcept;
     }
 
     /**
@@ -2189,8 +2083,8 @@ public class MedicationDispense extends DomainResource {
       return (Reference) this.notDoneReason;
     }
 
-    public boolean hasNotDoneReasonReference() { 
-      return this != null && this.notDoneReason instanceof Reference;
+    public boolean hasNotDoneReasonReference() {
+        return this.notDoneReason instanceof Reference;
     }
 
     public boolean hasNotDoneReason() { 
@@ -2258,28 +2152,6 @@ public class MedicationDispense extends DomainResource {
         addEventHistory();
       }
       return getEventHistory().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Provenance> getEventHistoryTarget() { 
-      if (this.eventHistoryTarget == null)
-        this.eventHistoryTarget = new ArrayList<Provenance>();
-      return this.eventHistoryTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Provenance addEventHistoryTarget() { 
-      Provenance r = new Provenance();
-      if (this.eventHistoryTarget == null)
-        this.eventHistoryTarget = new ArrayList<Provenance>();
-      this.eventHistoryTarget.add(r);
-      return r;
     }
 
       protected void listChildren(List<Property> children) {
@@ -2592,7 +2464,7 @@ public class MedicationDispense extends DomainResource {
           return addPartOf();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationDispense.status");
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationDispense.status");
         }
         else if (name.equals("category")) {
           this.category = new CodeableConcept();
@@ -2636,10 +2508,10 @@ public class MedicationDispense extends DomainResource {
           return this.daysSupply;
         }
         else if (name.equals("whenPrepared")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationDispense.whenPrepared");
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationDispense.whenPrepared");
         }
         else if (name.equals("whenHandedOver")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationDispense.whenHandedOver");
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationDispense.whenHandedOver");
         }
         else if (name.equals("destination")) {
           this.destination = new Reference();
@@ -2662,7 +2534,7 @@ public class MedicationDispense extends DomainResource {
           return addDetectedIssue();
         }
         else if (name.equals("notDone")) {
-          throw new FHIRException("Cannot call addChild on a primitive type MedicationDispense.notDone");
+          throw new FHIRException("Cannot call addChild on a singleton property MedicationDispense.notDone");
         }
         else if (name.equals("notDoneReasonCodeableConcept")) {
           this.notDoneReason = new CodeableConcept();

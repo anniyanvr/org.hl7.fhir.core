@@ -2,10 +2,17 @@ package org.hl7.fhir.convertors.conv30_50.resources30_50;
 
 import org.hl7.fhir.convertors.context.ConversionContext30_50;
 import org.hl7.fhir.convertors.conv30_50.datatypes30_50.Reference30_50;
-import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.*;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.Address30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.Attachment30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.CodeableConcept30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.ContactPoint30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.HumanName30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.Identifier30_50;
+import org.hl7.fhir.convertors.conv30_50.datatypes30_50.complextypes30_50.Period30_50;
 import org.hl7.fhir.convertors.conv30_50.datatypes30_50.primitivetypes30_50.Boolean30_50;
 import org.hl7.fhir.convertors.conv30_50.datatypes30_50.primitivetypes30_50.Date30_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.model.Practitioner.PractitionerCommunicationComponent;
 
 public class Practitioner30_50 {
 
@@ -30,7 +37,7 @@ public class Practitioner30_50 {
     for (org.hl7.fhir.dstu3.model.Practitioner.PractitionerQualificationComponent t : src.getQualification())
       tgt.addQualification(convertPractitionerQualificationComponent(t));
     for (org.hl7.fhir.dstu3.model.CodeableConcept t : src.getCommunication())
-      tgt.addCommunication(CodeableConcept30_50.convertCodeableConcept(t));
+      tgt.addCommunication().setLanguage(CodeableConcept30_50.convertCodeableConcept(t));
     return tgt;
   }
 
@@ -54,8 +61,8 @@ public class Practitioner30_50 {
     for (org.hl7.fhir.r5.model.Attachment t : src.getPhoto()) tgt.addPhoto(Attachment30_50.convertAttachment(t));
     for (org.hl7.fhir.r5.model.Practitioner.PractitionerQualificationComponent t : src.getQualification())
       tgt.addQualification(convertPractitionerQualificationComponent(t));
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getCommunication())
-      tgt.addCommunication(CodeableConcept30_50.convertCodeableConcept(t));
+    for (PractitionerCommunicationComponent t : src.getCommunication())
+      tgt.addCommunication(CodeableConcept30_50.convertCodeableConcept(t.getLanguage()));
     return tgt;
   }
 
@@ -63,7 +70,7 @@ public class Practitioner30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Practitioner.PractitionerQualificationComponent tgt = new org.hl7.fhir.r5.model.Practitioner.PractitionerQualificationComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src,tgt);
     for (org.hl7.fhir.dstu3.model.Identifier t : src.getIdentifier())
       tgt.addIdentifier(Identifier30_50.convertIdentifier(t));
     if (src.hasCode())
@@ -79,7 +86,7 @@ public class Practitioner30_50 {
     if (src == null)
       return null;
     org.hl7.fhir.dstu3.model.Practitioner.PractitionerQualificationComponent tgt = new org.hl7.fhir.dstu3.model.Practitioner.PractitionerQualificationComponent();
-    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyElement(src, tgt);
+    ConversionContext30_50.INSTANCE.getVersionConvertor_30_50().copyBackboneElement(src,tgt);
     for (org.hl7.fhir.r5.model.Identifier t : src.getIdentifier())
       tgt.addIdentifier(Identifier30_50.convertIdentifier(t));
     if (src.hasCode())

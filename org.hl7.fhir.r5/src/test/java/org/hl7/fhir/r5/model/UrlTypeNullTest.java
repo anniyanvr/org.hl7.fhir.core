@@ -1,17 +1,20 @@
 package org.hl7.fhir.r5.model;
 
-import org.hl7.fhir.r5.model.UrlType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class UrlTypeNullTest {
 
   @Test
   @DisplayName("Test null value toString()")
   void testToString() {
-    UrlType nullUrl = new UrlType();
-    System.out.println("Value -> " + nullUrl);
+    assertDoesNotThrow(() -> {
+      UrlType nullUrl = new UrlType();
+      System.out.println("Value -> " + nullUrl);
+    });
   }
 
   @Test

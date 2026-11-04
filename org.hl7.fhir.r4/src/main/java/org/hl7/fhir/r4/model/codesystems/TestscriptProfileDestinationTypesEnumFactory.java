@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class TestscriptProfileDestinationTypesEnumFactory implements EnumFactory<TestscriptProfileDestinationTypes> {
@@ -50,11 +46,13 @@ public class TestscriptProfileDestinationTypesEnumFactory implements EnumFactory
       return TestscriptProfileDestinationTypes.FHIRSDCFORMPROCESSOR;
     if ("FHIR-SDC-FormReceiver".equals(codeString))
       return TestscriptProfileDestinationTypes.FHIRSDCFORMRECEIVER;
-    throw new IllegalArgumentException("Unknown TestscriptProfileDestinationTypes code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown TestscriptProfileDestinationTypes code '" + codeString + "'");
   }
 
   public String toCode(TestscriptProfileDestinationTypes code) {
-    if (code == TestscriptProfileDestinationTypes.FHIRSERVER)
+       if (code == TestscriptProfileDestinationTypes.NULL)
+           return null;
+       if (code == TestscriptProfileDestinationTypes.FHIRSERVER)
       return "FHIR-Server";
     if (code == TestscriptProfileDestinationTypes.FHIRSDCFORMMANAGER)
       return "FHIR-SDC-FormManager";
@@ -63,10 +61,10 @@ public class TestscriptProfileDestinationTypesEnumFactory implements EnumFactory
     if (code == TestscriptProfileDestinationTypes.FHIRSDCFORMRECEIVER)
       return "FHIR-SDC-FormReceiver";
     return "?";
-  }
+   }
 
-    public String toSystem(TestscriptProfileDestinationTypes code) {
-      return code.getSystem();
-      }
+  public String toSystem(TestscriptProfileDestinationTypes code) {
+    return code.getSystem();
+  }
 
 }

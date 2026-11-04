@@ -31,7 +31,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Mon, May 11, 2020 09:58+1000 for FHIR vcurrent
+// Generated on Mon, May 11, 2020 09:58+1000 for FHIR v5.0.0-snapshot2
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -177,6 +177,17 @@ public class SubstanceAmount extends BackboneType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("lowLimit")) {
+          this.lowLimit = null;
+        } else if (name.equals("highLimit")) {
+          this.highLimit = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -215,6 +226,10 @@ public class SubstanceAmount extends BackboneType implements ICompositeType {
         SubstanceAmountReferenceRangeComponent dst = new SubstanceAmountReferenceRangeComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SubstanceAmountReferenceRangeComponent) dst);
       }
 
       public void copyValues(SubstanceAmountReferenceRangeComponent dst) {
@@ -309,8 +324,8 @@ public class SubstanceAmount extends BackboneType implements ICompositeType {
       return (Quantity) this.amount;
     }
 
-    public boolean hasAmountQuantity() { 
-      return this != null && this.amount instanceof Quantity;
+    public boolean hasAmountQuantity() {
+        return this.amount instanceof Quantity;
     }
 
     /**
@@ -324,8 +339,8 @@ public class SubstanceAmount extends BackboneType implements ICompositeType {
       return (Range) this.amount;
     }
 
-    public boolean hasAmountRange() { 
-      return this != null && this.amount instanceof Range;
+    public boolean hasAmountRange() {
+        return this.amount instanceof Range;
     }
 
     /**
@@ -339,8 +354,8 @@ public class SubstanceAmount extends BackboneType implements ICompositeType {
       return (StringType) this.amount;
     }
 
-    public boolean hasAmountStringType() { 
-      return this != null && this.amount instanceof StringType;
+    public boolean hasAmountStringType() {
+        return this.amount instanceof StringType;
     }
 
     public boolean hasAmount() { 
@@ -352,7 +367,7 @@ public class SubstanceAmount extends BackboneType implements ICompositeType {
      */
     public SubstanceAmount setAmount(DataType value) { 
       if (value != null && !(value instanceof Quantity || value instanceof Range || value instanceof StringType))
-        throw new Error("Not the right type for SubstanceAmount.amount[x]: "+value.fhirType());
+        throw new FHIRException("Not the right type for SubstanceAmount.amount[x]: "+value.fhirType());
       this.amount = value;
       return this;
     }
@@ -525,6 +540,21 @@ public class SubstanceAmount extends BackboneType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("amount[x]")) {
+          this.amount = null;
+        } else if (name.equals("amountType")) {
+          this.amountType = null;
+        } else if (name.equals("amountText")) {
+          this.amountText = null;
+        } else if (name.equals("referenceRange")) {
+          this.referenceRange = (SubstanceAmountReferenceRangeComponent) value; // SubstanceAmountReferenceRangeComponent
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -569,7 +599,7 @@ public class SubstanceAmount extends BackboneType implements ICompositeType {
           return this.amountType;
         }
         else if (name.equals("amountText")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SubstanceAmount.amountText");
+          throw new FHIRException("Cannot call addChild on a singleton property SubstanceAmount.amountText");
         }
         else if (name.equals("referenceRange")) {
           this.referenceRange = new SubstanceAmountReferenceRangeComponent();
@@ -588,6 +618,10 @@ public class SubstanceAmount extends BackboneType implements ICompositeType {
         SubstanceAmount dst = new SubstanceAmount();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SubstanceAmount) dst);
       }
 
       public void copyValues(SubstanceAmount dst) {

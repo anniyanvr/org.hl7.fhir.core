@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class TriggerTypeEnumFactory implements EnumFactory<TriggerType> {
@@ -58,11 +54,13 @@ public class TriggerTypeEnumFactory implements EnumFactory<TriggerType> {
       return TriggerType.DATAACCESSED;
     if ("data-access-ended".equals(codeString))
       return TriggerType.DATAACCESSENDED;
-    throw new IllegalArgumentException("Unknown TriggerType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown TriggerType code '" + codeString + "'");
   }
 
   public String toCode(TriggerType code) {
-    if (code == TriggerType.NAMEDEVENT)
+       if (code == TriggerType.NULL)
+           return null;
+       if (code == TriggerType.NAMEDEVENT)
       return "named-event";
     if (code == TriggerType.PERIODIC)
       return "periodic";
@@ -79,10 +77,10 @@ public class TriggerTypeEnumFactory implements EnumFactory<TriggerType> {
     if (code == TriggerType.DATAACCESSENDED)
       return "data-access-ended";
     return "?";
-  }
+   }
 
-    public String toSystem(TriggerType code) {
-      return code.getSystem();
-      }
+  public String toSystem(TriggerType code) {
+    return code.getSystem();
+  }
 
 }

@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +46,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for Contributor Type: A contributor to the content of a knowledge asset, including authors, editors, reviewers, and endorsers.
+ * Contributor Type: A contributor to the content of a knowledge asset, including authors, editors, reviewers, and endorsers.
  */
 @DatatypeDef(name="Contributor")
 public class Contributor extends DataType implements ICompositeType {
@@ -94,6 +94,7 @@ public class Contributor extends DataType implements ICompositeType {
             case EDITOR: return "editor";
             case REVIEWER: return "reviewer";
             case ENDORSER: return "endorser";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -103,6 +104,7 @@ public class Contributor extends DataType implements ICompositeType {
             case EDITOR: return "http://hl7.org/fhir/contributor-type";
             case REVIEWER: return "http://hl7.org/fhir/contributor-type";
             case ENDORSER: return "http://hl7.org/fhir/contributor-type";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -112,6 +114,7 @@ public class Contributor extends DataType implements ICompositeType {
             case EDITOR: return "An editor of the content of the module.";
             case REVIEWER: return "A reviewer of the content of the module.";
             case ENDORSER: return "An endorser of the content of the module.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -121,6 +124,7 @@ public class Contributor extends DataType implements ICompositeType {
             case EDITOR: return "Editor";
             case REVIEWER: return "Reviewer";
             case ENDORSER: return "Endorser";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -141,26 +145,28 @@ public class Contributor extends DataType implements ICompositeType {
           return ContributorType.ENDORSER;
         throw new IllegalArgumentException("Unknown ContributorType code '"+codeString+"'");
         }
-        public Enumeration<ContributorType> fromType(Base code) throws FHIRException {
+        public Enumeration<ContributorType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<ContributorType>(this);
+            return new Enumeration<ContributorType>(this, ContributorType.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<ContributorType>(this, ContributorType.NULL, code);
         if ("author".equals(codeString))
-          return new Enumeration<ContributorType>(this, ContributorType.AUTHOR);
+          return new Enumeration<ContributorType>(this, ContributorType.AUTHOR, code);
         if ("editor".equals(codeString))
-          return new Enumeration<ContributorType>(this, ContributorType.EDITOR);
+          return new Enumeration<ContributorType>(this, ContributorType.EDITOR, code);
         if ("reviewer".equals(codeString))
-          return new Enumeration<ContributorType>(this, ContributorType.REVIEWER);
+          return new Enumeration<ContributorType>(this, ContributorType.REVIEWER, code);
         if ("endorser".equals(codeString))
-          return new Enumeration<ContributorType>(this, ContributorType.ENDORSER);
+          return new Enumeration<ContributorType>(this, ContributorType.ENDORSER, code);
         throw new FHIRException("Unknown ContributorType code '"+codeString+"'");
         }
     public String toCode(ContributorType code) {
-      if (code == ContributorType.AUTHOR)
+       if (code == ContributorType.NULL)
+           return null;
+       if (code == ContributorType.AUTHOR)
         return "author";
       if (code == ContributorType.EDITOR)
         return "editor";
@@ -169,7 +175,7 @@ public class Contributor extends DataType implements ICompositeType {
       if (code == ContributorType.ENDORSER)
         return "endorser";
       return "?";
-      }
+   }
     public String toSystem(ContributorType code) {
       return code.getSystem();
       }
@@ -419,6 +425,20 @@ public class Contributor extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("type")) {
+          value = new ContributorTypeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.type = (Enumeration) value; // Enumeration<ContributorType>
+        } else if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("contact")) {
+          this.getContact().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -444,10 +464,10 @@ public class Contributor extends DataType implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contributor.type");
+          throw new FHIRException("Cannot call addChild on a singleton property Contributor.type");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contributor.name");
+          throw new FHIRException("Cannot call addChild on a singleton property Contributor.name");
         }
         else if (name.equals("contact")) {
           return addContact();
@@ -465,6 +485,10 @@ public class Contributor extends DataType implements ICompositeType {
         Contributor dst = new Contributor();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Contributor) dst);
       }
 
       public void copyValues(Contributor dst) {

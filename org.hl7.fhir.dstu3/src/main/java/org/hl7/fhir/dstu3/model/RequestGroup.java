@@ -183,12 +183,12 @@ public class RequestGroup extends DomainResource {
           return RequestStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown RequestStatus code '"+codeString+"'");
         }
-        public Enumeration<RequestStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<RequestStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<RequestStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -208,7 +208,9 @@ public class RequestGroup extends DomainResource {
         throw new FHIRException("Unknown RequestStatus code '"+codeString+"'");
         }
     public String toCode(RequestStatus code) {
-      if (code == RequestStatus.DRAFT)
+       if (code == RequestStatus.NULL)
+           return null;
+       if (code == RequestStatus.DRAFT)
         return "draft";
       if (code == RequestStatus.ACTIVE)
         return "active";
@@ -223,7 +225,7 @@ public class RequestGroup extends DomainResource {
       if (code == RequestStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(RequestStatus code) {
       return code.getSystem();
       }
@@ -373,12 +375,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return RequestIntent.OPTION;
         throw new IllegalArgumentException("Unknown RequestIntent code '"+codeString+"'");
         }
-        public Enumeration<RequestIntent> fromType(Base code) throws FHIRException {
+        public Enumeration<RequestIntent> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<RequestIntent>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("proposal".equals(codeString))
@@ -400,7 +402,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown RequestIntent code '"+codeString+"'");
         }
     public String toCode(RequestIntent code) {
-      if (code == RequestIntent.PROPOSAL)
+       if (code == RequestIntent.NULL)
+           return null;
+       if (code == RequestIntent.PROPOSAL)
         return "proposal";
       if (code == RequestIntent.PLAN)
         return "plan";
@@ -417,7 +421,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == RequestIntent.OPTION)
         return "option";
       return "?";
-      }
+   }
     public String toSystem(RequestIntent code) {
       return code.getSystem();
       }
@@ -517,12 +521,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return RequestPriority.STAT;
         throw new IllegalArgumentException("Unknown RequestPriority code '"+codeString+"'");
         }
-        public Enumeration<RequestPriority> fromType(Base code) throws FHIRException {
+        public Enumeration<RequestPriority> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<RequestPriority>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("routine".equals(codeString))
@@ -536,7 +540,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown RequestPriority code '"+codeString+"'");
         }
     public String toCode(RequestPriority code) {
-      if (code == RequestPriority.ROUTINE)
+       if (code == RequestPriority.NULL)
+           return null;
+       if (code == RequestPriority.ROUTINE)
         return "routine";
       if (code == RequestPriority.URGENT)
         return "urgent";
@@ -545,7 +551,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == RequestPriority.STAT)
         return "stat";
       return "?";
-      }
+   }
     public String toSystem(RequestPriority code) {
       return code.getSystem();
       }
@@ -633,12 +639,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return ActionConditionKind.STOP;
         throw new IllegalArgumentException("Unknown ActionConditionKind code '"+codeString+"'");
         }
-        public Enumeration<ActionConditionKind> fromType(Base code) throws FHIRException {
+        public Enumeration<ActionConditionKind> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ActionConditionKind>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("applicability".equals(codeString))
@@ -650,14 +656,16 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown ActionConditionKind code '"+codeString+"'");
         }
     public String toCode(ActionConditionKind code) {
-      if (code == ActionConditionKind.APPLICABILITY)
+       if (code == ActionConditionKind.NULL)
+           return null;
+       if (code == ActionConditionKind.APPLICABILITY)
         return "applicability";
       if (code == ActionConditionKind.START)
         return "start";
       if (code == ActionConditionKind.STOP)
         return "stop";
       return "?";
-      }
+   }
     public String toSystem(ActionConditionKind code) {
       return code.getSystem();
       }
@@ -817,12 +825,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return ActionRelationshipType.AFTEREND;
         throw new IllegalArgumentException("Unknown ActionRelationshipType code '"+codeString+"'");
         }
-        public Enumeration<ActionRelationshipType> fromType(Base code) throws FHIRException {
+        public Enumeration<ActionRelationshipType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ActionRelationshipType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("before-start".equals(codeString))
@@ -846,7 +854,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown ActionRelationshipType code '"+codeString+"'");
         }
     public String toCode(ActionRelationshipType code) {
-      if (code == ActionRelationshipType.BEFORESTART)
+       if (code == ActionRelationshipType.NULL)
+           return null;
+       if (code == ActionRelationshipType.BEFORESTART)
         return "before-start";
       if (code == ActionRelationshipType.BEFORE)
         return "before";
@@ -865,7 +875,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == ActionRelationshipType.AFTEREND)
         return "after-end";
       return "?";
-      }
+   }
     public String toSystem(ActionRelationshipType code) {
       return code.getSystem();
       }
@@ -953,12 +963,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return ActionGroupingBehavior.SENTENCEGROUP;
         throw new IllegalArgumentException("Unknown ActionGroupingBehavior code '"+codeString+"'");
         }
-        public Enumeration<ActionGroupingBehavior> fromType(Base code) throws FHIRException {
+        public Enumeration<ActionGroupingBehavior> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ActionGroupingBehavior>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("visual-group".equals(codeString))
@@ -970,14 +980,16 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown ActionGroupingBehavior code '"+codeString+"'");
         }
     public String toCode(ActionGroupingBehavior code) {
-      if (code == ActionGroupingBehavior.VISUALGROUP)
+       if (code == ActionGroupingBehavior.NULL)
+           return null;
+       if (code == ActionGroupingBehavior.VISUALGROUP)
         return "visual-group";
       if (code == ActionGroupingBehavior.LOGICALGROUP)
         return "logical-group";
       if (code == ActionGroupingBehavior.SENTENCEGROUP)
         return "sentence-group";
       return "?";
-      }
+   }
     public String toSystem(ActionGroupingBehavior code) {
       return code.getSystem();
       }
@@ -1101,12 +1113,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return ActionSelectionBehavior.ONEORMORE;
         throw new IllegalArgumentException("Unknown ActionSelectionBehavior code '"+codeString+"'");
         }
-        public Enumeration<ActionSelectionBehavior> fromType(Base code) throws FHIRException {
+        public Enumeration<ActionSelectionBehavior> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ActionSelectionBehavior>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("any".equals(codeString))
@@ -1124,7 +1136,9 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown ActionSelectionBehavior code '"+codeString+"'");
         }
     public String toCode(ActionSelectionBehavior code) {
-      if (code == ActionSelectionBehavior.ANY)
+       if (code == ActionSelectionBehavior.NULL)
+           return null;
+       if (code == ActionSelectionBehavior.ANY)
         return "any";
       if (code == ActionSelectionBehavior.ALL)
         return "all";
@@ -1137,7 +1151,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       if (code == ActionSelectionBehavior.ONEORMORE)
         return "one-or-more";
       return "?";
-      }
+   }
     public String toSystem(ActionSelectionBehavior code) {
       return code.getSystem();
       }
@@ -1225,12 +1239,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return ActionRequiredBehavior.MUSTUNLESSDOCUMENTED;
         throw new IllegalArgumentException("Unknown ActionRequiredBehavior code '"+codeString+"'");
         }
-        public Enumeration<ActionRequiredBehavior> fromType(Base code) throws FHIRException {
+        public Enumeration<ActionRequiredBehavior> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ActionRequiredBehavior>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("must".equals(codeString))
@@ -1242,14 +1256,16 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown ActionRequiredBehavior code '"+codeString+"'");
         }
     public String toCode(ActionRequiredBehavior code) {
-      if (code == ActionRequiredBehavior.MUST)
+       if (code == ActionRequiredBehavior.NULL)
+           return null;
+       if (code == ActionRequiredBehavior.MUST)
         return "must";
       if (code == ActionRequiredBehavior.COULD)
         return "could";
       if (code == ActionRequiredBehavior.MUSTUNLESSDOCUMENTED)
         return "must-unless-documented";
       return "?";
-      }
+   }
     public String toSystem(ActionRequiredBehavior code) {
       return code.getSystem();
       }
@@ -1325,12 +1341,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return ActionPrecheckBehavior.NO;
         throw new IllegalArgumentException("Unknown ActionPrecheckBehavior code '"+codeString+"'");
         }
-        public Enumeration<ActionPrecheckBehavior> fromType(Base code) throws FHIRException {
+        public Enumeration<ActionPrecheckBehavior> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ActionPrecheckBehavior>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("yes".equals(codeString))
@@ -1340,12 +1356,14 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown ActionPrecheckBehavior code '"+codeString+"'");
         }
     public String toCode(ActionPrecheckBehavior code) {
-      if (code == ActionPrecheckBehavior.YES)
+       if (code == ActionPrecheckBehavior.NULL)
+           return null;
+       if (code == ActionPrecheckBehavior.YES)
         return "yes";
       if (code == ActionPrecheckBehavior.NO)
         return "no";
       return "?";
-      }
+   }
     public String toSystem(ActionPrecheckBehavior code) {
       return code.getSystem();
       }
@@ -1421,12 +1439,12 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return ActionCardinalityBehavior.MULTIPLE;
         throw new IllegalArgumentException("Unknown ActionCardinalityBehavior code '"+codeString+"'");
         }
-        public Enumeration<ActionCardinalityBehavior> fromType(Base code) throws FHIRException {
+        public Enumeration<ActionCardinalityBehavior> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ActionCardinalityBehavior>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("single".equals(codeString))
@@ -1436,12 +1454,14 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         throw new FHIRException("Unknown ActionCardinalityBehavior code '"+codeString+"'");
         }
     public String toCode(ActionCardinalityBehavior code) {
-      if (code == ActionCardinalityBehavior.SINGLE)
+       if (code == ActionCardinalityBehavior.NULL)
+           return null;
+       if (code == ActionCardinalityBehavior.SINGLE)
         return "single";
       if (code == ActionCardinalityBehavior.MULTIPLE)
         return "multiple";
       return "?";
-      }
+   }
     public String toSystem(ActionCardinalityBehavior code) {
       return code.getSystem();
       }
@@ -2026,8 +2046,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (DateTimeType) this.timing;
         }
 
-        public boolean hasTimingDateTimeType() { 
-          return this != null && this.timing instanceof DateTimeType;
+        public boolean hasTimingDateTimeType() {
+            return this.timing instanceof DateTimeType;
         }
 
         /**
@@ -2041,8 +2061,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (Period) this.timing;
         }
 
-        public boolean hasTimingPeriod() { 
-          return this != null && this.timing instanceof Period;
+        public boolean hasTimingPeriod() {
+            return this.timing instanceof Period;
         }
 
         /**
@@ -2056,8 +2076,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (Duration) this.timing;
         }
 
-        public boolean hasTimingDuration() { 
-          return this != null && this.timing instanceof Duration;
+        public boolean hasTimingDuration() {
+            return this.timing instanceof Duration;
         }
 
         /**
@@ -2071,8 +2091,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (Range) this.timing;
         }
 
-        public boolean hasTimingRange() { 
-          return this != null && this.timing instanceof Range;
+        public boolean hasTimingRange() {
+            return this.timing instanceof Range;
         }
 
         /**
@@ -2086,8 +2106,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (Timing) this.timing;
         }
 
-        public boolean hasTimingTiming() { 
-          return this != null && this.timing instanceof Timing;
+        public boolean hasTimingTiming() {
+            return this.timing instanceof Timing;
         }
 
         public boolean hasTiming() { 
@@ -2155,16 +2175,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
             addParticipant();
           }
           return getParticipant().get(0);
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Resource> getParticipantTarget() { 
-          if (this.participantTarget == null)
-            this.participantTarget = new ArrayList<Resource>();
-          return this.participantTarget;
         }
 
         /**
@@ -2779,16 +2789,16 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("label")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.label");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.label");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.title");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.title");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.description");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.description");
         }
         else if (name.equals("textEquivalent")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.textEquivalent");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.textEquivalent");
         }
         else if (name.equals("code")) {
           return addCode();
@@ -2830,19 +2840,19 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return this.type;
         }
         else if (name.equals("groupingBehavior")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.groupingBehavior");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.groupingBehavior");
         }
         else if (name.equals("selectionBehavior")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.selectionBehavior");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.selectionBehavior");
         }
         else if (name.equals("requiredBehavior")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.requiredBehavior");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.requiredBehavior");
         }
         else if (name.equals("precheckBehavior")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.precheckBehavior");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.precheckBehavior");
         }
         else if (name.equals("cardinalityBehavior")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.cardinalityBehavior");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.cardinalityBehavior");
         }
         else if (name.equals("resource")) {
           this.resource = new Reference();
@@ -3284,16 +3294,16 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("kind")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.kind");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.kind");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.description");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.description");
         }
         else if (name.equals("language")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.language");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.language");
         }
         else if (name.equals("expression")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.expression");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.expression");
         }
         else
           return super.addChild(name);
@@ -3493,8 +3503,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (Duration) this.offset;
         }
 
-        public boolean hasOffsetDuration() { 
-          return this != null && this.offset instanceof Duration;
+        public boolean hasOffsetDuration() {
+            return this.offset instanceof Duration;
         }
 
         /**
@@ -3508,8 +3518,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return (Range) this.offset;
         }
 
-        public boolean hasOffsetRange() { 
-          return this != null && this.offset instanceof Range;
+        public boolean hasOffsetRange() {
+            return this.offset instanceof Range;
         }
 
         public boolean hasOffset() { 
@@ -3616,10 +3626,10 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("actionId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.actionId");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.actionId");
         }
         else if (name.equals("relationship")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.relationship");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.relationship");
         }
         else if (name.equals("offsetDuration")) {
           this.offset = new Duration();
@@ -3939,16 +3949,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getDefinitionTarget() { 
-      if (this.definitionTarget == null)
-        this.definitionTarget = new ArrayList<Resource>();
-      return this.definitionTarget;
-    }
-
-    /**
      * @return {@link #basedOn} (A plan, proposal or order that is fulfilled in whole or in part by this request.)
      */
     public List<Reference> getBasedOn() { 
@@ -4002,16 +4002,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<Resource>();
-      return this.basedOnTarget;
-    }
-
-    /**
      * @return {@link #replaces} (Completed or terminated request(s) whose function is taken by this new request.)
      */
     public List<Reference> getReplaces() { 
@@ -4062,16 +4052,6 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
         addReplaces();
       }
       return getReplaces().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getReplacesTarget() { 
-      if (this.replacesTarget == null)
-        this.replacesTarget = new ArrayList<Resource>();
-      return this.replacesTarget;
     }
 
     /**
@@ -4421,8 +4401,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return (CodeableConcept) this.reason;
     }
 
-    public boolean hasReasonCodeableConcept() { 
-      return this != null && this.reason instanceof CodeableConcept;
+    public boolean hasReasonCodeableConcept() {
+        return this.reason instanceof CodeableConcept;
     }
 
     /**
@@ -4436,8 +4416,8 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
       return (Reference) this.reason;
     }
 
-    public boolean hasReasonReference() { 
-      return this != null && this.reason instanceof Reference;
+    public boolean hasReasonReference() {
+        return this.reason instanceof Reference;
     }
 
     public boolean hasReason() { 
@@ -4790,13 +4770,13 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return this.groupIdentifier;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.status");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.status");
         }
         else if (name.equals("intent")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.intent");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.intent");
         }
         else if (name.equals("priority")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.priority");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.priority");
         }
         else if (name.equals("subject")) {
           this.subject = new Reference();
@@ -4807,7 +4787,7 @@ Refer to [[[RequestGroup]]] for additional information on how this status is use
           return this.context;
         }
         else if (name.equals("authoredOn")) {
-          throw new FHIRException("Cannot call addChild on a primitive type RequestGroup.authoredOn");
+          throw new FHIRException("Cannot call addChild on a singleton property RequestGroup.authoredOn");
         }
         else if (name.equals("author")) {
           this.author = new Reference();

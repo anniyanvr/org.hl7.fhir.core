@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ResearchStudyObjectiveTypeEnumFactory implements EnumFactory<ResearchStudyObjectiveType> {
@@ -48,21 +44,23 @@ public class ResearchStudyObjectiveTypeEnumFactory implements EnumFactory<Resear
       return ResearchStudyObjectiveType.SECONDARY;
     if ("exploratory".equals(codeString))
       return ResearchStudyObjectiveType.EXPLORATORY;
-    throw new IllegalArgumentException("Unknown ResearchStudyObjectiveType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ResearchStudyObjectiveType code '" + codeString + "'");
   }
 
   public String toCode(ResearchStudyObjectiveType code) {
-    if (code == ResearchStudyObjectiveType.PRIMARY)
+       if (code == ResearchStudyObjectiveType.NULL)
+           return null;
+       if (code == ResearchStudyObjectiveType.PRIMARY)
       return "primary";
     if (code == ResearchStudyObjectiveType.SECONDARY)
       return "secondary";
     if (code == ResearchStudyObjectiveType.EXPLORATORY)
       return "exploratory";
     return "?";
-  }
+   }
 
-    public String toSystem(ResearchStudyObjectiveType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ResearchStudyObjectiveType code) {
+    return code.getSystem();
+  }
 
 }

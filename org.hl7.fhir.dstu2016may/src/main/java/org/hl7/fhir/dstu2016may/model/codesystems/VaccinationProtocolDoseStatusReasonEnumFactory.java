@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,10 +31,10 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
-public class VaccinationProtocolDoseStatusReasonEnumFactory implements EnumFactory<VaccinationProtocolDoseStatusReason> {
+public class VaccinationProtocolDoseStatusReasonEnumFactory
+    implements EnumFactory<VaccinationProtocolDoseStatusReason> {
 
   public VaccinationProtocolDoseStatusReason fromCode(String codeString) throws IllegalArgumentException {
     if (codeString == null || "".equals(codeString))
@@ -52,11 +49,13 @@ public class VaccinationProtocolDoseStatusReasonEnumFactory implements EnumFacto
       return VaccinationProtocolDoseStatusReason.OUTSIDESCHED;
     if ("prodrecall".equals(codeString))
       return VaccinationProtocolDoseStatusReason.PRODRECALL;
-    throw new IllegalArgumentException("Unknown VaccinationProtocolDoseStatusReason code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown VaccinationProtocolDoseStatusReason code '" + codeString + "'");
   }
 
   public String toCode(VaccinationProtocolDoseStatusReason code) {
-    if (code == VaccinationProtocolDoseStatusReason.ADVSTORAGE)
+       if (code == VaccinationProtocolDoseStatusReason.NULL)
+           return null;
+       if (code == VaccinationProtocolDoseStatusReason.ADVSTORAGE)
       return "advstorage";
     if (code == VaccinationProtocolDoseStatusReason.COLDCHBRK)
       return "coldchbrk";
@@ -67,10 +66,10 @@ public class VaccinationProtocolDoseStatusReasonEnumFactory implements EnumFacto
     if (code == VaccinationProtocolDoseStatusReason.PRODRECALL)
       return "prodrecall";
     return "?";
-  }
+   }
 
-    public String toSystem(VaccinationProtocolDoseStatusReason code) {
-      return code.getSystem();
-      }
+  public String toSystem(VaccinationProtocolDoseStatusReason code) {
+    return code.getSystem();
+  }
 
 }

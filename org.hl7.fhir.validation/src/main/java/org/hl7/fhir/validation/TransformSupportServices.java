@@ -1,17 +1,20 @@
 package org.hl7.fhir.validation;
 
-import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.context.SimpleWorkerContext;
-import org.hl7.fhir.r5.elementmodel.Manager;
-import org.hl7.fhir.r5.model.Base;
-import org.hl7.fhir.r5.model.Coding;
-import org.hl7.fhir.r5.model.StructureDefinition;
-import org.hl7.fhir.r5.terminologies.ConceptMapEngine;
-import org.hl7.fhir.r5.utils.structuremap.ITransformerServices;
-
 import java.io.PrintWriter;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.services.conformance.profile.ProfileUtilities;
+import org.hl7.fhir.services.terminology.ConceptMapEngine;
+import org.hl7.fhir.standalone.context.SimpleWorkerContext;
+import org.hl7.fhir.services.elementmodel.Manager;
+import org.hl7.fhir.model.Base;
+import org.hl7.fhir.model.core.Coding;
+import org.hl7.fhir.model.core.StructureDefinition;
+import org.hl7.fhir.services.fml.ITransformerServices;
+
+@Slf4j
 public class TransformSupportServices implements ITransformerServices {
 
   private final PrintWriter mapLog;
@@ -30,13 +33,13 @@ public class TransformSupportServices implements ITransformerServices {
   public void log(String message) {
     if (mapLog != null)
       mapLog.println(message);
-    System.out.println(message);
+    log.info(message);
   }
 
   @Override
-  public Base createType(Object appInfo, String name) throws FHIRException {
+  public Base createType(Object appInfo, String name, ProfileUtilities profileUtilities) throws FHIRException {
     StructureDefinition sd = context.fetchResource(StructureDefinition.class, name);
-    return Manager.build(context, sd);
+    return Manager.build(context, sd, profileUtilities);
   }
 
   @Override

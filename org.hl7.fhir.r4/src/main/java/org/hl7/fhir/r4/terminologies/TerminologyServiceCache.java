@@ -1,5 +1,7 @@
 package org.hl7.fhir.r4.terminologies;
 
+
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -29,9 +31,7 @@ package org.hl7.fhir.r4.terminologies;
   
  */
 
-
-
+@Deprecated(forRemoval = true)
 public class TerminologyServiceCache {
-  
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ActionTypeEnumFactory implements EnumFactory<ActionType> {
@@ -50,11 +46,13 @@ public class ActionTypeEnumFactory implements EnumFactory<ActionType> {
       return ActionType.REMOVE;
     if ("fire-event".equals(codeString))
       return ActionType.FIREEVENT;
-    throw new IllegalArgumentException("Unknown ActionType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ActionType code '" + codeString + "'");
   }
 
   public String toCode(ActionType code) {
-    if (code == ActionType.CREATE)
+       if (code == ActionType.NULL)
+           return null;
+       if (code == ActionType.CREATE)
       return "create";
     if (code == ActionType.UPDATE)
       return "update";
@@ -63,10 +61,10 @@ public class ActionTypeEnumFactory implements EnumFactory<ActionType> {
     if (code == ActionType.FIREEVENT)
       return "fire-event";
     return "?";
-  }
+   }
 
-    public String toSystem(ActionType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ActionType code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,0 +1,150 @@
+package org.hl7.fhir.validation.special;
+
+import org.hl7.fhir.model.core.CapabilityStatement;
+import org.hl7.fhir.model.core.DomainResource;
+import org.hl7.fhir.model.core.Element;
+import org.hl7.fhir.model.core.Extension;
+import org.hl7.fhir.model.core.OperationOutcome;
+import org.hl7.fhir.model.core.OperationOutcome.OperationOutcomeIssueComponent;
+import org.hl7.fhir.model.core.Parameters;
+import org.hl7.fhir.model.core.Resource;
+import org.hl7.fhir.model.core.TerminologyCapabilities;
+import org.hl7.fhir.model.core.ValueSet;
+import org.hl7.fhir.model.utilities.ElementVisitor;
+import org.hl7.fhir.utilities.Utilities;
+
+/**
+ * this class removes the things we don't want to control in the tests from the content prior
+ * to performing the comparisons.
+ * <p/>
+ * e.g. we are not interested in the content of OperationOutcome.issue.diagnostics, nor resource.meta
+ * nor resource.text. And there's a set of extensions that we check, but others are ok
+ *
+ */
+public class TxTesterScrubbers {
+
+
+  public static class TxTesterScrubberVisitor implements ElementVisitor.IElementVisitor {
+
+    private boolean tight;
+    
+    protected TxTesterScrubberVisitor(boolean tight) {
+      super();
+      this.tight = tight;
+    }
+
+    private boolean isManagedExtension(Extension extension) {
+      return tight || !Utilities.isAbsoluteUrl(extension.getUrl()) || Utilities.existsInList(extension.getUrl(), 
+          "http://hl7.org/fhir/StructureDefinition/codesystem-alternate", 
+          "http://hl7.org/fhir/StructureDefinition/codesystem-conceptOrder",
+          "http://hl7.org/fhir/StructureDefinition/codesystem-label",
+          "http://hl7.org/fhir/StructureDefinition/coding-sctdescid",
+          "http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status",
+          "http://hl7.org/fhir/StructureDefinition/itemWeight", 
+          "http://hl7.org/fhir/StructureDefinition/rendering-style", 
+          "http://hl7.org/fhir/StructureDefinition/rendering-xhtml", 
+          "http://hl7.org/fhir/StructureDefinition/translation",
+          "http://hl7.org/fhir/StructureDefinition/valueset-concept-definition", 
+          "http://hl7.org/fhir/StructureDefinition/valueset-conceptOrder", 
+          "http://hl7.org/fhir/StructureDefinition/valueset-deprecated", 
+          "http://hl7.org/fhir/StructureDefinition/valueset-label", 
+          "http://hl7.org/fhir/StructureDefinition/valueset-supplement", 
+          "http://hl7.org/fhir/test/CodeSystem/de-multi", 
+          "http://hl7.org/fhir/test/CodeSystem/en-multi", 
+          "http://hl7.org/fhir/test/StructureDefinition/unknown-extension-1", 
+          "http://hl7.org/fhir/test/StructureDefinition/unknown-extension-3", 
+          "http://hl7.org/fhir/test/StructureDefinition/unknown-extension-4", 
+          "http://hl7.org/fhir/test/StructureDefinition/unknown-extension-5", 
+          "http://hl7.org/fhir/test/ValueSet/extensions-bad-supplement", 
+          "http://hl7.org/fhir/test/ValueSet/simple-all", 
+          "http://hl7.org/fhir/test/ValueSet/simple-enumerated", 
+          "http://hl7.org/fhir/StructureDefinition/alternate-code-use",
+          "http://hl7.org/fhir/StructureDefinition/alternate-code-status",
+          "http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id",
+          "http://hl7.org/fhir/test/ValueSet/simple-filter-isa",
+          "http://hl7.org/fhir/StructureDefinition/valueset-unclosed",
+          "http://hl7.org/fhir/StructureDefinition/valueset-unclosed-reason");
+    }
+    
+    @Override
+    public ElementVisitor.ElementVisitorInstruction visit(Object context, Resource resource) {
+      if (resource instanceof DomainResource) {
+        DomainResource dr = (DomainResource) resource;
+        dr.getExtension().removeIf(ext -> !isManagedExtension(ext));
+      } 
+      return ElementVisitor.ElementVisitorInstruction.VISIT_CHILDREN;
+    }
+
+    @Override
+    public ElementVisitor.ElementVisitorInstruction visit(Object context, Element element) {
+      element.getExtension().removeIf(ext -> !isManagedExtension(ext));
+      if (element.fhirType().equals("ValueSet.compose")) {
+        return ElementVisitor.ElementVisitorInstruction.NO_VISIT_CHILDREN;
+      } else {
+        return ElementVisitor.ElementVisitorInstruction.VISIT_CHILDREN;
+      }
+    }
+  }
+  
+  public static void scrubDomainResource(DomainResource dr, boolean tight) {
+    if (dr != null) {
+      dr.setText(null);
+      dr.setMeta(null);
+      new ElementVisitor(new TxTesterScrubberVisitor(tight)).visit(null, dr);
+    }
+  }
+
+  public static void scrubValueSet(ValueSet vs, boolean tight) {
+    scrubDomainResource(vs, tight);
+  }
+
+  public static void scrubParameters(Parameters po, boolean tight) {
+    po.setMeta(null);
+    po.getParameterList().removeIf(p -> p.getName().equals("diagnostics"));
+    for (var pp : po.getParameterList()) {
+      if (pp.getResource() != null) {
+        if (pp.getResource() instanceof ValueSet) {
+          scrubValueSet((ValueSet) pp.getResource(), tight);
+        }
+        if (pp.getResource() instanceof OperationOutcome) {
+          scrubOperationOutcome((OperationOutcome) pp.getResource(), tight);
+        }
+        if (pp.getResource() instanceof Parameters) {
+          scrubParameters((Parameters) pp.getResource(), tight);
+        }
+      }
+    }
+  }
+
+  /**
+   * OperationOutcome.issue.diagnostics is server specific detail -- an internal message, a
+   * stack location, a request id -- and is never part of what a test asserts. It is
+   * stripped outright here so that no expectation can depend on it, and so that servers are
+   * free to put whatever they find useful in it. Everything a test needs to see about an
+   * issue belongs in details.text (and the tx-issue-type coding in details.coding).
+   *
+   * An issue that carried nothing but diagnostics would say nothing at all once it is
+   * stripped, so those are dropped -- but only while at least one issue survives, since an
+   * OperationOutcome with no issues is not valid.
+   */
+  public static void scrubOperationOutcome(OperationOutcome po, boolean tight) {
+    if (po != null) {
+      scrubDomainResource(po, tight);
+      if (po.getIssueList().size() > 1) {
+        po.getIssueList().removeIf(i -> i.hasDiagnostics() && !i.hasDetails());
+      }
+      for (OperationOutcomeIssueComponent iss : po.getIssueList()) {
+        iss.setDiagnostics(null);
+      }
+    }
+  }
+
+  public static void scrubCapStmt(CapabilityStatement cs, boolean tight) {
+    // nothing yet?
+  }
+
+  public static void scrubTermCaps(TerminologyCapabilities cs, boolean tight) {
+    // nothing yet? 
+  }
+
+}

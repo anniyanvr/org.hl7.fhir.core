@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class SubscriptionTagEnumFactory implements EnumFactory<SubscriptionTag> {
@@ -46,19 +42,21 @@ public class SubscriptionTagEnumFactory implements EnumFactory<SubscriptionTag> 
       return SubscriptionTag.QUEUED;
     if ("delivered".equals(codeString))
       return SubscriptionTag.DELIVERED;
-    throw new IllegalArgumentException("Unknown SubscriptionTag code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown SubscriptionTag code '" + codeString + "'");
   }
 
   public String toCode(SubscriptionTag code) {
-    if (code == SubscriptionTag.QUEUED)
+       if (code == SubscriptionTag.NULL)
+           return null;
+       if (code == SubscriptionTag.QUEUED)
       return "queued";
     if (code == SubscriptionTag.DELIVERED)
       return "delivered";
     return "?";
-  }
+   }
 
-    public String toSystem(SubscriptionTag code) {
-      return code.getSystem();
-      }
+  public String toSystem(SubscriptionTag code) {
+    return code.getSystem();
+  }
 
 }

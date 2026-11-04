@@ -64,28 +64,34 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.util.regex.Pattern;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.google.gson.*;
+import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
 import org.hl7.fhir.instance.model.api.IIdType;
+import org.hl7.fhir.r5.model.DecimalType;
+import org.hl7.fhir.r5.model.Base;
 import org.hl7.fhir.r5.model.DataType;
 import org.hl7.fhir.r5.model.DomainResource;
 import org.hl7.fhir.r5.model.Element;
 import org.hl7.fhir.r5.model.IdType;
+import org.hl7.fhir.r5.model.NamedElementExtension;
 import org.hl7.fhir.r5.model.PrimitiveType;
 import org.hl7.fhir.r5.model.Resource;
 import org.hl7.fhir.r5.model.StringType;
-import org.hl7.fhir.utilities.TextFile;
+import org.hl7.fhir.r5.test.utils.ClassesLoadedFlags;
+import org.hl7.fhir.utilities.FileUtilities;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.json.JsonTrackingParser;
 import org.hl7.fhir.utilities.xhtml.XhtmlComposer;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.hl7.fhir.utilities.xhtml.XhtmlParser;
+import org.hl7.fhir.utilities.xml.IXMLWriter;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 /**
  * General parser for JSON content. You instantiate an JsonParser of these, but you 
  * actually use parse or parseGeneral defined on this class
@@ -93,7 +99,20 @@ import com.google.gson.JsonSyntaxException;
  * The two classes are separated to keep generated and manually maintained code apart.
  */
 public abstract class JsonParserBase extends ParserBase implements IParser {
-	
+
+  static {
+//    LoggerFactory.getLogger("org.hl7.fhir.r5.formats.JsonParserBase").debug("JSON Parser is being loaded");
+    ClassesLoadedFlags.ourJsonParserBaseLoaded = true;
+  }
+
+  protected JsonParserBase() {
+    super();
+  }
+
+  protected JsonParserBase(CustomResourceRegistry customResourceRegistry) {
+    super(customResourceRegistry);
+  }
+
   @Override
   public ParserType getType() {
 	  return ParserType.JSON;
@@ -113,6 +132,10 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
 
   /* -- entry points --------------------------------------------------- */
 
+  protected Base parseBase(JsonObject json) throws IOException, FHIRFormatError {
+    throw new NotImplementedException("Still to do (for openEHR)");
+//    return parseType(json, null);
+  }
   /**
    * @throws FHIRFormatError 
    * Parse content that is known to be a resource
@@ -146,9 +169,26 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
     return parseAnyType(json, type);
   }
 
+  /**
+   * Whether the object has a property whose name starts with {@code prefix} or {@code "_" + prefix}.
+   * {@code parseType(prefix, json)} and {@code hasTypeName(json, prefix)} only look for properties
+   * like that, so when there are none they can stop without trying every type name in turn.
+   */
+  protected boolean hasPropertyWithPrefix(JsonObject json, String prefix) {
+    for (String name : json.keySet()) {
+      if (name.startsWith(prefix) || (name.startsWith("_") && name.startsWith(prefix, 1))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   protected JsonObject getJObject(JsonObject parent, String name) throws IOException {
     JsonElement j = parent.get(name);
     if (j == null) { 
+      return null;
+    }
+    if (j instanceof JsonNull) {
       return null;
     }
     if (!(j instanceof JsonObject)) {
@@ -168,6 +208,17 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
     return (JsonArray) j;
   }
   
+  protected JsonObject getJsonObjectFromArray(JsonArray array, int i) throws IOException {
+    JsonElement e = array.get(i);
+    if (e.isJsonObject()) {
+      return (JsonObject) e;
+    }
+    if (e.isJsonNull()) {
+      return new JsonObject();
+    }
+    throw new IOException("Array item "+i+" is a "+e.getClass()+" looking for an Object");
+  }
+  
   /**
    * Compose a resource to a stream, possibly using pretty presentation for a human reader (used in the spec, for example, but not normally in production)
    * @throws IOException 
@@ -175,11 +226,13 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
   @Override
   public void compose(OutputStream stream, Resource resource) throws IOException {
     OutputStreamWriter osw = new OutputStreamWriter(stream, "UTF-8");
-    if (style == OutputStyle.CANONICAL)
+    if (style == OutputStyle.CANONICAL) {
       json = new JsonCreatorCanonical(osw);
-    else
-      json = new JsonCreatorDirect(osw); // use this instead of Gson because this preserves decimal formatting
-    json.setIndent(style == OutputStyle.PRETTY ? "  " : "");
+    } else if (style == OutputStyle.PRETTY) {
+      json = new JsonCreatorDirect(osw, true, false);
+    } else {
+      json = new JsonCreatorDirect(osw, false, false); // use this instead of Gson because this preserves decimal formatting
+    }
     json.beginObject();
     composeResource(resource);
     json.endObject();
@@ -187,6 +240,53 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
     osw.flush();
   }
 
+  protected boolean composeCustomResource(Resource resource) throws IOException {
+    if (customResourceRegistry.has(resource.fhirType())) {
+      JsonParserBase composer = customResourceRegistry.get(resource.fhirType()).getFactory().composerJson(json);
+      composer.setCustomResourceRegistry(customResourceRegistry);
+      composer.composeResource(resource);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  protected boolean composeCustomResource(String name, Resource resource) {
+    if (customResourceRegistry.has(resource.fhirType())) {
+      throw new Error("Not sorted yet");
+      // customResourceHandlers.get(resource.fhirType()).parser().composeResource(name, resource);
+      // return true;
+    } else {
+      return false;
+    }
+  }
+
+  protected Resource parseCustomResource(String t, JsonObject json) throws FHIRFormatError, IOException {
+    if (customResourceRegistry.has(t)) {
+      JsonParserBase parser = customResourceRegistry.get(t).getFactory().parserJson(allowUnknownContent, allowComments);
+      parser.setCustomResourceRegistry(customResourceRegistry);
+      return parser.parse(json);
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * called at the start of resource dispatch: parse using a custom resource handler that is 
+   * registered as overriding the base specification (returns null if there's no such handler)
+   */
+  protected Resource parseOverridingCustomResource(String t, JsonObject json) throws FHIRFormatError, IOException {
+    CustomResourceHandler handler = customResourceRegistry.get(t);
+    if (handler != null && handler.isOverridesBase()) {
+      JsonParserBase parser = handler.getFactory().parserJson(allowUnknownContent, allowComments);
+      parser.setCustomResourceRegistry(customResourceRegistry);
+      return parser.parse(json);
+    } else {
+      return null;
+    }
+  }
+
+    
   /**
    * Compose a resource using a pre-existing JsonWriter
    * @throws IOException 
@@ -199,19 +299,19 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
   @Override
   public void compose(OutputStream stream, DataType type, String rootName) throws IOException {
     OutputStreamWriter osw = new OutputStreamWriter(stream, "UTF-8");
-    if (style == OutputStyle.CANONICAL)
+    if (style == OutputStyle.CANONICAL) {
       json = new JsonCreatorCanonical(osw);
-    else
-      json = new JsonCreatorDirect(osw);// use this instead of Gson because this preserves decimal formatting
-    json.setIndent(style == OutputStyle.PRETTY ? "  " : "");
+    } else if (style == OutputStyle.PRETTY) {
+      json = new JsonCreatorDirect(osw, true, false);
+    } else {
+      json = new JsonCreatorDirect(osw, false, false); // use this instead of Gson because this preserves decimal formatting
+    }
     json.beginObject();
     composeTypeInner(type);
     json.endObject();
     json.finish();
     osw.flush();
   }
-    
-
   
   /* -- json routines --------------------------------------------------- */
 
@@ -219,14 +319,14 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
   private boolean htmlPretty;
   
   private JsonObject loadJson(InputStream input) throws JsonSyntaxException, IOException {
-    return JsonTrackingParser.parse(TextFile.streamToString(input), null, allowUnknownContent, allowComments);
-    // return parser.parse(TextFile.streamToString(input)).getAsJsonObject();
+    // the GSON parser is the fastest, but the least robust 
+    if (allowComments || allowUnknownContent) {
+      return JsonTrackingParser.parse(FileUtilities.streamToString(input), null, allowUnknownContent, allowComments);      
+    } else {
+      return (JsonObject) com.google.gson.JsonParser.parseString(FileUtilities.streamToString(input));
+    }
   }
   
-//  private JsonObject loadJson(String input) {
-//    return parser.parse(input).getAsJsonObject();
-//  }
-//  
   protected void parseElementProperties(JsonObject json, Element e) throws IOException, FHIRFormatError {
     if (json != null && json.has("id"))
       e.setId(json.get("id").getAsString());
@@ -278,6 +378,29 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
     if (name != null)
       json.name(name);
     json.valueNum(value);
+  }
+
+  @SuppressWarnings("checkstyle:patternUsage")
+  //the FHIR decimal grammar; a fixed literal, never user input
+  private static final Pattern JSON_NUMBER = Pattern.compile("-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
+
+  /**
+   * Write a decimal using the literal the parser saw, so that the presented form survives a round
+   * trip - 1.0e0 is not silently rewritten as 1.0, nor 1e2 as 1E+2. asStringValue() is the presented
+   * form when the parser captured one (see DecimalType.setRepresentation) and BigDecimal.toString()
+   * otherwise. Guarded because BigDecimal accepts forms JSON does not (a leading + or .), and those
+   * fall back to writing the numeric value. Canonical JSON is unaffected: JsonCreatorCanonical runs
+   * both routes through JsonNumberCanonicalizer.
+   */
+  @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+  //False positive: Matcher.matches() on pattern which has been independently reviewed
+  protected void propDecimal(String name, DecimalType value) throws IOException {
+    String s = value.asStringValue();
+    if (s != null && JSON_NUMBER.matcher(s).matches()) {
+      propNum(name, s);
+    } else {
+      prop(name, value.getValue());
+    }
   }
 
   protected void prop(String name, java.lang.Integer value) throws IOException {
@@ -365,7 +488,11 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
 
   protected abstract void composeType(String prefix, DataType type) throws IOException;
 
-  
+  protected void composeBase(String prefix, Base type) throws IOException {
+    throw new NotImplementedException("Still to do (for openEHR)");
+    // composeType(prefix, (DataType) type);
+  }
+
   abstract void composeStringCore(String name, StringType value, boolean inArray) throws IOException;
 
   protected void composeStringCore(String name, IIdType value, boolean inArray) throws IOException {
@@ -384,6 +511,15 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
 
   protected void parseElementProperties(JsonObject theAsJsonObject, IdType theReferenceElement) throws FHIRFormatError, IOException {
 	  parseElementProperties(theAsJsonObject, (Element)theReferenceElement);
+  }
+
+
+  protected DataType parseNativePrimitive(JsonObject json, String string) {
+    throw new NotImplementedException("Still to do (for openEHR)");   
+  }
+  
+  protected void composeNativePrimitive(String string, DataType defaultValue) {
+    throw new NotImplementedException("Still to do (for openEHR)");
   }
 
 }

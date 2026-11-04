@@ -170,12 +170,12 @@ public class Consent extends DomainResource {
           return ConsentState.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown ConsentState code '"+codeString+"'");
         }
-        public Enumeration<ConsentState> fromType(Base code) throws FHIRException {
+        public Enumeration<ConsentState> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ConsentState>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -193,7 +193,9 @@ public class Consent extends DomainResource {
         throw new FHIRException("Unknown ConsentState code '"+codeString+"'");
         }
     public String toCode(ConsentState code) {
-      if (code == ConsentState.DRAFT)
+       if (code == ConsentState.NULL)
+           return null;
+       if (code == ConsentState.DRAFT)
         return "draft";
       if (code == ConsentState.PROPOSED)
         return "proposed";
@@ -206,7 +208,7 @@ public class Consent extends DomainResource {
       if (code == ConsentState.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(ConsentState code) {
       return code.getSystem();
       }
@@ -306,12 +308,12 @@ public class Consent extends DomainResource {
           return ConsentDataMeaning.AUTHOREDBY;
         throw new IllegalArgumentException("Unknown ConsentDataMeaning code '"+codeString+"'");
         }
-        public Enumeration<ConsentDataMeaning> fromType(Base code) throws FHIRException {
+        public Enumeration<ConsentDataMeaning> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ConsentDataMeaning>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("instance".equals(codeString))
@@ -325,7 +327,9 @@ public class Consent extends DomainResource {
         throw new FHIRException("Unknown ConsentDataMeaning code '"+codeString+"'");
         }
     public String toCode(ConsentDataMeaning code) {
-      if (code == ConsentDataMeaning.INSTANCE)
+       if (code == ConsentDataMeaning.NULL)
+           return null;
+       if (code == ConsentDataMeaning.INSTANCE)
         return "instance";
       if (code == ConsentDataMeaning.RELATED)
         return "related";
@@ -334,7 +338,7 @@ public class Consent extends DomainResource {
       if (code == ConsentDataMeaning.AUTHOREDBY)
         return "authoredby";
       return "?";
-      }
+   }
     public String toSystem(ConsentDataMeaning code) {
       return code.getSystem();
       }
@@ -410,12 +414,12 @@ public class Consent extends DomainResource {
           return ConsentExceptType.PERMIT;
         throw new IllegalArgumentException("Unknown ConsentExceptType code '"+codeString+"'");
         }
-        public Enumeration<ConsentExceptType> fromType(Base code) throws FHIRException {
+        public Enumeration<ConsentExceptType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ConsentExceptType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("deny".equals(codeString))
@@ -425,12 +429,14 @@ public class Consent extends DomainResource {
         throw new FHIRException("Unknown ConsentExceptType code '"+codeString+"'");
         }
     public String toCode(ConsentExceptType code) {
-      if (code == ConsentExceptType.DENY)
+       if (code == ConsentExceptType.NULL)
+           return null;
+       if (code == ConsentExceptType.DENY)
         return "deny";
       if (code == ConsentExceptType.PERMIT)
         return "permit";
       return "?";
-      }
+   }
     public String toSystem(ConsentExceptType code) {
       return code.getSystem();
       }
@@ -860,10 +866,10 @@ public class Consent extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("authority")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Consent.authority");
+          throw new FHIRException("Cannot call addChild on a singleton property Consent.authority");
         }
         else if (name.equals("uri")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Consent.uri");
+          throw new FHIRException("Cannot call addChild on a singleton property Consent.uri");
         }
         else
           return super.addChild(name);
@@ -1108,7 +1114,7 @@ public class Consent extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("meaning")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Consent.meaning");
+          throw new FHIRException("Cannot call addChild on a singleton property Consent.meaning");
         }
         else if (name.equals("reference")) {
           this.reference = new Reference();
@@ -1872,7 +1878,7 @@ public class Consent extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Consent.type");
+          throw new FHIRException("Cannot call addChild on a singleton property Consent.type");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -2413,7 +2419,7 @@ public class Consent extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("meaning")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Consent.meaning");
+          throw new FHIRException("Cannot call addChild on a singleton property Consent.meaning");
         }
         else if (name.equals("reference")) {
           this.reference = new Reference();
@@ -2919,16 +2925,6 @@ public class Consent extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getConsentingPartyTarget() { 
-      if (this.consentingPartyTarget == null)
-        this.consentingPartyTarget = new ArrayList<Resource>();
-      return this.consentingPartyTarget;
-    }
-
-    /**
      * @return {@link #actor} (Who or what is controlled by this consent. Use group to identify a set of actors by some property they share (e.g. 'admitting officers').)
      */
     public List<ConsentActorComponent> getActor() { 
@@ -3088,28 +3084,6 @@ public class Consent extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Organization> getOrganizationTarget() { 
-      if (this.organizationTarget == null)
-        this.organizationTarget = new ArrayList<Organization>();
-      return this.organizationTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Organization addOrganizationTarget() { 
-      Organization r = new Organization();
-      if (this.organizationTarget == null)
-        this.organizationTarget = new ArrayList<Organization>();
-      this.organizationTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #source} (The source on which this consent statement is based. The source might be a scanned original paper form, or a reference to a consent that links back to such a source, a reference to a document repository (e.g. XDS) that stores the original consent document.)
      */
     public Type getSource() { 
@@ -3127,8 +3101,8 @@ public class Consent extends DomainResource {
       return (Attachment) this.source;
     }
 
-    public boolean hasSourceAttachment() { 
-      return this != null && this.source instanceof Attachment;
+    public boolean hasSourceAttachment() {
+        return this.source instanceof Attachment;
     }
 
     /**
@@ -3142,8 +3116,8 @@ public class Consent extends DomainResource {
       return (Identifier) this.source;
     }
 
-    public boolean hasSourceIdentifier() { 
-      return this != null && this.source instanceof Identifier;
+    public boolean hasSourceIdentifier() {
+        return this.source instanceof Identifier;
     }
 
     /**
@@ -3157,8 +3131,8 @@ public class Consent extends DomainResource {
       return (Reference) this.source;
     }
 
-    public boolean hasSourceReference() { 
-      return this != null && this.source instanceof Reference;
+    public boolean hasSourceReference() {
+        return this.source instanceof Reference;
     }
 
     public boolean hasSource() { 
@@ -3758,7 +3732,7 @@ public class Consent extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Consent.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Consent.status");
         }
         else if (name.equals("category")) {
           return addCategory();
@@ -3772,7 +3746,7 @@ public class Consent extends DomainResource {
           return this.period;
         }
         else if (name.equals("dateTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Consent.dateTime");
+          throw new FHIRException("Cannot call addChild on a singleton property Consent.dateTime");
         }
         else if (name.equals("consentingParty")) {
           return addConsentingParty();
@@ -3802,7 +3776,7 @@ public class Consent extends DomainResource {
           return addPolicy();
         }
         else if (name.equals("policyRule")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Consent.policyRule");
+          throw new FHIRException("Cannot call addChild on a singleton property Consent.policyRule");
         }
         else if (name.equals("securityLabel")) {
           return addSecurityLabel();

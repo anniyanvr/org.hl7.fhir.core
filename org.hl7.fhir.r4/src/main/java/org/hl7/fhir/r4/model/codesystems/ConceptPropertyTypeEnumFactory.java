@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ConceptPropertyTypeEnumFactory implements EnumFactory<ConceptPropertyType> {
@@ -56,11 +52,13 @@ public class ConceptPropertyTypeEnumFactory implements EnumFactory<ConceptProper
       return ConceptPropertyType.DATETIME;
     if ("decimal".equals(codeString))
       return ConceptPropertyType.DECIMAL;
-    throw new IllegalArgumentException("Unknown ConceptPropertyType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ConceptPropertyType code '" + codeString + "'");
   }
 
   public String toCode(ConceptPropertyType code) {
-    if (code == ConceptPropertyType.CODE)
+       if (code == ConceptPropertyType.NULL)
+           return null;
+       if (code == ConceptPropertyType.CODE)
       return "code";
     if (code == ConceptPropertyType.CODING)
       return "Coding";
@@ -75,10 +73,10 @@ public class ConceptPropertyTypeEnumFactory implements EnumFactory<ConceptProper
     if (code == ConceptPropertyType.DECIMAL)
       return "decimal";
     return "?";
-  }
+   }
 
-    public String toSystem(ConceptPropertyType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ConceptPropertyType code) {
+    return code.getSystem();
+  }
 
 }

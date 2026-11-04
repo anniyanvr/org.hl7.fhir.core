@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ConditionalDeleteStatusEnumFactory implements EnumFactory<ConditionalDeleteStatus> {
@@ -48,21 +44,23 @@ public class ConditionalDeleteStatusEnumFactory implements EnumFactory<Condition
       return ConditionalDeleteStatus.SINGLE;
     if ("multiple".equals(codeString))
       return ConditionalDeleteStatus.MULTIPLE;
-    throw new IllegalArgumentException("Unknown ConditionalDeleteStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ConditionalDeleteStatus code '" + codeString + "'");
   }
 
   public String toCode(ConditionalDeleteStatus code) {
-    if (code == ConditionalDeleteStatus.NOTSUPPORTED)
+       if (code == ConditionalDeleteStatus.NULL)
+           return null;
+       if (code == ConditionalDeleteStatus.NOTSUPPORTED)
       return "not-supported";
     if (code == ConditionalDeleteStatus.SINGLE)
       return "single";
     if (code == ConditionalDeleteStatus.MULTIPLE)
       return "multiple";
     return "?";
-  }
+   }
 
-    public String toSystem(ConditionalDeleteStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(ConditionalDeleteStatus code) {
+    return code.getSystem();
+  }
 
 }

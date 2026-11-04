@@ -1,11 +1,65 @@
 package org.hl7.fhir.convertors.conv40_50.datatypes40_50;
 
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_40_50;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.*;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.metadata40_50.*;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.*;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.*;
-import org.hl7.fhir.convertors.conv40_50.resources40_50.*;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Address40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Age40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Annotation40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Attachment40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.CodeableConcept40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Coding40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.ContactPoint40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Count40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Distance40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Duration40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.HumanName40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Identifier40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Money40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.MoneyQuantity40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Period40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Quantity40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Range40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Ratio40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.SampledData40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Signature40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.SimpleQuantity40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Timing40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.metadata40_50.ContactDetail40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.metadata40_50.Contributor40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.metadata40_50.DataRequirement40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.metadata40_50.Expression40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.metadata40_50.ParameterDefinition40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.metadata40_50.RelatedArtifact40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.metadata40_50.TriggerDefinition40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.metadata40_50.UsageContext40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Base64Binary40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Boolean40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Canonical40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Code40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Date40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.DateTime40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Decimal40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Id40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Instant40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Integer40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.MarkDown40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Oid40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.PositiveInt40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Time40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.UnsignedInt40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Uri40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Url40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Uuid40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Dosage40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.ElementDefinition40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Extension40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Meta40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Narrative40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
+import org.hl7.fhir.convertors.conv40_50.resources40_50.MarketingStatus40_50;
+import org.hl7.fhir.convertors.conv40_50.resources40_50.ProdCharacteristic40_50;
+import org.hl7.fhir.convertors.conv40_50.resources40_50.ProductShelfLife40_50;
+import org.hl7.fhir.convertors.conv40_50.resources40_50.SubstanceAmount40_50;
 import org.hl7.fhir.exceptions.FHIRException;
 
 public class Type40_50 {
@@ -17,7 +71,7 @@ public class Type40_50 {
   }
 
   public org.hl7.fhir.r5.model.DataType convertType(org.hl7.fhir.r4.model.Type src) throws FHIRException {
-    if (src == null) return null;
+    if (src == null || src.isEmpty()) return null;
     if (src instanceof org.hl7.fhir.r4.model.Base64BinaryType)
       return Base64Binary40_50.convertBase64Binary((org.hl7.fhir.r4.model.Base64BinaryType) src);
     if (src instanceof org.hl7.fhir.r4.model.BooleanType)
@@ -44,14 +98,14 @@ public class Type40_50 {
     if (src instanceof org.hl7.fhir.r4.model.MarkdownType)
       return MarkDown40_50.convertMarkdown((org.hl7.fhir.r4.model.MarkdownType) src);
     if (src instanceof org.hl7.fhir.r4.model.OidType) return Oid40_50.convertOid((org.hl7.fhir.r4.model.OidType) src);
-    if (src instanceof org.hl7.fhir.r4.model.StringType)
-      return String40_50.convertString((org.hl7.fhir.r4.model.StringType) src);
     if (src instanceof org.hl7.fhir.r4.model.TimeType)
       return Time40_50.convertTime((org.hl7.fhir.r4.model.TimeType) src);
     if (src instanceof org.hl7.fhir.r4.model.UrlType) return Url40_50.convertUrl((org.hl7.fhir.r4.model.UrlType) src);
     if (src instanceof org.hl7.fhir.r4.model.UuidType)
       return Uuid40_50.convertUuid((org.hl7.fhir.r4.model.UuidType) src);
     if (src instanceof org.hl7.fhir.r4.model.UriType) return Uri40_50.convertUri((org.hl7.fhir.r4.model.UriType) src);
+    if (src instanceof org.hl7.fhir.r4.model.StringType)
+      return String40_50.convertString((org.hl7.fhir.r4.model.StringType) src);
     if (src instanceof org.hl7.fhir.r4.model.Extension)
       return Extension40_50.convertExtension((org.hl7.fhir.r4.model.Extension) src);
     if (src instanceof org.hl7.fhir.r4.model.Narrative)
@@ -96,8 +150,6 @@ public class Type40_50 {
       return ParameterDefinition40_50.convertParameterDefinition((org.hl7.fhir.r4.model.ParameterDefinition) src);
     if (src instanceof org.hl7.fhir.r4.model.Period)
       return Period40_50.convertPeriod((org.hl7.fhir.r4.model.Period) src);
-    if (src instanceof org.hl7.fhir.r4.model.Population)
-      return Population40_50.convertPopulation((org.hl7.fhir.r4.model.Population) src);
     if (src instanceof org.hl7.fhir.r4.model.ProdCharacteristic)
       return ProdCharacteristic40_50.convertProdCharacteristic((org.hl7.fhir.r4.model.ProdCharacteristic) src);
     if (src instanceof org.hl7.fhir.r4.model.ProductShelfLife)
@@ -129,14 +181,14 @@ public class Type40_50 {
     if (src instanceof org.hl7.fhir.r4.model.ElementDefinition)
       return ElementDefinition40_50.convertElementDefinition((org.hl7.fhir.r4.model.ElementDefinition) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown type " + src.fhirType());
+      throw new FHIRException("The type " + src.fhirType()+" cannot be converted from R4 to R5");
     } else {
       return null;
     }
   }
 
   public org.hl7.fhir.r4.model.Type convertType(org.hl7.fhir.r5.model.DataType src) throws FHIRException {
-    if (src == null) return null;
+    if (src == null || src.isEmpty()) return null;
     if (src instanceof org.hl7.fhir.r5.model.Base64BinaryType)
       return Base64Binary40_50.convertBase64Binary((org.hl7.fhir.r5.model.Base64BinaryType) src);
     if (src instanceof org.hl7.fhir.r5.model.BooleanType)
@@ -167,6 +219,8 @@ public class Type40_50 {
       return UnsignedInt40_50.convertUnsignedInt((org.hl7.fhir.r5.model.UnsignedIntType) src);
     if (src instanceof org.hl7.fhir.r5.model.IntegerType)
       return Integer40_50.convertInteger((org.hl7.fhir.r5.model.IntegerType) src);
+    if (src instanceof org.hl7.fhir.r5.model.Integer64Type)
+      return Integer40_50.convertInteger64((org.hl7.fhir.r5.model.Integer64Type) src);
     if (src instanceof org.hl7.fhir.r5.model.UrlType) return Url40_50.convertUrl((org.hl7.fhir.r5.model.UrlType) src);
     if (src instanceof org.hl7.fhir.r5.model.UuidType)
       return Uuid40_50.convertUuid((org.hl7.fhir.r5.model.UuidType) src);
@@ -215,8 +269,6 @@ public class Type40_50 {
       return ParameterDefinition40_50.convertParameterDefinition((org.hl7.fhir.r5.model.ParameterDefinition) src);
     if (src instanceof org.hl7.fhir.r5.model.Period)
       return Period40_50.convertPeriod((org.hl7.fhir.r5.model.Period) src);
-    if (src instanceof org.hl7.fhir.r5.model.Population)
-      return Population40_50.convertPopulation((org.hl7.fhir.r5.model.Population) src);
     if (src instanceof org.hl7.fhir.r5.model.ProdCharacteristic)
       return ProdCharacteristic40_50.convertProdCharacteristic((org.hl7.fhir.r5.model.ProdCharacteristic) src);
     if (src instanceof org.hl7.fhir.r5.model.ProductShelfLife)
@@ -248,7 +300,7 @@ public class Type40_50 {
     if (src instanceof org.hl7.fhir.r5.model.ElementDefinition)
       return ElementDefinition40_50.convertElementDefinition((org.hl7.fhir.r5.model.ElementDefinition) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown type " + src.fhirType());
+      throw new FHIRException("The type " + src.fhirType()+" cannot be converted from R5 to R4");
     } else {
       return null;
     }

@@ -8,6 +8,9 @@ import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Instant40
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.model.CodeableReference;
+import org.hl7.fhir.r5.model.Enumeration;
+import org.hl7.fhir.r5.model.Slot;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -50,11 +53,11 @@ public class Slot40_50 {
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getServiceCategory())
       tgt.addServiceCategory(CodeableConcept40_50.convertCodeableConcept(t));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getServiceType())
-      tgt.addServiceType(CodeableConcept40_50.convertCodeableConcept(t));
+      tgt.addServiceType(new CodeableReference().setConcept(CodeableConcept40_50.convertCodeableConcept(t)));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getSpecialty())
       tgt.addSpecialty(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasAppointmentType())
-      tgt.setAppointmentType(CodeableConcept40_50.convertCodeableConcept(src.getAppointmentType()));
+      tgt.addAppointmentType(CodeableConcept40_50.convertCodeableConcept(src.getAppointmentType()));
     if (src.hasSchedule())
       tgt.setSchedule(Reference40_50.convertReference(src.getSchedule()));
     if (src.hasStatus())
@@ -79,12 +82,13 @@ public class Slot40_50 {
       tgt.addIdentifier(Identifier40_50.convertIdentifier(t));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getServiceCategory())
       tgt.addServiceCategory(CodeableConcept40_50.convertCodeableConcept(t));
-    for (org.hl7.fhir.r5.model.CodeableConcept t : src.getServiceType())
-      tgt.addServiceType(CodeableConcept40_50.convertCodeableConcept(t));
+    for (CodeableReference t : src.getServiceType())
+      if (t.hasConcept())
+        tgt.addServiceType(CodeableConcept40_50.convertCodeableConcept(t.getConcept()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getSpecialty())
       tgt.addSpecialty(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasAppointmentType())
-      tgt.setAppointmentType(CodeableConcept40_50.convertCodeableConcept(src.getAppointmentType()));
+      tgt.setAppointmentType(CodeableConcept40_50.convertCodeableConcept(src.getAppointmentTypeFirstRep()));
     if (src.hasSchedule())
       tgt.setSchedule(Reference40_50.convertReference(src.getSchedule()));
     if (src.hasStatus())
@@ -101,58 +105,66 @@ public class Slot40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Slot.SlotStatus> convertSlotStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Slot.SlotStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Slot.SlotStatus> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Slot.SlotStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case BUSY:
-        tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.BUSY);
-        break;
-      case FREE:
-        tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.FREE);
-        break;
-      case BUSYUNAVAILABLE:
-        tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.BUSYUNAVAILABLE);
-        break;
-      case BUSYTENTATIVE:
-        tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.BUSYTENTATIVE);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Slot.SlotStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Slot.SlotStatus> tgt = new Enumeration<>(new Slot.SlotStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case BUSY:
+                  tgt.setValue(Slot.SlotStatus.BUSY);
+                  break;
+              case FREE:
+                  tgt.setValue(Slot.SlotStatus.FREE);
+                  break;
+              case BUSYUNAVAILABLE:
+                  tgt.setValue(Slot.SlotStatus.BUSYUNAVAILABLE);
+                  break;
+              case BUSYTENTATIVE:
+                  tgt.setValue(Slot.SlotStatus.BUSYTENTATIVE);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(Slot.SlotStatus.ENTEREDINERROR);
+                  break;
+              default:
+                  tgt.setValue(Slot.SlotStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Slot.SlotStatus> convertSlotStatus(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Slot.SlotStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Slot.SlotStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Slot.SlotStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case BUSY:
-        tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.BUSY);
-        break;
-      case FREE:
-        tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.FREE);
-        break;
-      case BUSYUNAVAILABLE:
-        tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.BUSYUNAVAILABLE);
-        break;
-      case BUSYTENTATIVE:
-        tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.BUSYTENTATIVE);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.ENTEREDINERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Slot.SlotStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Slot.SlotStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case BUSY:
+                  tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.BUSY);
+                  break;
+              case FREE:
+                  tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.FREE);
+                  break;
+              case BUSYUNAVAILABLE:
+                  tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.BUSYUNAVAILABLE);
+                  break;
+              case BUSYTENTATIVE:
+                  tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.BUSYTENTATIVE);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.ENTEREDINERROR);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.Slot.SlotStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 }

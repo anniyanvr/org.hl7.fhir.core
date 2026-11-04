@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -82,11 +78,13 @@ public class V3DataOperationEnumFactory implements EnumFactory<V3DataOperation> 
       return V3DataOperation.RESUME;
     if ("SUSPEND".equals(codeString))
       return V3DataOperation.SUSPEND;
-    throw new IllegalArgumentException("Unknown V3DataOperation code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3DataOperation code '" + codeString + "'");
   }
 
   public String toCode(V3DataOperation code) {
-    if (code == V3DataOperation.OPERATE)
+       if (code == V3DataOperation.NULL)
+           return null;
+       if (code == V3DataOperation.OPERATE)
       return "OPERATE";
     if (code == V3DataOperation.CREATE)
       return "CREATE";
@@ -127,10 +125,10 @@ public class V3DataOperationEnumFactory implements EnumFactory<V3DataOperation> 
     if (code == V3DataOperation.SUSPEND)
       return "SUSPEND";
     return "?";
-  }
+   }
 
-    public String toSystem(V3DataOperation code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3DataOperation code) {
+    return code.getSystem();
+  }
 
 }

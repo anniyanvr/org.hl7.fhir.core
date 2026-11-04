@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3TableCellHorizontalAlignEnumFactory implements EnumFactory<V3TableCellHorizontalAlign> {
@@ -52,11 +48,13 @@ public class V3TableCellHorizontalAlignEnumFactory implements EnumFactory<V3Tabl
       return V3TableCellHorizontalAlign.LEFT;
     if ("right".equals(codeString))
       return V3TableCellHorizontalAlign.RIGHT;
-    throw new IllegalArgumentException("Unknown V3TableCellHorizontalAlign code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3TableCellHorizontalAlign code '" + codeString + "'");
   }
 
   public String toCode(V3TableCellHorizontalAlign code) {
-    if (code == V3TableCellHorizontalAlign.CENTER)
+       if (code == V3TableCellHorizontalAlign.NULL)
+           return null;
+       if (code == V3TableCellHorizontalAlign.CENTER)
       return "center";
     if (code == V3TableCellHorizontalAlign.CHAR)
       return "char";
@@ -67,10 +65,10 @@ public class V3TableCellHorizontalAlignEnumFactory implements EnumFactory<V3Tabl
     if (code == V3TableCellHorizontalAlign.RIGHT)
       return "right";
     return "?";
-  }
+   }
 
-    public String toSystem(V3TableCellHorizontalAlign code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3TableCellHorizontalAlign code) {
+    return code.getSystem();
+  }
 
 }

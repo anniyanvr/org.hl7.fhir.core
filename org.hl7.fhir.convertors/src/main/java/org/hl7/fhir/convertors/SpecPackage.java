@@ -1,20 +1,23 @@
 package org.hl7.fhir.convertors;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hl7.fhir.model.core.StructureDefinition;
+import org.hl7.fhir.model.core.ValueSet;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hl7.fhir.r5.model.StructureDefinition;
-import org.hl7.fhir.r5.model.ValueSet;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class SpecPackage {
-  private Map<String, ValueSet> valuesets = new HashMap<String, ValueSet>();
-  private Map<String, ValueSet> expansions = new HashMap<String, ValueSet>();
+  private List<ValueSet> valuesets = new ArrayList<ValueSet>();
+  private List<ValueSet> expansions = new ArrayList<ValueSet>();
   private Map<String, StructureDefinition> types = new HashMap<String, StructureDefinition>();
   private Map<String, StructureDefinition> resources = new HashMap<String, StructureDefinition>();
   private Map<String, StructureDefinition> extensions = new HashMap<String, StructureDefinition>();

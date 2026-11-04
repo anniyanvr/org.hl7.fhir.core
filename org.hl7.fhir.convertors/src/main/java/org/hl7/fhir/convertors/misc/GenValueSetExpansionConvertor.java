@@ -1,5 +1,7 @@
 package org.hl7.fhir.convertors.misc;
 
+import java.io.IOException;
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -39,17 +41,15 @@ import org.hl7.fhir.dstu2.model.Resource;
 import org.hl7.fhir.dstu2.model.ValueSet;
 import org.hl7.fhir.exceptions.FHIRFormatError;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
+@SuppressWarnings("checkstyle:systemout")
 public class GenValueSetExpansionConvertor {
 
   public static void main(String[] args) throws FHIRFormatError, IOException {
     String src = args[0];
     String tgt = args[1];
-    Bundle bundle = (Bundle) new XmlParser().parse(new FileInputStream(src));
+    Bundle bundle = (Bundle) new XmlParser().parse(ManagedFileAccess.inStream(src));
     for (BundleEntryComponent be : bundle.getEntry()) {
       Resource res = be.getResource();
       if (res != null) {
@@ -58,7 +58,7 @@ public class GenValueSetExpansionConvertor {
           id = tail(((ValueSet) res).getUrl());
         String dst = Utilities.path(tgt, res.fhirType() + "-" + id + ".json");
         System.out.println(dst);
-        new JsonParser().setOutputStyle(OutputStyle.NORMAL).compose(new FileOutputStream(dst), res);
+        new JsonParser().setOutputStyle(OutputStyle.NORMAL).compose(ManagedFileAccess.outStream(dst), res);
       }
     }
   }

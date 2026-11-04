@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -72,11 +68,13 @@ public class DataAbsentReasonEnumFactory implements EnumFactory<DataAbsentReason
       return DataAbsentReason.NOTPERFORMED;
     if ("not-permitted".equals(codeString))
       return DataAbsentReason.NOTPERMITTED;
-    throw new IllegalArgumentException("Unknown DataAbsentReason code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown DataAbsentReason code '" + codeString + "'");
   }
 
   public String toCode(DataAbsentReason code) {
-    if (code == DataAbsentReason.UNKNOWN)
+       if (code == DataAbsentReason.NULL)
+           return null;
+       if (code == DataAbsentReason.UNKNOWN)
       return "unknown";
     if (code == DataAbsentReason.ASKEDUNKNOWN)
       return "asked-unknown";
@@ -107,10 +105,10 @@ public class DataAbsentReasonEnumFactory implements EnumFactory<DataAbsentReason
     if (code == DataAbsentReason.NOTPERMITTED)
       return "not-permitted";
     return "?";
-  }
+   }
 
-    public String toSystem(DataAbsentReason code) {
-      return code.getSystem();
-      }
+  public String toSystem(DataAbsentReason code) {
+    return code.getSystem();
+  }
 
 }

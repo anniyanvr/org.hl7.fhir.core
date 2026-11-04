@@ -1,11 +1,12 @@
 package org.hl7.fhir.convertors.conv30_40.resources30_40;
 
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_30_40;
-import org.hl7.fhir.convertors.context.ConversionContext30_40;
 import org.hl7.fhir.convertors.conv30_40.datatypes30_40.Extension30_40;
 import org.hl7.fhir.convertors.conv30_40.datatypes30_40.Meta30_40;
 import org.hl7.fhir.convertors.conv30_40.datatypes30_40.Narrative30_40;
 import org.hl7.fhir.exceptions.FHIRException;
+
+import java.util.Arrays;
 
 public class Resource30_40 {
 
@@ -69,6 +70,8 @@ public class Resource30_40 {
       return CodeSystem30_40.convertCodeSystem((org.hl7.fhir.dstu3.model.CodeSystem) src);
     if (src instanceof org.hl7.fhir.dstu3.model.Communication)
       return Communication30_40.convertCommunication((org.hl7.fhir.dstu3.model.Communication) src);
+    if (src instanceof org.hl7.fhir.dstu3.model.CommunicationRequest)
+      return CommunicationRequest30_40.convertCommunicationRequest((org.hl7.fhir.dstu3.model.CommunicationRequest) src);
     if (src instanceof org.hl7.fhir.dstu3.model.CompartmentDefinition)
       return CompartmentDefinition30_40.convertCompartmentDefinition((org.hl7.fhir.dstu3.model.CompartmentDefinition) src);
     if (src instanceof org.hl7.fhir.dstu3.model.Composition)
@@ -194,6 +197,8 @@ public class Resource30_40 {
       return Substance30_40.convertSubstance((org.hl7.fhir.dstu3.model.Substance) src);
     if (src instanceof org.hl7.fhir.dstu3.model.SupplyDelivery)
       return SupplyDelivery30_40.convertSupplyDelivery((org.hl7.fhir.dstu3.model.SupplyDelivery) src);
+    if (src instanceof org.hl7.fhir.dstu3.model.Task)
+      return Task30_40.convertTask((org.hl7.fhir.dstu3.model.Task) src);
     if (src instanceof org.hl7.fhir.dstu3.model.TestReport)
       return TestReport30_40.convertTestReport((org.hl7.fhir.dstu3.model.TestReport) src);
     if (src instanceof org.hl7.fhir.dstu3.model.TestScript)
@@ -201,7 +206,7 @@ public class Resource30_40 {
     if (src instanceof org.hl7.fhir.dstu3.model.ValueSet)
       return ValueSet30_40.convertValueSet((org.hl7.fhir.dstu3.model.ValueSet) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown resource " + src.fhirType());
+      throw new FHIRException("The resource " + src.fhirType()+" cannot be converted from R3 to R4");
     } else {
       return null;
     }
@@ -214,9 +219,10 @@ public class Resource30_40 {
   public org.hl7.fhir.dstu3.model.Resource convertResource(org.hl7.fhir.r4.model.Resource src, BaseAdvisor_30_40 advisor) throws FHIRException {
     if (src == null) return null;
     if (src instanceof org.hl7.fhir.r4.model.Parameters) {
-      if (((org.hl7.fhir.r4.model.Parameters) src).hasParameter("profile-url"))
-        return ExpansionProfile30_40.convertExpansionProfile((org.hl7.fhir.r4.model.Parameters) src);
-      else return Parameters30_40.convertParameters((org.hl7.fhir.r4.model.Parameters) src);
+//      if (((org.hl7.fhir.r4.model.Parameters) src).hasParameterValue("profile-url"))
+//        return ExpansionProfile30_40.convertExpansionProfile((org.hl7.fhir.r4.model.Parameters) src);
+//      else 
+        return Parameters30_40.convertParameters((org.hl7.fhir.r4.model.Parameters) src);
     }
     if (src instanceof org.hl7.fhir.r4.model.Account)
       return Account30_40.convertAccount((org.hl7.fhir.r4.model.Account) src);
@@ -249,6 +255,8 @@ public class Resource30_40 {
       return CodeSystem30_40.convertCodeSystem((org.hl7.fhir.r4.model.CodeSystem) src);
     if (src instanceof org.hl7.fhir.r4.model.Communication)
       return Communication30_40.convertCommunication((org.hl7.fhir.r4.model.Communication) src);
+    if (src instanceof org.hl7.fhir.r4.model.CommunicationRequest)
+      return CommunicationRequest30_40.convertCommunicationRequest((org.hl7.fhir.r4.model.CommunicationRequest) src);
     if (src instanceof org.hl7.fhir.r4.model.CompartmentDefinition)
       return CompartmentDefinition30_40.convertCompartmentDefinition((org.hl7.fhir.r4.model.CompartmentDefinition) src);
     if (src instanceof org.hl7.fhir.r4.model.Composition)
@@ -370,6 +378,8 @@ public class Resource30_40 {
       return Substance30_40.convertSubstance((org.hl7.fhir.r4.model.Substance) src);
     if (src instanceof org.hl7.fhir.r4.model.SupplyDelivery)
       return SupplyDelivery30_40.convertSupplyDelivery((org.hl7.fhir.r4.model.SupplyDelivery) src);
+    if (src instanceof org.hl7.fhir.r4.model.Task)
+      return Task30_40.convertTask((org.hl7.fhir.r4.model.Task) src);
     if (src instanceof org.hl7.fhir.r4.model.TestReport)
       return TestReport30_40.convertTestReport((org.hl7.fhir.r4.model.TestReport) src);
     if (src instanceof org.hl7.fhir.r4.model.TestScript)
@@ -377,14 +387,15 @@ public class Resource30_40 {
     if (src instanceof org.hl7.fhir.r4.model.ValueSet)
       return ValueSet30_40.convertValueSet((org.hl7.fhir.r4.model.ValueSet) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown resource " + src.fhirType());
+      throw new FHIRException("The resource " + src.fhirType()+" cannot be converted from R4 to R3");
     } else {
       return null;
     }
   }
 
   public void copyDomainResource(org.hl7.fhir.dstu3.model.DomainResource src,
-                                 org.hl7.fhir.r4.model.DomainResource tgt) throws FHIRException {
+                                 org.hl7.fhir.r4.model.DomainResource tgt,
+                                 String... extensionUrlsToIgnore) throws FHIRException {
     copyResource(src, tgt);
     if (src.hasText()) tgt.setText(Narrative30_40.convertNarrative(src.getText()));
     src.getContained().stream()
@@ -392,38 +403,39 @@ public class Resource30_40 {
       .forEach(tgt::addContained);
     src.getExtension().forEach(extension -> {
 
-      if (advisor.useAdvisorForExtension(ConversionContext30_40.INSTANCE.path(), extension)) {
+      if (advisor.useAdvisorForExtension(extension)) {
         org.hl7.fhir.r4.model.Extension convertExtension = new org.hl7.fhir.r4.model.Extension();
-        advisor.handleExtension(ConversionContext30_40.INSTANCE.path(), extension, convertExtension);
+        advisor.handleExtension(extension, convertExtension);
         tgt.addExtension(convertExtension);
-      } else if (!advisor.ignoreExtension(ConversionContext30_40.INSTANCE.path(), extension)) {
+      } else if (!advisor.ignoreExtension(extension)&& !Arrays.asList(extensionUrlsToIgnore).contains(extension.getUrl())) {
         tgt.addExtension(Extension30_40.convertExtension(extension));
       }
     });
     src.getModifierExtension().stream()
-      .filter(extension -> !advisor.ignoreExtension(ConversionContext30_40.INSTANCE.path(), extension))
+      .filter(extension -> !advisor.ignoreExtension(extension))
       .map(Extension30_40::convertExtension)
       .forEach(tgt::addModifierExtension);
   }
 
   public void copyDomainResource(org.hl7.fhir.r4.model.DomainResource src,
-                                 org.hl7.fhir.dstu3.model.DomainResource tgt) throws FHIRException {
+                                 org.hl7.fhir.dstu3.model.DomainResource tgt,
+                                 String... extensionUrlsToIgnore) throws FHIRException {
     copyResource(src, tgt);
     if (src.hasText()) tgt.setText(Narrative30_40.convertNarrative(src.getText()));
     src.getContained().stream()
       .map(resource -> convertResource(resource, advisor))
       .forEach(tgt::addContained);
     src.getExtension().forEach(extension -> {
-      if (advisor.useAdvisorForExtension(ConversionContext30_40.INSTANCE.path(), extension)) {
+      if (advisor.useAdvisorForExtension(extension)) {
         org.hl7.fhir.dstu3.model.Extension convertExtension = new org.hl7.fhir.dstu3.model.Extension();
-        advisor.handleExtension(ConversionContext30_40.INSTANCE.path(), extension, convertExtension);
+        advisor.handleExtension(extension, convertExtension);
         tgt.addExtension(convertExtension);
-      } else if (!advisor.ignoreExtension(ConversionContext30_40.INSTANCE.path(), extension)) {
+      } else if (!advisor.ignoreExtension(extension) && !Arrays.asList(extensionUrlsToIgnore).contains(extension.getUrl())) {
         tgt.addExtension(Extension30_40.convertExtension(extension));
       }
     });
     src.getModifierExtension().stream()
-      .filter(extension -> !advisor.ignoreExtension("", extension))//TODO add path
+      .filter(extension -> !advisor.ignoreExtension(extension))
       .map(Extension30_40::convertExtension)
       .forEach(tgt::addModifierExtension);
   }

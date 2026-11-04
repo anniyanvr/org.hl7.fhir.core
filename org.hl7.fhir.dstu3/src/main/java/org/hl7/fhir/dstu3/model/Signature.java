@@ -227,8 +227,8 @@ public class Signature extends Type implements ICompositeType {
       return (UriType) this.who;
     }
 
-    public boolean hasWhoUriType() { 
-      return this != null && this.who instanceof UriType;
+    public boolean hasWhoUriType() {
+        return this.who instanceof UriType;
     }
 
     /**
@@ -242,8 +242,8 @@ public class Signature extends Type implements ICompositeType {
       return (Reference) this.who;
     }
 
-    public boolean hasWhoReference() { 
-      return this != null && this.who instanceof Reference;
+    public boolean hasWhoReference() {
+        return this.who instanceof Reference;
     }
 
     public boolean hasWho() { 
@@ -278,8 +278,8 @@ public class Signature extends Type implements ICompositeType {
       return (UriType) this.onBehalfOf;
     }
 
-    public boolean hasOnBehalfOfUriType() { 
-      return this != null && this.onBehalfOf instanceof UriType;
+    public boolean hasOnBehalfOfUriType() {
+        return this.onBehalfOf instanceof UriType;
     }
 
     /**
@@ -293,8 +293,8 @@ public class Signature extends Type implements ICompositeType {
       return (Reference) this.onBehalfOf;
     }
 
-    public boolean hasOnBehalfOfReference() { 
-      return this != null && this.onBehalfOf instanceof Reference;
+    public boolean hasOnBehalfOfReference() {
+        return this.onBehalfOf instanceof Reference;
     }
 
     public boolean hasOnBehalfOf() { 
@@ -534,7 +534,7 @@ public class Signature extends Type implements ICompositeType {
           return addType();
         }
         else if (name.equals("when")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Signature.when");
+          throw new FHIRException("Cannot call addChild on a singleton property Signature.when");
         }
         else if (name.equals("whoUri")) {
           this.who = new UriType();
@@ -553,10 +553,10 @@ public class Signature extends Type implements ICompositeType {
           return this.onBehalfOf;
         }
         else if (name.equals("contentType")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Signature.contentType");
+          throw new FHIRException("Cannot call addChild on a singleton property Signature.contentType");
         }
         else if (name.equals("blob")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Signature.blob");
+          throw new FHIRException("Cannot call addChild on a singleton property Signature.blob");
         }
         else
           return super.addChild(name);

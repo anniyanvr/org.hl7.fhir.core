@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class HspcAddressUseEnumFactory implements EnumFactory<HspcAddressUse> {
@@ -64,11 +60,13 @@ public class HspcAddressUseEnumFactory implements EnumFactory<HspcAddressUse> {
       return HspcAddressUse.DIR;
     if ("CONF".equals(codeString))
       return HspcAddressUse.CONF;
-    throw new IllegalArgumentException("Unknown HspcAddressUse code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown HspcAddressUse code '" + codeString + "'");
   }
 
   public String toCode(HspcAddressUse code) {
-    if (code == HspcAddressUse.BAD)
+       if (code == HspcAddressUse.NULL)
+           return null;
+       if (code == HspcAddressUse.BAD)
       return "BAD";
     if (code == HspcAddressUse.PHYS)
       return "PHYS";
@@ -91,10 +89,10 @@ public class HspcAddressUseEnumFactory implements EnumFactory<HspcAddressUse> {
     if (code == HspcAddressUse.CONF)
       return "CONF";
     return "?";
-  }
+   }
 
-    public String toSystem(HspcAddressUse code) {
-      return code.getSystem();
-      }
+  public String toSystem(HspcAddressUse code) {
+    return code.getSystem();
+  }
 
 }

@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +45,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for UsageContext Type: Specifies clinical/business/etc. metadata that can be used to retrieve, index and/or categorize an artifact. This metadata can either be specific to the applicable population (e.g., age category, DRG) or the specific context of care (e.g., venue, care setting, provider of care).
+ * UsageContext Type: Specifies clinical/business/etc. metadata that can be used to retrieve, index and/or categorize an artifact. This metadata can either be specific to the applicable population (e.g., age category, DRG) or the specific context of care (e.g., venue, care setting, provider of care).
  */
 @DatatypeDef(name="UsageContext")
 public class UsageContext extends DataType implements ICompositeType {
@@ -55,7 +55,7 @@ public class UsageContext extends DataType implements ICompositeType {
      */
     @Child(name = "code", type = {Coding.class}, order=0, min=1, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Type of context being specified", formalDefinition="A code that identifies the type of context being specified by this usage context." )
-    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/usage-context-type")
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://terminology.hl7.org/ValueSet/usage-context-type")
     protected Coding code;
 
     /**
@@ -126,8 +126,8 @@ public class UsageContext extends DataType implements ICompositeType {
       return (CodeableConcept) this.value;
     }
 
-    public boolean hasValueCodeableConcept() { 
-      return this != null && this.value instanceof CodeableConcept;
+    public boolean hasValueCodeableConcept() {
+        return this.value instanceof CodeableConcept;
     }
 
     /**
@@ -141,8 +141,8 @@ public class UsageContext extends DataType implements ICompositeType {
       return (Quantity) this.value;
     }
 
-    public boolean hasValueQuantity() { 
-      return this != null && this.value instanceof Quantity;
+    public boolean hasValueQuantity() {
+        return this.value instanceof Quantity;
     }
 
     /**
@@ -156,8 +156,8 @@ public class UsageContext extends DataType implements ICompositeType {
       return (Range) this.value;
     }
 
-    public boolean hasValueRange() { 
-      return this != null && this.value instanceof Range;
+    public boolean hasValueRange() {
+        return this.value instanceof Range;
     }
 
     /**
@@ -171,8 +171,8 @@ public class UsageContext extends DataType implements ICompositeType {
       return (Reference) this.value;
     }
 
-    public boolean hasValueReference() { 
-      return this != null && this.value instanceof Reference;
+    public boolean hasValueReference() {
+        return this.value instanceof Reference;
     }
 
     public boolean hasValue() { 
@@ -184,7 +184,7 @@ public class UsageContext extends DataType implements ICompositeType {
      */
     public UsageContext setValue(DataType value) { 
       if (value != null && !(value instanceof CodeableConcept || value instanceof Quantity || value instanceof Range || value instanceof Reference))
-        throw new Error("Not the right type for UsageContext.value[x]: "+value.fhirType());
+        throw new FHIRException("Not the right type for UsageContext.value[x]: "+value.fhirType());
       this.value = value;
       return this;
     }
@@ -245,6 +245,17 @@ public class UsageContext extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("code")) {
+          this.code = null;
+        } else if (name.equals("value[x]")) {
+          this.value = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -301,6 +312,10 @@ public class UsageContext extends DataType implements ICompositeType {
         UsageContext dst = new UsageContext();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((UsageContext) dst);
       }
 
       public void copyValues(UsageContext dst) {

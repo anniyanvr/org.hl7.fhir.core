@@ -38,6 +38,8 @@ import java.io.UnsupportedEncodingException;
 
 import org.hl7.fhir.utilities.ElementDecoration;
 
+import javax.xml.XMLConstants;
+
 /**
  * XML Writer class.
  */
@@ -54,9 +56,69 @@ public class XMLWriter extends OutputStreamWriter implements IXMLWriter {
 	private OutputStream stream;
 	private boolean started = false;
 	private String[] specialAttributeNames = new String[] {"id", "name" };
-	private boolean sortAttributes;
+	private boolean canonical;
 	private int attributeLineWrap;
   private boolean xml1_1;
+  private boolean ignoreComments;
+
+	// XMLWriter emits its output in very small pieces - a '<', a name, ' ', an attribute
+	// name, '="', the value, '"' - and each one written straight to OutputStreamWriter costs
+	// a lock and a charset encoder pass. Batch them here and hand the encoder whole buffers.
+	// Everything this class writes goes through the overrides below, and flush()/close() drain
+	// the buffer first, so ordering with writeBytes() is preserved.
+	private static final int OUT_BUFFER_SIZE = 8192;
+	private final char[] outBuffer = new char[OUT_BUFFER_SIZE];
+	private int outLength;
+
+	private void drainBuffer() throws IOException {
+		if (outLength > 0) {
+			super.write(outBuffer, 0, outLength);
+			outLength = 0;
+		}
+	}
+
+	@Override
+	public void write(int c) throws IOException {
+		if (outLength == OUT_BUFFER_SIZE) {
+			drainBuffer();
+		}
+		outBuffer[outLength++] = (char) c;
+	}
+
+	@Override
+	public void write(char[] cbuf, int off, int len) throws IOException {
+		if (len >= OUT_BUFFER_SIZE) {
+			drainBuffer();
+			super.write(cbuf, off, len);
+			return;
+		}
+		if (outLength + len > OUT_BUFFER_SIZE) {
+			drainBuffer();
+		}
+		System.arraycopy(cbuf, off, outBuffer, outLength, len);
+		outLength += len;
+	}
+
+	@Override
+	public void write(String str, int off, int len) throws IOException {
+		if (len >= OUT_BUFFER_SIZE) {
+			drainBuffer();
+			super.write(str, off, len);
+			return;
+		}
+		if (outLength + len > OUT_BUFFER_SIZE) {
+			drainBuffer();
+		}
+		str.getChars(off, off + len, outBuffer, outLength);
+		outLength += len;
+	}
+
+	@Override
+	public void flush() throws IOException {
+		drainBuffer();
+		super.flush();
+	}
+
 	
 	public final static int LINE_UNIX = 0;
 	public final static int LINE_WINDOWS = 1;
@@ -205,7 +267,7 @@ public class XMLWriter extends OutputStreamWriter implements IXMLWriter {
 	
 	private void writeAttributes(int col) throws IOException {
 		commitAttributes();
-		if (attributes != null && sortAttributes)
+		if (attributes != null && canonical)
 			sortAttributes();	
 		int c = col;
 		c = writeAttributeSet(true, c, col);
@@ -470,6 +532,9 @@ public class XMLWriter extends OutputStreamWriter implements IXMLWriter {
 	 */
 	@Override
 	public void comment(String comment, boolean doPretty) throws IOException {
+	  if (ignoreComments) {
+	    return;
+	  }
 		checkStarted();
 		if (pendingClose) { 
 			write('>');
@@ -480,9 +545,9 @@ public class XMLWriter extends OutputStreamWriter implements IXMLWriter {
 			writePretty();
 		}
 		if (levels.inComment())
-			write("<!-- "+comment+" -- >");
+			write("  <!-- "+comment+" -- >");
 		else
-			write("<!-- "+comment+" -->");
+			write("  <!-- "+comment+" -->");
 		if (doPretty && !isPretty())
 			writePretty();
 	}
@@ -555,7 +620,7 @@ public class XMLWriter extends OutputStreamWriter implements IXMLWriter {
 		checkStarted();
 		if (levels.empty())
 			throw new IOException("Unable to close null|"+name+", nothing to close");
-		if (levels.current().getNamespace() != null || !levels.current().getName().equals(name))
+		if (levels.current().getNamespace() != null || !name.equals(levels.current().getName()))
 			throw new IOException("Unable to close null|"+name+", found "+levels.current().getNamespace()+"|"+levels.current().getName());
 		exit();
 	}
@@ -604,6 +669,7 @@ public class XMLWriter extends OutputStreamWriter implements IXMLWriter {
     checkStarted();
     if (!levels.empty()) 
       throw new IOException("Called close before exiting all opened elements");
+     drainBuffer();
      super.close();
   }
     
@@ -806,16 +872,12 @@ public class XMLWriter extends OutputStreamWriter implements IXMLWriter {
 		levels.current().setInComment(false);
 	}
 
-	public boolean isSortAttributes() {
-		return sortAttributes;
-	}
-
-	public void setSortAttributes(boolean sortAttributes) {
-		this.sortAttributes = sortAttributes;
-	}
 
 
-	public boolean isPrettyHeader() {
+	public void setCanonical(boolean canonical) {
+    this.canonical = canonical;
+  }
+  public boolean isPrettyHeader() {
 		return prettyHeader;
 	}
 
@@ -827,13 +889,39 @@ public class XMLWriter extends OutputStreamWriter implements IXMLWriter {
 		return writePretty(true);
 	}
 	
+	// indents, cached so writePretty makes one write rather than one per level
+	private static final String[] INDENTS = makeIndents(64);
+
+	private static String[] makeIndents(int count) {
+		String[] result = new String[count];
+		StringBuilder b = new StringBuilder();
+		for (int i = 0; i < count; i++) {
+			result[i] = b.toString();
+			b.append("  ");
+		}
+		return result;
+	}
+
+	private static String indent(int depth) {
+		if (depth < INDENTS.length) {
+			return INDENTS[depth];
+		}
+		StringBuilder b = new StringBuilder(depth * 2);
+		for (int i = 0; i < depth; i++) {
+			b.append("  ");
+		}
+		return b.toString();
+	}
+
 	public int writePretty(boolean eoln) throws IOException {
 		if (isPretty()) {
 			if (eoln)
 				write(lineType == LINE_UNIX ? "\n" : "\r\n");
-			for (int i = 0; i < levels.size() - 1; i++)
-				write("  ");
-			return (levels.size() - 1) * 2;
+			int depth = levels.size() - 1;
+			if (depth > 0) {
+				write(indent(depth));
+			}
+			return depth * 2;
 		} else
 			return 0;
 	}
@@ -903,10 +991,37 @@ public class XMLWriter extends OutputStreamWriter implements IXMLWriter {
   }
   @Override
   public void setSchemaLocation(String ns, String loc) throws IOException {
-    namespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
-    attribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation", ns+" "+loc);
+    namespace(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi");
+    attribute(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation", ns+" "+loc);
     
   }
-	
-	
+  @Override
+  public void externalLink(String ref) {
+    // ignore this    
+  }
+
+  @Override
+  public boolean canElide() { return false; }
+
+  @Override
+  public void attributeElide() {
+    // ignore this
+  }
+
+  @Override
+  public void elide() throws IOException {
+    // ignore this
+  }
+  public boolean isIgnoreComments() {
+    return ignoreComments;
+  }
+  public void setIgnoreComments(boolean ignoreComments) {
+    this.ignoreComments = ignoreComments;
+  }
+  @Override
+  public boolean isCanonical() throws IOException {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
 }

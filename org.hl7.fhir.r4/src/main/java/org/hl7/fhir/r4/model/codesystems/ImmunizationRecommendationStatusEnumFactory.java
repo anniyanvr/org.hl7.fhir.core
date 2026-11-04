@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ImmunizationRecommendationStatusEnumFactory implements EnumFactory<ImmunizationRecommendationStatus> {
@@ -52,11 +48,13 @@ public class ImmunizationRecommendationStatusEnumFactory implements EnumFactory<
       return ImmunizationRecommendationStatus.CONTRAINDICATED;
     if ("complete".equals(codeString))
       return ImmunizationRecommendationStatus.COMPLETE;
-    throw new IllegalArgumentException("Unknown ImmunizationRecommendationStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ImmunizationRecommendationStatus code '" + codeString + "'");
   }
 
   public String toCode(ImmunizationRecommendationStatus code) {
-    if (code == ImmunizationRecommendationStatus.DUE)
+       if (code == ImmunizationRecommendationStatus.NULL)
+           return null;
+       if (code == ImmunizationRecommendationStatus.DUE)
       return "due";
     if (code == ImmunizationRecommendationStatus.OVERDUE)
       return "overdue";
@@ -67,10 +65,10 @@ public class ImmunizationRecommendationStatusEnumFactory implements EnumFactory<
     if (code == ImmunizationRecommendationStatus.COMPLETE)
       return "complete";
     return "?";
-  }
+   }
 
-    public String toSystem(ImmunizationRecommendationStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(ImmunizationRecommendationStatus code) {
+    return code.getSystem();
+  }
 
 }

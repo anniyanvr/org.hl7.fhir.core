@@ -2,6 +2,7 @@ package org.hl7.fhir.r5.formats;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -63,6 +64,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.net.URI;
 
@@ -70,13 +72,15 @@ import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r5.elementmodel.Manager.FhirFormat;
 import org.hl7.fhir.r5.model.Resource;
-import org.hl7.fhir.utilities.TextFile;
+import org.hl7.fhir.utilities.FileUtilities;
+import org.hl7.fhir.utilities.regex.RegexConstants;
+
+import javax.xml.XMLConstants;
 
 public abstract class FormatUtilities {
-  public static final String ID_REGEX = "[A-Za-z0-9\\-\\.]{1,64}";
   public static final String FHIR_NS = "http://hl7.org/fhir";
   public static final String XHTML_NS = "http://www.w3.org/1999/xhtml";
-  public static final String NS_XSI = "http://www.w3.org/2001/XMLSchema-instance";
+  public static final String NS_XSI = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
   private static final int MAX_SCAN_LENGTH = 1000; // how many characters to scan into content when autodetermining format
  
   protected String toString(String value) {
@@ -105,7 +109,13 @@ public abstract class FormatUtilities {
   }
   
 	public static boolean isValidId(String tail) {
-	  return tail.matches(ID_REGEX);
+	  if (tail == null) {
+	    return false;
+	  }
+	  @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+	  //anchored, bounded character class, safe
+	  boolean valid = tail.matches(RegexConstants.ID_REGEX);
+	  return valid;
   }
 
   public static String makeId(String candidate) {
@@ -117,25 +127,35 @@ public abstract class FormatUtilities {
   }
 
   public static ParserBase makeParser(FhirFormat format) {
-    switch (format) {
-    case XML : return new XmlParser();
-    case JSON : return new JsonParser();
-    case TURTLE : throw new Error("unsupported Format "+format.toString()); // return new TurtleParser();
-    case VBAR : throw new Error("unsupported Format "+format.toString()); // 
-    case TEXT : throw new Error("unsupported Format "+format.toString()); // 
-    }
-    throw new Error("unsupported Format "+format.toString());
+    return makeParser(format.name());
   }
   
   public static ParserBase makeParser(String format) {
-    if ("XML".equalsIgnoreCase(format)) return new XmlParser();
-    if ("JSON".equalsIgnoreCase(format)) return new JsonParser();
-    if ("TURTLE".equalsIgnoreCase(format)) throw new Error("unsupported Format "+format.toString()); // return new TurtleParser();
-    if ("JSONLD".equalsIgnoreCase(format)) throw new Error("unsupported Format "+format.toString()); // return new JsonLdParser();
-    if ("VBAR".equalsIgnoreCase(format)) throw new Error("unsupported Format "+format.toString()); // 
-    if ("TEXT".equalsIgnoreCase(format)) throw new Error("unsupported Format "+format.toString()); // 
-    throw new Error("unsupported Format "+format);
-  }  
+    /*
+     * Note: Use fully qualified references to the parsers here in order to avoid adding
+     * a class-level import statement for them. This is because the
+     * XmlParser and JsonParser are huuuuuge classes and classloading them is quite expensive
+     * in cases where they won't actually ever be instantiated (such as when using the
+     * validator in HAPI FHIR).
+     *
+     * See https://github.com/hapifhir/hapi-fhir/issues/3268
+     */
+    try {
+      if ("XML".equalsIgnoreCase(format))
+         return (ParserBase) Class.forName("org.hl7.fhir.r5.formats.XmlParser").getConstructor().newInstance();
+      if ("JSON".equalsIgnoreCase(format))
+        return (ParserBase) Class.forName("org.hl7.fhir.r5.formats.JsonParser").getConstructor().newInstance();
+      if ("TURTLE".equalsIgnoreCase(format))
+        throw new Error("unsupported Format " + format.toString()); // return new TurtleParser();
+      if ("JSONLD".equalsIgnoreCase(format))
+        throw new Error("unsupported Format " + format.toString()); // return new JsonLdParser();
+      if ("VBAR".equalsIgnoreCase(format)) throw new Error("unsupported Format " + format.toString()); //
+      if ("TEXT".equalsIgnoreCase(format)) throw new Error("unsupported Format " + format.toString()); //
+      throw new Error("unsupported Format " + format);
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+      throw new Error("Could not instantiate", e);
+    }
+  }
 
   public static FhirFormat determineFormat(byte[] source) throws FHIRException {
     return determineFormat(source, MAX_SCAN_LENGTH);
@@ -162,11 +182,36 @@ public abstract class FormatUtilities {
   }
 
   public static Resource loadFile(String path) throws FileNotFoundException, IOException, FHIRException {
-    byte[] src = TextFile.fileToBytes(path);
+    byte[] src = FileUtilities.fileToBytes(path);
     FhirFormat fmt = determineFormat(src);
     ParserBase parser = makeParser(fmt);
     return parser.parse(src);
   }
 
+
+  public static Resource loadFile(InputStream source) throws FileNotFoundException, IOException, FHIRException {
+    byte[] src = FileUtilities.streamToBytes(source);
+    FhirFormat fmt = determineFormat(src);
+    ParserBase parser = makeParser(fmt);
+    return parser.parse(src);
+  }
+
+
+  public static Resource loadFileTight(String path) throws FileNotFoundException, IOException, FHIRException {
+    byte[] src = FileUtilities.fileToBytes(path);
+    FhirFormat fmt = determineFormat(src);
+    ParserBase parser = makeParser(fmt);
+    parser.setAllowUnknownContent(false);
+    return parser.parse(src);
+  }
+
+  public static Resource loadFileTight(InputStream source) throws FileNotFoundException, IOException, FHIRException {
+    byte[] src = FileUtilities.streamToBytes(source);
+    FhirFormat fmt = determineFormat(src);
+    ParserBase parser = makeParser(fmt);
+    parser.setAllowUnknownContent(false);
+    return parser.parse(src);
+  }
+  
 
 }

@@ -181,12 +181,12 @@ public class DeviceRequest extends DomainResource {
           return DeviceRequestStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown DeviceRequestStatus code '"+codeString+"'");
         }
-        public Enumeration<DeviceRequestStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<DeviceRequestStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DeviceRequestStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -206,7 +206,9 @@ public class DeviceRequest extends DomainResource {
         throw new FHIRException("Unknown DeviceRequestStatus code '"+codeString+"'");
         }
     public String toCode(DeviceRequestStatus code) {
-      if (code == DeviceRequestStatus.DRAFT)
+       if (code == DeviceRequestStatus.NULL)
+           return null;
+       if (code == DeviceRequestStatus.DRAFT)
         return "draft";
       if (code == DeviceRequestStatus.ACTIVE)
         return "active";
@@ -221,7 +223,7 @@ public class DeviceRequest extends DomainResource {
       if (code == DeviceRequestStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(DeviceRequestStatus code) {
       return code.getSystem();
       }
@@ -321,12 +323,12 @@ public class DeviceRequest extends DomainResource {
           return RequestPriority.STAT;
         throw new IllegalArgumentException("Unknown RequestPriority code '"+codeString+"'");
         }
-        public Enumeration<RequestPriority> fromType(Base code) throws FHIRException {
+        public Enumeration<RequestPriority> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<RequestPriority>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("routine".equals(codeString))
@@ -340,7 +342,9 @@ public class DeviceRequest extends DomainResource {
         throw new FHIRException("Unknown RequestPriority code '"+codeString+"'");
         }
     public String toCode(RequestPriority code) {
-      if (code == RequestPriority.ROUTINE)
+       if (code == RequestPriority.NULL)
+           return null;
+       if (code == RequestPriority.ROUTINE)
         return "routine";
       if (code == RequestPriority.URGENT)
         return "urgent";
@@ -349,7 +353,7 @@ public class DeviceRequest extends DomainResource {
       if (code == RequestPriority.STAT)
         return "stat";
       return "?";
-      }
+   }
     public String toSystem(RequestPriority code) {
       return code.getSystem();
       }
@@ -928,16 +932,6 @@ public class DeviceRequest extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getDefinitionTarget() { 
-      if (this.definitionTarget == null)
-        this.definitionTarget = new ArrayList<Resource>();
-      return this.definitionTarget;
-    }
-
-    /**
      * @return {@link #basedOn} (Plan/proposal/order fulfilled by this request.)
      */
     public List<Reference> getBasedOn() { 
@@ -991,16 +985,6 @@ public class DeviceRequest extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<Resource>();
-      return this.basedOnTarget;
-    }
-
-    /**
      * @return {@link #priorRequest} (The request takes the place of the referenced completed or terminated request(s).)
      */
     public List<Reference> getPriorRequest() { 
@@ -1051,16 +1035,6 @@ public class DeviceRequest extends DomainResource {
         addPriorRequest();
       }
       return getPriorRequest().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getPriorRequestTarget() { 
-      if (this.priorRequestTarget == null)
-        this.priorRequestTarget = new ArrayList<Resource>();
-      return this.priorRequestTarget;
     }
 
     /**
@@ -1227,8 +1201,8 @@ public class DeviceRequest extends DomainResource {
       return (Reference) this.code;
     }
 
-    public boolean hasCodeReference() { 
-      return this != null && this.code instanceof Reference;
+    public boolean hasCodeReference() {
+      return this.code instanceof Reference;
     }
 
     /**
@@ -1242,8 +1216,8 @@ public class DeviceRequest extends DomainResource {
       return (CodeableConcept) this.code;
     }
 
-    public boolean hasCodeCodeableConcept() { 
-      return this != null && this.code instanceof CodeableConcept;
+    public boolean hasCodeCodeableConcept() {
+      return this.code instanceof CodeableConcept;
     }
 
     public boolean hasCode() { 
@@ -1356,8 +1330,8 @@ public class DeviceRequest extends DomainResource {
       return (DateTimeType) this.occurrence;
     }
 
-    public boolean hasOccurrenceDateTimeType() { 
-      return this != null && this.occurrence instanceof DateTimeType;
+    public boolean hasOccurrenceDateTimeType() {
+      return this.occurrence instanceof DateTimeType;
     }
 
     /**
@@ -1371,8 +1345,8 @@ public class DeviceRequest extends DomainResource {
       return (Period) this.occurrence;
     }
 
-    public boolean hasOccurrencePeriod() { 
-      return this != null && this.occurrence instanceof Period;
+    public boolean hasOccurrencePeriod() {
+      return this.occurrence instanceof Period;
     }
 
     /**
@@ -1386,8 +1360,8 @@ public class DeviceRequest extends DomainResource {
       return (Timing) this.occurrence;
     }
 
-    public boolean hasOccurrenceTiming() { 
-      return this != null && this.occurrence instanceof Timing;
+    public boolean hasOccurrenceTiming() {
+      return this.occurrence instanceof Timing;
     }
 
     public boolean hasOccurrence() { 
@@ -1647,16 +1621,6 @@ public class DeviceRequest extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getReasonReferenceTarget() { 
-      if (this.reasonReferenceTarget == null)
-        this.reasonReferenceTarget = new ArrayList<Resource>();
-      return this.reasonReferenceTarget;
-    }
-
-    /**
      * @return {@link #supportingInfo} (Additional clinical information about the patient that may influence the request fulfilment.  For example, this may includes body where on the subject's the device will be used ( i.e. the target site).)
      */
     public List<Reference> getSupportingInfo() { 
@@ -1707,16 +1671,6 @@ public class DeviceRequest extends DomainResource {
         addSupportingInfo();
       }
       return getSupportingInfo().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getSupportingInfoTarget() { 
-      if (this.supportingInfoTarget == null)
-        this.supportingInfoTarget = new ArrayList<Resource>();
-      return this.supportingInfoTarget;
     }
 
     /**
@@ -1823,28 +1777,6 @@ public class DeviceRequest extends DomainResource {
         addRelevantHistory();
       }
       return getRelevantHistory().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Provenance> getRelevantHistoryTarget() { 
-      if (this.relevantHistoryTarget == null)
-        this.relevantHistoryTarget = new ArrayList<Provenance>();
-      return this.relevantHistoryTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Provenance addRelevantHistoryTarget() { 
-      Provenance r = new Provenance();
-      if (this.relevantHistoryTarget == null)
-        this.relevantHistoryTarget = new ArrayList<Provenance>();
-      this.relevantHistoryTarget.add(r);
-      return r;
     }
 
       protected void listChildren(List<Property> children) {
@@ -2140,14 +2072,14 @@ public class DeviceRequest extends DomainResource {
           return this.groupIdentifier;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceRequest.status");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceRequest.status");
         }
         else if (name.equals("intent")) {
           this.intent = new CodeableConcept();
           return this.intent;
         }
         else if (name.equals("priority")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceRequest.priority");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceRequest.priority");
         }
         else if (name.equals("codeReference")) {
           this.code = new Reference();
@@ -2178,7 +2110,7 @@ public class DeviceRequest extends DomainResource {
           return this.occurrence;
         }
         else if (name.equals("authoredOn")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceRequest.authoredOn");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceRequest.authoredOn");
         }
         else if (name.equals("requester")) {
           this.requester = new DeviceRequestRequesterComponent();

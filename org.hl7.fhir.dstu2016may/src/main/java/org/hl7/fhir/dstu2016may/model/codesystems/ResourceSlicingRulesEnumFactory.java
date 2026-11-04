@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ResourceSlicingRulesEnumFactory implements EnumFactory<ResourceSlicingRules> {
@@ -48,21 +44,23 @@ public class ResourceSlicingRulesEnumFactory implements EnumFactory<ResourceSlic
       return ResourceSlicingRules.OPEN;
     if ("openAtEnd".equals(codeString))
       return ResourceSlicingRules.OPENATEND;
-    throw new IllegalArgumentException("Unknown ResourceSlicingRules code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ResourceSlicingRules code '" + codeString + "'");
   }
 
   public String toCode(ResourceSlicingRules code) {
-    if (code == ResourceSlicingRules.CLOSED)
+       if (code == ResourceSlicingRules.NULL)
+           return null;
+       if (code == ResourceSlicingRules.CLOSED)
       return "closed";
     if (code == ResourceSlicingRules.OPEN)
       return "open";
     if (code == ResourceSlicingRules.OPENATEND)
       return "openAtEnd";
     return "?";
-  }
+   }
 
-    public String toSystem(ResourceSlicingRules code) {
-      return code.getSystem();
-      }
+  public String toSystem(ResourceSlicingRules code) {
+    return code.getSystem();
+  }
 
 }

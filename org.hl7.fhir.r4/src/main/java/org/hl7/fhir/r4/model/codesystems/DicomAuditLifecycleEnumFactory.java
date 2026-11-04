@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -72,11 +68,13 @@ public class DicomAuditLifecycleEnumFactory implements EnumFactory<DicomAuditLif
       return DicomAuditLifecycle._14;
     if ("15".equals(codeString))
       return DicomAuditLifecycle._15;
-    throw new IllegalArgumentException("Unknown DicomAuditLifecycle code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown DicomAuditLifecycle code '" + codeString + "'");
   }
 
   public String toCode(DicomAuditLifecycle code) {
-    if (code == DicomAuditLifecycle._1)
+       if (code == DicomAuditLifecycle.NULL)
+           return null;
+       if (code == DicomAuditLifecycle._1)
       return "1";
     if (code == DicomAuditLifecycle._2)
       return "2";
@@ -107,10 +105,10 @@ public class DicomAuditLifecycleEnumFactory implements EnumFactory<DicomAuditLif
     if (code == DicomAuditLifecycle._15)
       return "15";
     return "?";
-  }
+   }
 
-    public String toSystem(DicomAuditLifecycle code) {
-      return code.getSystem();
-      }
+  public String toSystem(DicomAuditLifecycle code) {
+    return code.getSystem();
+  }
 
 }

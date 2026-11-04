@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ChargeitemBillingcodesEnumFactory implements EnumFactory<ChargeitemBillingcodes> {
@@ -48,21 +44,23 @@ public class ChargeitemBillingcodesEnumFactory implements EnumFactory<Chargeitem
       return ChargeitemBillingcodes._1210;
     if ("1320".equals(codeString))
       return ChargeitemBillingcodes._1320;
-    throw new IllegalArgumentException("Unknown ChargeitemBillingcodes code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ChargeitemBillingcodes code '" + codeString + "'");
   }
 
   public String toCode(ChargeitemBillingcodes code) {
-    if (code == ChargeitemBillingcodes._1100)
+       if (code == ChargeitemBillingcodes.NULL)
+           return null;
+       if (code == ChargeitemBillingcodes._1100)
       return "1100";
     if (code == ChargeitemBillingcodes._1210)
       return "1210";
     if (code == ChargeitemBillingcodes._1320)
       return "1320";
     return "?";
-  }
+   }
 
-    public String toSystem(ChargeitemBillingcodes code) {
-      return code.getSystem();
-      }
+  public String toSystem(ChargeitemBillingcodes code) {
+    return code.getSystem();
+  }
 
 }

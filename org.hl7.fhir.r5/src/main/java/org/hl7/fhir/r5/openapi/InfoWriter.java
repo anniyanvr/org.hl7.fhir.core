@@ -1,5 +1,7 @@
 package org.hl7.fhir.r5.openapi;
 
+
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -35,6 +37,7 @@ package org.hl7.fhir.r5.openapi;
 import org.hl7.fhir.utilities.Utilities;
 
 import com.google.gson.JsonObject;
+
 
 public class InfoWriter extends BaseWriter {
 

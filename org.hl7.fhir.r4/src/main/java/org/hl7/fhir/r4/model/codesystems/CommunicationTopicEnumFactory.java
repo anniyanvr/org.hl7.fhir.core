@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class CommunicationTopicEnumFactory implements EnumFactory<CommunicationTopic> {
@@ -54,11 +50,13 @@ public class CommunicationTopicEnumFactory implements EnumFactory<CommunicationT
       return CommunicationTopic.PHONECONSULT;
     if ("summary-report".equals(codeString))
       return CommunicationTopic.SUMMARYREPORT;
-    throw new IllegalArgumentException("Unknown CommunicationTopic code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CommunicationTopic code '" + codeString + "'");
   }
 
   public String toCode(CommunicationTopic code) {
-    if (code == CommunicationTopic.PRESCRIPTIONREFILLREQUEST)
+       if (code == CommunicationTopic.NULL)
+           return null;
+       if (code == CommunicationTopic.PRESCRIPTIONREFILLREQUEST)
       return "prescription-refill-request";
     if (code == CommunicationTopic.PROGRESSUPDATE)
       return "progress-update";
@@ -71,10 +69,10 @@ public class CommunicationTopicEnumFactory implements EnumFactory<CommunicationT
     if (code == CommunicationTopic.SUMMARYREPORT)
       return "summary-report";
     return "?";
-  }
+   }
 
-    public String toSystem(CommunicationTopic code) {
-      return code.getSystem();
-      }
+  public String toSystem(CommunicationTopic code) {
+    return code.getSystem();
+  }
 
 }

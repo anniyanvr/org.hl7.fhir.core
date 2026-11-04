@@ -5,8 +5,17 @@ import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.CodeableCon
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Identifier40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.metadata40_50.ContactDetail40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.metadata40_50.UsageContext40_50;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.*;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Boolean40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Canonical40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Code40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.DateTime40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.MarkDown40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.UnsignedInt40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Uri40_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.model.Enumeration;
+import org.hl7.fhir.r5.model.MessageDefinition;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -90,7 +99,7 @@ public class MessageDefinition40_50 {
       tgt.setResponseRequiredElement(convertMessageheaderResponseRequest(src.getResponseRequiredElement()));
     for (org.hl7.fhir.r4.model.MessageDefinition.MessageDefinitionAllowedResponseComponent t : src.getAllowedResponse())
       tgt.addAllowedResponse(convertMessageDefinitionAllowedResponseComponent(t));
-    for (org.hl7.fhir.r4.model.CanonicalType t : src.getGraph()) tgt.getGraph().add(Canonical40_50.convertCanonical(t));
+    for (org.hl7.fhir.r4.model.CanonicalType t : src.getGraph()) tgt.setGraphElement(Canonical40_50.convertCanonical(t));
     return tgt;
   }
 
@@ -145,111 +154,128 @@ public class MessageDefinition40_50 {
       tgt.setResponseRequiredElement(convertMessageheaderResponseRequest(src.getResponseRequiredElement()));
     for (org.hl7.fhir.r5.model.MessageDefinition.MessageDefinitionAllowedResponseComponent t : src.getAllowedResponse())
       tgt.addAllowedResponse(convertMessageDefinitionAllowedResponseComponent(t));
-    for (org.hl7.fhir.r5.model.CanonicalType t : src.getGraph()) tgt.getGraph().add(Canonical40_50.convertCanonical(t));
+    if (src.hasGraph()) 
+      tgt.getGraph().add(Canonical40_50.convertCanonical(src.getGraphElement()));
     return tgt;
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MessageDefinition.MessageSignificanceCategory> convertMessageSignificanceCategory(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MessageDefinition.MessageSignificanceCategory> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.MessageDefinition.MessageSignificanceCategoryEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case CONSEQUENCE:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageDefinition.MessageSignificanceCategory.CONSEQUENCE);
-        break;
-      case CURRENCY:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageDefinition.MessageSignificanceCategory.CURRENCY);
-        break;
-      case NOTIFICATION:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageDefinition.MessageSignificanceCategory.NOTIFICATION);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageDefinition.MessageSignificanceCategory.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<MessageDefinition.MessageSignificanceCategory> tgt = new Enumeration<>(new MessageDefinition.MessageSignificanceCategoryEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case CONSEQUENCE:
+                  tgt.setValue(MessageDefinition.MessageSignificanceCategory.CONSEQUENCE);
+                  break;
+              case CURRENCY:
+                  tgt.setValue(MessageDefinition.MessageSignificanceCategory.CURRENCY);
+                  break;
+              case NOTIFICATION:
+                  tgt.setValue(MessageDefinition.MessageSignificanceCategory.NOTIFICATION);
+                  break;
+              default:
+                  tgt.setValue(MessageDefinition.MessageSignificanceCategory.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory> convertMessageSignificanceCategory(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MessageDefinition.MessageSignificanceCategory> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategoryEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case CONSEQUENCE:
-        tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory.CONSEQUENCE);
-        break;
-      case CURRENCY:
-        tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory.CURRENCY);
-        break;
-      case NOTIFICATION:
-        tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory.NOTIFICATION);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategoryEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case CONSEQUENCE:
+                  tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory.CONSEQUENCE);
+                  break;
+              case CURRENCY:
+                  tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory.CURRENCY);
+                  break;
+              case NOTIFICATION:
+                  tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory.NOTIFICATION);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageSignificanceCategory.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MessageDefinition.MessageheaderResponseRequest> convertMessageheaderResponseRequest(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MessageDefinition.MessageheaderResponseRequest> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.MessageDefinition.MessageheaderResponseRequestEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case ALWAYS:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageDefinition.MessageheaderResponseRequest.ALWAYS);
-        break;
-      case ONERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageDefinition.MessageheaderResponseRequest.ONERROR);
-        break;
-      case NEVER:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageDefinition.MessageheaderResponseRequest.NEVER);
-        break;
-      case ONSUCCESS:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageDefinition.MessageheaderResponseRequest.ONSUCCESS);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageDefinition.MessageheaderResponseRequest.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<MessageDefinition.MessageheaderResponseRequest> tgt = new Enumeration<>(new MessageDefinition.MessageheaderResponseRequestEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case ALWAYS:
+                  tgt.setValue(MessageDefinition.MessageheaderResponseRequest.ALWAYS);
+                  break;
+              case ONERROR:
+                  tgt.setValue(MessageDefinition.MessageheaderResponseRequest.ONERROR);
+                  break;
+              case NEVER:
+                  tgt.setValue(MessageDefinition.MessageheaderResponseRequest.NEVER);
+                  break;
+              case ONSUCCESS:
+                  tgt.setValue(MessageDefinition.MessageheaderResponseRequest.ONSUCCESS);
+                  break;
+              default:
+                  tgt.setValue(MessageDefinition.MessageheaderResponseRequest.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest> convertMessageheaderResponseRequest(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MessageDefinition.MessageheaderResponseRequest> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequestEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case ALWAYS:
-        tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest.ALWAYS);
-        break;
-      case ONERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest.ONERROR);
-        break;
-      case NEVER:
-        tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest.NEVER);
-        break;
-      case ONSUCCESS:
-        tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest.ONSUCCESS);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequestEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case ALWAYS:
+                  tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest.ALWAYS);
+                  break;
+              case ONERROR:
+                  tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest.ONERROR);
+                  break;
+              case NEVER:
+                  tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest.NEVER);
+                  break;
+              case ONSUCCESS:
+                  tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest.ONSUCCESS);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r5.model.MessageDefinition.MessageDefinitionFocusComponent convertMessageDefinitionFocusComponent(org.hl7.fhir.r4.model.MessageDefinition.MessageDefinitionFocusComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MessageDefinition.MessageDefinitionFocusComponent tgt = new org.hl7.fhir.r5.model.MessageDefinition.MessageDefinitionFocusComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCode())
-      tgt.setCodeElement(Code40_50.convertResourceEnum(src.getCodeElement()));
+      tgt.setCodeElement(Code40_50.convertCode(src.getCodeElement()));
     if (src.hasProfile())
       tgt.setProfileElement(Canonical40_50.convertCanonical(src.getProfileElement()));
     if (src.hasMin())
@@ -263,9 +289,9 @@ public class MessageDefinition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MessageDefinition.MessageDefinitionFocusComponent tgt = new org.hl7.fhir.r4.model.MessageDefinition.MessageDefinitionFocusComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasCode())
-      tgt.setCodeElement(Code40_50.convertResourceEnum(src.getCodeElement()));
+      tgt.setCodeElement(Code40_50.convertCode(src.getCodeElement()));
     if (src.hasProfile())
       tgt.setProfileElement(Canonical40_50.convertCanonical(src.getProfileElement()));
     if (src.hasMin())
@@ -279,7 +305,7 @@ public class MessageDefinition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.MessageDefinition.MessageDefinitionAllowedResponseComponent tgt = new org.hl7.fhir.r5.model.MessageDefinition.MessageDefinitionAllowedResponseComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasMessage())
       tgt.setMessageElement(Canonical40_50.convertCanonical(src.getMessageElement()));
     if (src.hasSituation())
@@ -291,7 +317,7 @@ public class MessageDefinition40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.MessageDefinition.MessageDefinitionAllowedResponseComponent tgt = new org.hl7.fhir.r4.model.MessageDefinition.MessageDefinitionAllowedResponseComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasMessage())
       tgt.setMessageElement(Canonical40_50.convertCanonical(src.getMessageElement()));
     if (src.hasSituation())

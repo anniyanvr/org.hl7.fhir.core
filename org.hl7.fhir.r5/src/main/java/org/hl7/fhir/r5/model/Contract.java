@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -174,6 +174,7 @@ public class Contract extends DomainResource {
             case REVOKED: return "revoked";
             case RESOLVED: return "resolved";
             case TERMINATED: return "terminated";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -194,6 +195,7 @@ public class Contract extends DomainResource {
             case REVOKED: return "http://hl7.org/fhir/contract-publicationstatus";
             case RESOLVED: return "http://hl7.org/fhir/contract-publicationstatus";
             case TERMINATED: return "http://hl7.org/fhir/contract-publicationstatus";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -214,6 +216,7 @@ public class Contract extends DomainResource {
             case REVOKED: return "A Contract that is rescinded.  May be required prior to replacing with an updated Contract. Comparable FHIR and v.3 status codes: nullified.";
             case RESOLVED: return "Contract is reactivated after being pended because of faulty execution. *E.g., competency of the signer(s), or where the policy is substantially different from and did not accompany the application/form so that the applicant could not compare them. Aka - ''reactivated''. Usage: Optional stage where a pended contract is reactivated. Precedence Order = 8. Comparable FHIR and v.3 status codes: reactivated.";
             case TERMINATED: return "Contract reaches its expiry date. It might or might not be renewed or renegotiated. Usage: Normal end of contract period. Precedence Order = 12. Comparable FHIR and v.3 status codes: Obsoleted.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -234,6 +237,7 @@ public class Contract extends DomainResource {
             case REVOKED: return "Revoked";
             case RESOLVED: return "Resolved";
             case TERMINATED: return "Terminated";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -276,48 +280,50 @@ public class Contract extends DomainResource {
           return ContractResourcePublicationStatusCodes.TERMINATED;
         throw new IllegalArgumentException("Unknown ContractResourcePublicationStatusCodes code '"+codeString+"'");
         }
-        public Enumeration<ContractResourcePublicationStatusCodes> fromType(Base code) throws FHIRException {
+        public Enumeration<ContractResourcePublicationStatusCodes> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<ContractResourcePublicationStatusCodes>(this);
+            return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.NULL, code);
         if ("amended".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.AMENDED);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.AMENDED, code);
         if ("appended".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.APPENDED);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.APPENDED, code);
         if ("cancelled".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.CANCELLED);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.CANCELLED, code);
         if ("disputed".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.DISPUTED);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.DISPUTED, code);
         if ("entered-in-error".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.ENTEREDINERROR);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.ENTEREDINERROR, code);
         if ("executable".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.EXECUTABLE);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.EXECUTABLE, code);
         if ("executed".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.EXECUTED);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.EXECUTED, code);
         if ("negotiable".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.NEGOTIABLE);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.NEGOTIABLE, code);
         if ("offered".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.OFFERED);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.OFFERED, code);
         if ("policy".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.POLICY);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.POLICY, code);
         if ("rejected".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.REJECTED);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.REJECTED, code);
         if ("renewed".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.RENEWED);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.RENEWED, code);
         if ("revoked".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.REVOKED);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.REVOKED, code);
         if ("resolved".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.RESOLVED);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.RESOLVED, code);
         if ("terminated".equals(codeString))
-          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.TERMINATED);
+          return new Enumeration<ContractResourcePublicationStatusCodes>(this, ContractResourcePublicationStatusCodes.TERMINATED, code);
         throw new FHIRException("Unknown ContractResourcePublicationStatusCodes code '"+codeString+"'");
         }
     public String toCode(ContractResourcePublicationStatusCodes code) {
-      if (code == ContractResourcePublicationStatusCodes.AMENDED)
+       if (code == ContractResourcePublicationStatusCodes.NULL)
+           return null;
+       if (code == ContractResourcePublicationStatusCodes.AMENDED)
         return "amended";
       if (code == ContractResourcePublicationStatusCodes.APPENDED)
         return "appended";
@@ -348,7 +354,7 @@ public class Contract extends DomainResource {
       if (code == ContractResourcePublicationStatusCodes.TERMINATED)
         return "terminated";
       return "?";
-      }
+   }
     public String toSystem(ContractResourcePublicationStatusCodes code) {
       return code.getSystem();
       }
@@ -474,6 +480,7 @@ public class Contract extends DomainResource {
             case REVOKED: return "revoked";
             case RESOLVED: return "resolved";
             case TERMINATED: return "terminated";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -494,6 +501,7 @@ public class Contract extends DomainResource {
             case REVOKED: return "http://hl7.org/fhir/contract-status";
             case RESOLVED: return "http://hl7.org/fhir/contract-status";
             case TERMINATED: return "http://hl7.org/fhir/contract-status";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -514,6 +522,7 @@ public class Contract extends DomainResource {
             case REVOKED: return "A Contract that is rescinded.  May be required prior to replacing with an updated Contract. Comparable FHIR and v.3 status codes: nullified.";
             case RESOLVED: return "Contract is reactivated after being pended because of faulty execution. *E.g., competency of the signer(s), or where the policy is substantially different from and did not accompany the application/form so that the applicant could not compare them. Aka - ''reactivated''. Usage: Optional stage where a pended contract is reactivated. Precedence Order = 8. Comparable FHIR and v.3 status codes: reactivated.";
             case TERMINATED: return "Contract reaches its expiry date. It might or might not be renewed or renegotiated. Usage: Normal end of contract period. Precedence Order = 12. Comparable FHIR and v.3 status codes: Obsoleted.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -534,6 +543,7 @@ public class Contract extends DomainResource {
             case REVOKED: return "Revoked";
             case RESOLVED: return "Resolved";
             case TERMINATED: return "Terminated";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -576,48 +586,50 @@ public class Contract extends DomainResource {
           return ContractResourceStatusCodes.TERMINATED;
         throw new IllegalArgumentException("Unknown ContractResourceStatusCodes code '"+codeString+"'");
         }
-        public Enumeration<ContractResourceStatusCodes> fromType(Base code) throws FHIRException {
+        public Enumeration<ContractResourceStatusCodes> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<ContractResourceStatusCodes>(this);
+            return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.NULL, code);
         if ("amended".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.AMENDED);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.AMENDED, code);
         if ("appended".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.APPENDED);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.APPENDED, code);
         if ("cancelled".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.CANCELLED);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.CANCELLED, code);
         if ("disputed".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.DISPUTED);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.DISPUTED, code);
         if ("entered-in-error".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.ENTEREDINERROR);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.ENTEREDINERROR, code);
         if ("executable".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.EXECUTABLE);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.EXECUTABLE, code);
         if ("executed".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.EXECUTED);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.EXECUTED, code);
         if ("negotiable".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.NEGOTIABLE);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.NEGOTIABLE, code);
         if ("offered".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.OFFERED);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.OFFERED, code);
         if ("policy".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.POLICY);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.POLICY, code);
         if ("rejected".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.REJECTED);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.REJECTED, code);
         if ("renewed".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.RENEWED);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.RENEWED, code);
         if ("revoked".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.REVOKED);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.REVOKED, code);
         if ("resolved".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.RESOLVED);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.RESOLVED, code);
         if ("terminated".equals(codeString))
-          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.TERMINATED);
+          return new Enumeration<ContractResourceStatusCodes>(this, ContractResourceStatusCodes.TERMINATED, code);
         throw new FHIRException("Unknown ContractResourceStatusCodes code '"+codeString+"'");
         }
     public String toCode(ContractResourceStatusCodes code) {
-      if (code == ContractResourceStatusCodes.AMENDED)
+       if (code == ContractResourceStatusCodes.NULL)
+           return null;
+       if (code == ContractResourceStatusCodes.AMENDED)
         return "amended";
       if (code == ContractResourceStatusCodes.APPENDED)
         return "appended";
@@ -648,7 +660,7 @@ public class Contract extends DomainResource {
       if (code == ContractResourceStatusCodes.TERMINATED)
         return "terminated";
       return "?";
-      }
+   }
     public String toSystem(ContractResourceStatusCodes code) {
       return code.getSystem();
       }
@@ -680,10 +692,10 @@ public class Contract extends DomainResource {
         protected Reference publisher;
 
         /**
-         * The date (and optionally time) when the contract was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.
+         * The date (and optionally time) when the contract was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.
          */
         @Child(name = "publicationDate", type = {DateTimeType.class}, order=4, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="When published", formalDefinition="The date (and optionally time) when the contract was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes." )
+        @Description(shortDefinition="When published", formalDefinition="The date (and optionally time) when the contract was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes." )
         protected DateTimeType publicationDate;
 
         /**
@@ -792,7 +804,7 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @return {@link #publicationDate} (The date (and optionally time) when the contract was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.). This is the underlying object with id, value and extensions. The accessor "getPublicationDate" gives direct access to the value
+         * @return {@link #publicationDate} (The date (and optionally time) when the contract was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.). This is the underlying object with id, value and extensions. The accessor "getPublicationDate" gives direct access to the value
          */
         public DateTimeType getPublicationDateElement() { 
           if (this.publicationDate == null)
@@ -812,7 +824,7 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @param value {@link #publicationDate} (The date (and optionally time) when the contract was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.). This is the underlying object with id, value and extensions. The accessor "getPublicationDate" gives direct access to the value
+         * @param value {@link #publicationDate} (The date (and optionally time) when the contract was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.). This is the underlying object with id, value and extensions. The accessor "getPublicationDate" gives direct access to the value
          */
         public ContentDefinitionComponent setPublicationDateElement(DateTimeType value) { 
           this.publicationDate = value;
@@ -820,14 +832,14 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @return The date (and optionally time) when the contract was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.
+         * @return The date (and optionally time) when the contract was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.
          */
         public Date getPublicationDate() { 
           return this.publicationDate == null ? null : this.publicationDate.getValue();
         }
 
         /**
-         * @param value The date (and optionally time) when the contract was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.
+         * @param value The date (and optionally time) when the contract was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.
          */
         public ContentDefinitionComponent setPublicationDate(Date value) { 
           if (value == null)
@@ -924,7 +936,7 @@ public class Contract extends DomainResource {
          * @param value A copyright statement relating to Contract precursor content. Copyright statements are generally legal restrictions on the use and publishing of the Contract precursor content.
          */
         public ContentDefinitionComponent setCopyright(String value) { 
-          if (value == null)
+          if (Utilities.noString(value))
             this.copyright = null;
           else {
             if (this.copyright == null)
@@ -939,7 +951,7 @@ public class Contract extends DomainResource {
           children.add(new Property("type", "CodeableConcept", "Precusory content structure and use, i.e., a boilerplate, template, application for a contract such as an insurance policy or benefits under a program, e.g., workers compensation.", 0, 1, type));
           children.add(new Property("subType", "CodeableConcept", "Detailed Precusory content type.", 0, 1, subType));
           children.add(new Property("publisher", "Reference(Practitioner|PractitionerRole|Organization)", "The  individual or organization that published the Contract precursor content.", 0, 1, publisher));
-          children.add(new Property("publicationDate", "dateTime", "The date (and optionally time) when the contract was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.", 0, 1, publicationDate));
+          children.add(new Property("publicationDate", "dateTime", "The date (and optionally time) when the contract was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.", 0, 1, publicationDate));
           children.add(new Property("publicationStatus", "code", "amended | appended | cancelled | disputed | entered-in-error | executable +.", 0, 1, publicationStatus));
           children.add(new Property("copyright", "markdown", "A copyright statement relating to Contract precursor content. Copyright statements are generally legal restrictions on the use and publishing of the Contract precursor content.", 0, 1, copyright));
         }
@@ -950,7 +962,7 @@ public class Contract extends DomainResource {
           case 3575610: /*type*/  return new Property("type", "CodeableConcept", "Precusory content structure and use, i.e., a boilerplate, template, application for a contract such as an insurance policy or benefits under a program, e.g., workers compensation.", 0, 1, type);
           case -1868521062: /*subType*/  return new Property("subType", "CodeableConcept", "Detailed Precusory content type.", 0, 1, subType);
           case 1447404028: /*publisher*/  return new Property("publisher", "Reference(Practitioner|PractitionerRole|Organization)", "The  individual or organization that published the Contract precursor content.", 0, 1, publisher);
-          case 1470566394: /*publicationDate*/  return new Property("publicationDate", "dateTime", "The date (and optionally time) when the contract was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.", 0, 1, publicationDate);
+          case 1470566394: /*publicationDate*/  return new Property("publicationDate", "dateTime", "The date (and optionally time) when the contract was last significantly changed. The date must change when the business version changes and it must change if the status code changes. In addition, it should change when the substantive content of the contract changes.", 0, 1, publicationDate);
           case 616500542: /*publicationStatus*/  return new Property("publicationStatus", "code", "amended | appended | cancelled | disputed | entered-in-error | executable +.", 0, 1, publicationStatus);
           case 1522889671: /*copyright*/  return new Property("copyright", "markdown", "A copyright statement relating to Contract precursor content. Copyright statements are generally legal restrictions on the use and publishing of the Contract precursor content.", 0, 1, copyright);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
@@ -1019,6 +1031,26 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("subType")) {
+          this.subType = null;
+        } else if (name.equals("publisher")) {
+          this.publisher = null;
+        } else if (name.equals("publicationDate")) {
+          this.publicationDate = null;
+        } else if (name.equals("publicationStatus")) {
+          value = new ContractResourcePublicationStatusCodesEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.publicationStatus = (Enumeration) value; // Enumeration<ContractResourcePublicationStatusCodes>
+        } else if (name.equals("copyright")) {
+          this.copyright = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1062,13 +1094,13 @@ public class Contract extends DomainResource {
           return this.publisher;
         }
         else if (name.equals("publicationDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.contentDefinition.publicationDate");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.contentDefinition.publicationDate");
         }
         else if (name.equals("publicationStatus")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.contentDefinition.publicationStatus");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.contentDefinition.publicationStatus");
         }
         else if (name.equals("copyright")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.contentDefinition.copyright");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.contentDefinition.copyright");
         }
         else
           return super.addChild(name);
@@ -1078,6 +1110,10 @@ public class Contract extends DomainResource {
         ContentDefinitionComponent dst = new ContentDefinitionComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ContentDefinitionComponent) dst);
       }
 
       public void copyValues(ContentDefinitionComponent dst) {
@@ -1179,10 +1215,10 @@ public class Contract extends DomainResource {
         protected StringType text;
 
         /**
-         * Security labels that protect the handling of information about the term and its elements, which may be specifically identified..
+         * Security labels that protect the handling of information about the term and its elements, which may be specifically identified.
          */
         @Child(name = "securityLabel", type = {}, order=8, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-        @Description(shortDefinition="Protection for the Term", formalDefinition="Security labels that protect the handling of information about the term and its elements, which may be specifically identified.." )
+        @Description(shortDefinition="Protection for the Term", formalDefinition="Security labels that protect the handling of information about the term and its elements, which may be specifically identified." )
         protected List<SecurityLabelComponent> securityLabel;
 
         /**
@@ -1345,8 +1381,8 @@ public class Contract extends DomainResource {
           return (CodeableConcept) this.topic;
         }
 
-        public boolean hasTopicCodeableConcept() { 
-          return this != null && this.topic instanceof CodeableConcept;
+        public boolean hasTopicCodeableConcept() {
+          return this.topic instanceof CodeableConcept;
         }
 
         /**
@@ -1360,8 +1396,8 @@ public class Contract extends DomainResource {
           return (Reference) this.topic;
         }
 
-        public boolean hasTopicReference() { 
-          return this != null && this.topic instanceof Reference;
+        public boolean hasTopicReference() {
+          return this.topic instanceof Reference;
         }
 
         public boolean hasTopic() { 
@@ -1373,7 +1409,7 @@ public class Contract extends DomainResource {
          */
         public TermComponent setTopic(DataType value) { 
           if (value != null && !(value instanceof CodeableConcept || value instanceof Reference))
-            throw new Error("Not the right type for Contract.term.topic[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for Contract.term.topic[x]: "+value.fhirType());
           this.topic = value;
           return this;
         }
@@ -1476,7 +1512,7 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @return {@link #securityLabel} (Security labels that protect the handling of information about the term and its elements, which may be specifically identified..)
+         * @return {@link #securityLabel} (Security labels that protect the handling of information about the term and its elements, which may be specifically identified.)
          */
         public List<SecurityLabelComponent> getSecurityLabel() { 
           if (this.securityLabel == null)
@@ -1720,7 +1756,7 @@ public class Contract extends DomainResource {
           children.add(new Property("type", "CodeableConcept", "A legal clause or condition contained within a contract that requires one or both parties to perform a particular requirement by some specified time or prevents one or both parties from performing a particular requirement by some specified time.", 0, 1, type));
           children.add(new Property("subType", "CodeableConcept", "A specialized legal clause or condition based on overarching contract type.", 0, 1, subType));
           children.add(new Property("text", "string", "Statement of a provision in a policy or a contract.", 0, 1, text));
-          children.add(new Property("securityLabel", "", "Security labels that protect the handling of information about the term and its elements, which may be specifically identified..", 0, java.lang.Integer.MAX_VALUE, securityLabel));
+          children.add(new Property("securityLabel", "", "Security labels that protect the handling of information about the term and its elements, which may be specifically identified.", 0, java.lang.Integer.MAX_VALUE, securityLabel));
           children.add(new Property("offer", "", "The matter of concern in the context of this provision of the agrement.", 0, 1, offer));
           children.add(new Property("asset", "", "Contract Term Asset List.", 0, java.lang.Integer.MAX_VALUE, asset));
           children.add(new Property("action", "", "An actor taking a role in an activity for which it can be assigned some degree of responsibility for the activity taking place.", 0, java.lang.Integer.MAX_VALUE, action));
@@ -1740,7 +1776,7 @@ public class Contract extends DomainResource {
           case 3575610: /*type*/  return new Property("type", "CodeableConcept", "A legal clause or condition contained within a contract that requires one or both parties to perform a particular requirement by some specified time or prevents one or both parties from performing a particular requirement by some specified time.", 0, 1, type);
           case -1868521062: /*subType*/  return new Property("subType", "CodeableConcept", "A specialized legal clause or condition based on overarching contract type.", 0, 1, subType);
           case 3556653: /*text*/  return new Property("text", "string", "Statement of a provision in a policy or a contract.", 0, 1, text);
-          case -722296940: /*securityLabel*/  return new Property("securityLabel", "", "Security labels that protect the handling of information about the term and its elements, which may be specifically identified..", 0, java.lang.Integer.MAX_VALUE, securityLabel);
+          case -722296940: /*securityLabel*/  return new Property("securityLabel", "", "Security labels that protect the handling of information about the term and its elements, which may be specifically identified.", 0, java.lang.Integer.MAX_VALUE, securityLabel);
           case 105650780: /*offer*/  return new Property("offer", "", "The matter of concern in the context of this provision of the agrement.", 0, 1, offer);
           case 93121264: /*asset*/  return new Property("asset", "", "Contract Term Asset List.", 0, java.lang.Integer.MAX_VALUE, asset);
           case -1422950858: /*action*/  return new Property("action", "", "An actor taking a role in an activity for which it can be assigned some degree of responsibility for the activity taking place.", 0, java.lang.Integer.MAX_VALUE, action);
@@ -1845,6 +1881,37 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("identifier")) {
+          this.identifier = null;
+        } else if (name.equals("issued")) {
+          this.issued = null;
+        } else if (name.equals("applies")) {
+          this.applies = null;
+        } else if (name.equals("topic[x]")) {
+          this.topic = null;
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("subType")) {
+          this.subType = null;
+        } else if (name.equals("text")) {
+          this.text = null;
+        } else if (name.equals("securityLabel")) {
+          this.getSecurityLabel().remove((SecurityLabelComponent) value);
+        } else if (name.equals("offer")) {
+          this.offer = (ContractOfferComponent) value; // ContractOfferComponent
+        } else if (name.equals("asset")) {
+          this.getAsset().remove((ContractAssetComponent) value);
+        } else if (name.equals("action")) {
+          this.getAction().remove((ActionComponent) value);
+        } else if (name.equals("group")) {
+          this.getGroup().remove((TermComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1893,7 +1960,7 @@ public class Contract extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("issued")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.issued");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.issued");
         }
         else if (name.equals("applies")) {
           this.applies = new Period();
@@ -1916,7 +1983,7 @@ public class Contract extends DomainResource {
           return this.subType;
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.text");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.text");
         }
         else if (name.equals("securityLabel")) {
           return addSecurityLabel();
@@ -1942,6 +2009,10 @@ public class Contract extends DomainResource {
         TermComponent dst = new TermComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((TermComponent) dst);
       }
 
       public void copyValues(TermComponent dst) {
@@ -2022,26 +2093,26 @@ public class Contract extends DomainResource {
         protected List<UnsignedIntType> number;
 
         /**
-         * Security label privacy tag that species the level of confidentiality protection required for this term and/or term elements.
+         * Security label privacy tag that specifies the level of confidentiality protection required for this term and/or term elements.
          */
         @Child(name = "classification", type = {Coding.class}, order=2, min=1, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Confidentiality Protection", formalDefinition="Security label privacy tag that species the level of confidentiality protection required for this term and/or term elements." )
+        @Description(shortDefinition="Confidentiality Protection", formalDefinition="Security label privacy tag that specifies the level of confidentiality protection required for this term and/or term elements." )
         @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/contract-security-classification")
         protected Coding classification;
 
         /**
-         * Security label privacy tag that species the applicable privacy and security policies governing this term and/or term elements.
+         * Security label privacy tag that specifies the applicable privacy and security policies governing this term and/or term elements.
          */
         @Child(name = "category", type = {Coding.class}, order=3, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-        @Description(shortDefinition="Applicable Policy", formalDefinition="Security label privacy tag that species the applicable privacy and security policies governing this term and/or term elements." )
+        @Description(shortDefinition="Applicable Policy", formalDefinition="Security label privacy tag that specifies the applicable privacy and security policies governing this term and/or term elements." )
         @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/contract-security-category")
         protected List<Coding> category;
 
         /**
-         * Security label privacy tag that species the manner in which term and/or term elements are to be protected.
+         * Security label privacy tag that specifies the manner in which term and/or term elements are to be protected.
          */
         @Child(name = "control", type = {Coding.class}, order=4, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-        @Description(shortDefinition="Handling Instructions", formalDefinition="Security label privacy tag that species the manner in which term and/or term elements are to be protected." )
+        @Description(shortDefinition="Handling Instructions", formalDefinition="Security label privacy tag that specifies the manner in which term and/or term elements are to be protected." )
         @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/contract-security-control")
         protected List<Coding> control;
 
@@ -2124,7 +2195,7 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @return {@link #classification} (Security label privacy tag that species the level of confidentiality protection required for this term and/or term elements.)
+         * @return {@link #classification} (Security label privacy tag that specifies the level of confidentiality protection required for this term and/or term elements.)
          */
         public Coding getClassification() { 
           if (this.classification == null)
@@ -2140,7 +2211,7 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @param value {@link #classification} (Security label privacy tag that species the level of confidentiality protection required for this term and/or term elements.)
+         * @param value {@link #classification} (Security label privacy tag that specifies the level of confidentiality protection required for this term and/or term elements.)
          */
         public SecurityLabelComponent setClassification(Coding value) { 
           this.classification = value;
@@ -2148,7 +2219,7 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @return {@link #category} (Security label privacy tag that species the applicable privacy and security policies governing this term and/or term elements.)
+         * @return {@link #category} (Security label privacy tag that specifies the applicable privacy and security policies governing this term and/or term elements.)
          */
         public List<Coding> getCategory() { 
           if (this.category == null)
@@ -2201,7 +2272,7 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @return {@link #control} (Security label privacy tag that species the manner in which term and/or term elements are to be protected.)
+         * @return {@link #control} (Security label privacy tag that specifies the manner in which term and/or term elements are to be protected.)
          */
         public List<Coding> getControl() { 
           if (this.control == null)
@@ -2256,18 +2327,18 @@ public class Contract extends DomainResource {
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
           children.add(new Property("number", "unsignedInt", "Number used to link this term or term element to the applicable Security Label.", 0, java.lang.Integer.MAX_VALUE, number));
-          children.add(new Property("classification", "Coding", "Security label privacy tag that species the level of confidentiality protection required for this term and/or term elements.", 0, 1, classification));
-          children.add(new Property("category", "Coding", "Security label privacy tag that species the applicable privacy and security policies governing this term and/or term elements.", 0, java.lang.Integer.MAX_VALUE, category));
-          children.add(new Property("control", "Coding", "Security label privacy tag that species the manner in which term and/or term elements are to be protected.", 0, java.lang.Integer.MAX_VALUE, control));
+          children.add(new Property("classification", "Coding", "Security label privacy tag that specifies the level of confidentiality protection required for this term and/or term elements.", 0, 1, classification));
+          children.add(new Property("category", "Coding", "Security label privacy tag that specifies the applicable privacy and security policies governing this term and/or term elements.", 0, java.lang.Integer.MAX_VALUE, category));
+          children.add(new Property("control", "Coding", "Security label privacy tag that specifies the manner in which term and/or term elements are to be protected.", 0, java.lang.Integer.MAX_VALUE, control));
         }
 
         @Override
         public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
           switch (_hash) {
           case -1034364087: /*number*/  return new Property("number", "unsignedInt", "Number used to link this term or term element to the applicable Security Label.", 0, java.lang.Integer.MAX_VALUE, number);
-          case 382350310: /*classification*/  return new Property("classification", "Coding", "Security label privacy tag that species the level of confidentiality protection required for this term and/or term elements.", 0, 1, classification);
-          case 50511102: /*category*/  return new Property("category", "Coding", "Security label privacy tag that species the applicable privacy and security policies governing this term and/or term elements.", 0, java.lang.Integer.MAX_VALUE, category);
-          case 951543133: /*control*/  return new Property("control", "Coding", "Security label privacy tag that species the manner in which term and/or term elements are to be protected.", 0, java.lang.Integer.MAX_VALUE, control);
+          case 382350310: /*classification*/  return new Property("classification", "Coding", "Security label privacy tag that specifies the level of confidentiality protection required for this term and/or term elements.", 0, 1, classification);
+          case 50511102: /*category*/  return new Property("category", "Coding", "Security label privacy tag that specifies the applicable privacy and security policies governing this term and/or term elements.", 0, java.lang.Integer.MAX_VALUE, category);
+          case 951543133: /*control*/  return new Property("control", "Coding", "Security label privacy tag that specifies the manner in which term and/or term elements are to be protected.", 0, java.lang.Integer.MAX_VALUE, control);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
           }
 
@@ -2320,6 +2391,21 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("number")) {
+          this.getNumber().remove(value);
+        } else if (name.equals("classification")) {
+          this.classification = null;
+        } else if (name.equals("category")) {
+          this.getCategory().remove(value);
+        } else if (name.equals("control")) {
+          this.getControl().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -2347,7 +2433,7 @@ public class Contract extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("number")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.securityLabel.number");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.securityLabel.number");
         }
         else if (name.equals("classification")) {
           this.classification = new Coding();
@@ -2367,6 +2453,10 @@ public class Contract extends DomainResource {
         SecurityLabelComponent dst = new SecurityLabelComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SecurityLabelComponent) dst);
       }
 
       public void copyValues(SecurityLabelComponent dst) {
@@ -3076,6 +3166,33 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("identifier")) {
+          this.getIdentifier().remove(value);
+        } else if (name.equals("party")) {
+          this.getParty().remove((ContractPartyComponent) value);
+        } else if (name.equals("topic")) {
+          this.topic = null;
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("decision")) {
+          this.decision = null;
+        } else if (name.equals("decisionMode")) {
+          this.getDecisionMode().remove(value);
+        } else if (name.equals("answer")) {
+          this.getAnswer().remove((AnswerComponent) value);
+        } else if (name.equals("text")) {
+          this.text = null;
+        } else if (name.equals("linkId")) {
+          this.getLinkId().remove(value);
+        } else if (name.equals("securityLabelNumber")) {
+          this.getSecurityLabelNumber().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -3139,13 +3256,13 @@ public class Contract extends DomainResource {
           return addAnswer();
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.offer.text");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.offer.text");
         }
         else if (name.equals("linkId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.offer.linkId");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.offer.linkId");
         }
         else if (name.equals("securityLabelNumber")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.offer.securityLabelNumber");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.offer.securityLabelNumber");
         }
         else
           return super.addChild(name);
@@ -3155,6 +3272,10 @@ public class Contract extends DomainResource {
         ContractOfferComponent dst = new ContractOfferComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ContractOfferComponent) dst);
       }
 
       public void copyValues(ContractOfferComponent dst) {
@@ -3394,6 +3515,17 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("reference")) {
+          this.getReference().remove(value);
+        } else if (name.equals("role")) {
+          this.role = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -3431,6 +3563,10 @@ public class Contract extends DomainResource {
         ContractPartyComponent dst = new ContractPartyComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ContractPartyComponent) dst);
       }
 
       public void copyValues(ContractPartyComponent dst) {
@@ -3477,10 +3613,10 @@ public class Contract extends DomainResource {
     @Block()
     public static class AnswerComponent extends BackboneElement implements IBaseBackboneElement {
         /**
-         * Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.
+         * Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.
          */
         @Child(name = "value", type = {BooleanType.class, DecimalType.class, IntegerType.class, DateType.class, DateTimeType.class, TimeType.class, StringType.class, UriType.class, Attachment.class, Coding.class, Quantity.class, Reference.class}, order=1, min=1, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="The actual answer response", formalDefinition="Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research." )
+        @Description(shortDefinition="The actual answer response", formalDefinition="Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research." )
         protected DataType value;
 
         private static final long serialVersionUID = -1135414639L;
@@ -3501,14 +3637,14 @@ public class Contract extends DomainResource {
       }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public DataType getValue() { 
           return this.value;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public BooleanType getValueBooleanType() throws FHIRException { 
           if (this.value == null)
@@ -3518,12 +3654,12 @@ public class Contract extends DomainResource {
           return (BooleanType) this.value;
         }
 
-        public boolean hasValueBooleanType() { 
-          return this != null && this.value instanceof BooleanType;
+        public boolean hasValueBooleanType() {
+          return this.value instanceof BooleanType;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public DecimalType getValueDecimalType() throws FHIRException { 
           if (this.value == null)
@@ -3533,12 +3669,12 @@ public class Contract extends DomainResource {
           return (DecimalType) this.value;
         }
 
-        public boolean hasValueDecimalType() { 
-          return this != null && this.value instanceof DecimalType;
+        public boolean hasValueDecimalType() {
+          return this.value instanceof DecimalType;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public IntegerType getValueIntegerType() throws FHIRException { 
           if (this.value == null)
@@ -3548,12 +3684,12 @@ public class Contract extends DomainResource {
           return (IntegerType) this.value;
         }
 
-        public boolean hasValueIntegerType() { 
-          return this != null && this.value instanceof IntegerType;
+        public boolean hasValueIntegerType() {
+          return this.value instanceof IntegerType;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public DateType getValueDateType() throws FHIRException { 
           if (this.value == null)
@@ -3563,12 +3699,12 @@ public class Contract extends DomainResource {
           return (DateType) this.value;
         }
 
-        public boolean hasValueDateType() { 
-          return this != null && this.value instanceof DateType;
+        public boolean hasValueDateType() {
+          return this.value instanceof DateType;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public DateTimeType getValueDateTimeType() throws FHIRException { 
           if (this.value == null)
@@ -3578,12 +3714,12 @@ public class Contract extends DomainResource {
           return (DateTimeType) this.value;
         }
 
-        public boolean hasValueDateTimeType() { 
-          return this != null && this.value instanceof DateTimeType;
+        public boolean hasValueDateTimeType() {
+          return this.value instanceof DateTimeType;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public TimeType getValueTimeType() throws FHIRException { 
           if (this.value == null)
@@ -3593,12 +3729,12 @@ public class Contract extends DomainResource {
           return (TimeType) this.value;
         }
 
-        public boolean hasValueTimeType() { 
-          return this != null && this.value instanceof TimeType;
+        public boolean hasValueTimeType() {
+          return this.value instanceof TimeType;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public StringType getValueStringType() throws FHIRException { 
           if (this.value == null)
@@ -3608,12 +3744,12 @@ public class Contract extends DomainResource {
           return (StringType) this.value;
         }
 
-        public boolean hasValueStringType() { 
-          return this != null && this.value instanceof StringType;
+        public boolean hasValueStringType() {
+          return this.value instanceof StringType;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public UriType getValueUriType() throws FHIRException { 
           if (this.value == null)
@@ -3623,12 +3759,12 @@ public class Contract extends DomainResource {
           return (UriType) this.value;
         }
 
-        public boolean hasValueUriType() { 
-          return this != null && this.value instanceof UriType;
+        public boolean hasValueUriType() {
+          return this.value instanceof UriType;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public Attachment getValueAttachment() throws FHIRException { 
           if (this.value == null)
@@ -3638,12 +3774,12 @@ public class Contract extends DomainResource {
           return (Attachment) this.value;
         }
 
-        public boolean hasValueAttachment() { 
-          return this != null && this.value instanceof Attachment;
+        public boolean hasValueAttachment() {
+          return this.value instanceof Attachment;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public Coding getValueCoding() throws FHIRException { 
           if (this.value == null)
@@ -3653,12 +3789,12 @@ public class Contract extends DomainResource {
           return (Coding) this.value;
         }
 
-        public boolean hasValueCoding() { 
-          return this != null && this.value instanceof Coding;
+        public boolean hasValueCoding() {
+          return this.value instanceof Coding;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public Quantity getValueQuantity() throws FHIRException { 
           if (this.value == null)
@@ -3668,12 +3804,12 @@ public class Contract extends DomainResource {
           return (Quantity) this.value;
         }
 
-        public boolean hasValueQuantity() { 
-          return this != null && this.value instanceof Quantity;
+        public boolean hasValueQuantity() {
+          return this.value instanceof Quantity;
         }
 
         /**
-         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @return {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public Reference getValueReference() throws FHIRException { 
           if (this.value == null)
@@ -3683,8 +3819,8 @@ public class Contract extends DomainResource {
           return (Reference) this.value;
         }
 
-        public boolean hasValueReference() { 
-          return this != null && this.value instanceof Reference;
+        public boolean hasValueReference() {
+          return this.value instanceof Reference;
         }
 
         public boolean hasValue() { 
@@ -3692,37 +3828,37 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @param value {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.)
+         * @param value {@link #value} (Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.)
          */
         public AnswerComponent setValue(DataType value) { 
           if (value != null && !(value instanceof BooleanType || value instanceof DecimalType || value instanceof IntegerType || value instanceof DateType || value instanceof DateTimeType || value instanceof TimeType || value instanceof StringType || value instanceof UriType || value instanceof Attachment || value instanceof Coding || value instanceof Quantity || value instanceof Reference))
-            throw new Error("Not the right type for Contract.term.offer.answer.value[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for Contract.term.offer.answer.value[x]: "+value.fhirType());
           this.value = value;
           return this;
         }
 
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
-          children.add(new Property("value[x]", "boolean|decimal|integer|date|dateTime|time|string|uri|Attachment|Coding|Quantity|Reference(Any)", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value));
+          children.add(new Property("value[x]", "boolean|decimal|integer|date|dateTime|time|string|uri|Attachment|Coding|Quantity|Reference(Any)", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value));
         }
 
         @Override
         public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
           switch (_hash) {
-          case -1410166417: /*value[x]*/  return new Property("value[x]", "boolean|decimal|integer|date|dateTime|time|string|uri|Attachment|Coding|Quantity|Reference(Any)", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case 111972721: /*value*/  return new Property("value[x]", "boolean|decimal|integer|date|dateTime|time|string|uri|Attachment|Coding|Quantity|Reference(Any)", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case 733421943: /*valueBoolean*/  return new Property("value[x]", "boolean", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case -2083993440: /*valueDecimal*/  return new Property("value[x]", "decimal", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case -1668204915: /*valueInteger*/  return new Property("value[x]", "integer", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case -766192449: /*valueDate*/  return new Property("value[x]", "date", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case 1047929900: /*valueDateTime*/  return new Property("value[x]", "dateTime", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case -765708322: /*valueTime*/  return new Property("value[x]", "time", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case -1424603934: /*valueString*/  return new Property("value[x]", "string", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case -1410172357: /*valueUri*/  return new Property("value[x]", "uri", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case -475566732: /*valueAttachment*/  return new Property("value[x]", "Attachment", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case -1887705029: /*valueCoding*/  return new Property("value[x]", "Coding", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case -2029823716: /*valueQuantity*/  return new Property("value[x]", "Quantity", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
-          case 1755241690: /*valueReference*/  return new Property("value[x]", "Reference(Any)", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case -1410166417: /*value[x]*/  return new Property("value[x]", "boolean|decimal|integer|date|dateTime|time|string|uri|Attachment|Coding|Quantity|Reference(Any)", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case 111972721: /*value*/  return new Property("value[x]", "boolean|decimal|integer|date|dateTime|time|string|uri|Attachment|Coding|Quantity|Reference(Any)", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case 733421943: /*valueBoolean*/  return new Property("value[x]", "boolean", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case -2083993440: /*valueDecimal*/  return new Property("value[x]", "decimal", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case -1668204915: /*valueInteger*/  return new Property("value[x]", "integer", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case -766192449: /*valueDate*/  return new Property("value[x]", "date", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case 1047929900: /*valueDateTime*/  return new Property("value[x]", "dateTime", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case -765708322: /*valueTime*/  return new Property("value[x]", "time", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case -1424603934: /*valueString*/  return new Property("value[x]", "string", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case -1410172357: /*valueUri*/  return new Property("value[x]", "uri", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case -475566732: /*valueAttachment*/  return new Property("value[x]", "Attachment", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case -1887705029: /*valueCoding*/  return new Property("value[x]", "Coding", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case -2029823716: /*valueQuantity*/  return new Property("value[x]", "Quantity", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
+          case 1755241690: /*valueReference*/  return new Property("value[x]", "Reference(Any)", "Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warranty duration, or whether biospecimen may be used for further research.", 0, 1, value);
           default: return super.getNamedProperty(_hash, _name, _checkValid);
           }
 
@@ -3755,6 +3891,15 @@ public class Contract extends DomainResource {
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("value[x]")) {
+          this.value = null;
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -3834,6 +3979,10 @@ public class Contract extends DomainResource {
         AnswerComponent dst = new AnswerComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((AnswerComponent) dst);
       }
 
       public void copyValues(AnswerComponent dst) {
@@ -3921,10 +4070,10 @@ public class Contract extends DomainResource {
         protected List<AssetContextComponent> context;
 
         /**
-         * Description of the quality and completeness of the asset that imay be a factor in its valuation.
+         * Description of the quality and completeness of the asset that may be a factor in its valuation.
          */
         @Child(name = "condition", type = {StringType.class}, order=7, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Quality desctiption of asset", formalDefinition="Description of the quality and completeness of the asset that imay be a factor in its valuation." )
+        @Description(shortDefinition="Quality desctiption of asset", formalDefinition="Description of the quality and completeness of the asset that may be a factor in its valuation." )
         protected StringType condition;
 
         /**
@@ -4254,7 +4403,7 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @return {@link #condition} (Description of the quality and completeness of the asset that imay be a factor in its valuation.). This is the underlying object with id, value and extensions. The accessor "getCondition" gives direct access to the value
+         * @return {@link #condition} (Description of the quality and completeness of the asset that may be a factor in its valuation.). This is the underlying object with id, value and extensions. The accessor "getCondition" gives direct access to the value
          */
         public StringType getConditionElement() { 
           if (this.condition == null)
@@ -4274,7 +4423,7 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @param value {@link #condition} (Description of the quality and completeness of the asset that imay be a factor in its valuation.). This is the underlying object with id, value and extensions. The accessor "getCondition" gives direct access to the value
+         * @param value {@link #condition} (Description of the quality and completeness of the asset that may be a factor in its valuation.). This is the underlying object with id, value and extensions. The accessor "getCondition" gives direct access to the value
          */
         public ContractAssetComponent setConditionElement(StringType value) { 
           this.condition = value;
@@ -4282,14 +4431,14 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @return Description of the quality and completeness of the asset that imay be a factor in its valuation.
+         * @return Description of the quality and completeness of the asset that may be a factor in its valuation.
          */
         public String getCondition() { 
           return this.condition == null ? null : this.condition.getValue();
         }
 
         /**
-         * @param value Description of the quality and completeness of the asset that imay be a factor in its valuation.
+         * @param value Description of the quality and completeness of the asset that may be a factor in its valuation.
          */
         public ContractAssetComponent setCondition(String value) { 
           if (Utilities.noString(value))
@@ -4746,7 +4895,7 @@ public class Contract extends DomainResource {
           children.add(new Property("subtype", "CodeableConcept", "May be a subtype or part of an offered asset.", 0, java.lang.Integer.MAX_VALUE, subtype));
           children.add(new Property("relationship", "Coding", "Specifies the applicability of the term to an asset resource instance, and instances it refers to orinstances that refer to it, and/or are owned by the offeree.", 0, 1, relationship));
           children.add(new Property("context", "", "Circumstance of the asset.", 0, java.lang.Integer.MAX_VALUE, context));
-          children.add(new Property("condition", "string", "Description of the quality and completeness of the asset that imay be a factor in its valuation.", 0, 1, condition));
+          children.add(new Property("condition", "string", "Description of the quality and completeness of the asset that may be a factor in its valuation.", 0, 1, condition));
           children.add(new Property("periodType", "CodeableConcept", "Type of Asset availability for use or ownership.", 0, java.lang.Integer.MAX_VALUE, periodType));
           children.add(new Property("period", "Period", "Asset relevant contractual time period.", 0, java.lang.Integer.MAX_VALUE, period));
           children.add(new Property("usePeriod", "Period", "Time period of asset use.", 0, java.lang.Integer.MAX_VALUE, usePeriod));
@@ -4766,7 +4915,7 @@ public class Contract extends DomainResource {
           case -1867567750: /*subtype*/  return new Property("subtype", "CodeableConcept", "May be a subtype or part of an offered asset.", 0, java.lang.Integer.MAX_VALUE, subtype);
           case -261851592: /*relationship*/  return new Property("relationship", "Coding", "Specifies the applicability of the term to an asset resource instance, and instances it refers to orinstances that refer to it, and/or are owned by the offeree.", 0, 1, relationship);
           case 951530927: /*context*/  return new Property("context", "", "Circumstance of the asset.", 0, java.lang.Integer.MAX_VALUE, context);
-          case -861311717: /*condition*/  return new Property("condition", "string", "Description of the quality and completeness of the asset that imay be a factor in its valuation.", 0, 1, condition);
+          case -861311717: /*condition*/  return new Property("condition", "string", "Description of the quality and completeness of the asset that may be a factor in its valuation.", 0, 1, condition);
           case 384348315: /*periodType*/  return new Property("periodType", "CodeableConcept", "Type of Asset availability for use or ownership.", 0, java.lang.Integer.MAX_VALUE, periodType);
           case -991726143: /*period*/  return new Property("period", "Period", "Asset relevant contractual time period.", 0, java.lang.Integer.MAX_VALUE, period);
           case -628382168: /*usePeriod*/  return new Property("usePeriod", "Period", "Time period of asset use.", 0, java.lang.Integer.MAX_VALUE, usePeriod);
@@ -4893,6 +5042,43 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("scope")) {
+          this.scope = null;
+        } else if (name.equals("type")) {
+          this.getType().remove(value);
+        } else if (name.equals("typeReference")) {
+          this.getTypeReference().remove(value);
+        } else if (name.equals("subtype")) {
+          this.getSubtype().remove(value);
+        } else if (name.equals("relationship")) {
+          this.relationship = null;
+        } else if (name.equals("context")) {
+          this.getContext().remove((AssetContextComponent) value);
+        } else if (name.equals("condition")) {
+          this.condition = null;
+        } else if (name.equals("periodType")) {
+          this.getPeriodType().remove(value);
+        } else if (name.equals("period")) {
+          this.getPeriod().remove(value);
+        } else if (name.equals("usePeriod")) {
+          this.getUsePeriod().remove(value);
+        } else if (name.equals("text")) {
+          this.text = null;
+        } else if (name.equals("linkId")) {
+          this.getLinkId().remove(value);
+        } else if (name.equals("answer")) {
+          this.getAnswer().remove((AnswerComponent) value);
+        } else if (name.equals("securityLabelNumber")) {
+          this.getSecurityLabelNumber().remove(value);
+        } else if (name.equals("valuedItem")) {
+          this.getValuedItem().remove((ValuedItemComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -4962,7 +5148,7 @@ public class Contract extends DomainResource {
           return addContext();
         }
         else if (name.equals("condition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.condition");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.condition");
         }
         else if (name.equals("periodType")) {
           return addPeriodType();
@@ -4974,16 +5160,16 @@ public class Contract extends DomainResource {
           return addUsePeriod();
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.text");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.text");
         }
         else if (name.equals("linkId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.linkId");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.linkId");
         }
         else if (name.equals("answer")) {
           return addAnswer();
         }
         else if (name.equals("securityLabelNumber")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.securityLabelNumber");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.securityLabelNumber");
         }
         else if (name.equals("valuedItem")) {
           return addValuedItem();
@@ -4996,6 +5182,10 @@ public class Contract extends DomainResource {
         ContractAssetComponent dst = new ContractAssetComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ContractAssetComponent) dst);
       }
 
       public void copyValues(ContractAssetComponent dst) {
@@ -5318,6 +5508,19 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("reference")) {
+          this.reference = null;
+        } else if (name.equals("code")) {
+          this.getCode().remove(value);
+        } else if (name.equals("text")) {
+          this.text = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -5350,7 +5553,7 @@ public class Contract extends DomainResource {
           return addCode();
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.context.text");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.context.text");
         }
         else
           return super.addChild(name);
@@ -5360,6 +5563,10 @@ public class Contract extends DomainResource {
         AssetContextComponent dst = new AssetContextComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((AssetContextComponent) dst);
       }
 
       public void copyValues(AssetContextComponent dst) {
@@ -5532,8 +5739,8 @@ public class Contract extends DomainResource {
           return (CodeableConcept) this.entity;
         }
 
-        public boolean hasEntityCodeableConcept() { 
-          return this != null && this.entity instanceof CodeableConcept;
+        public boolean hasEntityCodeableConcept() {
+          return this.entity instanceof CodeableConcept;
         }
 
         /**
@@ -5547,8 +5754,8 @@ public class Contract extends DomainResource {
           return (Reference) this.entity;
         }
 
-        public boolean hasEntityReference() { 
-          return this != null && this.entity instanceof Reference;
+        public boolean hasEntityReference() {
+          return this.entity instanceof Reference;
         }
 
         public boolean hasEntity() { 
@@ -5560,7 +5767,7 @@ public class Contract extends DomainResource {
          */
         public ValuedItemComponent setEntity(DataType value) { 
           if (value != null && !(value instanceof CodeableConcept || value instanceof Reference))
-            throw new Error("Not the right type for Contract.term.asset.valuedItem.entity[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for Contract.term.asset.valuedItem.entity[x]: "+value.fhirType());
           this.entity = value;
           return this;
         }
@@ -6262,6 +6469,41 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("entity[x]")) {
+          this.entity = null;
+        } else if (name.equals("identifier")) {
+          this.identifier = null;
+        } else if (name.equals("effectiveTime")) {
+          this.effectiveTime = null;
+        } else if (name.equals("quantity")) {
+          this.quantity = null;
+        } else if (name.equals("unitPrice")) {
+          this.unitPrice = null;
+        } else if (name.equals("factor")) {
+          this.factor = null;
+        } else if (name.equals("points")) {
+          this.points = null;
+        } else if (name.equals("net")) {
+          this.net = null;
+        } else if (name.equals("payment")) {
+          this.payment = null;
+        } else if (name.equals("paymentDate")) {
+          this.paymentDate = null;
+        } else if (name.equals("responsible")) {
+          this.responsible = null;
+        } else if (name.equals("recipient")) {
+          this.recipient = null;
+        } else if (name.equals("linkId")) {
+          this.getLinkId().remove(value);
+        } else if (name.equals("securityLabelNumber")) {
+          this.getSecurityLabelNumber().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -6322,7 +6564,7 @@ public class Contract extends DomainResource {
           return this.identifier;
         }
         else if (name.equals("effectiveTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.valuedItem.effectiveTime");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.valuedItem.effectiveTime");
         }
         else if (name.equals("quantity")) {
           this.quantity = new Quantity();
@@ -6333,20 +6575,20 @@ public class Contract extends DomainResource {
           return this.unitPrice;
         }
         else if (name.equals("factor")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.valuedItem.factor");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.valuedItem.factor");
         }
         else if (name.equals("points")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.valuedItem.points");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.valuedItem.points");
         }
         else if (name.equals("net")) {
           this.net = new Money();
           return this.net;
         }
         else if (name.equals("payment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.valuedItem.payment");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.valuedItem.payment");
         }
         else if (name.equals("paymentDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.valuedItem.paymentDate");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.valuedItem.paymentDate");
         }
         else if (name.equals("responsible")) {
           this.responsible = new Reference();
@@ -6357,10 +6599,10 @@ public class Contract extends DomainResource {
           return this.recipient;
         }
         else if (name.equals("linkId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.valuedItem.linkId");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.valuedItem.linkId");
         }
         else if (name.equals("securityLabelNumber")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.asset.valuedItem.securityLabelNumber");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.asset.valuedItem.securityLabelNumber");
         }
         else
           return super.addChild(name);
@@ -6370,6 +6612,10 @@ public class Contract extends DomainResource {
         ValuedItemComponent dst = new ValuedItemComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ValuedItemComponent) dst);
       }
 
       public void copyValues(ValuedItemComponent dst) {
@@ -6487,10 +6733,10 @@ public class Contract extends DomainResource {
         protected CodeableConcept status;
 
         /**
-         * Encounter or Episode with primary association to specified term activity.
+         * Encounter or Episode with primary association to the specified term activity.
          */
         @Child(name = "context", type = {Encounter.class, EpisodeOfCare.class}, order=7, min=0, max=1, modifier=false, summary=false)
-        @Description(shortDefinition="Episode associated with action", formalDefinition="Encounter or Episode with primary association to specified term activity." )
+        @Description(shortDefinition="Episode associated with action", formalDefinition="Encounter or Episode with primary association to the specified term activity." )
         protected Reference context;
 
         /**
@@ -6831,7 +7077,7 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @return {@link #context} (Encounter or Episode with primary association to specified term activity.)
+         * @return {@link #context} (Encounter or Episode with primary association to the specified term activity.)
          */
         public Reference getContext() { 
           if (this.context == null)
@@ -6847,7 +7093,7 @@ public class Contract extends DomainResource {
         }
 
         /**
-         * @param value {@link #context} (Encounter or Episode with primary association to specified term activity.)
+         * @param value {@link #context} (Encounter or Episode with primary association to the specified term activity.)
          */
         public ActionComponent setContext(Reference value) { 
           this.context = value;
@@ -6933,8 +7179,8 @@ public class Contract extends DomainResource {
           return (DateTimeType) this.occurrence;
         }
 
-        public boolean hasOccurrenceDateTimeType() { 
-          return this != null && this.occurrence instanceof DateTimeType;
+        public boolean hasOccurrenceDateTimeType() {
+          return this.occurrence instanceof DateTimeType;
         }
 
         /**
@@ -6948,8 +7194,8 @@ public class Contract extends DomainResource {
           return (Period) this.occurrence;
         }
 
-        public boolean hasOccurrencePeriod() { 
-          return this != null && this.occurrence instanceof Period;
+        public boolean hasOccurrencePeriod() {
+          return this.occurrence instanceof Period;
         }
 
         /**
@@ -6963,8 +7209,8 @@ public class Contract extends DomainResource {
           return (Timing) this.occurrence;
         }
 
-        public boolean hasOccurrenceTiming() { 
-          return this != null && this.occurrence instanceof Timing;
+        public boolean hasOccurrenceTiming() {
+          return this.occurrence instanceof Timing;
         }
 
         public boolean hasOccurrence() { 
@@ -6976,7 +7222,7 @@ public class Contract extends DomainResource {
          */
         public ActionComponent setOccurrence(DataType value) { 
           if (value != null && !(value instanceof DateTimeType || value instanceof Period || value instanceof Timing))
-            throw new Error("Not the right type for Contract.term.action.occurrence[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for Contract.term.action.occurrence[x]: "+value.fhirType());
           this.occurrence = value;
           return this;
         }
@@ -7493,7 +7739,7 @@ public class Contract extends DomainResource {
           children.add(new Property("intent", "CodeableConcept", "Reason or purpose for the action stipulated by this Contract Provision.", 0, 1, intent));
           children.add(new Property("linkId", "string", "Id [identifier??] of the clause or question text related to this action in the referenced form or QuestionnaireResponse.", 0, java.lang.Integer.MAX_VALUE, linkId));
           children.add(new Property("status", "CodeableConcept", "Current state of the term action.", 0, 1, status));
-          children.add(new Property("context", "Reference(Encounter|EpisodeOfCare)", "Encounter or Episode with primary association to specified term activity.", 0, 1, context));
+          children.add(new Property("context", "Reference(Encounter|EpisodeOfCare)", "Encounter or Episode with primary association to the specified term activity.", 0, 1, context));
           children.add(new Property("contextLinkId", "string", "Id [identifier??] of the clause or question text related to the requester of this action in the referenced form or QuestionnaireResponse.", 0, java.lang.Integer.MAX_VALUE, contextLinkId));
           children.add(new Property("occurrence[x]", "dateTime|Period|Timing", "When action happens.", 0, 1, occurrence));
           children.add(new Property("requester", "Reference(Patient|RelatedPerson|Practitioner|PractitionerRole|Device|Group|Organization)", "Who or what initiated the action and has responsibility for its activation.", 0, java.lang.Integer.MAX_VALUE, requester));
@@ -7517,7 +7763,7 @@ public class Contract extends DomainResource {
           case -1183762788: /*intent*/  return new Property("intent", "CodeableConcept", "Reason or purpose for the action stipulated by this Contract Provision.", 0, 1, intent);
           case -1102667083: /*linkId*/  return new Property("linkId", "string", "Id [identifier??] of the clause or question text related to this action in the referenced form or QuestionnaireResponse.", 0, java.lang.Integer.MAX_VALUE, linkId);
           case -892481550: /*status*/  return new Property("status", "CodeableConcept", "Current state of the term action.", 0, 1, status);
-          case 951530927: /*context*/  return new Property("context", "Reference(Encounter|EpisodeOfCare)", "Encounter or Episode with primary association to specified term activity.", 0, 1, context);
+          case 951530927: /*context*/  return new Property("context", "Reference(Encounter|EpisodeOfCare)", "Encounter or Episode with primary association to the specified term activity.", 0, 1, context);
           case -288783036: /*contextLinkId*/  return new Property("contextLinkId", "string", "Id [identifier??] of the clause or question text related to the requester of this action in the referenced form or QuestionnaireResponse.", 0, java.lang.Integer.MAX_VALUE, contextLinkId);
           case -2022646513: /*occurrence[x]*/  return new Property("occurrence[x]", "dateTime|Period|Timing", "When action happens.", 0, 1, occurrence);
           case 1687874001: /*occurrence*/  return new Property("occurrence[x]", "dateTime|Period|Timing", "When action happens.", 0, 1, occurrence);
@@ -7676,6 +7922,51 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("doNotPerform")) {
+          this.doNotPerform = null;
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("subject")) {
+          this.getSubject().remove((ActionSubjectComponent) value);
+        } else if (name.equals("intent")) {
+          this.intent = null;
+        } else if (name.equals("linkId")) {
+          this.getLinkId().remove(value);
+        } else if (name.equals("status")) {
+          this.status = null;
+        } else if (name.equals("context")) {
+          this.context = null;
+        } else if (name.equals("contextLinkId")) {
+          this.getContextLinkId().remove(value);
+        } else if (name.equals("occurrence[x]")) {
+          this.occurrence = null;
+        } else if (name.equals("requester")) {
+          this.getRequester().remove(value);
+        } else if (name.equals("requesterLinkId")) {
+          this.getRequesterLinkId().remove(value);
+        } else if (name.equals("performerType")) {
+          this.getPerformerType().remove(value);
+        } else if (name.equals("performerRole")) {
+          this.performerRole = null;
+        } else if (name.equals("performer")) {
+          this.performer = null;
+        } else if (name.equals("performerLinkId")) {
+          this.getPerformerLinkId().remove(value);
+        } else if (name.equals("reason")) {
+          this.getReason().remove(value);
+        } else if (name.equals("reasonLinkId")) {
+          this.getReasonLinkId().remove(value);
+        } else if (name.equals("note")) {
+          this.getNote().remove(value);
+        } else if (name.equals("securityLabelNumber")) {
+          this.getSecurityLabelNumber().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -7734,7 +8025,7 @@ public class Contract extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("doNotPerform")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.action.doNotPerform");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.action.doNotPerform");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
@@ -7748,7 +8039,7 @@ public class Contract extends DomainResource {
           return this.intent;
         }
         else if (name.equals("linkId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.action.linkId");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.action.linkId");
         }
         else if (name.equals("status")) {
           this.status = new CodeableConcept();
@@ -7759,7 +8050,7 @@ public class Contract extends DomainResource {
           return this.context;
         }
         else if (name.equals("contextLinkId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.action.contextLinkId");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.action.contextLinkId");
         }
         else if (name.equals("occurrenceDateTime")) {
           this.occurrence = new DateTimeType();
@@ -7777,7 +8068,7 @@ public class Contract extends DomainResource {
           return addRequester();
         }
         else if (name.equals("requesterLinkId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.action.requesterLinkId");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.action.requesterLinkId");
         }
         else if (name.equals("performerType")) {
           return addPerformerType();
@@ -7791,19 +8082,19 @@ public class Contract extends DomainResource {
           return this.performer;
         }
         else if (name.equals("performerLinkId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.action.performerLinkId");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.action.performerLinkId");
         }
         else if (name.equals("reason")) {
           return addReason();
         }
         else if (name.equals("reasonLinkId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.action.reasonLinkId");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.action.reasonLinkId");
         }
         else if (name.equals("note")) {
           return addNote();
         }
         else if (name.equals("securityLabelNumber")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.term.action.securityLabelNumber");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.term.action.securityLabelNumber");
         }
         else
           return super.addChild(name);
@@ -7813,6 +8104,10 @@ public class Contract extends DomainResource {
         ActionComponent dst = new ActionComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ActionComponent) dst);
       }
 
       public void copyValues(ActionComponent dst) {
@@ -8088,6 +8383,17 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("reference")) {
+          this.getReference().remove(value);
+        } else if (name.equals("role")) {
+          this.role = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -8125,6 +8431,10 @@ public class Contract extends DomainResource {
         ActionSubjectComponent dst = new ActionSubjectComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ActionSubjectComponent) dst);
       }
 
       public void copyValues(ActionSubjectComponent dst) {
@@ -8371,6 +8681,19 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("party")) {
+          this.party = null;
+        } else if (name.equals("signature")) {
+          this.getSignature().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -8414,6 +8737,10 @@ public class Contract extends DomainResource {
         SignatoryComponent dst = new SignatoryComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SignatoryComponent) dst);
       }
 
       public void copyValues(SignatoryComponent dst) {
@@ -8503,8 +8830,8 @@ public class Contract extends DomainResource {
           return (Attachment) this.content;
         }
 
-        public boolean hasContentAttachment() { 
-          return this != null && this.content instanceof Attachment;
+        public boolean hasContentAttachment() {
+          return this.content instanceof Attachment;
         }
 
         /**
@@ -8518,8 +8845,8 @@ public class Contract extends DomainResource {
           return (Reference) this.content;
         }
 
-        public boolean hasContentReference() { 
-          return this != null && this.content instanceof Reference;
+        public boolean hasContentReference() {
+          return this.content instanceof Reference;
         }
 
         public boolean hasContent() { 
@@ -8531,7 +8858,7 @@ public class Contract extends DomainResource {
          */
         public FriendlyLanguageComponent setContent(DataType value) { 
           if (value != null && !(value instanceof Attachment || value instanceof Reference))
-            throw new Error("Not the right type for Contract.friendly.content[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for Contract.friendly.content[x]: "+value.fhirType());
           this.content = value;
           return this;
         }
@@ -8582,6 +8909,15 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("content[x]")) {
+          this.content = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -8619,6 +8955,10 @@ public class Contract extends DomainResource {
         FriendlyLanguageComponent dst = new FriendlyLanguageComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((FriendlyLanguageComponent) dst);
       }
 
       public void copyValues(FriendlyLanguageComponent dst) {
@@ -8701,8 +9041,8 @@ public class Contract extends DomainResource {
           return (Attachment) this.content;
         }
 
-        public boolean hasContentAttachment() { 
-          return this != null && this.content instanceof Attachment;
+        public boolean hasContentAttachment() {
+          return this.content instanceof Attachment;
         }
 
         /**
@@ -8716,8 +9056,8 @@ public class Contract extends DomainResource {
           return (Reference) this.content;
         }
 
-        public boolean hasContentReference() { 
-          return this != null && this.content instanceof Reference;
+        public boolean hasContentReference() {
+          return this.content instanceof Reference;
         }
 
         public boolean hasContent() { 
@@ -8729,7 +9069,7 @@ public class Contract extends DomainResource {
          */
         public LegalLanguageComponent setContent(DataType value) { 
           if (value != null && !(value instanceof Attachment || value instanceof Reference))
-            throw new Error("Not the right type for Contract.legal.content[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for Contract.legal.content[x]: "+value.fhirType());
           this.content = value;
           return this;
         }
@@ -8780,6 +9120,15 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("content[x]")) {
+          this.content = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -8817,6 +9166,10 @@ public class Contract extends DomainResource {
         LegalLanguageComponent dst = new LegalLanguageComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((LegalLanguageComponent) dst);
       }
 
       public void copyValues(LegalLanguageComponent dst) {
@@ -8899,8 +9252,8 @@ public class Contract extends DomainResource {
           return (Attachment) this.content;
         }
 
-        public boolean hasContentAttachment() { 
-          return this != null && this.content instanceof Attachment;
+        public boolean hasContentAttachment() {
+          return this.content instanceof Attachment;
         }
 
         /**
@@ -8914,8 +9267,8 @@ public class Contract extends DomainResource {
           return (Reference) this.content;
         }
 
-        public boolean hasContentReference() { 
-          return this != null && this.content instanceof Reference;
+        public boolean hasContentReference() {
+          return this.content instanceof Reference;
         }
 
         public boolean hasContent() { 
@@ -8927,7 +9280,7 @@ public class Contract extends DomainResource {
          */
         public ComputableLanguageComponent setContent(DataType value) { 
           if (value != null && !(value instanceof Attachment || value instanceof Reference))
-            throw new Error("Not the right type for Contract.rule.content[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for Contract.rule.content[x]: "+value.fhirType());
           this.content = value;
           return this;
         }
@@ -8978,6 +9331,15 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("content[x]")) {
+          this.content = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -9015,6 +9377,10 @@ public class Contract extends DomainResource {
         ComputableLanguageComponent dst = new ComputableLanguageComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ComputableLanguageComponent) dst);
       }
 
       public void copyValues(ComputableLanguageComponent dst) {
@@ -9170,17 +9536,17 @@ public class Contract extends DomainResource {
     protected StringType name;
 
     /**
-     * A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.
+     * A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.
      */
     @Child(name = "title", type = {StringType.class}, order=16, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Human Friendly name", formalDefinition="A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content." )
+    @Description(shortDefinition="Human Friendly name", formalDefinition="A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state." )
     protected StringType title;
 
     /**
-     * An explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.
+     * A more detailed or qualifying explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.
      */
     @Child(name = "subtitle", type = {StringType.class}, order=17, min=0, max=1, modifier=false, summary=false)
-    @Description(shortDefinition="Subordinate Friendly name", formalDefinition="An explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content." )
+    @Description(shortDefinition="Subordinate Friendly name", formalDefinition="A more detailed or qualifying explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state." )
     protected StringType subtitle;
 
     /**
@@ -9250,10 +9616,10 @@ public class Contract extends DomainResource {
     protected List<Reference> supportingInfo;
 
     /**
-     * Links to Provenance records for past versions of this Contract definition, derivative, or instance, which identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the Contract.  The Provence.entity indicates the target that was changed in the update. http://build.fhir.org/provenance-definitions.html#Provenance.entity.
+     * Links to Provenance records for past versions of this Contract definition, derivative, or instance, which identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the Contract.  The Provenance.entity indicates the target that was changed in the update (see [Provenance.entity](provenance-definitions.html#Provenance.entity)).
      */
     @Child(name = "relevantHistory", type = {Provenance.class}, order=27, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
-    @Description(shortDefinition="Key event in Contract History", formalDefinition="Links to Provenance records for past versions of this Contract definition, derivative, or instance, which identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the Contract.  The Provence.entity indicates the target that was changed in the update. http://build.fhir.org/provenance-definitions.html#Provenance.entity." )
+    @Description(shortDefinition="Key event in Contract History", formalDefinition="Links to Provenance records for past versions of this Contract definition, derivative, or instance, which identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the Contract.  The Provenance.entity indicates the target that was changed in the update (see [Provenance.entity](provenance-definitions.html#Provenance.entity))." )
     protected List<Reference> relevantHistory;
 
     /**
@@ -9980,7 +10346,7 @@ public class Contract extends DomainResource {
     }
 
     /**
-     * @return {@link #title} (A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.). This is the underlying object with id, value and extensions. The accessor "getTitle" gives direct access to the value
+     * @return {@link #title} (A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.). This is the underlying object with id, value and extensions. The accessor "getTitle" gives direct access to the value
      */
     public StringType getTitleElement() { 
       if (this.title == null)
@@ -10000,7 +10366,7 @@ public class Contract extends DomainResource {
     }
 
     /**
-     * @param value {@link #title} (A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.). This is the underlying object with id, value and extensions. The accessor "getTitle" gives direct access to the value
+     * @param value {@link #title} (A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.). This is the underlying object with id, value and extensions. The accessor "getTitle" gives direct access to the value
      */
     public Contract setTitleElement(StringType value) { 
       this.title = value;
@@ -10008,14 +10374,14 @@ public class Contract extends DomainResource {
     }
 
     /**
-     * @return A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.
+     * @return A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.
      */
     public String getTitle() { 
       return this.title == null ? null : this.title.getValue();
     }
 
     /**
-     * @param value A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.
+     * @param value A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.
      */
     public Contract setTitle(String value) { 
       if (Utilities.noString(value))
@@ -10029,7 +10395,7 @@ public class Contract extends DomainResource {
     }
 
     /**
-     * @return {@link #subtitle} (An explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.). This is the underlying object with id, value and extensions. The accessor "getSubtitle" gives direct access to the value
+     * @return {@link #subtitle} (A more detailed or qualifying explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.). This is the underlying object with id, value and extensions. The accessor "getSubtitle" gives direct access to the value
      */
     public StringType getSubtitleElement() { 
       if (this.subtitle == null)
@@ -10049,7 +10415,7 @@ public class Contract extends DomainResource {
     }
 
     /**
-     * @param value {@link #subtitle} (An explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.). This is the underlying object with id, value and extensions. The accessor "getSubtitle" gives direct access to the value
+     * @param value {@link #subtitle} (A more detailed or qualifying explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.). This is the underlying object with id, value and extensions. The accessor "getSubtitle" gives direct access to the value
      */
     public Contract setSubtitleElement(StringType value) { 
       this.subtitle = value;
@@ -10057,14 +10423,14 @@ public class Contract extends DomainResource {
     }
 
     /**
-     * @return An explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.
+     * @return A more detailed or qualifying explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.
      */
     public String getSubtitle() { 
       return this.subtitle == null ? null : this.subtitle.getValue();
     }
 
     /**
-     * @param value An explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.
+     * @param value A more detailed or qualifying explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.
      */
     public Contract setSubtitle(String value) { 
       if (Utilities.noString(value))
@@ -10204,8 +10570,8 @@ public class Contract extends DomainResource {
       return (CodeableConcept) this.topic;
     }
 
-    public boolean hasTopicCodeableConcept() { 
-      return this != null && this.topic instanceof CodeableConcept;
+    public boolean hasTopicCodeableConcept() {
+      return this.topic instanceof CodeableConcept;
     }
 
     /**
@@ -10219,8 +10585,8 @@ public class Contract extends DomainResource {
       return (Reference) this.topic;
     }
 
-    public boolean hasTopicReference() { 
-      return this != null && this.topic instanceof Reference;
+    public boolean hasTopicReference() {
+      return this.topic instanceof Reference;
     }
 
     public boolean hasTopic() { 
@@ -10232,7 +10598,7 @@ public class Contract extends DomainResource {
      */
     public Contract setTopic(DataType value) { 
       if (value != null && !(value instanceof CodeableConcept || value instanceof Reference))
-        throw new Error("Not the right type for Contract.topic[x]: "+value.fhirType());
+        throw new FHIRException("Not the right type for Contract.topic[x]: "+value.fhirType());
       this.topic = value;
       return this;
     }
@@ -10445,7 +10811,7 @@ public class Contract extends DomainResource {
     }
 
     /**
-     * @return {@link #relevantHistory} (Links to Provenance records for past versions of this Contract definition, derivative, or instance, which identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the Contract.  The Provence.entity indicates the target that was changed in the update. http://build.fhir.org/provenance-definitions.html#Provenance.entity.)
+     * @return {@link #relevantHistory} (Links to Provenance records for past versions of this Contract definition, derivative, or instance, which identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the Contract.  The Provenance.entity indicates the target that was changed in the update (see [Provenance.entity](provenance-definitions.html#Provenance.entity)).)
      */
     public List<Reference> getRelevantHistory() { 
       if (this.relevantHistory == null)
@@ -10727,8 +11093,8 @@ public class Contract extends DomainResource {
       return (Attachment) this.legallyBinding;
     }
 
-    public boolean hasLegallyBindingAttachment() { 
-      return this != null && this.legallyBinding instanceof Attachment;
+    public boolean hasLegallyBindingAttachment() {
+      return this.legallyBinding instanceof Attachment;
     }
 
     /**
@@ -10742,8 +11108,8 @@ public class Contract extends DomainResource {
       return (Reference) this.legallyBinding;
     }
 
-    public boolean hasLegallyBindingReference() { 
-      return this != null && this.legallyBinding instanceof Reference;
+    public boolean hasLegallyBindingReference() {
+      return this.legallyBinding instanceof Reference;
     }
 
     public boolean hasLegallyBinding() { 
@@ -10755,7 +11121,7 @@ public class Contract extends DomainResource {
      */
     public Contract setLegallyBinding(DataType value) { 
       if (value != null && !(value instanceof Attachment || value instanceof Reference))
-        throw new Error("Not the right type for Contract.legallyBinding[x]: "+value.fhirType());
+        throw new FHIRException("Not the right type for Contract.legallyBinding[x]: "+value.fhirType());
       this.legallyBinding = value;
       return this;
     }
@@ -10778,8 +11144,8 @@ public class Contract extends DomainResource {
         children.add(new Property("domain", "Reference(Location)", "Recognized governance framework or system operating with a circumscribed scope in accordance with specified principles, policies, processes or procedures for managing rights, actions, or behaviors of parties or principals relative to resources.", 0, java.lang.Integer.MAX_VALUE, domain));
         children.add(new Property("site", "Reference(Location)", "Sites in which the contract is complied with,  exercised, or in force.", 0, java.lang.Integer.MAX_VALUE, site));
         children.add(new Property("name", "string", "A natural language name identifying this Contract definition, derivative, or instance in any legal state. Provides additional information about its content. This name should be usable as an identifier for the module by machine processing applications such as code generation.", 0, 1, name));
-        children.add(new Property("title", "string", "A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.", 0, 1, title));
-        children.add(new Property("subtitle", "string", "An explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.", 0, 1, subtitle));
+        children.add(new Property("title", "string", "A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.", 0, 1, title));
+        children.add(new Property("subtitle", "string", "A more detailed or qualifying explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.", 0, 1, subtitle));
         children.add(new Property("alias", "string", "Alternative representation of the title for this Contract definition, derivative, or instance in any legal state., e.g., a domain specific contract number related to legislation.", 0, java.lang.Integer.MAX_VALUE, alias));
         children.add(new Property("author", "Reference(Patient|Practitioner|PractitionerRole|Organization)", "The individual or organization that authored the Contract definition, derivative, or instance in any legal state.", 0, 1, author));
         children.add(new Property("scope", "CodeableConcept", "A selector of legal concerns for this Contract definition, derivative, or instance in any legal state.", 0, 1, scope));
@@ -10789,7 +11155,7 @@ public class Contract extends DomainResource {
         children.add(new Property("contentDefinition", "", "Precusory content developed with a focus and intent of supporting the formation a Contract instance, which may be associated with and transformable into a Contract.", 0, 1, contentDefinition));
         children.add(new Property("term", "", "One or more Contract Provisions, which may be related and conveyed as a group, and may contain nested groups.", 0, java.lang.Integer.MAX_VALUE, term));
         children.add(new Property("supportingInfo", "Reference(Any)", "Information that may be needed by/relevant to the performer in their execution of this term action.", 0, java.lang.Integer.MAX_VALUE, supportingInfo));
-        children.add(new Property("relevantHistory", "Reference(Provenance)", "Links to Provenance records for past versions of this Contract definition, derivative, or instance, which identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the Contract.  The Provence.entity indicates the target that was changed in the update. http://build.fhir.org/provenance-definitions.html#Provenance.entity.", 0, java.lang.Integer.MAX_VALUE, relevantHistory));
+        children.add(new Property("relevantHistory", "Reference(Provenance)", "Links to Provenance records for past versions of this Contract definition, derivative, or instance, which identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the Contract.  The Provenance.entity indicates the target that was changed in the update (see [Provenance.entity](provenance-definitions.html#Provenance.entity)).", 0, java.lang.Integer.MAX_VALUE, relevantHistory));
         children.add(new Property("signer", "", "Parties with legal standing in the Contract, including the principal parties, the grantor(s) and grantee(s), which are any person or organization bound by the contract, and any ancillary parties, which facilitate the execution of the contract such as a notary or witness.", 0, java.lang.Integer.MAX_VALUE, signer));
         children.add(new Property("friendly", "", "The \"patient friendly language\" versionof the Contract in whole or in parts. \"Patient friendly language\" means the representation of the Contract and Contract Provisions in a manner that is readily accessible and understandable by a layperson in accordance with best practices for communication styles that ensure that those agreeing to or signing the Contract understand the roles, actions, obligations, responsibilities, and implication of the agreement.", 0, java.lang.Integer.MAX_VALUE, friendly));
         children.add(new Property("legal", "", "List of Legal expressions or representations of this Contract.", 0, java.lang.Integer.MAX_VALUE, legal));
@@ -10816,8 +11182,8 @@ public class Contract extends DomainResource {
         case -1326197564: /*domain*/  return new Property("domain", "Reference(Location)", "Recognized governance framework or system operating with a circumscribed scope in accordance with specified principles, policies, processes or procedures for managing rights, actions, or behaviors of parties or principals relative to resources.", 0, java.lang.Integer.MAX_VALUE, domain);
         case 3530567: /*site*/  return new Property("site", "Reference(Location)", "Sites in which the contract is complied with,  exercised, or in force.", 0, java.lang.Integer.MAX_VALUE, site);
         case 3373707: /*name*/  return new Property("name", "string", "A natural language name identifying this Contract definition, derivative, or instance in any legal state. Provides additional information about its content. This name should be usable as an identifier for the module by machine processing applications such as code generation.", 0, 1, name);
-        case 110371416: /*title*/  return new Property("title", "string", "A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.", 0, 1, title);
-        case -2060497896: /*subtitle*/  return new Property("subtitle", "string", "An explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.", 0, 1, subtitle);
+        case 110371416: /*title*/  return new Property("title", "string", "A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.", 0, 1, title);
+        case -2060497896: /*subtitle*/  return new Property("subtitle", "string", "A more detailed or qualifying explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.", 0, 1, subtitle);
         case 92902992: /*alias*/  return new Property("alias", "string", "Alternative representation of the title for this Contract definition, derivative, or instance in any legal state., e.g., a domain specific contract number related to legislation.", 0, java.lang.Integer.MAX_VALUE, alias);
         case -1406328437: /*author*/  return new Property("author", "Reference(Patient|Practitioner|PractitionerRole|Organization)", "The individual or organization that authored the Contract definition, derivative, or instance in any legal state.", 0, 1, author);
         case 109264468: /*scope*/  return new Property("scope", "CodeableConcept", "A selector of legal concerns for this Contract definition, derivative, or instance in any legal state.", 0, 1, scope);
@@ -10830,7 +11196,7 @@ public class Contract extends DomainResource {
         case 247055020: /*contentDefinition*/  return new Property("contentDefinition", "", "Precusory content developed with a focus and intent of supporting the formation a Contract instance, which may be associated with and transformable into a Contract.", 0, 1, contentDefinition);
         case 3556460: /*term*/  return new Property("term", "", "One or more Contract Provisions, which may be related and conveyed as a group, and may contain nested groups.", 0, java.lang.Integer.MAX_VALUE, term);
         case 1922406657: /*supportingInfo*/  return new Property("supportingInfo", "Reference(Any)", "Information that may be needed by/relevant to the performer in their execution of this term action.", 0, java.lang.Integer.MAX_VALUE, supportingInfo);
-        case 1538891575: /*relevantHistory*/  return new Property("relevantHistory", "Reference(Provenance)", "Links to Provenance records for past versions of this Contract definition, derivative, or instance, which identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the Contract.  The Provence.entity indicates the target that was changed in the update. http://build.fhir.org/provenance-definitions.html#Provenance.entity.", 0, java.lang.Integer.MAX_VALUE, relevantHistory);
+        case 1538891575: /*relevantHistory*/  return new Property("relevantHistory", "Reference(Provenance)", "Links to Provenance records for past versions of this Contract definition, derivative, or instance, which identify key state transitions or updates that are likely to be relevant to a user looking at the current version of the Contract.  The Provenance.entity indicates the target that was changed in the update (see [Provenance.entity](provenance-definitions.html#Provenance.entity)).", 0, java.lang.Integer.MAX_VALUE, relevantHistory);
         case -902467798: /*signer*/  return new Property("signer", "", "Parties with legal standing in the Contract, including the principal parties, the grantor(s) and grantee(s), which are any person or organization bound by the contract, and any ancillary parties, which facilitate the execution of the contract such as a notary or witness.", 0, java.lang.Integer.MAX_VALUE, signer);
         case -1423054677: /*friendly*/  return new Property("friendly", "", "The \"patient friendly language\" versionof the Contract in whole or in parts. \"Patient friendly language\" means the representation of the Contract and Contract Provisions in a manner that is readily accessible and understandable by a layperson in accordance with best practices for communication styles that ensure that those agreeing to or signing the Contract understand the roles, actions, obligations, responsibilities, and implication of the agreement.", 0, java.lang.Integer.MAX_VALUE, friendly);
         case 102851257: /*legal*/  return new Property("legal", "", "List of Legal expressions or representations of this Contract.", 0, java.lang.Integer.MAX_VALUE, legal);
@@ -11067,6 +11433,80 @@ public class Contract extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("identifier")) {
+          this.getIdentifier().remove(value);
+        } else if (name.equals("url")) {
+          this.url = null;
+        } else if (name.equals("version")) {
+          this.version = null;
+        } else if (name.equals("status")) {
+          value = new ContractResourceStatusCodesEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.status = (Enumeration) value; // Enumeration<ContractResourceStatusCodes>
+        } else if (name.equals("legalState")) {
+          this.legalState = null;
+        } else if (name.equals("instantiatesCanonical")) {
+          this.instantiatesCanonical = null;
+        } else if (name.equals("instantiatesUri")) {
+          this.instantiatesUri = null;
+        } else if (name.equals("contentDerivative")) {
+          this.contentDerivative = null;
+        } else if (name.equals("issued")) {
+          this.issued = null;
+        } else if (name.equals("applies")) {
+          this.applies = null;
+        } else if (name.equals("expirationType")) {
+          this.expirationType = null;
+        } else if (name.equals("subject")) {
+          this.getSubject().remove(value);
+        } else if (name.equals("authority")) {
+          this.getAuthority().remove(value);
+        } else if (name.equals("domain")) {
+          this.getDomain().remove(value);
+        } else if (name.equals("site")) {
+          this.getSite().remove(value);
+        } else if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("title")) {
+          this.title = null;
+        } else if (name.equals("subtitle")) {
+          this.subtitle = null;
+        } else if (name.equals("alias")) {
+          this.getAlias().remove(value);
+        } else if (name.equals("author")) {
+          this.author = null;
+        } else if (name.equals("scope")) {
+          this.scope = null;
+        } else if (name.equals("topic[x]")) {
+          this.topic = null;
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("subType")) {
+          this.getSubType().remove(value);
+        } else if (name.equals("contentDefinition")) {
+          this.contentDefinition = (ContentDefinitionComponent) value; // ContentDefinitionComponent
+        } else if (name.equals("term")) {
+          this.getTerm().remove((TermComponent) value);
+        } else if (name.equals("supportingInfo")) {
+          this.getSupportingInfo().remove(value);
+        } else if (name.equals("relevantHistory")) {
+          this.getRelevantHistory().remove(value);
+        } else if (name.equals("signer")) {
+          this.getSigner().remove((SignatoryComponent) value);
+        } else if (name.equals("friendly")) {
+          this.getFriendly().remove((FriendlyLanguageComponent) value);
+        } else if (name.equals("legal")) {
+          this.getLegal().remove((LegalLanguageComponent) value);
+        } else if (name.equals("rule")) {
+          this.getRule().remove((ComputableLanguageComponent) value);
+        } else if (name.equals("legallyBinding[x]")) {
+          this.legallyBinding = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -11157,13 +11597,13 @@ public class Contract extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.url");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.url");
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.version");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.version");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.status");
         }
         else if (name.equals("legalState")) {
           this.legalState = new CodeableConcept();
@@ -11174,14 +11614,14 @@ public class Contract extends DomainResource {
           return this.instantiatesCanonical;
         }
         else if (name.equals("instantiatesUri")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.instantiatesUri");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.instantiatesUri");
         }
         else if (name.equals("contentDerivative")) {
           this.contentDerivative = new CodeableConcept();
           return this.contentDerivative;
         }
         else if (name.equals("issued")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.issued");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.issued");
         }
         else if (name.equals("applies")) {
           this.applies = new Period();
@@ -11204,16 +11644,16 @@ public class Contract extends DomainResource {
           return addSite();
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.name");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.name");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.title");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.title");
         }
         else if (name.equals("subtitle")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.subtitle");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.subtitle");
         }
         else if (name.equals("alias")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Contract.alias");
+          throw new FHIRException("Cannot call addChild on a singleton property Contract.alias");
         }
         else if (name.equals("author")) {
           this.author = new Reference();
@@ -11284,6 +11724,10 @@ public class Contract extends DomainResource {
         Contract dst = new Contract();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Contract) dst);
       }
 
       public void copyValues(Contract dst) {
@@ -11483,26 +11927,6 @@ public class Contract extends DomainResource {
   public static final ca.uhn.fhir.model.api.Include INCLUDE_DOMAIN = new ca.uhn.fhir.model.api.Include("Contract:domain").toLocked();
 
  /**
-   * Search parameter: <b>identifier</b>
-   * <p>
-   * Description: <b>The identity of the contract</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>Contract.identifier</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="identifier", path="Contract.identifier", description="The identity of the contract", type="token" )
-  public static final String SP_IDENTIFIER = "identifier";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>identifier</b>
-   * <p>
-   * Description: <b>The identity of the contract</b><br>
-   * Type: <b>token</b><br>
-   * Path: <b>Contract.identifier</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
-
- /**
    * Search parameter: <b>instantiates</b>
    * <p>
    * Description: <b>A source definition of the contract</b><br>
@@ -11541,32 +11965,6 @@ public class Contract extends DomainResource {
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.DateClientParam ISSUED = new ca.uhn.fhir.rest.gclient.DateClientParam(SP_ISSUED);
-
- /**
-   * Search parameter: <b>patient</b>
-   * <p>
-   * Description: <b>The identity of the subject of the contract (if a patient)</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>Contract.subject.where(resolve() is Patient)</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="patient", path="Contract.subject.where(resolve() is Patient)", description="The identity of the subject of the contract (if a patient)", type="reference", target={Account.class, ActivityDefinition.class, AdministrableProductDefinition.class, AdverseEvent.class, AllergyIntolerance.class, Appointment.class, AppointmentResponse.class, AuditEvent.class, Basic.class, Binary.class, BiologicallyDerivedProduct.class, BodyStructure.class, Bundle.class, CapabilityStatement.class, CapabilityStatement2.class, CarePlan.class, CareTeam.class, CatalogEntry.class, ChargeItem.class, ChargeItemDefinition.class, Citation.class, Claim.class, ClaimResponse.class, ClinicalImpression.class, ClinicalUseIssue.class, CodeSystem.class, Communication.class, CommunicationRequest.class, CompartmentDefinition.class, Composition.class, ConceptMap.class, Condition.class, ConditionDefinition.class, Consent.class, Contract.class, Coverage.class, CoverageEligibilityRequest.class, CoverageEligibilityResponse.class, DetectedIssue.class, Device.class, DeviceDefinition.class, DeviceMetric.class, DeviceRequest.class, DeviceUsage.class, DiagnosticReport.class, DocumentManifest.class, DocumentReference.class, Encounter.class, Endpoint.class, EnrollmentRequest.class, EnrollmentResponse.class, EpisodeOfCare.class, EventDefinition.class, Evidence.class, EvidenceReport.class, EvidenceVariable.class, ExampleScenario.class, ExplanationOfBenefit.class, FamilyMemberHistory.class, Flag.class, Goal.class, GraphDefinition.class, Group.class, GuidanceResponse.class, HealthcareService.class, ImagingStudy.class, Immunization.class, ImmunizationEvaluation.class, ImmunizationRecommendation.class, ImplementationGuide.class, Ingredient.class, InsurancePlan.class, InventoryReport.class, Invoice.class, Library.class, Linkage.class, ListResource.class, Location.class, ManufacturedItemDefinition.class, Measure.class, MeasureReport.class, Medication.class, MedicationAdministration.class, MedicationDispense.class, MedicationKnowledge.class, MedicationRequest.class, MedicationUsage.class, MedicinalProductDefinition.class, MessageDefinition.class, MessageHeader.class, MolecularSequence.class, NamingSystem.class, NutritionIntake.class, NutritionOrder.class, NutritionProduct.class, Observation.class, ObservationDefinition.class, OperationDefinition.class, OperationOutcome.class, Organization.class, OrganizationAffiliation.class, PackagedProductDefinition.class, Patient.class, PaymentNotice.class, PaymentReconciliation.class, Permission.class, Person.class, PlanDefinition.class, Practitioner.class, PractitionerRole.class, Procedure.class, Provenance.class, Questionnaire.class, QuestionnaireResponse.class, RegulatedAuthorization.class, RelatedPerson.class, RequestGroup.class, ResearchStudy.class, ResearchSubject.class, RiskAssessment.class, Schedule.class, SearchParameter.class, ServiceRequest.class, Slot.class, Specimen.class, SpecimenDefinition.class, StructureDefinition.class, StructureMap.class, Subscription.class, SubscriptionStatus.class, SubscriptionTopic.class, Substance.class, SubstanceDefinition.class, SubstanceNucleicAcid.class, SubstancePolymer.class, SubstanceProtein.class, SubstanceReferenceInformation.class, SubstanceSourceMaterial.class, SupplyDelivery.class, SupplyRequest.class, Task.class, TerminologyCapabilities.class, TestReport.class, TestScript.class, ValueSet.class, VerificationResult.class, VisionPrescription.class } )
-  public static final String SP_PATIENT = "patient";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>patient</b>
-   * <p>
-   * Description: <b>The identity of the subject of the contract (if a patient)</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>Contract.subject.where(resolve() is Patient)</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam PATIENT = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_PATIENT);
-
-/**
-   * Constant for fluent queries to be used to add include statements. Specifies
-   * the path value of "<b>Contract:patient</b>".
-   */
-  public static final ca.uhn.fhir.model.api.Include INCLUDE_PATIENT = new ca.uhn.fhir.model.api.Include("Contract:patient").toLocked();
 
  /**
    * Search parameter: <b>signer</b>
@@ -11622,7 +12020,7 @@ public class Contract extends DomainResource {
    * Path: <b>Contract.subject</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="subject", path="Contract.subject", description="The identity of the subject of the contract", type="reference", target={Account.class, ActivityDefinition.class, AdministrableProductDefinition.class, AdverseEvent.class, AllergyIntolerance.class, Appointment.class, AppointmentResponse.class, AuditEvent.class, Basic.class, Binary.class, BiologicallyDerivedProduct.class, BodyStructure.class, Bundle.class, CapabilityStatement.class, CapabilityStatement2.class, CarePlan.class, CareTeam.class, CatalogEntry.class, ChargeItem.class, ChargeItemDefinition.class, Citation.class, Claim.class, ClaimResponse.class, ClinicalImpression.class, ClinicalUseIssue.class, CodeSystem.class, Communication.class, CommunicationRequest.class, CompartmentDefinition.class, Composition.class, ConceptMap.class, Condition.class, ConditionDefinition.class, Consent.class, Contract.class, Coverage.class, CoverageEligibilityRequest.class, CoverageEligibilityResponse.class, DetectedIssue.class, Device.class, DeviceDefinition.class, DeviceMetric.class, DeviceRequest.class, DeviceUsage.class, DiagnosticReport.class, DocumentManifest.class, DocumentReference.class, Encounter.class, Endpoint.class, EnrollmentRequest.class, EnrollmentResponse.class, EpisodeOfCare.class, EventDefinition.class, Evidence.class, EvidenceReport.class, EvidenceVariable.class, ExampleScenario.class, ExplanationOfBenefit.class, FamilyMemberHistory.class, Flag.class, Goal.class, GraphDefinition.class, Group.class, GuidanceResponse.class, HealthcareService.class, ImagingStudy.class, Immunization.class, ImmunizationEvaluation.class, ImmunizationRecommendation.class, ImplementationGuide.class, Ingredient.class, InsurancePlan.class, InventoryReport.class, Invoice.class, Library.class, Linkage.class, ListResource.class, Location.class, ManufacturedItemDefinition.class, Measure.class, MeasureReport.class, Medication.class, MedicationAdministration.class, MedicationDispense.class, MedicationKnowledge.class, MedicationRequest.class, MedicationUsage.class, MedicinalProductDefinition.class, MessageDefinition.class, MessageHeader.class, MolecularSequence.class, NamingSystem.class, NutritionIntake.class, NutritionOrder.class, NutritionProduct.class, Observation.class, ObservationDefinition.class, OperationDefinition.class, OperationOutcome.class, Organization.class, OrganizationAffiliation.class, PackagedProductDefinition.class, Patient.class, PaymentNotice.class, PaymentReconciliation.class, Permission.class, Person.class, PlanDefinition.class, Practitioner.class, PractitionerRole.class, Procedure.class, Provenance.class, Questionnaire.class, QuestionnaireResponse.class, RegulatedAuthorization.class, RelatedPerson.class, RequestGroup.class, ResearchStudy.class, ResearchSubject.class, RiskAssessment.class, Schedule.class, SearchParameter.class, ServiceRequest.class, Slot.class, Specimen.class, SpecimenDefinition.class, StructureDefinition.class, StructureMap.class, Subscription.class, SubscriptionStatus.class, SubscriptionTopic.class, Substance.class, SubstanceDefinition.class, SubstanceNucleicAcid.class, SubstancePolymer.class, SubstanceProtein.class, SubstanceReferenceInformation.class, SubstanceSourceMaterial.class, SupplyDelivery.class, SupplyRequest.class, Task.class, TerminologyCapabilities.class, TestReport.class, TestScript.class, ValueSet.class, VerificationResult.class, VisionPrescription.class } )
+  @SearchParamDefinition(name="subject", path="Contract.subject", description="The identity of the subject of the contract", type="reference", target={Account.class, ActivityDefinition.class, ActorDefinition.class, AdministrableProductDefinition.class, AdverseEvent.class, AllergyIntolerance.class, Appointment.class, AppointmentResponse.class, ArtifactAssessment.class, AuditEvent.class, Basic.class, Binary.class, BiologicallyDerivedProduct.class, BiologicallyDerivedProductDispense.class, BodyStructure.class, Bundle.class, CapabilityStatement.class, CarePlan.class, CareTeam.class, ChargeItem.class, ChargeItemDefinition.class, Citation.class, Claim.class, ClaimResponse.class, ClinicalImpression.class, ClinicalUseDefinition.class, CodeSystem.class, Communication.class, CommunicationRequest.class, CompartmentDefinition.class, Composition.class, ConceptMap.class, Condition.class, ConditionDefinition.class, Consent.class, Contract.class, Coverage.class, CoverageEligibilityRequest.class, CoverageEligibilityResponse.class, DetectedIssue.class, Device.class, DeviceAssociation.class, DeviceDefinition.class, DeviceDispense.class, DeviceMetric.class, DeviceRequest.class, DeviceUsage.class, DiagnosticReport.class, DocumentReference.class, Encounter.class, EncounterHistory.class, Endpoint.class, EnrollmentRequest.class, EnrollmentResponse.class, EpisodeOfCare.class, EventDefinition.class, Evidence.class, EvidenceReport.class, EvidenceVariable.class, ExampleScenario.class, ExplanationOfBenefit.class, FamilyMemberHistory.class, Flag.class, FormularyItem.class, GenomicStudy.class, Goal.class, GraphDefinition.class, Group.class, GuidanceResponse.class, HealthcareService.class, ImagingSelection.class, ImagingStudy.class, Immunization.class, ImmunizationEvaluation.class, ImmunizationRecommendation.class, ImplementationGuide.class, Ingredient.class, InsurancePlan.class, InventoryItem.class, InventoryReport.class, Invoice.class, Library.class, Linkage.class, ListResource.class, Location.class, ManufacturedItemDefinition.class, Measure.class, MeasureReport.class, Medication.class, MedicationAdministration.class, MedicationDispense.class, MedicationKnowledge.class, MedicationRequest.class, MedicationStatement.class, MedicinalProductDefinition.class, MessageDefinition.class, MessageHeader.class, MolecularSequence.class, NamingSystem.class, NutritionIntake.class, NutritionOrder.class, NutritionProduct.class, Observation.class, ObservationDefinition.class, OperationDefinition.class, OperationOutcome.class, Organization.class, OrganizationAffiliation.class, PackagedProductDefinition.class, Parameters.class, Patient.class, PaymentNotice.class, PaymentReconciliation.class, Permission.class, Person.class, PlanDefinition.class, Practitioner.class, PractitionerRole.class, Procedure.class, Provenance.class, Questionnaire.class, QuestionnaireResponse.class, RegulatedAuthorization.class, RelatedPerson.class, RequestOrchestration.class, Requirements.class, ResearchStudy.class, ResearchSubject.class, RiskAssessment.class, Schedule.class, SearchParameter.class, ServiceRequest.class, Slot.class, Specimen.class, SpecimenDefinition.class, StructureDefinition.class, StructureMap.class, Subscription.class, SubscriptionStatus.class, SubscriptionTopic.class, Substance.class, SubstanceDefinition.class, SubstanceNucleicAcid.class, SubstancePolymer.class, SubstanceProtein.class, SubstanceReferenceInformation.class, SubstanceSourceMaterial.class, SupplyDelivery.class, SupplyRequest.class, Task.class, TerminologyCapabilities.class, TestPlan.class, TestReport.class, TestScript.class, Transport.class, ValueSet.class, VerificationResult.class, VisionPrescription.class } )
   public static final String SP_SUBJECT = "subject";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>subject</b>
@@ -11659,6 +12057,322 @@ public class Contract extends DomainResource {
    * </p>
    */
   public static final ca.uhn.fhir.rest.gclient.UriClientParam URL = new ca.uhn.fhir.rest.gclient.UriClientParam(SP_URL);
+
+ /**
+   * Search parameter: <b>identifier</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): Account number
+* [AdverseEvent](adverseevent.html): Business identifier for the event
+* [AllergyIntolerance](allergyintolerance.html): External ids for this item
+* [Appointment](appointment.html): An Identifier of the Appointment
+* [AppointmentResponse](appointmentresponse.html): An Identifier in this appointment response
+* [Basic](basic.html): Business identifier
+* [BodyStructure](bodystructure.html): Bodystructure identifier
+* [CarePlan](careplan.html): External Ids for this plan
+* [CareTeam](careteam.html): External Ids for this team
+* [ChargeItem](chargeitem.html): Business Identifier for item
+* [Claim](claim.html): The primary identifier of the financial resource
+* [ClaimResponse](claimresponse.html): The identity of the ClaimResponse
+* [ClinicalImpression](clinicalimpression.html): Business identifier
+* [Communication](communication.html): Unique identifier
+* [CommunicationRequest](communicationrequest.html): Unique identifier
+* [Composition](composition.html): Version-independent identifier for the Composition
+* [Condition](condition.html): A unique identifier of the condition record
+* [Consent](consent.html): Identifier for this record (external references)
+* [Contract](contract.html): The identity of the contract
+* [Coverage](coverage.html): The primary identifier of the insured and the coverage
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The business identifier of the Eligibility
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The business identifier
+* [DetectedIssue](detectedissue.html): Unique id for the detected issue
+* [DeviceRequest](devicerequest.html): Business identifier for request/order
+* [DeviceUsage](deviceusage.html): Search by identifier
+* [DiagnosticReport](diagnosticreport.html): An identifier for the report
+* [DocumentReference](documentreference.html): Identifier of the attachment binary
+* [Encounter](encounter.html): Identifier(s) by which this encounter is known
+* [EnrollmentRequest](enrollmentrequest.html): The business identifier of the Enrollment
+* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare
+* [ExplanationOfBenefit](explanationofbenefit.html): The business identifier of the Explanation of Benefit
+* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier
+* [Flag](flag.html): Business identifier
+* [Goal](goal.html): External Ids for this goal
+* [GuidanceResponse](guidanceresponse.html): The identifier of the guidance response
+* [ImagingSelection](imagingselection.html): Identifiers for the imaging selection
+* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID
+* [Immunization](immunization.html): Business identifier
+* [ImmunizationEvaluation](immunizationevaluation.html): ID of the evaluation
+* [ImmunizationRecommendation](immunizationrecommendation.html): Business identifier
+* [Invoice](invoice.html): Business Identifier for item
+* [List](list.html): Business identifier
+* [MeasureReport](measurereport.html): External identifier of the measure report to be returned
+* [Medication](medication.html): Returns medications with this external identifier
+* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier
+* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier
+* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier
+* [MedicationStatement](medicationstatement.html): Return statements with this external identifier
+* [MolecularSequence](molecularsequence.html): The unique identity for a particular sequence
+* [NutritionIntake](nutritionintake.html): Return statements with this external identifier
+* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier
+* [Observation](observation.html): The unique id for a particular observation
+* [Person](person.html): A person Identifier
+* [Procedure](procedure.html): A unique identifier for a procedure
+* [QuestionnaireResponse](questionnaireresponse.html): The unique identifier for the questionnaire response
+* [RelatedPerson](relatedperson.html): An Identifier of the RelatedPerson
+* [RequestOrchestration](requestorchestration.html): External identifiers for the request orchestration
+* [ResearchSubject](researchsubject.html): Business Identifier for research subject in a study
+* [RiskAssessment](riskassessment.html): Unique identifier for the assessment
+* [ServiceRequest](servicerequest.html): Identifiers assigned to this order
+* [Specimen](specimen.html): The unique identifier associated with the specimen
+* [SupplyDelivery](supplydelivery.html): External identifier
+* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest
+* [Task](task.html): Search for a task instance by its business identifier
+* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>Account.identifier | AdverseEvent.identifier | AllergyIntolerance.identifier | Appointment.identifier | AppointmentResponse.identifier | Basic.identifier | BodyStructure.identifier | CarePlan.identifier | CareTeam.identifier | ChargeItem.identifier | Claim.identifier | ClaimResponse.identifier | ClinicalImpression.identifier | Communication.identifier | CommunicationRequest.identifier | Composition.identifier | Condition.identifier | Consent.identifier | Contract.identifier | Coverage.identifier | CoverageEligibilityRequest.identifier | CoverageEligibilityResponse.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DeviceUsage.identifier | DiagnosticReport.identifier | DocumentReference.identifier | Encounter.identifier | EnrollmentRequest.identifier | EpisodeOfCare.identifier | ExplanationOfBenefit.identifier | FamilyMemberHistory.identifier | Flag.identifier | Goal.identifier | GuidanceResponse.identifier | ImagingSelection.identifier | ImagingStudy.identifier | Immunization.identifier | ImmunizationEvaluation.identifier | ImmunizationRecommendation.identifier | Invoice.identifier | List.identifier | MeasureReport.identifier | Medication.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationStatement.identifier | MolecularSequence.identifier | NutritionIntake.identifier | NutritionOrder.identifier | Observation.identifier | Person.identifier | Procedure.identifier | QuestionnaireResponse.identifier | RelatedPerson.identifier | RequestOrchestration.identifier | ResearchSubject.identifier | RiskAssessment.identifier | ServiceRequest.identifier | Specimen.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | Task.identifier | VisionPrescription.identifier</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="identifier", path="Account.identifier | AdverseEvent.identifier | AllergyIntolerance.identifier | Appointment.identifier | AppointmentResponse.identifier | Basic.identifier | BodyStructure.identifier | CarePlan.identifier | CareTeam.identifier | ChargeItem.identifier | Claim.identifier | ClaimResponse.identifier | ClinicalImpression.identifier | Communication.identifier | CommunicationRequest.identifier | Composition.identifier | Condition.identifier | Consent.identifier | Contract.identifier | Coverage.identifier | CoverageEligibilityRequest.identifier | CoverageEligibilityResponse.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DeviceUsage.identifier | DiagnosticReport.identifier | DocumentReference.identifier | Encounter.identifier | EnrollmentRequest.identifier | EpisodeOfCare.identifier | ExplanationOfBenefit.identifier | FamilyMemberHistory.identifier | Flag.identifier | Goal.identifier | GuidanceResponse.identifier | ImagingSelection.identifier | ImagingStudy.identifier | Immunization.identifier | ImmunizationEvaluation.identifier | ImmunizationRecommendation.identifier | Invoice.identifier | List.identifier | MeasureReport.identifier | Medication.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationStatement.identifier | MolecularSequence.identifier | NutritionIntake.identifier | NutritionOrder.identifier | Observation.identifier | Person.identifier | Procedure.identifier | QuestionnaireResponse.identifier | RelatedPerson.identifier | RequestOrchestration.identifier | ResearchSubject.identifier | RiskAssessment.identifier | ServiceRequest.identifier | Specimen.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | Task.identifier | VisionPrescription.identifier", description="Multiple Resources: \r\n\r\n* [Account](account.html): Account number\r\n* [AdverseEvent](adverseevent.html): Business identifier for the event\r\n* [AllergyIntolerance](allergyintolerance.html): External ids for this item\r\n* [Appointment](appointment.html): An Identifier of the Appointment\r\n* [AppointmentResponse](appointmentresponse.html): An Identifier in this appointment response\r\n* [Basic](basic.html): Business identifier\r\n* [BodyStructure](bodystructure.html): Bodystructure identifier\r\n* [CarePlan](careplan.html): External Ids for this plan\r\n* [CareTeam](careteam.html): External Ids for this team\r\n* [ChargeItem](chargeitem.html): Business Identifier for item\r\n* [Claim](claim.html): The primary identifier of the financial resource\r\n* [ClaimResponse](claimresponse.html): The identity of the ClaimResponse\r\n* [ClinicalImpression](clinicalimpression.html): Business identifier\r\n* [Communication](communication.html): Unique identifier\r\n* [CommunicationRequest](communicationrequest.html): Unique identifier\r\n* [Composition](composition.html): Version-independent identifier for the Composition\r\n* [Condition](condition.html): A unique identifier of the condition record\r\n* [Consent](consent.html): Identifier for this record (external references)\r\n* [Contract](contract.html): The identity of the contract\r\n* [Coverage](coverage.html): The primary identifier of the insured and the coverage\r\n* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The business identifier of the Eligibility\r\n* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The business identifier\r\n* [DetectedIssue](detectedissue.html): Unique id for the detected issue\r\n* [DeviceRequest](devicerequest.html): Business identifier for request/order\r\n* [DeviceUsage](deviceusage.html): Search by identifier\r\n* [DiagnosticReport](diagnosticreport.html): An identifier for the report\r\n* [DocumentReference](documentreference.html): Identifier of the attachment binary\r\n* [Encounter](encounter.html): Identifier(s) by which this encounter is known\r\n* [EnrollmentRequest](enrollmentrequest.html): The business identifier of the Enrollment\r\n* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare\r\n* [ExplanationOfBenefit](explanationofbenefit.html): The business identifier of the Explanation of Benefit\r\n* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier\r\n* [Flag](flag.html): Business identifier\r\n* [Goal](goal.html): External Ids for this goal\r\n* [GuidanceResponse](guidanceresponse.html): The identifier of the guidance response\r\n* [ImagingSelection](imagingselection.html): Identifiers for the imaging selection\r\n* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID\r\n* [Immunization](immunization.html): Business identifier\r\n* [ImmunizationEvaluation](immunizationevaluation.html): ID of the evaluation\r\n* [ImmunizationRecommendation](immunizationrecommendation.html): Business identifier\r\n* [Invoice](invoice.html): Business Identifier for item\r\n* [List](list.html): Business identifier\r\n* [MeasureReport](measurereport.html): External identifier of the measure report to be returned\r\n* [Medication](medication.html): Returns medications with this external identifier\r\n* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier\r\n* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier\r\n* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier\r\n* [MedicationStatement](medicationstatement.html): Return statements with this external identifier\r\n* [MolecularSequence](molecularsequence.html): The unique identity for a particular sequence\r\n* [NutritionIntake](nutritionintake.html): Return statements with this external identifier\r\n* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier\r\n* [Observation](observation.html): The unique id for a particular observation\r\n* [Person](person.html): A person Identifier\r\n* [Procedure](procedure.html): A unique identifier for a procedure\r\n* [QuestionnaireResponse](questionnaireresponse.html): The unique identifier for the questionnaire response\r\n* [RelatedPerson](relatedperson.html): An Identifier of the RelatedPerson\r\n* [RequestOrchestration](requestorchestration.html): External identifiers for the request orchestration\r\n* [ResearchSubject](researchsubject.html): Business Identifier for research subject in a study\r\n* [RiskAssessment](riskassessment.html): Unique identifier for the assessment\r\n* [ServiceRequest](servicerequest.html): Identifiers assigned to this order\r\n* [Specimen](specimen.html): The unique identifier associated with the specimen\r\n* [SupplyDelivery](supplydelivery.html): External identifier\r\n* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest\r\n* [Task](task.html): Search for a task instance by its business identifier\r\n* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier\r\n", type="token" )
+  public static final String SP_IDENTIFIER = "identifier";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>identifier</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): Account number
+* [AdverseEvent](adverseevent.html): Business identifier for the event
+* [AllergyIntolerance](allergyintolerance.html): External ids for this item
+* [Appointment](appointment.html): An Identifier of the Appointment
+* [AppointmentResponse](appointmentresponse.html): An Identifier in this appointment response
+* [Basic](basic.html): Business identifier
+* [BodyStructure](bodystructure.html): Bodystructure identifier
+* [CarePlan](careplan.html): External Ids for this plan
+* [CareTeam](careteam.html): External Ids for this team
+* [ChargeItem](chargeitem.html): Business Identifier for item
+* [Claim](claim.html): The primary identifier of the financial resource
+* [ClaimResponse](claimresponse.html): The identity of the ClaimResponse
+* [ClinicalImpression](clinicalimpression.html): Business identifier
+* [Communication](communication.html): Unique identifier
+* [CommunicationRequest](communicationrequest.html): Unique identifier
+* [Composition](composition.html): Version-independent identifier for the Composition
+* [Condition](condition.html): A unique identifier of the condition record
+* [Consent](consent.html): Identifier for this record (external references)
+* [Contract](contract.html): The identity of the contract
+* [Coverage](coverage.html): The primary identifier of the insured and the coverage
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The business identifier of the Eligibility
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The business identifier
+* [DetectedIssue](detectedissue.html): Unique id for the detected issue
+* [DeviceRequest](devicerequest.html): Business identifier for request/order
+* [DeviceUsage](deviceusage.html): Search by identifier
+* [DiagnosticReport](diagnosticreport.html): An identifier for the report
+* [DocumentReference](documentreference.html): Identifier of the attachment binary
+* [Encounter](encounter.html): Identifier(s) by which this encounter is known
+* [EnrollmentRequest](enrollmentrequest.html): The business identifier of the Enrollment
+* [EpisodeOfCare](episodeofcare.html): Business Identifier(s) relevant for this EpisodeOfCare
+* [ExplanationOfBenefit](explanationofbenefit.html): The business identifier of the Explanation of Benefit
+* [FamilyMemberHistory](familymemberhistory.html): A search by a record identifier
+* [Flag](flag.html): Business identifier
+* [Goal](goal.html): External Ids for this goal
+* [GuidanceResponse](guidanceresponse.html): The identifier of the guidance response
+* [ImagingSelection](imagingselection.html): Identifiers for the imaging selection
+* [ImagingStudy](imagingstudy.html): Identifiers for the Study, such as DICOM Study Instance UID
+* [Immunization](immunization.html): Business identifier
+* [ImmunizationEvaluation](immunizationevaluation.html): ID of the evaluation
+* [ImmunizationRecommendation](immunizationrecommendation.html): Business identifier
+* [Invoice](invoice.html): Business Identifier for item
+* [List](list.html): Business identifier
+* [MeasureReport](measurereport.html): External identifier of the measure report to be returned
+* [Medication](medication.html): Returns medications with this external identifier
+* [MedicationAdministration](medicationadministration.html): Return administrations with this external identifier
+* [MedicationDispense](medicationdispense.html): Returns dispenses with this external identifier
+* [MedicationRequest](medicationrequest.html): Return prescriptions with this external identifier
+* [MedicationStatement](medicationstatement.html): Return statements with this external identifier
+* [MolecularSequence](molecularsequence.html): The unique identity for a particular sequence
+* [NutritionIntake](nutritionintake.html): Return statements with this external identifier
+* [NutritionOrder](nutritionorder.html): Return nutrition orders with this external identifier
+* [Observation](observation.html): The unique id for a particular observation
+* [Person](person.html): A person Identifier
+* [Procedure](procedure.html): A unique identifier for a procedure
+* [QuestionnaireResponse](questionnaireresponse.html): The unique identifier for the questionnaire response
+* [RelatedPerson](relatedperson.html): An Identifier of the RelatedPerson
+* [RequestOrchestration](requestorchestration.html): External identifiers for the request orchestration
+* [ResearchSubject](researchsubject.html): Business Identifier for research subject in a study
+* [RiskAssessment](riskassessment.html): Unique identifier for the assessment
+* [ServiceRequest](servicerequest.html): Identifiers assigned to this order
+* [Specimen](specimen.html): The unique identifier associated with the specimen
+* [SupplyDelivery](supplydelivery.html): External identifier
+* [SupplyRequest](supplyrequest.html): Business Identifier for SupplyRequest
+* [Task](task.html): Search for a task instance by its business identifier
+* [VisionPrescription](visionprescription.html): Return prescriptions with this external identifier
+</b><br>
+   * Type: <b>token</b><br>
+   * Path: <b>Account.identifier | AdverseEvent.identifier | AllergyIntolerance.identifier | Appointment.identifier | AppointmentResponse.identifier | Basic.identifier | BodyStructure.identifier | CarePlan.identifier | CareTeam.identifier | ChargeItem.identifier | Claim.identifier | ClaimResponse.identifier | ClinicalImpression.identifier | Communication.identifier | CommunicationRequest.identifier | Composition.identifier | Condition.identifier | Consent.identifier | Contract.identifier | Coverage.identifier | CoverageEligibilityRequest.identifier | CoverageEligibilityResponse.identifier | DetectedIssue.identifier | DeviceRequest.identifier | DeviceUsage.identifier | DiagnosticReport.identifier | DocumentReference.identifier | Encounter.identifier | EnrollmentRequest.identifier | EpisodeOfCare.identifier | ExplanationOfBenefit.identifier | FamilyMemberHistory.identifier | Flag.identifier | Goal.identifier | GuidanceResponse.identifier | ImagingSelection.identifier | ImagingStudy.identifier | Immunization.identifier | ImmunizationEvaluation.identifier | ImmunizationRecommendation.identifier | Invoice.identifier | List.identifier | MeasureReport.identifier | Medication.identifier | MedicationAdministration.identifier | MedicationDispense.identifier | MedicationRequest.identifier | MedicationStatement.identifier | MolecularSequence.identifier | NutritionIntake.identifier | NutritionOrder.identifier | Observation.identifier | Person.identifier | Procedure.identifier | QuestionnaireResponse.identifier | RelatedPerson.identifier | RequestOrchestration.identifier | ResearchSubject.identifier | RiskAssessment.identifier | ServiceRequest.identifier | Specimen.identifier | SupplyDelivery.identifier | SupplyRequest.identifier | Task.identifier | VisionPrescription.identifier</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
+
+ /**
+   * Search parameter: <b>patient</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): The entity that caused the expenses
+* [AdverseEvent](adverseevent.html): Subject impacted by event
+* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for
+* [Appointment](appointment.html): One of the individuals of the appointment is this patient
+* [AppointmentResponse](appointmentresponse.html): This Response is for this Patient
+* [AuditEvent](auditevent.html): Where the activity involved patient data
+* [Basic](basic.html): Identifies the focus of this resource
+* [BodyStructure](bodystructure.html): Who this is about
+* [CarePlan](careplan.html): Who the care plan is for
+* [CareTeam](careteam.html): Who care team is for
+* [ChargeItem](chargeitem.html): Individual service was done for/to
+* [Claim](claim.html): Patient receiving the products or services
+* [ClaimResponse](claimresponse.html): The subject of care
+* [ClinicalImpression](clinicalimpression.html): Patient assessed
+* [Communication](communication.html): Focus of message
+* [CommunicationRequest](communicationrequest.html): Focus of message
+* [Composition](composition.html): Who and/or what the composition is about
+* [Condition](condition.html): Who has the condition?
+* [Consent](consent.html): Who the consent applies to
+* [Contract](contract.html): The identity of the subject of the contract (if a patient)
+* [Coverage](coverage.html): Retrieve coverages for a patient
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The reference to the patient
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The reference to the patient
+* [DetectedIssue](detectedissue.html): Associated patient
+* [DeviceRequest](devicerequest.html): Individual the service is ordered for
+* [DeviceUsage](deviceusage.html): Search by patient who used / uses the device
+* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient
+* [DocumentReference](documentreference.html): Who/what is the subject of the document
+* [Encounter](encounter.html): The patient present at the encounter
+* [EnrollmentRequest](enrollmentrequest.html): The party to be enrolled
+* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care
+* [ExplanationOfBenefit](explanationofbenefit.html): The reference to the patient
+* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for
+* [Flag](flag.html): The identity of a subject to list flags for
+* [Goal](goal.html): Who this goal is intended for
+* [GuidanceResponse](guidanceresponse.html): The identity of a patient to search for guidance response results
+* [ImagingSelection](imagingselection.html): Who the study is about
+* [ImagingStudy](imagingstudy.html): Who the study is about
+* [Immunization](immunization.html): The patient for the vaccination record
+* [ImmunizationEvaluation](immunizationevaluation.html): The patient being evaluated
+* [ImmunizationRecommendation](immunizationrecommendation.html): Who this profile is for
+* [Invoice](invoice.html): Recipient(s) of goods and services
+* [List](list.html): If all resources have the same subject
+* [MeasureReport](measurereport.html): The identity of a patient to search for individual measure report results for
+* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for
+* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for
+* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient
+* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.
+* [MolecularSequence](molecularsequence.html): The subject that the sequence is about
+* [NutritionIntake](nutritionintake.html): Returns statements for a specific patient.
+* [NutritionOrder](nutritionorder.html): The identity of the individual or set of individuals who requires the diet, formula or nutritional supplement
+* [Observation](observation.html): The subject that the observation is about (if patient)
+* [Person](person.html): The Person links to this Patient
+* [Procedure](procedure.html): Search by subject - a patient
+* [Provenance](provenance.html): Where the activity involved patient data
+* [QuestionnaireResponse](questionnaireresponse.html): The patient that is the subject of the questionnaire response
+* [RelatedPerson](relatedperson.html): The patient this related person is related to
+* [RequestOrchestration](requestorchestration.html): The identity of a patient to search for request orchestrations
+* [ResearchSubject](researchsubject.html): Who or what is part of study
+* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?
+* [ServiceRequest](servicerequest.html): Search by subject - a patient
+* [Specimen](specimen.html): The patient the specimen comes from
+* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied
+* [SupplyRequest](supplyrequest.html): The patient or subject for whom the supply is destined
+* [Task](task.html): Search by patient
+* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>Account.subject.where(resolve() is Patient) | AdverseEvent.subject.where(resolve() is Patient) | AllergyIntolerance.patient | Appointment.participant.actor.where(resolve() is Patient) | Appointment.subject.where(resolve() is Patient) | AppointmentResponse.actor.where(resolve() is Patient) | AuditEvent.patient | Basic.subject.where(resolve() is Patient) | BodyStructure.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ChargeItem.subject.where(resolve() is Patient) | Claim.patient | ClaimResponse.patient | ClinicalImpression.subject.where(resolve() is Patient) | Communication.subject.where(resolve() is Patient) | CommunicationRequest.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | Contract.subject.where(resolve() is Patient) | Coverage.beneficiary | CoverageEligibilityRequest.patient | CoverageEligibilityResponse.patient | DetectedIssue.subject.where(resolve() is Patient) | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.patient | DiagnosticReport.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EnrollmentRequest.candidate | EpisodeOfCare.patient | ExplanationOfBenefit.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | GuidanceResponse.subject.where(resolve() is Patient) | ImagingSelection.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | ImmunizationEvaluation.patient | ImmunizationRecommendation.patient | Invoice.subject.where(resolve() is Patient) | List.subject.where(resolve() is Patient) | MeasureReport.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationStatement.subject.where(resolve() is Patient) | MolecularSequence.subject.where(resolve() is Patient) | NutritionIntake.subject.where(resolve() is Patient) | NutritionOrder.subject.where(resolve() is Patient) | Observation.subject.where(resolve() is Patient) | Person.link.target.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | Provenance.patient | QuestionnaireResponse.subject.where(resolve() is Patient) | RelatedPerson.patient | RequestOrchestration.subject.where(resolve() is Patient) | ResearchSubject.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | Specimen.subject.where(resolve() is Patient) | SupplyDelivery.patient | SupplyRequest.deliverFor | Task.for.where(resolve() is Patient) | VisionPrescription.patient</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="patient", path="Account.subject.where(resolve() is Patient) | AdverseEvent.subject.where(resolve() is Patient) | AllergyIntolerance.patient | Appointment.participant.actor.where(resolve() is Patient) | Appointment.subject.where(resolve() is Patient) | AppointmentResponse.actor.where(resolve() is Patient) | AuditEvent.patient | Basic.subject.where(resolve() is Patient) | BodyStructure.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ChargeItem.subject.where(resolve() is Patient) | Claim.patient | ClaimResponse.patient | ClinicalImpression.subject.where(resolve() is Patient) | Communication.subject.where(resolve() is Patient) | CommunicationRequest.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | Contract.subject.where(resolve() is Patient) | Coverage.beneficiary | CoverageEligibilityRequest.patient | CoverageEligibilityResponse.patient | DetectedIssue.subject.where(resolve() is Patient) | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.patient | DiagnosticReport.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EnrollmentRequest.candidate | EpisodeOfCare.patient | ExplanationOfBenefit.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | GuidanceResponse.subject.where(resolve() is Patient) | ImagingSelection.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | ImmunizationEvaluation.patient | ImmunizationRecommendation.patient | Invoice.subject.where(resolve() is Patient) | List.subject.where(resolve() is Patient) | MeasureReport.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationStatement.subject.where(resolve() is Patient) | MolecularSequence.subject.where(resolve() is Patient) | NutritionIntake.subject.where(resolve() is Patient) | NutritionOrder.subject.where(resolve() is Patient) | Observation.subject.where(resolve() is Patient) | Person.link.target.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | Provenance.patient | QuestionnaireResponse.subject.where(resolve() is Patient) | RelatedPerson.patient | RequestOrchestration.subject.where(resolve() is Patient) | ResearchSubject.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | Specimen.subject.where(resolve() is Patient) | SupplyDelivery.patient | SupplyRequest.deliverFor | Task.for.where(resolve() is Patient) | VisionPrescription.patient", description="Multiple Resources: \r\n\r\n* [Account](account.html): The entity that caused the expenses\r\n* [AdverseEvent](adverseevent.html): Subject impacted by event\r\n* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for\r\n* [Appointment](appointment.html): One of the individuals of the appointment is this patient\r\n* [AppointmentResponse](appointmentresponse.html): This Response is for this Patient\r\n* [AuditEvent](auditevent.html): Where the activity involved patient data\r\n* [Basic](basic.html): Identifies the focus of this resource\r\n* [BodyStructure](bodystructure.html): Who this is about\r\n* [CarePlan](careplan.html): Who the care plan is for\r\n* [CareTeam](careteam.html): Who care team is for\r\n* [ChargeItem](chargeitem.html): Individual service was done for/to\r\n* [Claim](claim.html): Patient receiving the products or services\r\n* [ClaimResponse](claimresponse.html): The subject of care\r\n* [ClinicalImpression](clinicalimpression.html): Patient assessed\r\n* [Communication](communication.html): Focus of message\r\n* [CommunicationRequest](communicationrequest.html): Focus of message\r\n* [Composition](composition.html): Who and/or what the composition is about\r\n* [Condition](condition.html): Who has the condition?\r\n* [Consent](consent.html): Who the consent applies to\r\n* [Contract](contract.html): The identity of the subject of the contract (if a patient)\r\n* [Coverage](coverage.html): Retrieve coverages for a patient\r\n* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The reference to the patient\r\n* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The reference to the patient\r\n* [DetectedIssue](detectedissue.html): Associated patient\r\n* [DeviceRequest](devicerequest.html): Individual the service is ordered for\r\n* [DeviceUsage](deviceusage.html): Search by patient who used / uses the device\r\n* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient\r\n* [DocumentReference](documentreference.html): Who/what is the subject of the document\r\n* [Encounter](encounter.html): The patient present at the encounter\r\n* [EnrollmentRequest](enrollmentrequest.html): The party to be enrolled\r\n* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care\r\n* [ExplanationOfBenefit](explanationofbenefit.html): The reference to the patient\r\n* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for\r\n* [Flag](flag.html): The identity of a subject to list flags for\r\n* [Goal](goal.html): Who this goal is intended for\r\n* [GuidanceResponse](guidanceresponse.html): The identity of a patient to search for guidance response results\r\n* [ImagingSelection](imagingselection.html): Who the study is about\r\n* [ImagingStudy](imagingstudy.html): Who the study is about\r\n* [Immunization](immunization.html): The patient for the vaccination record\r\n* [ImmunizationEvaluation](immunizationevaluation.html): The patient being evaluated\r\n* [ImmunizationRecommendation](immunizationrecommendation.html): Who this profile is for\r\n* [Invoice](invoice.html): Recipient(s) of goods and services\r\n* [List](list.html): If all resources have the same subject\r\n* [MeasureReport](measurereport.html): The identity of a patient to search for individual measure report results for\r\n* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for\r\n* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for\r\n* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient\r\n* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.\r\n* [MolecularSequence](molecularsequence.html): The subject that the sequence is about\r\n* [NutritionIntake](nutritionintake.html): Returns statements for a specific patient.\r\n* [NutritionOrder](nutritionorder.html): The identity of the individual or set of individuals who requires the diet, formula or nutritional supplement\r\n* [Observation](observation.html): The subject that the observation is about (if patient)\r\n* [Person](person.html): The Person links to this Patient\r\n* [Procedure](procedure.html): Search by subject - a patient\r\n* [Provenance](provenance.html): Where the activity involved patient data\r\n* [QuestionnaireResponse](questionnaireresponse.html): The patient that is the subject of the questionnaire response\r\n* [RelatedPerson](relatedperson.html): The patient this related person is related to\r\n* [RequestOrchestration](requestorchestration.html): The identity of a patient to search for request orchestrations\r\n* [ResearchSubject](researchsubject.html): Who or what is part of study\r\n* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?\r\n* [ServiceRequest](servicerequest.html): Search by subject - a patient\r\n* [Specimen](specimen.html): The patient the specimen comes from\r\n* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied\r\n* [SupplyRequest](supplyrequest.html): The patient or subject for whom the supply is destined\r\n* [Task](task.html): Search by patient\r\n* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for\r\n", type="reference", providesMembershipIn={ @ca.uhn.fhir.model.api.annotation.Compartment(name="Base FHIR compartment definition for Patient") }, target={Patient.class } )
+  public static final String SP_PATIENT = "patient";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>patient</b>
+   * <p>
+   * Description: <b>Multiple Resources: 
+
+* [Account](account.html): The entity that caused the expenses
+* [AdverseEvent](adverseevent.html): Subject impacted by event
+* [AllergyIntolerance](allergyintolerance.html): Who the sensitivity is for
+* [Appointment](appointment.html): One of the individuals of the appointment is this patient
+* [AppointmentResponse](appointmentresponse.html): This Response is for this Patient
+* [AuditEvent](auditevent.html): Where the activity involved patient data
+* [Basic](basic.html): Identifies the focus of this resource
+* [BodyStructure](bodystructure.html): Who this is about
+* [CarePlan](careplan.html): Who the care plan is for
+* [CareTeam](careteam.html): Who care team is for
+* [ChargeItem](chargeitem.html): Individual service was done for/to
+* [Claim](claim.html): Patient receiving the products or services
+* [ClaimResponse](claimresponse.html): The subject of care
+* [ClinicalImpression](clinicalimpression.html): Patient assessed
+* [Communication](communication.html): Focus of message
+* [CommunicationRequest](communicationrequest.html): Focus of message
+* [Composition](composition.html): Who and/or what the composition is about
+* [Condition](condition.html): Who has the condition?
+* [Consent](consent.html): Who the consent applies to
+* [Contract](contract.html): The identity of the subject of the contract (if a patient)
+* [Coverage](coverage.html): Retrieve coverages for a patient
+* [CoverageEligibilityRequest](coverageeligibilityrequest.html): The reference to the patient
+* [CoverageEligibilityResponse](coverageeligibilityresponse.html): The reference to the patient
+* [DetectedIssue](detectedissue.html): Associated patient
+* [DeviceRequest](devicerequest.html): Individual the service is ordered for
+* [DeviceUsage](deviceusage.html): Search by patient who used / uses the device
+* [DiagnosticReport](diagnosticreport.html): The subject of the report if a patient
+* [DocumentReference](documentreference.html): Who/what is the subject of the document
+* [Encounter](encounter.html): The patient present at the encounter
+* [EnrollmentRequest](enrollmentrequest.html): The party to be enrolled
+* [EpisodeOfCare](episodeofcare.html): The patient who is the focus of this episode of care
+* [ExplanationOfBenefit](explanationofbenefit.html): The reference to the patient
+* [FamilyMemberHistory](familymemberhistory.html): The identity of a subject to list family member history items for
+* [Flag](flag.html): The identity of a subject to list flags for
+* [Goal](goal.html): Who this goal is intended for
+* [GuidanceResponse](guidanceresponse.html): The identity of a patient to search for guidance response results
+* [ImagingSelection](imagingselection.html): Who the study is about
+* [ImagingStudy](imagingstudy.html): Who the study is about
+* [Immunization](immunization.html): The patient for the vaccination record
+* [ImmunizationEvaluation](immunizationevaluation.html): The patient being evaluated
+* [ImmunizationRecommendation](immunizationrecommendation.html): Who this profile is for
+* [Invoice](invoice.html): Recipient(s) of goods and services
+* [List](list.html): If all resources have the same subject
+* [MeasureReport](measurereport.html): The identity of a patient to search for individual measure report results for
+* [MedicationAdministration](medicationadministration.html): The identity of a patient to list administrations  for
+* [MedicationDispense](medicationdispense.html): The identity of a patient to list dispenses  for
+* [MedicationRequest](medicationrequest.html): Returns prescriptions for a specific patient
+* [MedicationStatement](medicationstatement.html): Returns statements for a specific patient.
+* [MolecularSequence](molecularsequence.html): The subject that the sequence is about
+* [NutritionIntake](nutritionintake.html): Returns statements for a specific patient.
+* [NutritionOrder](nutritionorder.html): The identity of the individual or set of individuals who requires the diet, formula or nutritional supplement
+* [Observation](observation.html): The subject that the observation is about (if patient)
+* [Person](person.html): The Person links to this Patient
+* [Procedure](procedure.html): Search by subject - a patient
+* [Provenance](provenance.html): Where the activity involved patient data
+* [QuestionnaireResponse](questionnaireresponse.html): The patient that is the subject of the questionnaire response
+* [RelatedPerson](relatedperson.html): The patient this related person is related to
+* [RequestOrchestration](requestorchestration.html): The identity of a patient to search for request orchestrations
+* [ResearchSubject](researchsubject.html): Who or what is part of study
+* [RiskAssessment](riskassessment.html): Who/what does assessment apply to?
+* [ServiceRequest](servicerequest.html): Search by subject - a patient
+* [Specimen](specimen.html): The patient the specimen comes from
+* [SupplyDelivery](supplydelivery.html): Patient for whom the item is supplied
+* [SupplyRequest](supplyrequest.html): The patient or subject for whom the supply is destined
+* [Task](task.html): Search by patient
+* [VisionPrescription](visionprescription.html): The identity of a patient to list dispenses for
+</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>Account.subject.where(resolve() is Patient) | AdverseEvent.subject.where(resolve() is Patient) | AllergyIntolerance.patient | Appointment.participant.actor.where(resolve() is Patient) | Appointment.subject.where(resolve() is Patient) | AppointmentResponse.actor.where(resolve() is Patient) | AuditEvent.patient | Basic.subject.where(resolve() is Patient) | BodyStructure.patient | CarePlan.subject.where(resolve() is Patient) | CareTeam.subject.where(resolve() is Patient) | ChargeItem.subject.where(resolve() is Patient) | Claim.patient | ClaimResponse.patient | ClinicalImpression.subject.where(resolve() is Patient) | Communication.subject.where(resolve() is Patient) | CommunicationRequest.subject.where(resolve() is Patient) | Composition.subject.where(resolve() is Patient) | Condition.subject.where(resolve() is Patient) | Consent.subject.where(resolve() is Patient) | Contract.subject.where(resolve() is Patient) | Coverage.beneficiary | CoverageEligibilityRequest.patient | CoverageEligibilityResponse.patient | DetectedIssue.subject.where(resolve() is Patient) | DeviceRequest.subject.where(resolve() is Patient) | DeviceUsage.patient | DiagnosticReport.subject.where(resolve() is Patient) | DocumentReference.subject.where(resolve() is Patient) | Encounter.subject.where(resolve() is Patient) | EnrollmentRequest.candidate | EpisodeOfCare.patient | ExplanationOfBenefit.patient | FamilyMemberHistory.patient | Flag.subject.where(resolve() is Patient) | Goal.subject.where(resolve() is Patient) | GuidanceResponse.subject.where(resolve() is Patient) | ImagingSelection.subject.where(resolve() is Patient) | ImagingStudy.subject.where(resolve() is Patient) | Immunization.patient | ImmunizationEvaluation.patient | ImmunizationRecommendation.patient | Invoice.subject.where(resolve() is Patient) | List.subject.where(resolve() is Patient) | MeasureReport.subject.where(resolve() is Patient) | MedicationAdministration.subject.where(resolve() is Patient) | MedicationDispense.subject.where(resolve() is Patient) | MedicationRequest.subject.where(resolve() is Patient) | MedicationStatement.subject.where(resolve() is Patient) | MolecularSequence.subject.where(resolve() is Patient) | NutritionIntake.subject.where(resolve() is Patient) | NutritionOrder.subject.where(resolve() is Patient) | Observation.subject.where(resolve() is Patient) | Person.link.target.where(resolve() is Patient) | Procedure.subject.where(resolve() is Patient) | Provenance.patient | QuestionnaireResponse.subject.where(resolve() is Patient) | RelatedPerson.patient | RequestOrchestration.subject.where(resolve() is Patient) | ResearchSubject.subject.where(resolve() is Patient) | RiskAssessment.subject.where(resolve() is Patient) | ServiceRequest.subject.where(resolve() is Patient) | Specimen.subject.where(resolve() is Patient) | SupplyDelivery.patient | SupplyRequest.deliverFor | Task.for.where(resolve() is Patient) | VisionPrescription.patient</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam PATIENT = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_PATIENT);
+
+/**
+   * Constant for fluent queries to be used to add include statements. Specifies
+   * the path value of "<b>Contract:patient</b>".
+   */
+  public static final ca.uhn.fhir.model.api.Include INCLUDE_PATIENT = new ca.uhn.fhir.model.api.Include("Contract:patient").toLocked();
 
 
 }

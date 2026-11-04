@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ConditionVerStatusEnumFactory implements EnumFactory<ConditionVerStatus> {
@@ -54,11 +50,13 @@ public class ConditionVerStatusEnumFactory implements EnumFactory<ConditionVerSt
       return ConditionVerStatus.ENTEREDINERROR;
     if ("unknown".equals(codeString))
       return ConditionVerStatus.UNKNOWN;
-    throw new IllegalArgumentException("Unknown ConditionVerStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ConditionVerStatus code '" + codeString + "'");
   }
 
   public String toCode(ConditionVerStatus code) {
-    if (code == ConditionVerStatus.PROVISIONAL)
+       if (code == ConditionVerStatus.NULL)
+           return null;
+       if (code == ConditionVerStatus.PROVISIONAL)
       return "provisional";
     if (code == ConditionVerStatus.DIFFERENTIAL)
       return "differential";
@@ -71,10 +69,10 @@ public class ConditionVerStatusEnumFactory implements EnumFactory<ConditionVerSt
     if (code == ConditionVerStatus.UNKNOWN)
       return "unknown";
     return "?";
-  }
+   }
 
-    public String toSystem(ConditionVerStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(ConditionVerStatus code) {
+    return code.getSystem();
+  }
 
 }

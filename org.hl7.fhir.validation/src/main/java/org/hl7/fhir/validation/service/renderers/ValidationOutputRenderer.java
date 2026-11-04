@@ -1,0 +1,66 @@
+package org.hl7.fhir.validation.service.renderers;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.hl7.fhir.services.context.IWorkerContext;
+import org.hl7.fhir.model.core.Bundle;
+import org.hl7.fhir.model.core.OperationOutcome;
+
+public abstract class ValidationOutputRenderer {
+
+  @Setter
+  @Getter
+  private String runDate;
+  @Setter
+  @Getter
+  protected boolean crumbTrails;
+
+  protected boolean moreThanOne;
+
+  protected PrintStream dst;
+
+  @Setter
+  @Getter
+  protected IWorkerContext context;
+
+  @Setter
+  @Getter
+  protected boolean showMessageIds;
+
+  public void start(boolean moreThanOne) {
+    this.moreThanOne = moreThanOne;
+  }
+  
+  public abstract void render(OperationOutcome op) throws IOException;
+  
+  public void render(Bundle bundle) throws IOException {
+    throw new Error("Should not call render*Bundle) when handlesBundleDirectly() == false");
+  }
+  
+  public void finish() {  
+  }
+
+  public void setOutput(PrintStream dst) {
+    this.dst = dst;    
+  }
+  
+  public boolean handlesBundleDirectly() {
+    return false;
+  }
+
+  public abstract boolean isSingleFile();
+
+  public abstract String getStyleCode();
+
+  public abstract void setFolder(File dir);
+  
+
+  protected String renderMessageId(OperationOutcome.OperationOutcomeIssueComponent issue) {
+    return showMessageIds ? " {" +issue.getExtensionString("http://hl7.org/fhir/StructureDefinition/operationoutcome-message-id")+"}" : "";
+  }
+
+}

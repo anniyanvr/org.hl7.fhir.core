@@ -8,39 +8,53 @@ import java.util.UUID;
 import org.hl7.fhir.exceptions.DefinitionException;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
+import org.hl7.fhir.r5.comparison.CanonicalResourceComparer.CanonicalResourceComparison;
+import org.hl7.fhir.r5.comparison.CapabilityStatementComparer.CapabilityStatementComparison;
 import org.hl7.fhir.r5.comparison.CodeSystemComparer.CodeSystemComparison;
-import org.hl7.fhir.r5.comparison.ProfileComparer.ProfileComparison;
 import org.hl7.fhir.r5.comparison.ResourceComparer.ResourceComparison;
+import org.hl7.fhir.r5.comparison.StructureDefinitionComparer.ProfileComparison;
 import org.hl7.fhir.r5.comparison.ValueSetComparer.ValueSetComparison;
-import org.hl7.fhir.r5.conformance.ProfileUtilities;
-import org.hl7.fhir.r5.conformance.ProfileUtilities.ProfileKnowledgeProvider;
+import org.hl7.fhir.r5.comparison.VersionComparisonAnnotation.AnotationType;
+import org.hl7.fhir.r5.conformance.profile.ProfileKnowledgeProvider;
+import org.hl7.fhir.r5.conformance.profile.ProfileUtilities;
 import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.model.Base;
 import org.hl7.fhir.r5.model.CanonicalResource;
+import org.hl7.fhir.r5.model.CapabilityStatement;
 import org.hl7.fhir.r5.model.CodeSystem;
 import org.hl7.fhir.r5.model.Resource;
 import org.hl7.fhir.r5.model.StructureDefinition;
 import org.hl7.fhir.r5.model.ValueSet;
-import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.UserDataNames;
+
+import org.hl7.fhir.utilities.i18n.RenderingI18nContext;
+
 
 public class ComparisonSession {
 
+  
   private Map<String, ResourceComparison> compares = new HashMap<>();
   private IWorkerContext contextLeft;
   private IWorkerContext contextRight;
   private String sessiondId;
   private int count;
   private boolean debug;
+  private boolean annotate;
   private String title;
-  private ProfileKnowledgeProvider pkp;
+  private ProfileKnowledgeProvider pkpLeft;
+  private ProfileKnowledgeProvider pkpRight;
+  private RenderingI18nContext i18n;
   
-  public ComparisonSession(IWorkerContext contextLeft, IWorkerContext contextRight, String title, ProfileKnowledgeProvider pkp) {
+  public ComparisonSession(RenderingI18nContext i18n, IWorkerContext contextLeft, IWorkerContext contextRight, String title, ProfileKnowledgeProvider pkpLeft, ProfileKnowledgeProvider pkpRight) {
     super();
     this.contextLeft = contextLeft;
     this.contextRight = contextRight;
     this.sessiondId = UUID.randomUUID().toString().toLowerCase();
     this.title = title;
-    this.pkp = pkp;
-//    debug = true;
+    this.pkpLeft = pkpLeft;
+    this.pkpRight = pkpRight;
+    this.i18n = i18n;
+    debug = false;
   }
   
   public IWorkerContext getContextLeft() {
@@ -55,12 +69,12 @@ public class ComparisonSession {
     return title;
   }
 
-  public ResourceComparison compare(String left, String right) throws DefinitionException, FHIRFormatError, IOException {
-    CanonicalResource l = (CanonicalResource) contextLeft.fetchResource(Resource.class, left);
+  public ResourceComparison compare(String left, Resource leftSource, String right, Resource rightSource) throws DefinitionException, FHIRFormatError, IOException {
+    CanonicalResource l = (CanonicalResource) contextLeft.fetchResource(Resource.class, left, IWorkerContext.VersionResolutionRules.defaultRule(), null, leftSource);
     if (l == null) {
       throw new DefinitionException("Unable to resolve "+left);
     }
-    CanonicalResource r = (CanonicalResource) contextRight.fetchResource(Resource.class, right);
+    CanonicalResource r = (CanonicalResource) contextRight.fetchResource(Resource.class, right, IWorkerContext.VersionResolutionRules.defaultRule(), null, rightSource);
     if (r == null) {
       throw new DefinitionException("Unable to resolve "+right);
     }
@@ -88,19 +102,28 @@ public class ComparisonSession {
           compares.put(key, csc);
           return csc;
         } else if (left instanceof StructureDefinition && right instanceof StructureDefinition) {
-          ProfileComparer cs = new ProfileComparer(this, new ProfileUtilities(contextLeft, null, pkp), new ProfileUtilities(contextRight, null, pkp));
+          StructureDefinitionComparer cs = new StructureDefinitionComparer(this, new ProfileUtilities(contextLeft, null, pkpLeft), new ProfileUtilities(contextRight, null, pkpRight));
           ProfileComparison csc = cs.compare((StructureDefinition) left, (StructureDefinition) right);
+          compares.put(key, csc);
+          return csc;
+        } else if (left instanceof CapabilityStatement && right instanceof CapabilityStatement) {
+          CapabilityStatementComparer cs = new CapabilityStatementComparer(this);
+          CapabilityStatementComparison csc = cs.compare((CapabilityStatement) left, (CapabilityStatement) right);
           compares.put(key, csc);
           return csc;
         } else {
           throw new FHIRException("Unable to compare resources of type "+left.fhirType()+" and "+right.fhirType());
         }
       } catch (Throwable e) {
+        if (debug) {
+          e.printStackTrace();
+        }
         ResourceComparer.PlaceHolderComparison csc = new ResourceComparer.PlaceHolderComparison(left, right, e);
         compares.put(key, csc);
         return csc;      
       }
     } else if (left != null) {
+      markDeleted(null, left.fhirType(), left); // todo: waht?
       String key = key(left.getUrl(), left.getVersion(), left.getUrl(), left.getVersion());
       if (compares.containsKey(key)) {
         return compares.get(key);
@@ -109,6 +132,7 @@ public class ComparisonSession {
       compares.put(key, csc);
       return csc;      
     } else {
+      markAdded(right);
       String key = key(right.getUrl(), right.getVersion(), right.getUrl(), right.getVersion());
       if (compares.containsKey(key)) {
         return compares.get(key);
@@ -145,7 +169,67 @@ public class ComparisonSession {
     return compares;
   }
 
-  public ProfileKnowledgeProvider getPkp() {
-    return pkp;
+  public ProfileKnowledgeProvider getPkpLeft() {
+    return pkpLeft;
+  }
+  
+  public ProfileKnowledgeProvider getPkpRight() {
+    return pkpRight;
+  }
+
+  public boolean isAnnotate() {
+    return annotate;
+  }
+
+  public RenderingI18nContext getI18n() {
+    return i18n;
+  }
+
+  public void setAnnotate(boolean annotate) {
+    this.annotate = annotate;
+  }
+
+  private VersionComparisonAnnotation getAnnotation(Base b) {
+    if (b == null) {
+      return null;
+    }
+    if (b.hasUserData(UserDataNames.COMP_VERSION_ANNOTATION)) {
+      return (VersionComparisonAnnotation) b.getUserData(UserDataNames.COMP_VERSION_ANNOTATION);
+    } else {
+      VersionComparisonAnnotation vca = new VersionComparisonAnnotation(AnotationType.NoChange);
+      b.setUserData(UserDataNames.COMP_VERSION_ANNOTATION, vca);
+      return vca;
+    }
+  }
+
+  public void markAdded(Base focus) {
+    if (isAnnotate()) {
+      getAnnotation(focus).added();
+    }
+  }
+
+  public void markChanged(Base focus, Base original) {
+    if (isAnnotate()) {
+      getAnnotation(focus).changed(original);
+    }
+  }
+
+  public void markDeleted(Base parent, String name, Base other) {
+    if (isAnnotate() && other != null) {
+      VersionComparisonAnnotation annotation = getAnnotation(parent);
+      if (annotation != null) {
+        annotation.deleted(name, other);
+      }
+      annotation = getAnnotation(other);
+      if (annotation != null) {
+        annotation.deleted();
+      }
+    }
+  }
+
+  public void annotate(Base base, CanonicalResourceComparison<? extends CanonicalResource> comp) {
+    if (isAnnotate()) {
+      getAnnotation(base).comp(comp);
+    }
   }
 }

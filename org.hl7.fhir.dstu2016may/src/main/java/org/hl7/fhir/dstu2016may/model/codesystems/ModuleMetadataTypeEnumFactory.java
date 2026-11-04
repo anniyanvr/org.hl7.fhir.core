@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ModuleMetadataTypeEnumFactory implements EnumFactory<ModuleMetadataType> {
@@ -52,11 +48,13 @@ public class ModuleMetadataTypeEnumFactory implements EnumFactory<ModuleMetadata
       return ModuleMetadataType.DOCUMENTATIONTEMPLATE;
     if ("order-set".equals(codeString))
       return ModuleMetadataType.ORDERSET;
-    throw new IllegalArgumentException("Unknown ModuleMetadataType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ModuleMetadataType code '" + codeString + "'");
   }
 
   public String toCode(ModuleMetadataType code) {
-    if (code == ModuleMetadataType.MODULE)
+       if (code == ModuleMetadataType.NULL)
+           return null;
+       if (code == ModuleMetadataType.MODULE)
       return "module";
     if (code == ModuleMetadataType.LIBRARY)
       return "library";
@@ -67,10 +65,10 @@ public class ModuleMetadataTypeEnumFactory implements EnumFactory<ModuleMetadata
     if (code == ModuleMetadataType.ORDERSET)
       return "order-set";
     return "?";
-  }
+   }
 
-    public String toSystem(ModuleMetadataType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ModuleMetadataType code) {
+    return code.getSystem();
+  }
 
 }

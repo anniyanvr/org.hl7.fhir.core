@@ -1,0 +1,78 @@
+jobs:
+  - ${{ each unit in parameters.testUnits }}:
+    - ${{ each value in unit.modules }}:
+      - job: ${{unit.name}}_${{value}}
+        dependsOn: [ 'setup' ]
+
+        displayName: Test ${{value}} on ${{unit.name}}
+
+        pool:
+          vmImage: ${{unit.vmImage}}
+
+        variables:
+          JAVA_TOOL_OPTIONS: ${{unit.javaToolOptions}}
+          skipJaCoCo: $[eq(${{unit.skipJaCoCo}}, true)]
+          module: org.hl7.fhir.${{ replace(value, '_', '.') }}
+          classpath: org/hl7/fhir/${{ replace(value, '_', '/') }}
+
+        steps:
+        - task: Cache@2
+          displayName: Cache maven artifacts
+          inputs:
+            key: maven | $(Build.BuildId) | artifacts
+            path: $(MAVEN_CACHE_FOLDER)
+            cacheHitVar: MAVEN_CACHE_RESTORED
+
+        - bash: |
+            if [ "$MAVEN_CACHE_RESTORED" != "true" ]; then
+              echo "##vso[task.logissue type=warning]Required maven cache was not restored."
+              exit 0
+            fi
+          displayName: Verify Maven Cache Exists
+        - template: cache-target-tasks-template.yml
+          parameters:
+            modules:
+              - ${{variables.module}}
+        - bash: |
+            if [ "$TARGET_CACHE_RESTORED" != "true" ]; then
+              echo "##vso[task.logissue type=warning]Required target cache was not restored."
+              exit 0
+            fi
+          displayName: Verify Target Cache Exists
+          # Runs 'mvn install'
+        - task: Maven@4
+          inputs:
+            mavenPomFile: 'pom.xml'
+            options: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER) -pl ${{variables.module}} -Djacoco.skip=${{unit.skipJaCoCo}} -P JACOCO'
+            mavenOptions: '-Xmx768m -Dmaven.resolver.transport=wagon'
+            javaHomeOption: 'JDKVersion'
+            jdkVersionOption: '${{unit.jdkVersion}}'
+            jdkArchitectureOption: 'x64'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            goals: 'verify jacoco:report'
+        - task: CopyFiles@2
+          condition: eq(variables.skipJaCoCo, false)
+          inputs:
+            sourceFolder: '$(System.DefaultWorkingDirectory)/'
+            contents: '**/target/*-reports/*.txt'
+            targetFolder: '$(Build.ArtifactStagingDirectory)'
+        - task: PublishPipelineArtifact@1
+          displayName: 'Publish Full Test Output'
+          condition: eq(variables.skipJaCoCo, false)
+          inputs:
+            targetPath: '$(Build.ArtifactStagingDirectory)/'
+            artifactName: '${{value}}_full_logs_$(Build.BuildId)_$(Build.BuildNumber)_$(System.JobId).zip'
+        - bash: |
+            find $(System.DefaultWorkingDirectory)/${{ variables.module }}/target/classes -type f -not -path '$(System.DefaultWorkingDirectory)/${{ variables.module }}/target/classes/${{ variables.classpath }}/*' -delete
+            find $(System.DefaultWorkingDirectory)/${{ variables.module }}/target/classes -empty -type d -delete
+          condition: ne( variables['Agent.OS'], 'Windows_NT' )
+          displayName: 'Delete non-module classes.'
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish jacoco module artifacts'
+          condition: eq(variables.skipJaCoCo, false)
+          continueOnError: true
+          inputs:
+            pathToPublish: '$(System.DefaultWorkingDirectory)/${{ variables.module }}/target/'
+            parallel: true
+            artifactName: '${{ variables.module }}_target'

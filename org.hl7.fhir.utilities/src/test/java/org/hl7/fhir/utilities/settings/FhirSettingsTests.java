@@ -1,0 +1,118 @@
+package org.hl7.fhir.utilities.settings;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.hl7.fhir.utilities.tests.ResourceLoaderTests;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
+
+@Isolated
+class FhirSettingsTests implements ResourceLoaderTests {
+
+  private static String existingFhirSettingsPath;
+
+  @BeforeAll
+  static void beforeAll() {
+    existingFhirSettingsPath = System.getProperty(FhirSettings.FHIR_SETTINGS_PATH);
+    System.clearProperty(FhirSettings.FHIR_SETTINGS_PATH);
+  }
+
+  @AfterEach
+  void afterEach() {
+    System.clearProperty(FhirSettings.FHIR_SETTINGS_PATH);
+  }
+
+  @AfterAll
+  static void afterAll() {
+    if (existingFhirSettingsPath == null) {
+      System.clearProperty(FhirSettings.FHIR_SETTINGS_PATH);
+    } else {
+      System.setProperty(FhirSettings.FHIR_SETTINGS_PATH, existingFhirSettingsPath);
+    }
+  }
+
+  @Test
+  void testDefaultTxEcosystemFor() {
+    // the default ecosystem goes with the default terminology server, and with no other
+    String prod = FhirSettings.getTxFhirProduction();
+    String ecosystem = FhirSettings.getTxEcosystem();
+    assertEquals(ecosystem, FhirSettings.getDefaultTxEcosystemFor(prod));
+    assertEquals(ecosystem, FhirSettings.getDefaultTxEcosystemFor(prod + "/"));
+    assertEquals(ecosystem, FhirSettings.getDefaultTxEcosystemFor(prod + "/r4"));
+    assertNull(FhirSettings.getDefaultTxEcosystemFor(prod + "/r4/other"));
+    assertNull(FhirSettings.getDefaultTxEcosystemFor(prod + ".example.org"));
+    assertNull(FhirSettings.getDefaultTxEcosystemFor("https://tx.example.org/fhir"));
+    assertNull(FhirSettings.getDefaultTxEcosystemFor(null));
+  }
+
+  @Test
+  void testDefaultFhirSettingsPath() throws IOException {
+    String actualPath = FhirSettings.getSettingsFilePath(null);
+    assertEquals(FhirSettings.getDefaultSettingsPath(), actualPath);
+  }
+
+  @Test
+  void testJavaSystemPropertyFhirSettingsPath() {
+    final String dummyPath = "dummy-path";
+    System.setProperty(FhirSettings.FHIR_SETTINGS_PATH, dummyPath);
+    String actualPath = FhirSettings.getSettingsFilePath(null);
+    assertEquals(dummyPath, actualPath);
+  }
+
+  @Test
+  void testExplicitSettingsPathSelected() {
+    final String wrongDummyPath = "wrong-dummy-path";
+    final String dummyPath = "dummy-path";
+    System.setProperty(FhirSettings.FHIR_SETTINGS_PATH, wrongDummyPath);
+    String actualPath = FhirSettings.getSettingsFilePath(dummyPath);
+    assertEquals(dummyPath, actualPath);
+  }
+
+  @Test
+  void testExplicitFhirSettingsPath() {
+    final String dummyPath = "dummy-path";
+    String actualPath = FhirSettings.getSettingsFilePath(dummyPath);
+    assertEquals(dummyPath, actualPath);
+  }
+
+  @Test
+  void testParseFhirSettings() throws IOException {
+    Path path = Files.createTempFile("fhir-settings", "json").toAbsolutePath();
+    copyResourceToFile(path, "settings", "settings-example.json");
+
+    FhirSettingsPOJO fhirSettings = FhirSettings.getFhirSettingsPOJO(path.toString());
+
+    assertEquals("dummy-npm-path", fhirSettings.getNpmPath());
+    assertEquals("dummy-ruby-path", fhirSettings.getRubyPath());
+    assertEquals("dummy-api-key-value", fhirSettings.getApiKeys().get("dummy-api-key"));
+    assertEquals("dummy-fhir-test-cases-path", fhirSettings.getFhirTestCasesPath());
+    assertEquals("dummy-diff-tool-path", fhirSettings.getDiffToolPath());
+    assertEquals("dummy-temp-path", fhirSettings.getTempPath());
+    assertEquals("dummy-test-igs-path", fhirSettings.getTestIgsPath());
+
+    assertTrue(fhirSettings.getIgnoreDefaultPackageServers());
+
+    List<ServerDetailsPOJO> servers = fhirSettings.getServers();
+
+    assertEquals(2, servers.size());
+
+    assertEquals("http://dummy.org", servers.get(0).url);
+    assertEquals("npm-package", servers.get(0).type);
+    assertEquals("joe", servers.get(0).username);
+    assertEquals("swordfish", servers.get(0).password);
+    assertEquals("BASIC", servers.get(0).authenticationType);
+
+    assertEquals("http://dummy2.com", servers.get(1).url);
+
+  }
+}

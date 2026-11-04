@@ -132,12 +132,12 @@ public class Account extends DomainResource {
           return AccountStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown AccountStatus code '"+codeString+"'");
         }
-        public Enumeration<AccountStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<AccountStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<AccountStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -149,14 +149,16 @@ public class Account extends DomainResource {
         throw new FHIRException("Unknown AccountStatus code '"+codeString+"'");
         }
     public String toCode(AccountStatus code) {
-      if (code == AccountStatus.ACTIVE)
+       if (code == AccountStatus.NULL)
+           return null;
+       if (code == AccountStatus.ACTIVE)
         return "active";
       if (code == AccountStatus.INACTIVE)
         return "inactive";
       if (code == AccountStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(AccountStatus code) {
       return code.getSystem();
       }
@@ -379,7 +381,7 @@ A coverage may only be resposible for specific types of charges, and the sequenc
           return this.coverage;
         }
         else if (name.equals("priority")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Account.priority");
+          throw new FHIRException("Cannot call addChild on a singleton property Account.priority");
         }
         else
           return super.addChild(name);
@@ -665,7 +667,7 @@ A coverage may only be resposible for specific types of charges, and the sequenc
           return this.party;
         }
         else if (name.equals("onHold")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Account.onHold");
+          throw new FHIRException("Cannot call addChild on a singleton property Account.onHold");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -1488,14 +1490,14 @@ This period may be different to the coveragePeriod which is the duration of time
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Account.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Account.status");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
           return this.type;
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Account.name");
+          throw new FHIRException("Cannot call addChild on a singleton property Account.name");
         }
         else if (name.equals("subject")) {
           this.subject = new Reference();
@@ -1521,7 +1523,7 @@ This period may be different to the coveragePeriod which is the duration of time
           return this.owner;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Account.description");
+          throw new FHIRException("Cannot call addChild on a singleton property Account.description");
         }
         else if (name.equals("guarantor")) {
           return addGuarantor();

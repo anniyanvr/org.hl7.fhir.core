@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class EncounterClassEnumFactory implements EnumFactory<EncounterClass> {
@@ -60,11 +56,13 @@ public class EncounterClassEnumFactory implements EnumFactory<EncounterClass> {
       return EncounterClass.VIRTUAL;
     if ("other".equals(codeString))
       return EncounterClass.OTHER;
-    throw new IllegalArgumentException("Unknown EncounterClass code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown EncounterClass code '" + codeString + "'");
   }
 
   public String toCode(EncounterClass code) {
-    if (code == EncounterClass.INPATIENT)
+       if (code == EncounterClass.NULL)
+           return null;
+       if (code == EncounterClass.INPATIENT)
       return "inpatient";
     if (code == EncounterClass.OUTPATIENT)
       return "outpatient";
@@ -83,10 +81,10 @@ public class EncounterClassEnumFactory implements EnumFactory<EncounterClass> {
     if (code == EncounterClass.OTHER)
       return "other";
     return "?";
-  }
+   }
 
-    public String toSystem(EncounterClass code) {
-      return code.getSystem();
-      }
+  public String toSystem(EncounterClass code) {
+    return code.getSystem();
+  }
 
 }

@@ -146,12 +146,12 @@ public class ProcessRequest extends DomainResource {
           return ProcessRequestStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown ProcessRequestStatus code '"+codeString+"'");
         }
-        public Enumeration<ProcessRequestStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ProcessRequestStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ProcessRequestStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -165,7 +165,9 @@ public class ProcessRequest extends DomainResource {
         throw new FHIRException("Unknown ProcessRequestStatus code '"+codeString+"'");
         }
     public String toCode(ProcessRequestStatus code) {
-      if (code == ProcessRequestStatus.ACTIVE)
+       if (code == ProcessRequestStatus.NULL)
+           return null;
+       if (code == ProcessRequestStatus.ACTIVE)
         return "active";
       if (code == ProcessRequestStatus.CANCELLED)
         return "cancelled";
@@ -174,7 +176,7 @@ public class ProcessRequest extends DomainResource {
       if (code == ProcessRequestStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(ProcessRequestStatus code) {
       return code.getSystem();
       }
@@ -274,12 +276,12 @@ public class ProcessRequest extends DomainResource {
           return ActionList.STATUS;
         throw new IllegalArgumentException("Unknown ActionList code '"+codeString+"'");
         }
-        public Enumeration<ActionList> fromType(Base code) throws FHIRException {
+        public Enumeration<ActionList> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ActionList>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("cancel".equals(codeString))
@@ -293,7 +295,9 @@ public class ProcessRequest extends DomainResource {
         throw new FHIRException("Unknown ActionList code '"+codeString+"'");
         }
     public String toCode(ActionList code) {
-      if (code == ActionList.CANCEL)
+       if (code == ActionList.NULL)
+           return null;
+       if (code == ActionList.CANCEL)
         return "cancel";
       if (code == ActionList.POLL)
         return "poll";
@@ -302,7 +306,7 @@ public class ProcessRequest extends DomainResource {
       if (code == ActionList.STATUS)
         return "status";
       return "?";
-      }
+   }
     public String toSystem(ActionList code) {
       return code.getSystem();
       }
@@ -443,7 +447,7 @@ public class ProcessRequest extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("sequenceLinkId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessRequest.sequenceLinkId");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessRequest.sequenceLinkId");
         }
         else
           return super.addChild(name);
@@ -1542,17 +1546,17 @@ public class ProcessRequest extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessRequest.status");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessRequest.status");
         }
         else if (name.equals("action")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessRequest.action");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessRequest.action");
         }
         else if (name.equals("target")) {
           this.target = new Reference();
           return this.target;
         }
         else if (name.equals("created")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessRequest.created");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessRequest.created");
         }
         else if (name.equals("provider")) {
           this.provider = new Reference();
@@ -1571,19 +1575,19 @@ public class ProcessRequest extends DomainResource {
           return this.response;
         }
         else if (name.equals("nullify")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessRequest.nullify");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessRequest.nullify");
         }
         else if (name.equals("reference")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessRequest.reference");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessRequest.reference");
         }
         else if (name.equals("item")) {
           return addItem();
         }
         else if (name.equals("include")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessRequest.include");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessRequest.include");
         }
         else if (name.equals("exclude")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ProcessRequest.exclude");
+          throw new FHIRException("Cannot call addChild on a singleton property ProcessRequest.exclude");
         }
         else if (name.equals("period")) {
           this.period = new Period();

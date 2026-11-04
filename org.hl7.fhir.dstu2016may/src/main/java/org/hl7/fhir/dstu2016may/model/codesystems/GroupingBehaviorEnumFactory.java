@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class GroupingBehaviorEnumFactory implements EnumFactory<GroupingBehavior> {
@@ -48,21 +44,23 @@ public class GroupingBehaviorEnumFactory implements EnumFactory<GroupingBehavior
       return GroupingBehavior.LOGICALGROUP;
     if ("sentence-group".equals(codeString))
       return GroupingBehavior.SENTENCEGROUP;
-    throw new IllegalArgumentException("Unknown GroupingBehavior code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown GroupingBehavior code '" + codeString + "'");
   }
 
   public String toCode(GroupingBehavior code) {
-    if (code == GroupingBehavior.VISUALGROUP)
+       if (code == GroupingBehavior.NULL)
+           return null;
+       if (code == GroupingBehavior.VISUALGROUP)
       return "visual-group";
     if (code == GroupingBehavior.LOGICALGROUP)
       return "logical-group";
     if (code == GroupingBehavior.SENTENCEGROUP)
       return "sentence-group";
     return "?";
-  }
+   }
 
-    public String toSystem(GroupingBehavior code) {
-      return code.getSystem();
-      }
+  public String toSystem(GroupingBehavior code) {
+    return code.getSystem();
+  }
 
 }

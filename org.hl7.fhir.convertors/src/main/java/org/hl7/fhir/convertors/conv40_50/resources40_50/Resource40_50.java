@@ -1,7 +1,8 @@
 package org.hl7.fhir.convertors.conv40_50.resources40_50;
 
+import java.util.Arrays;
+
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_40_50;
-import org.hl7.fhir.convertors.context.ConversionContext40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Code40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Id40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Uri40_50;
@@ -9,6 +10,7 @@ import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Extension40
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Meta40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Narrative40_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r4.model.Basic;
 
 public class Resource40_50 {
 
@@ -48,7 +50,20 @@ public class Resource40_50 {
       return AppointmentResponse40_50.convertAppointmentResponse((org.hl7.fhir.r4.model.AppointmentResponse) src);
     if (src instanceof org.hl7.fhir.r4.model.AuditEvent)
       return AuditEvent40_50.convertAuditEvent((org.hl7.fhir.r4.model.AuditEvent) src);
-    if (src instanceof org.hl7.fhir.r4.model.Basic) return Basic40_50.convertBasic((org.hl7.fhir.r4.model.Basic) src);
+    if (src instanceof org.hl7.fhir.r4.model.Basic) {
+      org.hl7.fhir.r4.model.Basic basic = (Basic) src;
+      if (basic.getCode().hasCoding("http://hl7.org/fhir/fhir-types", "ActorDefinition")) {
+        return ActorDefinition40_50.convertActorDefinition((org.hl7.fhir.r4.model.Basic) src);
+      } else if (basic.getCode().hasCoding("http://hl7.org/fhir/fhir-types", "Requirements")) {
+        return Requirements40_50.convertRequirements((org.hl7.fhir.r4.model.Basic) src);
+      } else if (basic.getCode().hasCoding("http://hl7.org/fhir/fhir-types", "TestPlan")) {
+        return TestPlan40_50.convertTestPlan((org.hl7.fhir.r4.model.Basic) src);
+      } else if (basic.getCode().hasCoding("http://hl7.org/fhir/fhir-types", "SubscriptionTopic")) {
+        return SubscriptionTopic40_50.convertSubscriptionTopic((org.hl7.fhir.r4.model.Basic) src);
+      } else {
+        return Basic40_50.convertBasic((org.hl7.fhir.r4.model.Basic) src);
+      }
+    }
     if (src instanceof org.hl7.fhir.r4.model.Binary)
       return Binary40_50.convertBinary((org.hl7.fhir.r4.model.Binary) src);
     if (src instanceof org.hl7.fhir.r4.model.BiologicallyDerivedProduct)
@@ -108,8 +123,8 @@ public class Resource40_50 {
       return DeviceUseStatement40_50.convertDeviceUseStatement((org.hl7.fhir.r4.model.DeviceUseStatement) src);
     if (src instanceof org.hl7.fhir.r4.model.DiagnosticReport)
       return DiagnosticReport40_50.convertDiagnosticReport((org.hl7.fhir.r4.model.DiagnosticReport) src);
-    if (src instanceof org.hl7.fhir.r4.model.DocumentManifest)
-      return DocumentManifest40_50.convertDocumentManifest((org.hl7.fhir.r4.model.DocumentManifest) src);
+//    if (src instanceof org.hl7.fhir.r4.model.DocumentManifest)
+//      return DocumentManifest40_50.convertDocumentManifest((org.hl7.fhir.r4.model.DocumentManifest) src);
     if (src instanceof org.hl7.fhir.r4.model.DocumentReference)
       return DocumentReference40_50.convertDocumentReference((org.hl7.fhir.r4.model.DocumentReference) src);
     if (src instanceof org.hl7.fhir.r4.model.Encounter)
@@ -180,8 +195,6 @@ public class Resource40_50 {
       return MessageDefinition40_50.convertMessageDefinition((org.hl7.fhir.r4.model.MessageDefinition) src);
     if (src instanceof org.hl7.fhir.r4.model.MessageHeader)
       return MessageHeader40_50.convertMessageHeader((org.hl7.fhir.r4.model.MessageHeader) src);
-    if (src instanceof org.hl7.fhir.r4.model.MolecularSequence)
-      return MolecularSequence40_50.convertMolecularSequence((org.hl7.fhir.r4.model.MolecularSequence) src);
     if (src instanceof org.hl7.fhir.r4.model.NamingSystem)
       return NamingSystem40_50.convertNamingSystem((org.hl7.fhir.r4.model.NamingSystem) src);
     if (src instanceof org.hl7.fhir.r4.model.NutritionOrder)
@@ -266,8 +279,10 @@ public class Resource40_50 {
       return VerificationResult40_50.convertVerificationResult((org.hl7.fhir.r4.model.VerificationResult) src);
     if (src instanceof org.hl7.fhir.r4.model.VisionPrescription)
       return VisionPrescription40_50.convertVisionPrescription((org.hl7.fhir.r4.model.VisionPrescription) src);
+    if (src instanceof org.hl7.fhir.r4.model.Subscription)
+      return Subscription40_50.convertSubscription((org.hl7.fhir.r4.model.Subscription) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown resource " + src.fhirType());
+      throw new FHIRException("The resource " + src.fhirType()+" cannot be converted from R4 to R5");
     } else {
       return null;
     }
@@ -283,6 +298,8 @@ public class Resource40_50 {
       return ActivityDefinition40_50.convertActivityDefinition((org.hl7.fhir.r5.model.ActivityDefinition) src);
     if (src instanceof org.hl7.fhir.r5.model.AllergyIntolerance)
       return AllergyIntolerance40_50.convertAllergyIntolerance((org.hl7.fhir.r5.model.AllergyIntolerance) src);
+    if (src instanceof org.hl7.fhir.r5.model.ActorDefinition)
+      return ActorDefinition40_50.convertActorDefinition((org.hl7.fhir.r5.model.ActorDefinition) src);
     if (src instanceof org.hl7.fhir.r5.model.Appointment)
       return Appointment40_50.convertAppointment((org.hl7.fhir.r5.model.Appointment) src);
     if (src instanceof org.hl7.fhir.r5.model.AppointmentResponse)
@@ -349,8 +366,8 @@ public class Resource40_50 {
       return DeviceUseStatement40_50.convertDeviceUseStatement((org.hl7.fhir.r5.model.DeviceUsage) src);
     if (src instanceof org.hl7.fhir.r5.model.DiagnosticReport)
       return DiagnosticReport40_50.convertDiagnosticReport((org.hl7.fhir.r5.model.DiagnosticReport) src);
-    if (src instanceof org.hl7.fhir.r5.model.DocumentManifest)
-      return DocumentManifest40_50.convertDocumentManifest((org.hl7.fhir.r5.model.DocumentManifest) src);
+//    if (src instanceof org.hl7.fhir.r5.model.DocumentManifest)
+//      return DocumentManifest40_50.convertDocumentManifest((org.hl7.fhir.r5.model.DocumentManifest) src);
     if (src instanceof org.hl7.fhir.r5.model.DocumentReference)
       return DocumentReference40_50.convertDocumentReference((org.hl7.fhir.r5.model.DocumentReference) src);
     if (src instanceof org.hl7.fhir.r5.model.Encounter)
@@ -387,7 +404,7 @@ public class Resource40_50 {
     if (src instanceof org.hl7.fhir.r5.model.ImmunizationRecommendation)
       return ImmunizationRecommendation40_50.convertImmunizationRecommendation((org.hl7.fhir.r5.model.ImmunizationRecommendation) src);
     if (src instanceof org.hl7.fhir.r5.model.ImplementationGuide)
-      return ImplementationGuide40_50.convertImplementationGuide((org.hl7.fhir.r5.model.ImplementationGuide) src);
+      return ImplementationGuide40_50.convertImplementationGuide((org.hl7.fhir.r5.model.ImplementationGuide) src, advisor.produceIllegalParameters());
     if (src instanceof org.hl7.fhir.r5.model.InsurancePlan)
       return InsurancePlan40_50.convertInsurancePlan((org.hl7.fhir.r5.model.InsurancePlan) src);
     if (src instanceof org.hl7.fhir.r5.model.Invoice)
@@ -416,14 +433,12 @@ public class Resource40_50 {
       return MedicationKnowledge40_50.convertMedicationKnowledge((org.hl7.fhir.r5.model.MedicationKnowledge) src);
     if (src instanceof org.hl7.fhir.r5.model.MedicationRequest)
       return MedicationRequest40_50.convertMedicationRequest((org.hl7.fhir.r5.model.MedicationRequest) src);
-    if (src instanceof org.hl7.fhir.r5.model.MedicationUsage)
-      return MedicationStatement40_50.convertMedicationStatement((org.hl7.fhir.r5.model.MedicationUsage) src);
+    if (src instanceof org.hl7.fhir.r5.model.MedicationStatement)
+      return MedicationStatement40_50.convertMedicationStatement((org.hl7.fhir.r5.model.MedicationStatement) src);
     if (src instanceof org.hl7.fhir.r5.model.MessageDefinition)
       return MessageDefinition40_50.convertMessageDefinition((org.hl7.fhir.r5.model.MessageDefinition) src);
     if (src instanceof org.hl7.fhir.r5.model.MessageHeader)
       return MessageHeader40_50.convertMessageHeader((org.hl7.fhir.r5.model.MessageHeader) src);
-    if (src instanceof org.hl7.fhir.r5.model.MolecularSequence)
-      return MolecularSequence40_50.convertMolecularSequence((org.hl7.fhir.r5.model.MolecularSequence) src);
     if (src instanceof org.hl7.fhir.r5.model.NamingSystem)
       return NamingSystem40_50.convertNamingSystem((org.hl7.fhir.r5.model.NamingSystem) src);
     if (src instanceof org.hl7.fhir.r5.model.NutritionOrder)
@@ -462,6 +477,8 @@ public class Resource40_50 {
       return QuestionnaireResponse40_50.convertQuestionnaireResponse((org.hl7.fhir.r5.model.QuestionnaireResponse) src);
     if (src instanceof org.hl7.fhir.r5.model.RelatedPerson)
       return RelatedPerson40_50.convertRelatedPerson((org.hl7.fhir.r5.model.RelatedPerson) src);
+    if (src instanceof org.hl7.fhir.r5.model.Requirements)
+      return Requirements40_50.convertRequirements((org.hl7.fhir.r5.model.Requirements) src);
     if (src instanceof org.hl7.fhir.r5.model.RiskAssessment)
       return RiskAssessment40_50.convertRiskAssessment((org.hl7.fhir.r5.model.RiskAssessment) src);
     if (src instanceof org.hl7.fhir.r5.model.Schedule)
@@ -479,6 +496,8 @@ public class Resource40_50 {
       return StructureDefinition40_50.convertStructureDefinition((org.hl7.fhir.r5.model.StructureDefinition) src);
     if (src instanceof org.hl7.fhir.r5.model.StructureMap)
       return StructureMap40_50.convertStructureMap((org.hl7.fhir.r5.model.StructureMap) src);
+    if (src instanceof org.hl7.fhir.r5.model.SubscriptionTopic)
+      return SubscriptionTopic40_50.convertSubscriptionTopic((org.hl7.fhir.r5.model.SubscriptionTopic) src);
     if (src instanceof org.hl7.fhir.r5.model.Substance)
       return Substance40_50.convertSubstance((org.hl7.fhir.r5.model.Substance) src);
     if (src instanceof org.hl7.fhir.r5.model.SubstanceNucleicAcid)
@@ -498,6 +517,8 @@ public class Resource40_50 {
     if (src instanceof org.hl7.fhir.r5.model.Task) return Task40_50.convertTask((org.hl7.fhir.r5.model.Task) src);
     if (src instanceof org.hl7.fhir.r5.model.TerminologyCapabilities)
       return TerminologyCapabilities40_50.convertTerminologyCapabilities((org.hl7.fhir.r5.model.TerminologyCapabilities) src);
+    if (src instanceof org.hl7.fhir.r5.model.TestPlan)
+      return TestPlan40_50.convertTestPlan((org.hl7.fhir.r5.model.TestPlan)src);
     if (src instanceof org.hl7.fhir.r5.model.TestReport)
       return TestReport40_50.convertTestReport((org.hl7.fhir.r5.model.TestReport) src);
     if (src instanceof org.hl7.fhir.r5.model.TestScript)
@@ -508,51 +529,53 @@ public class Resource40_50 {
       return VerificationResult40_50.convertVerificationResult((org.hl7.fhir.r5.model.VerificationResult) src);
     if (src instanceof org.hl7.fhir.r5.model.VisionPrescription)
       return VisionPrescription40_50.convertVisionPrescription((org.hl7.fhir.r5.model.VisionPrescription) src);
+    if (src instanceof org.hl7.fhir.r5.model.Subscription)
+      return Subscription40_50.convertSubscription((org.hl7.fhir.r5.model.Subscription) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown resource " + src.fhirType());
+      throw new FHIRException("The resource " + src.fhirType()+" cannot be converted from R5 to R4");
     } else {
       return null;
     }
   }
 
-  public void copyDomainResource(org.hl7.fhir.r4.model.DomainResource src, org.hl7.fhir.r5.model.DomainResource tgt) throws FHIRException {
+  public void copyDomainResource(org.hl7.fhir.r4.model.DomainResource src, org.hl7.fhir.r5.model.DomainResource tgt, String... extensionUrlsToIgnore) throws FHIRException {
     copyResource(src, tgt);
     if (src.hasText()) tgt.setText(Narrative40_50.convertNarrative(src.getText()));
     src.getContained().stream()
       .map(this::convertResource)
       .forEach(tgt::addContained);
     src.getExtension().forEach(extension -> {
-      if (advisor.useAdvisorForExtension(ConversionContext40_50.INSTANCE.path(), extension)) {
+      if (advisor.useAdvisorForExtension(extension)) {
         org.hl7.fhir.r5.model.Extension convertExtension = new org.hl7.fhir.r5.model.Extension();
-        advisor.handleExtension(ConversionContext40_50.INSTANCE.path(), extension, convertExtension);
+        advisor.handleExtension(extension, convertExtension);
         tgt.addExtension(convertExtension);
-      } else if (!advisor.ignoreExtension(ConversionContext40_50.INSTANCE.path(), extension)) {
+      } else if (!advisor.ignoreExtension(extension) && !Arrays.asList(extensionUrlsToIgnore).contains(extension.getUrl())) {
         tgt.addExtension(Extension40_50.convertExtension(extension));
       }
     });
     src.getModifierExtension().stream()
-      .filter(extension -> !advisor.ignoreExtension(ConversionContext40_50.INSTANCE.path(), extension))
+      .filter(extension -> !advisor.ignoreExtension(extension))
       .map(Extension40_50::convertExtension)
       .forEach(tgt::addModifierExtension);
   }
 
-  public void copyDomainResource(org.hl7.fhir.r5.model.DomainResource src, org.hl7.fhir.r4.model.DomainResource tgt) throws FHIRException {
+  public void copyDomainResource(org.hl7.fhir.r5.model.DomainResource src, org.hl7.fhir.r4.model.DomainResource tgt,  String... extensionUrlsToIgnore) throws FHIRException {
     copyResource(src, tgt);
     if (src.hasText()) tgt.setText(Narrative40_50.convertNarrative(src.getText()));
     src.getContained().stream()
       .map(this::convertResource)
       .forEach(tgt::addContained);
     src.getExtension().forEach(extension -> {
-      if (advisor.useAdvisorForExtension(ConversionContext40_50.INSTANCE.path(), extension)) {
+      if (advisor.useAdvisorForExtension(extension)) {
         org.hl7.fhir.r4.model.Extension convertExtension = new org.hl7.fhir.r4.model.Extension();
-        advisor.handleExtension(ConversionContext40_50.INSTANCE.path(), extension, convertExtension);
+        advisor.handleExtension(extension, convertExtension);
         tgt.addExtension(convertExtension);
-      } else if (!advisor.ignoreExtension(ConversionContext40_50.INSTANCE.path(), extension)) {
+      } else if (!advisor.ignoreExtension(extension) && !Arrays.asList(extensionUrlsToIgnore).contains(extension.getUrl())) {
         tgt.addExtension(Extension40_50.convertExtension(extension));
       }
     });
     src.getModifierExtension().stream()
-      .filter(extension -> !advisor.ignoreExtension(ConversionContext40_50.INSTANCE.path(), extension))
+      .filter(extension -> !advisor.ignoreExtension(extension))
       .map(Extension40_50::convertExtension)
       .forEach(tgt::addModifierExtension);
   }

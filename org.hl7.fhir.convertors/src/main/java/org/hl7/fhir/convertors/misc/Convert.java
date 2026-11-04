@@ -4,6 +4,12 @@ package org.hl7.fhir.convertors.misc;
 
 
 
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -35,26 +41,38 @@ package org.hl7.fhir.convertors.misc;
 
 
 import org.fhir.ucum.UcumService;
-import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.Address.AddressUse;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointUse;
+import org.hl7.fhir.dstu3.model.DateTimeType;
+import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.dstu3.model.Factory;
+import org.hl7.fhir.dstu3.model.HumanName;
 import org.hl7.fhir.dstu3.model.HumanName.NameUse;
+import org.hl7.fhir.dstu3.model.Identifier;
+import org.hl7.fhir.dstu3.model.InstantType;
+import org.hl7.fhir.dstu3.model.Period;
+import org.hl7.fhir.dstu3.model.Quantity;
+import org.hl7.fhir.dstu3.model.Range;
+import org.hl7.fhir.dstu3.model.SimpleQuantity;
+import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.dstu3.model.Timing;
 import org.hl7.fhir.dstu3.model.Timing.EventTiming;
 import org.hl7.fhir.dstu3.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.dstu3.model.Timing.UnitsOfTime;
+import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
-import org.hl7.fhir.utilities.OIDUtils;
+import org.hl7.fhir.utilities.OIDUtilities;
 import org.hl7.fhir.utilities.Utilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import javax.xml.XMLConstants;
 
 public class Convert {
 
@@ -123,7 +141,7 @@ public class Convert {
   }
 
   private String UriForOid(String r) {
-    String uri = OIDUtils.getUriForOid(r);
+    String uri = OIDUtilities.getUriForOid(r);
     if (uri != null)
       return uri;
     else {
@@ -133,7 +151,10 @@ public class Convert {
   }
 
   public boolean isGuid(String r) {
-    return r.matches("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}");
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //anchored, fixed-width UUID pattern, safe
+    boolean isGuid = r.matches("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}");
+    return isGuid;
   }
 
   public InstantType makeInstantFromTS(Element child) throws Exception {
@@ -277,6 +298,8 @@ public class Convert {
         c.setUse(ContactPointUse.OLD);
     }
     if (e.getAttribute("value") != null) {
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //single literal character split
       String[] url = e.getAttribute("value").split(":");
       if (url.length == 1) {
         c.setValue(url[0].trim());
@@ -412,7 +435,7 @@ public class Convert {
   public Type makeTypeFromANY(Element e) throws Exception {
     if (e == null)
       return null;
-    String t = e.getAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "type");
+    String t = e.getAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
     if (Utilities.noString(t))
       throw new Exception("Missing type on RIM attribute with type any");
     if (t.equals("CD") || t.equals("CE"))

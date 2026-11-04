@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class AbstractTypesEnumFactory implements EnumFactory<AbstractTypes> {
@@ -46,19 +42,21 @@ public class AbstractTypesEnumFactory implements EnumFactory<AbstractTypes> {
       return AbstractTypes.TYPE;
     if ("Any".equals(codeString))
       return AbstractTypes.ANY;
-    throw new IllegalArgumentException("Unknown AbstractTypes code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown AbstractTypes code '" + codeString + "'");
   }
 
   public String toCode(AbstractTypes code) {
-    if (code == AbstractTypes.TYPE)
+       if (code == AbstractTypes.NULL)
+           return null;
+       if (code == AbstractTypes.TYPE)
       return "Type";
     if (code == AbstractTypes.ANY)
       return "Any";
     return "?";
-  }
+   }
 
-    public String toSystem(AbstractTypes code) {
-      return code.getSystem();
-      }
+  public String toSystem(AbstractTypes code) {
+    return code.getSystem();
+  }
 
 }

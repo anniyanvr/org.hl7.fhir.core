@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +47,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Common Ancestor declaration for conformance and knowledge artifact resources.
+ * Common Interface declaration for conformance and knowledge artifact resources.
  */
 public abstract class MetadataResource extends CanonicalResource {
 
@@ -135,7 +135,7 @@ public abstract class MetadataResource extends CanonicalResource {
       return Integer.MAX_VALUE;
     }
     /**
-     * @return {@link #topic} (Descriptive topics related to the content of the library. Topics provide a high-level categorization of the library that can be useful for filtering and searching.)
+     * @return {@link #topic} (Descriptive topics related to the content of the metadata resource. Topics provide a high-level categorization as well as keywords for the metadata resource that can be useful for filtering and searching.)
      */
     public abstract List<CodeableConcept> getTopic(); 
     /**
@@ -201,7 +201,7 @@ public abstract class MetadataResource extends CanonicalResource {
       return Integer.MAX_VALUE;
     }
     /**
-     * @return {@link #reviewer} (An individual or organization primarily responsible for review of some aspect of the metadata resource.)
+     * @return {@link #reviewer} (An individual or organization asserted by the publisher to be primarily responsible for review of some aspect of the metadata resource.)
      */
     public abstract List<ContactDetail> getReviewer(); 
     /**
@@ -223,7 +223,7 @@ public abstract class MetadataResource extends CanonicalResource {
       return Integer.MAX_VALUE;
     }
     /**
-     * @return {@link #endorser} (An individual or organization responsible for officially endorsing the metadata resource for use in some setting.)
+     * @return {@link #endorser} (An individual or organization asserted by the publisher to be responsible for officially endorsing the metadata resource for use in some setting.)
      */
     public abstract List<ContactDetail> getEndorser(); 
     /**
@@ -293,6 +293,11 @@ public abstract class MetadataResource extends CanonicalResource {
           return super.setProperty(name, value);
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+          super.removeChild(name, value);
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -320,6 +325,10 @@ public abstract class MetadataResource extends CanonicalResource {
   }
 
       public abstract MetadataResource copy();
+
+      public void assignValues(Base dst) {
+        copyValues((MetadataResource) dst);
+      }
 
       public void copyValues(MetadataResource dst) {
         super.copyValues(dst);

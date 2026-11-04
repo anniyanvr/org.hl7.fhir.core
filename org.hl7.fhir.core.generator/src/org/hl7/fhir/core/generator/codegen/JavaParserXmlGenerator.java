@@ -30,24 +30,15 @@ POSSIBILITY OF SUCH DAMAGE.
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.hl7.fhir.core.generator.analysis.Analysis;
 import org.hl7.fhir.core.generator.analysis.EnumInfo;
 import org.hl7.fhir.core.generator.analysis.TypeInfo;
 import org.hl7.fhir.core.generator.engine.Definitions;
-import org.hl7.fhir.r5.conformance.ProfileUtilities;
 import org.hl7.fhir.r5.model.ElementDefinition;
 import org.hl7.fhir.r5.model.ElementDefinition.PropertyRepresentation;
-import org.hl7.fhir.r5.model.StructureDefinition;
-import org.hl7.fhir.r5.model.ValueSet;
 import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
-import org.hl7.fhir.r5.model.StructureDefinition.TypeDerivationRule;
-import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.r5.model.ValueSet;
 
 public class JavaParserXmlGenerator extends JavaBaseGenerator {
 
@@ -58,29 +49,29 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
   private StringBuilder pFrag = new StringBuilder();
   private StringBuilder pCtype   = new StringBuilder();
   private StringBuilder composer = new StringBuilder();
-  private StringBuilder cRes = new StringBuilder();
-  private StringBuilder cRN = new StringBuilder();
-  private StringBuilder cType = new StringBuilder();
+  private InstanceOfCases cRes = new InstanceOfCases();
+  private InstanceOfCases cRN = new InstanceOfCases();
+  private InstanceOfCases cType = new InstanceOfCases();
 
-  public JavaParserXmlGenerator(OutputStream out, Definitions definitions, Configuration configuration, Date genDate, String version) throws UnsupportedEncodingException {
-    super(out, definitions, configuration, version, genDate);
+  public JavaParserXmlGenerator(OutputStream out, Definitions definitions, Configuration configuration, String genDate, String version, String jid) throws UnsupportedEncodingException {
+    super(out, definitions, configuration, version, genDate, jid);
   }
 
   public void seeClass(Analysis analysis) throws Exception {
     generateParser(analysis);
     generateComposer(analysis);
     if (!analysis.isAbstract()) {
-      pFrag.append( "    } else if (type.equals(\""+analysis.getName()+"\")) {\r\n      return parse"+analysis.getClassName()+"(xpp);\r\n");
-      pCtype.append("    } else if (xpp.getName().equals(prefix+\""+analysis.getName()+"\")) {\r\n      return true;\r\n");
+      pFrag.append( "    } else if (type.equals(\""+escapeJavaString(analysis.getName())+"\")) {\r\n      return parse"+analysis.getClassName()+"(xpp);\r\n");
+      pCtype.append("    } else if (xpp.getName().equals(prefix+\""+escapeJavaString(analysis.getName())+"\")) {\r\n      return true;\r\n");
       if (analysis.getStructure().getKind() == StructureDefinitionKind.COMPLEXTYPE) {
-        pTP.append(   "    } else if (xpp.getName().equals(prefix+\""+analysis.getName()+"\")) {\r\n      return parse"+analysis.getClassName()+"(xpp);\r\n");
-        pT.append(    "    } else if (type.equals(\""+analysis.getName()+"\")) {\r\n      return parse"+analysis.getClassName()+"(xpp);\r\n");
-        cType.append( "    } else if (type instanceof "+analysis.getClassName()+") {\r\n       compose"+analysis.getClassName()+"(prefix+\""+analysis.getName()+"\", ("+analysis.getClassName()+") type);\r\n");
+        pTP.append(   "    } else if (xpp.getName().equals(prefix+\""+escapeJavaString(analysis.getName())+"\")) {\r\n      return parse"+analysis.getClassName()+"(xpp);\r\n");
+        pT.append(    "    } else if (type.equals(\""+escapeJavaString(analysis.getName())+"\")) {\r\n      return parse"+analysis.getClassName()+"(xpp);\r\n");
+        cType.add(analysis.getStructure(), definitions, "    } else if (type instanceof "+analysis.getClassName()+") {\r\n       compose"+analysis.getClassName()+"(prefix+\""+escapeJavaString(analysis.getName())+"\", ("+analysis.getClassName()+") type);\r\n");
       }
       if (analysis.getStructure().getKind() == StructureDefinitionKind.RESOURCE) {
-        pRes.append("    } else if (xpp.getName().equals(\""+analysis.getName()+"\")) {\r\n      return parse"+analysis.getClassName()+"(xpp);\r\n");
-        cRes.append("    } else if (resource instanceof "+analysis.getClassName()+") {\r\n      compose"+analysis.getClassName()+"(\""+analysis.getName()+"\", ("+analysis.getClassName()+")resource);\r\n");
-        cRN.append( "    } else if (resource instanceof "+analysis.getClassName()+") {\r\n      compose"+analysis.getClassName()+"(name, ("+analysis.getClassName()+")resource);\r\n");
+        pRes.append("    } else if (xpp.getName().equals(\""+escapeJavaString(analysis.getName())+"\")) {\r\n      return parse"+analysis.getClassName()+"(xpp);\r\n");
+        cRes.add(analysis.getStructure(), definitions, "    } else if (resource instanceof "+analysis.getClassName()+") {\r\n      compose"+analysis.getClassName()+"(\""+escapeJavaString(analysis.getName())+"\", ("+analysis.getClassName()+")resource);\r\n");
+        cRN.add(analysis.getStructure(), definitions, "    } else if (resource instanceof "+analysis.getClassName()+") {\r\n      compose"+analysis.getClassName()+"(name, ("+analysis.getClassName()+")resource);\r\n");
       }
     }
   }
@@ -88,8 +79,10 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
   public void generate() throws Exception {
     
     String template = config.getAdornments().get("XmlParser");
+    template = template.replace("{{jid}}", jid);
     template = template.replace("{{license}}", config.getLicense());
     template = template.replace("{{startMark}}", startVMarkValue());
+    template = template.replace("{{generated}}", generatedAnnotationValue());
 
     template = template.replace("{{parser}}", parser.toString());
     template = template.replace("{{parse-resource}}", pRes.toString());
@@ -128,7 +121,7 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
 
     if (!analysis.isAbstract() || ti != analysis.getRootType()) {
       parser.append("  protected "+stn+" parse"+pfx+tn+"(XmlPullParser xpp) throws XmlPullParserException, IOException, FHIRFormatError {\r\n");
-      parser.append("    "+stn+" res = new "+stn+"();\r\n");
+      parser.append("    "+stn+" res = new "+stn+"(modelContext);\r\n");      
       if (ti == analysis.getRootType() && analysis.getStructure().getKind() == StructureDefinitionKind.RESOURCE) {
         parser.append("    parseResourceAttributes(xpp, res);\r\n");
       } else {
@@ -136,8 +129,8 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
       }
       for (ElementDefinition ed : ti.getChildren()) {
         if (ed.hasRepresentation(PropertyRepresentation.XMLATTR)) {
-          parser.append("    if (xpp.getAttributeValue(null, \""+ed.getName()+"\") != null)\r\n");
-          parser.append("        res.set"+upFirst(getElementName(ed.getName(), true))+"(xpp.getAttributeValue(null, \""+ed.getName()+"\"));\r\n");        
+          parser.append("    if (xpp.getAttributeValue(null, \""+escapeJavaString(ed.getName())+"\") != null)\r\n");
+          parser.append("        res.set"+upFirst(getElementName(ed.getName(), true))+"(xpp.getAttributeValue(null, \""+escapeJavaString(ed.getName())+"\"));\r\n");        
         }
       }    
       parser.append("    next(xpp);\r\n");
@@ -156,7 +149,7 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
     boolean first = true;
     for (ElementDefinition ed : ti.getChildren()) {
       if (!ed.hasRepresentation(PropertyRepresentation.XMLATTR)) {
-        genElement(analysis, ti, ed, matchingInheritedElement(ti.getInheritedChildren(), ed), first);
+        genElement(analysis, ti, ed, matchingInheritedElement(ti.getInheritedChildren(), ed, analysis.getName()), first);
         first = false;
       }
     }
@@ -187,7 +180,11 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
       parser.append("    } else ");
     else
       parser.append("    ");
-    parser.append("if (!parse"+ti.getAncestorName()+"Content(eventType, xpp, res)){ \r\n");
+    if (ti.getAncestorName() != null) {
+      parser.append("if (!parse"+ti.getAncestorName()+"Content(eventType, xpp, res)){ \r\n");
+    } else {
+      parser.append(" { \r\n");
+    }
     parser.append("        return false;\r\n");
     parser.append("    }\r\n");
     parser.append("    return true;\r\n");
@@ -199,8 +196,8 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
     if (name.endsWith("[x]") || name.equals("[type]")) {
       String en = name.endsWith("[x]") && !name.equals("[x]") ? name.replace("[x]", "") : "value";
       String pfx = name.endsWith("[x]") && !name.equals("[x]") ? name.replace("[x]", "") : "";
-      parser.append("    "+(!first ? "} else " : "")+"if (eventType == XmlPullParser.START_TAG && nameIsTypeName(xpp, \""+pfx+"\")) {\r\n");
-      parser.append("      res.set"+upFirst(getElementName(en, false))+"(parseType(\""+en+"\", xpp));\r\n");
+      parser.append("    "+(!first ? "} else " : "")+"if (eventType == XmlPullParser.START_TAG && nameIsTypeName(xpp, \""+escapeJavaString(pfx)+"\")) {\r\n");
+      parser.append("      res.set"+upFirst(getElementName(en, false))+"(parseType(\""+escapeJavaString(en)+"\", xpp));\r\n");
     } else {
       String prsr = null;
       if (ed.hasUserData("java.enum")) {
@@ -213,8 +210,8 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
         } else {
           en = analysis.getClassName()+"."+ei.getName();
         }
-        prsr = "parseEnumeration(xpp, "+en+".NULL, new "+en.substring(0, en.indexOf("."))+"."+en.substring(en.indexOf(".")+1)+"EnumFactory())"; // en+".fromCode(parseString(xpp))";
-        // parseEnumeration(xpp, Narrative.NarrativeStatus.additional, new Narrative.NarrativeStatusEnumFactory())
+        prsr = "parseEnumeration(xpp, "+en+".NULL, new "+en.substring(0, en.indexOf("."))+"."+en.substring(en.indexOf(".")+1)+"EnumFactory(modelContext))"; // en+".fromCode(parseString(xpp))";
+        // parseEnumeration(xpp, Narrative.NarrativeStatus.additional, new Narrative.NarrativeStatusEnumFactory(modelContext))
       } else {   
         String tn = ed.getUserString("java.type");
         if (name.equals("extension")) {
@@ -240,13 +237,13 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
         }
       }
       if (ed.unbounded()) {
-        parser.append("    "+(!first ? "} else " : "")+"if (eventType == XmlPullParser.START_TAG && xpp.getName().equals(\""+name+"\")) {\r\n");
-        parser.append("      res.get"+upFirst(getElementName(name, false))+"().add("+prsr+");\r\n");
+        parser.append("    "+(!first ? "} else " : "")+"if (eventType == XmlPullParser.START_TAG && xpp.getName().equals(\""+escapeJavaString(name)+"\")) {\r\n");
+        parser.append("      res.get"+upFirst(getElementName(name, false))+"List().add("+prsr+");\r\n");
       } else if (inh != null && inh.unbounded()) {
-        parser.append("    "+(!first ? "} else " : "")+"if (eventType == XmlPullParser.START_TAG && xpp.getName().equals(\""+name+"\")) {\r\n");
+        parser.append("    "+(!first ? "} else " : "")+"if (eventType == XmlPullParser.START_TAG && xpp.getName().equals(\""+escapeJavaString(name)+"\")) {\r\n");
         parser.append("      res.add"+upFirst(getElementName(name, false))+(!ed.typeSummary().equals("xhtml") && (isPrimitive(ed) || ed.typeSummary().startsWith("canonical(")) ? "Element" : "")+"("+prsr+");\r\n");
       } else {
-        parser.append("    "+(!first ? "} else " : "")+"if (eventType == XmlPullParser.START_TAG && xpp.getName().equals(\""+name+"\")) {\r\n");
+        parser.append("    "+(!first ? "} else " : "")+"if (eventType == XmlPullParser.START_TAG && xpp.getName().equals(\""+escapeJavaString(name)+"\")) {\r\n");
         parser.append("      res.set"+upFirst(getElementName(name, false))+(!ed.typeSummary().equals("xhtml") && (isPrimitive(ed) || ed.typeSummary().startsWith("canonical(")) ? "Element" : "")+"("+prsr+");\r\n");
       }
     }
@@ -284,7 +281,7 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
     for (ElementDefinition ed : ti.getChildren()) {
       if (ed.hasRepresentation(PropertyRepresentation.XMLATTR)) {
         composer.append("      if (element.has"+upFirst(getElementName(ed.getName(), true))+"Element())\r\n");
-        composer.append("        xml.attribute(\""+ed.getName()+"\", element.get"+upFirst(getElementName(ed.getName(), true))+"Element().getValue());\r\n");
+        composer.append("        xml.attribute(\""+escapeJavaString(ed.getName())+"\", element.get"+upFirst(getElementName(ed.getName(), true))+"Element().getValue());\r\n");
       }
     }
     
@@ -296,11 +293,13 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
     composer.append("  }\r\n\r\n");    
 
     composer.append("  protected void compose"+pfx+tn+"Elements("+stn+" element) throws IOException {\r\n");
-    composer.append("    compose"+ti.getAncestorName()+"Elements(element);\r\n");
+    if (!"Element".equals(tn) && analysis.getAncestor() != null) {
+      composer.append("    compose"+ti.getAncestorName()+"Elements(element);\r\n");
+    }
     
     for (ElementDefinition ed : ti.getChildren()) {
       if (!ed.hasRepresentation(PropertyRepresentation.XMLATTR)) {
-        genElementCompose(analysis, ti, ed, matchingInheritedElement(ti.getInheritedChildren(),  ed));
+        genElementCompose(analysis, ti, ed, matchingInheritedElement(ti.getInheritedChildren(),  ed, analysis.getName()));
       }
     }
     composer.append("  }\r\n\r\n");    
@@ -328,7 +327,7 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
       String en = name.endsWith("[x]") && !name.equals("[x]") ? name.replace("[x]", "") : "value";
       String pfx = name.endsWith("[x]") ? name.replace("[x]", "") : "";
       composer.append("    if (element.has"+upFirst(getElementName(en, false))+"()) {\r\n");
-      composer.append("      composeType(\""+pfx+"\", element.get"+upFirst(getElementName(en, false))+"());\r\n");
+      composer.append("      composeType(\""+escapeJavaString(pfx)+"\", element.get"+upFirst(getElementName(en, false))+"());\r\n");
       composer.append("    }");
     } else {
       String comp = null;
@@ -371,45 +370,45 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
       if (ed.unbounded()) {
         if (en != null) {
           composer.append("      if (element.has"+upFirst(getElementName(name, false))+"()) \r\n");
-          composer.append("        for (Enumeration<"+en+"> e : element.get"+upFirst(getElementName(name, false))+"()) \r\n");
-          composer.append("          composeEnumeration(\""+name+"\", e, new "+en+"EnumFactory());\r\n");
+          composer.append("        for (Enumeration<"+en+"> e : element.get"+upFirst(getElementName(name, false))+"List()) \r\n");
+          composer.append("          composeEnumeration(\""+escapeJavaString(name)+"\", e, new "+en+"EnumFactory(modelContext));\r\n");
         } else {
           String stn = ed.isInlineType() || ed.hasContentReference() ? analysis.getClassName()+"."+tn : tn;
 //          String pfx = ed.isInlineType() || ed.hasContentReference() ? analysis.getClassName() : "";
 
           composer.append("    if (element.has"+upFirst(getElementName(name, false))+"()) { \r\n");
-          composer.append("      for ("+stn+" e : element.get"+upFirst(getElementName(name, false))+"()) \r\n");
+          composer.append("      for ("+stn+" e : element.get"+upFirst(getElementName(name, false))+"List()) \r\n");
           if (ed.typeSummary().equals("Resource")) { 
             composer.append("        {\r\n");
-            composer.append("          xml.enter(FHIR_NS, \""+name+"\");\r\n");
+            composer.append("          xml.enter(FHIR_NS, \""+escapeJavaString(name)+"\");\r\n");
             composer.append("          "+comp+"(e);\r\n");
-            composer.append("          xml.exit(FHIR_NS, \""+name+"\");\r\n");
+            composer.append("          xml.exit(FHIR_NS, \""+escapeJavaString(name)+"\");\r\n");
             composer.append("        }\r\n");            
           } else {
-            composer.append("          "+comp+"(\""+name+"\", e);\r\n");
+            composer.append("          "+comp+"(\""+escapeJavaString(name)+"\", e);\r\n");
           }
           composer.append("    }\r\n");
         }
       } else if (en != null) {
         composer.append("    if (element.has"+upFirst(getElementName(name, false))+"Element())\r\n"); 
-        composer.append("      composeEnumeration(\""+name+"\", element.get"+upFirst(getElementName(name, false))+"Element(), new "+en+"EnumFactory());\r\n");
+        composer.append("      composeEnumeration(\""+escapeJavaString(name)+"\", element.get"+upFirst(getElementName(name, false))+"Element(), new "+en+"EnumFactory(modelContext));\r\n");
       } else if (!"xhtml".equals(ed.typeSummary()) && (isJavaPrimitive(ed) || ed.typeSummary().startsWith("canonical("))) {
         composer.append("    if (element.has"+upFirst(getElementName(name, false))+"Element()) {\r\n");
-        composer.append("      "+comp+"(\""+name+"\", element.get"+upFirst(getElementName(name, false))+"Element());\r\n");
+        composer.append("      "+comp+"(\""+escapeJavaString(name)+"\", element."+primitiveElementGetter(ed, name)+");\r\n");
         composer.append("    }\r\n");
       } else if (ed.typeSummary().equals("Resource")) {
         composer.append("    if (element.has"+upFirst(getElementName(name, false))+"()) {\r\n");
-        composer.append("      xml.enter(FHIR_NS, \""+name+"\");\r\n");
+        composer.append("      xml.enter(FHIR_NS, \""+escapeJavaString(name)+"\");\r\n");
         composer.append("      "+comp+"(element.get"+upFirst(getElementName(name, false))+"());\r\n");
-        composer.append("      xml.exit(FHIR_NS, \""+name+"\");\r\n");
+        composer.append("      xml.exit(FHIR_NS, \""+escapeJavaString(name)+"\");\r\n");
         composer.append("    }\r\n");
       } else if (inh != null && inh.unbounded()) {
         composer.append("    if (element.has"+upFirst(getElementName(name, false))+"()) {\r\n");
-        composer.append("      "+comp+"(\""+name+"\", element.get"+upFirst(getElementName(name, false))+"FirstRep());\r\n");
+        composer.append("      "+comp+"(\""+escapeJavaString(name)+"\", element.get"+upFirst(getElementName(name, false))+"FirstRep());\r\n");
         composer.append("    }\r\n");
       } else {
         composer.append("    if (element.has"+upFirst(getElementName(name, false))+"()) {\r\n");
-        composer.append("      "+comp+"(\""+name+"\", element.get"+upFirst(getElementName(name, false))+"());\r\n");
+        composer.append("      "+comp+"(\""+escapeJavaString(name)+"\", element.get"+upFirst(getElementName(name, false))+"());\r\n");
         composer.append("    }\r\n");
       }
     }
@@ -516,4 +515,13 @@ public class JavaParserXmlGenerator extends JavaBaseGenerator {
   }
 
 
+
+  /**
+   * the getter for the object that holds a primitive element (value, id, extensions). Reference.reference
+   * is special: BaseReference defines getReferenceElement() as the HAPI IIdType view, which is a new object
+   * each time, so the generated Reference class calls the real one getReferenceElement_()
+   */
+  private String primitiveElementGetter(ElementDefinition ed, String name) {
+    return "get"+upFirst(getElementName(name, false))+"Element"+("Reference.reference".equals(ed.getPath()) ? "_" : "")+"()";
+  }
 }

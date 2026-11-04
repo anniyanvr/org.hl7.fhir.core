@@ -1,42 +1,49 @@
 package org.hl7.fhir.utilities.npm;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
-import org.hl7.fhir.utilities.SimpleHTTPClient;
-import org.hl7.fhir.utilities.SimpleHTTPClient.HTTPResult;
-import org.hl7.fhir.utilities.TextFile;
-import org.hl7.fhir.utilities.Utilities;
-import org.hl7.fhir.utilities.VersionUtilities;
-import org.hl7.fhir.utilities.json.JSONUtil;
-import org.hl7.fhir.utilities.json.JsonTrackingParser;
-
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 
+import javax.annotation.Nullable;
+
+import lombok.extern.slf4j.Slf4j;
+import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
+import org.hl7.fhir.utilities.FileUtilities;
+import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.VersionUtilities;
+import org.hl7.fhir.utilities.http.HTTPResult;
+import org.hl7.fhir.utilities.http.ManagedWebAccess;
+import org.hl7.fhir.utilities.http.ManagedWebAccessor;
+import org.hl7.fhir.utilities.json.model.JsonArray;
+import org.hl7.fhir.utilities.json.model.JsonObject;
+import org.hl7.fhir.utilities.json.model.JsonProperty;
+import org.hl7.fhir.utilities.json.parser.JsonParser;
+
+@Slf4j
 public class PackageClient {
 
+  /**
+   * Sent with a request for a package tarball at {server}/{id}/{version}. On a FHIR package server that
+   * is also an npm registry, that URL returns the version's npm JSON document when the request asks for
+   * JSON; with this header present, it returns the tarball whatever the request's Accept header says.
+   */
+  public static final String TARBALL_HEADER = "FHIR-Package-Download";
+  public static final String TARBALL_HEADER_VALUE = "tarball";
+
+  private PackageServer server;
   private String address;
-  private String cacheFolder;
 
 
-  public PackageClient(String address) {
+  public PackageClient(PackageServer server) {
     super();
-    this.address = address;
-    try {
-      cacheFolder = Utilities.path(System.getProperty("user.home"), ".fhir", "package-client");
-      Utilities.createDirectory(cacheFolder);
-    } catch (IOException e) {
-    }
+    this.server = server;
+    address = this.server.getUrl();
   }
 
   public boolean exists(String id, String ver) throws IOException {
@@ -50,123 +57,200 @@ public class PackageClient {
   }
 
   public InputStream fetch(String id, String ver) throws IOException {
-    return fetchCached(Utilities.pathURL(address, id, ver));
+    return fetchTarball(id, ver);
+  }
+
+  private InputStream fetchTarball(String id, String ver) throws IOException {
+    String url = getPackageTarballUrl(id, ver);
+    if (server.getServerType() == PackageServer.PackageServerType.NPM) {
+      return fetchCached(url); // the tarball URL from the version's npm document
+    }
+    return fetchUrl(url, null, TARBALL_HEADER, TARBALL_HEADER_VALUE);
+  }
+
+  private String getPackageTarballUrl(String id, String ver) throws IOException {
+    if (server.getServerType() == PackageServer.PackageServerType.NPM) {
+      return getNpmServerTarballUrl(id, ver);
+    }
+    return Utilities.pathURL(address, id, ver);
+  }
+
+  private String getNpmServerTarballUrl(String id, String ver) throws IOException {
+    String packageDescriptorUrl = Utilities.pathURL(address, id, ver);
+    JsonObject json;
+
+      json = fetchJson(packageDescriptorUrl);
+      JsonObject dist = json.getJsonObject("dist");
+      return dist.getJsonString("tarball").asString();
+
   }
 
   public InputStream fetch(PackageInfo info) throws IOException {
-    return fetchCached(Utilities.pathURL(address, info.getId(), info.getVersion()));
-  }
-
-  public InputStream fetchNpm(String id, String ver) throws IOException {
-    return fetchCached(Utilities.pathURL(address, id, "-", id+"-"+ver+".tgz"));
+    return fetchTarball(info.getId(), info.getVersion());
   }
 
   public InputStream fetchCached(String url) throws IOException, FileNotFoundException {
     return fetchUrl(url, null);
   }
 
-  protected String fn(String url) {
-    String[] p = url.split("\\/");
-    return p[2]+"-"+p[p.length-2]+"-"+p[p.length-1]+".tgz";
-  }
-
   public List<PackageInfo> getVersions(String id) throws IOException {
+    String url = Utilities.pathURL(address, id);
     List<PackageInfo> res = new ArrayList<>();
     JsonObject json;
     try {
-      json = fetchJson(Utilities.pathURL(address, id));
-      JsonObject versions = json.getAsJsonObject("versions");
+      json = fetchJson(url);
+      JsonObject versions = json.getJsonObject("versions");
+      boolean hasDates = true;
       if (versions != null) {
-        for (String v : sorted(versions.keySet())) {
-          JsonObject obj = versions.getAsJsonObject(v);
-          res.add(new PackageInfo(JSONUtil.str(obj, "name"),
-            JSONUtil.str(obj, "version"),
-            JSONUtil.str(obj, "FhirVersion"),
-            JSONUtil.str(obj, "description"),
-            JSONUtil.str(obj, "url"),
-            JSONUtil.str(obj, "canonical"),
-            address));
+        for (JsonProperty v : versions.getProperties()) {
+          JsonObject obj = versions.getJsonObject(v.getName());
+          Instant d = getInstantFromPackageDate(obj);
+          if (d == null) {
+            hasDates = false;
+          }
+          res.add(new PackageInfo(obj.asString("Name", "name"),
+            obj.asString("Version", "version"),
+            obj.asString("FhirVersion", "fhirVersion"),
+            obj.asString("Description", "description"),
+            obj.asString("url"),
+            obj.asString("canonical"),
+            address, d));
         }
       }
-    } catch (FileNotFoundException e) {
+      if (hasDates) {
+        Collections.sort(res, new PackageInfo.PackageInfoSorter(true));
+      } else {
+        Collections.sort(res, new PackageInfo.PackageInfoSorter(false));
+      }
+    } catch (Exception e) {
+      log.warn("Error fetching "+url+": "+e.getMessage());
     }
     return res;    
   }
-   
-  private List<String> sorted(Set<String> keys) {
-    List<String> res = new ArrayList<>();
-    res.addAll(keys);
-    Collections.sort(res);
-    return res;
+
+  @Nullable
+  private static Instant getInstantFromPackageDate(JsonObject obj) {
+    try {
+      return obj.hasString("date") ? obj.asDate("date") : null;
+    } catch (DateTimeParseException e) {
+      try {
+        return new SimpleDateFormat("yyyyMMddhhmmss").parse(obj.getJsonString("date").asString()).toInstant();
+      } catch (ParseException ex) {
+        // we tried to parse the date, but failed twice. We're just going to pretend we didn't get a date 
+        return null;    
+      }
+    }
   }
 
-  public List<PackageInfo> search(String name, String canonical, String fhirVersion, boolean preRelease) throws IOException {
+  public List<PackageInfo> search(String name, String pkgCanonical, String fhirVersion, boolean preRelease, String canonical) throws IOException {
+    return search(name, pkgCanonical, fhirVersion, preRelease, canonical, false);
+  }
+
+  /**
+   * Search the package server catalog.
+   *
+   * The server treats name and pkgCanonical as partial matches (e.g. searching for
+   * hl7.terminology.r4 also returns hl7.terminology.r4b, and http://hl7.org.au/fhir/
+   * matches every package whose canonical starts with it). Pass exactMatch = true
+   * when looking a package up by its id or canonical rather than searching, so that
+   * near-miss siblings are filtered out of the results.
+   */
+  public List<PackageInfo> search(String name, String pkgCanonical, String fhirVersion, boolean preRelease, String canonical, boolean exactMatch) throws IOException {
     CommaSeparatedStringBuilder params = new CommaSeparatedStringBuilder("&");
     if (!Utilities.noString(name)) {
       params.append("name="+name);
     }
-    if (!Utilities.noString(canonical)) {
-      params.append("canonical="+canonical);
+    if (!Utilities.noString(pkgCanonical)) {
+      params.append("pkgcanonical="+pkgCanonical);
     }
     if (!Utilities.noString(fhirVersion)) {
       params.append("fhirversion="+fhirVersion);
+    }
+    if (!Utilities.noString(canonical)) {
+      params.append("canonical="+canonical);
     }
     if (preRelease) {
       params.append("prerelease="+preRelease);
     }
     List<PackageInfo> res = new ArrayList<>();
     try {
-      JsonArray json = fetchJsonArray(Utilities.pathURL(address, "catalog?")+params.toString());
-      for (JsonElement e : json) {
-        JsonObject obj = (JsonObject) e;
-        res.add(new PackageInfo(JSONUtil.str(obj, "Name", "name"),
-          JSONUtil.str(obj, "Version", "version"),
-          JSONUtil.str(obj, "FhirVersion", "fhirVersion"),
-          JSONUtil.str(obj, "Description", "description"),
-          JSONUtil.str(obj, "url"),
-          JSONUtil.str(obj, "canonical"),
-          address));
+      JsonArray json = fetchJsonArray(Utilities.pathURL(address, "catalog?")+ params);
+      boolean hasDates = true;
+      for (JsonObject obj : json.asJsonObjects()) {
+        Instant d = obj.has("date") ? obj.asDate("date") : null;
+        if (d == null) {
+          hasDates = false;
+        }
+        res.add(new PackageInfo(obj.asString("Name", "name"),
+          obj.asString("Version", "version"),
+          obj.asString("FhirVersion", "fhirVersion"),
+          obj.asString("Description", "description"),
+          obj.asString("url"),
+          obj.asString("canonical"),
+          address, d));
+      }
+      if (exactMatch) {
+        if (!Utilities.noString(name)) {
+          res.removeIf(pi -> !name.equals(pi.getId()));
+        }
+        if (!Utilities.noString(pkgCanonical)) {
+          res.removeIf(pi -> !pkgCanonical.equals(pi.getCanonical()));
+        }
+      }
+      if (hasDates) {
+        Collections.sort(res, new PackageInfo.PackageInfoSorter(true));
+      } else {
+        Collections.sort(res, new PackageInfo.PackageInfoSorter(false));
       }
     } catch (IOException e1) {
     }
-    return res;    
-  }  
+    return res;
+  }
 
   public Date getNewPackages(Date lastCalled, List<PackageInfo> updates) {
     return null;
   }
  
-  private InputStream fetchUrl(String source, String accept) throws IOException {
-    SimpleHTTPClient http = new SimpleHTTPClient();
-    HTTPResult res = http.get(source, accept);
+  private InputStream fetchUrl(String urlString, String accept) throws IOException {
+    return fetchUrl(urlString, accept, null, null);
+  }
+
+  private InputStream fetchUrl(String urlString, String accept, String headerName, String headerValue) throws IOException {
+    ManagedWebAccessor webAccessor = ManagedWebAccess.accessor(Arrays.asList("web"), new PackageServerHTTPAuthProvider(server));
+    if (headerName != null) {
+      webAccessor.getHeaders().put(headerName, headerValue);
+    }
+
+    HTTPResult res = webAccessor.get(urlString, accept);
     res.checkThrowException();
     return new ByteArrayInputStream(res.getContent());
   }
-  
-  private JsonObject fetchJson(String source) throws IOException {
-    String src = TextFile.streamToString(fetchUrl(source, "application/json"));
-    //System.out.println(src);
-    return (JsonObject) new com.google.gson.JsonParser().parse(src);
+
+  private JsonObject fetchJson(String urlString) throws IOException {
+    String src = FileUtilities.streamToString(fetchUrl(urlString, "application/json"));
+    return JsonParser.parseObject(src);
   }
   
   private JsonArray fetchJsonArray(String source) throws IOException {
-    String src = TextFile.streamToString(fetchUrl(source, "application/json"));
-    //System.out.println(src);
-    return (JsonArray) new com.google.gson.JsonParser().parse(src);
+    String src = FileUtilities.streamToString(fetchUrl(source, "application/json"));
+    return (JsonArray) JsonParser.parse(src);
   }
 
   public String url(String id, String v) {
     return Utilities.pathURL(address, id, v);
   }
 
-  public String getLatestVersion(String id) throws IOException {
+  public String getLatestVersion(String id, boolean mileStonesOnly) throws IOException {
     List<PackageInfo> list = getVersions(id);
+    if (mileStonesOnly) {
+      list.removeIf(i -> i.getVersion().contains("-"));
+    }
     if (list.isEmpty()) {
       throw new IOException("Package not found: "+id);
     } else {
       String v = list.get(0).getVersion();
       for (PackageInfo p : list) {
-        if (VersionUtilities.isThisOrLater(v, p.getVersion())) {
+        if (VersionUtilities.isThisOrLater(v, p.getVersion(), VersionUtilities.VersionPrecision.FULL)) {
           v = p.getVersion();
         }
       }
@@ -174,61 +258,103 @@ public class PackageClient {
     }
   }
   
-  public String getLatestVersion(String id, String majMinVersion) throws IOException {
+  public String getLatestVersion(String id, String specVersion) throws IOException {
     List<PackageInfo> list = getVersions(id);
     if (list.isEmpty()) {
       throw new IOException("Package not found: "+id);
     } else {
-      String v = majMinVersion;
+      Collections.sort(list, new PackageInfo.PackageInfoVersionSorter());
+      String v = null;
       for (PackageInfo p : list) {
-        if (VersionUtilities.isMajMinOrLaterPatch(v, p.getVersion())) {
-          v = p.getVersion();
+        String version = p.getVersion();
+        if (VersionUtilities.isSemVer(version, true) && VersionUtilities.versionMatches(specVersion, version)) {
+          v = version;
+        }
+      }
+      if (v == null) {
+        for (PackageInfo p : list) {
+          String version = p.getVersion();
+          while (version.contains(".00")) {
+            version = version.replace(".00", ".0");
+          }
+          if (VersionUtilities.isSemVer(version, true) && VersionUtilities.versionMatches(specVersion, version)) {
+            v = version;
+          }
         }
       }
       return v;
     }
   }
 
+  protected PackageInfo getPackageInfoFromJSON(JsonObject o, String name, String canonical, String fhirVersion) {
+      String packageId = o.asString("npm-name");
+      String packageName = o.asString("name");
+      String packageCanonical = o.asString("canonical");
+      String packageDescription = o.asString("description");
+      Instant packageDate = o.has("date") ? o.asDate("date") : null;
+      boolean ok = true;
+      if (ok && !Utilities.noString(name)) {
+        ok = (packageName != null && packageName.contains(name)) || (packageDescription != null && packageDescription.contains(name)) || (packageId != null && packageId.contains(name));
+      }
+      if (ok && !Utilities.noString(canonical)) {
+        ok = packageCanonical.contains(canonical);
+      }
+      String currentVersion = null;
+      String currentFhirVersion = null;
+      String currentUrl = null;
+
+      if (ok) {
+        // Get the latest version out of the available valid editions of this IG.
+        for (JsonObject edition : o.getJsonObjects("editions")) {
+          if (fhirVersion == null || fhirVersion.equals(edition.asString("fhir-version"))) {
+            String igVersion = edition.asString("ig-version");
+              if (!VersionUtilities.isSemVer(igVersion, true))
+              {
+                log.error("Non-semver version \"{}\" encountered while getting package info for {}", igVersion, edition.asString("package"));
+                continue;
+              }
+              // If this version is valid, check if it is later than the current version
+              if (currentVersion == null || VersionUtilities.isThisOrLater(currentVersion, igVersion, VersionUtilities.VersionPrecision.MINOR)) {
+                currentVersion = igVersion;
+                currentFhirVersion = edition.getJsonArray("fhir-version").get(0).asString();
+                currentUrl = edition.asString("url");
+
+                String npmPackage = edition.asString("package");
+                if (npmPackage != null && packageId == null) {
+
+                  packageId = npmPackage.substring(0, npmPackage.indexOf("#"));
+                }
+              }
+          }
+        }
+      }
+      return new PackageInfo(packageId, currentVersion, currentFhirVersion, packageDescription, currentUrl, packageCanonical, address, packageDate);
+  }
   
   public List<PackageInfo> listFromRegistry(String name, String canonical, String fhirVersion) throws IOException {
     List<PackageInfo> result = new ArrayList<>();
-    JsonObject packages = JsonTrackingParser.fetchJson("https://raw.githubusercontent.com/FHIR/ig-registry/master/fhir-ig-list.json?nocache=" + System.currentTimeMillis());
-    for (JsonObject o : JSONUtil.objects(packages, "guides")) {
+    JsonObject packages = JsonParser.parseObjectFromUrl("https://fhir.github.io/ig-registry/fhir-ig-list.json?nocache=" + System.currentTimeMillis());
+    for (JsonObject o : packages.getJsonObjects("guides")) {
       if (o.has("canonical")) {
-        String id = JSONUtil.str(o, "npm-name");
-        String pname = JSONUtil.str(o, "name");
-        String pcanonical = JSONUtil.str(o, "canonical");
-        String description = JSONUtil.str(o, "description");
-        boolean ok = true;
-        if (ok && !Utilities.noString(name)) {
-          ok = (pname != null && pname.contains(name)) || (description != null && description.contains(name)) || (id != null && id.contains(name)); 
-        }
-        if (ok && !Utilities.noString(canonical)) {
-          ok = pcanonical.contains(canonical); 
-        }
-        String version = null;
-        String fVersion = null;
-        String url = null;
-        
-        if (ok) {
-          // if we can find something...
-          for (JsonObject e : JSONUtil.objects(o, "editions")) {
-            if (fhirVersion == null || fhirVersion.equals(JSONUtil.str(e, "fhir-version"))) {
-              String v = JSONUtil.str(e, "ig-version");
-              if (version == null || VersionUtilities.isThisOrLater(version, v)) {
-                version = v;
-                fVersion = e.getAsJsonArray("fhir-version").get(0).getAsString();
-                url = JSONUtil.str(e, "url");
-              }
-            }
-          }
-        }
-        if (version != null) {  
-          result.add(new PackageInfo(id, version, fVersion, description, url, pcanonical, address));
+      final PackageInfo packageInfo = getPackageInfoFromJSON(o, name, canonical, fhirVersion);
+        if (packageInfo.getVersion() != null) {
+          result.add(packageInfo);
         }
       }
     }
     return result;
+  }
+
+  public void findDependents(Set<String> list, String id) {
+    CommaSeparatedStringBuilder params = new CommaSeparatedStringBuilder("&");
+    params.append("dependency="+id.replace("#", "|"));
+    try {
+      JsonArray json = fetchJsonArray(Utilities.pathURL(address, "catalog?")+params.toString());
+      for (JsonObject obj : json.asJsonObjects()) {
+        list.add(obj.asString("Name", "name"));
+      }
+    } catch (IOException e1) {
+    }
   }
   
 }

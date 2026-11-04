@@ -1,35 +1,35 @@
 package org.hl7.fhir.r5.renderers.spreadsheets;
 
-import java.io.OutputStream;
-
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.CanonicalResource;
 import org.hl7.fhir.r5.model.CodeableConcept;
 import org.hl7.fhir.r5.model.ContactDetail;
-import org.hl7.fhir.r5.model.ElementDefinition;
 import org.hl7.fhir.r5.model.Identifier;
-import org.hl7.fhir.r5.model.StructureDefinition;
-import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionMappingComponent;
-import org.hl7.fhir.r5.renderers.DataRenderer;
+import org.hl7.fhir.r5.renderers.RendererFactory;
+
+
 
 public class CanonicalSpreadsheetGenerator extends SpreadsheetGenerator {
 
-  public CanonicalSpreadsheetGenerator(IWorkerContext context) {
-    super(context);
+  public CanonicalSpreadsheetGenerator(IWorkerContext context, RendererFactory renderer) {
+    super(context, renderer);
   }
 
-  protected Sheet renderCanonicalResource(CanonicalResource cr) {
-    Sheet sheet = makeSheet("Metadata");
+  protected Sheet renderCanonicalResource(CanonicalResource cr, boolean forMultiple) {
+    Sheet sheet = forMultiple && hasSheet("Metadata") ? getSheet("Metadata") : makeSheet("Metadata");
 
-    Row headerRow = sheet.createRow(0);
+    Row headerRow = sheet.createRow(forMultiple ? sheet.getLastRowNum()+1 : 0);
     addCell(headerRow, 0, "Property", styles.get("header"));
     addCell(headerRow, 1, "Value", styles.get("header"));
 
+    if (forMultiple) {
+      addMetadataRow(sheet, "ID", cr.getId());      
+    }
     addMetadataRow(sheet, "URL", cr.getUrl());
     for (Identifier id : cr.getIdentifier()) {
-      addMetadataRow(sheet, "Identifier", dr.display(id));
+      addMetadataRow(sheet, "Identifier", dr.displayDataType(id));
     }
     addMetadataRow(sheet, "Version", cr.getVersion());
     addMetadataRow(sheet, "Name", cr.getName());
@@ -39,10 +39,10 @@ public class CanonicalSpreadsheetGenerator extends SpreadsheetGenerator {
     addMetadataRow(sheet, "Date", cr.getDateElement().asStringValue());
     addMetadataRow(sheet, "Publisher", cr.getPublisher());
     for (ContactDetail c : cr.getContact()) {
-      addMetadataRow(sheet, "Contact", dr.display(c));
+      addMetadataRow(sheet, "Contact", dr.displayDataType(c));
     }
     for (CodeableConcept j : cr.getJurisdiction()) {
-      addMetadataRow(sheet, "Jurisdiction", dr.display(j));
+      addMetadataRow(sheet, "Jurisdiction", dr.displayDataType(j));
     }
 
     addMetadataRow(sheet, "Description", cr.getDescription());

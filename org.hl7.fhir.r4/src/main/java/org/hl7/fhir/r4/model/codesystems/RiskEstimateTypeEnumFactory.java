@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class RiskEstimateTypeEnumFactory implements EnumFactory<RiskEstimateType> {
@@ -54,11 +50,13 @@ public class RiskEstimateTypeEnumFactory implements EnumFactory<RiskEstimateType
       return RiskEstimateType.COUNT;
     if ("descriptive".equals(codeString))
       return RiskEstimateType.DESCRIPTIVE;
-    throw new IllegalArgumentException("Unknown RiskEstimateType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown RiskEstimateType code '" + codeString + "'");
   }
 
   public String toCode(RiskEstimateType code) {
-    if (code == RiskEstimateType.PROPORTION)
+       if (code == RiskEstimateType.NULL)
+           return null;
+       if (code == RiskEstimateType.PROPORTION)
       return "proportion";
     if (code == RiskEstimateType.DERIVEDPROPORTION)
       return "derivedProportion";
@@ -71,10 +69,10 @@ public class RiskEstimateTypeEnumFactory implements EnumFactory<RiskEstimateType
     if (code == RiskEstimateType.DESCRIPTIVE)
       return "descriptive";
     return "?";
-  }
+   }
 
-    public String toSystem(RiskEstimateType code) {
-      return code.getSystem();
-      }
+  public String toSystem(RiskEstimateType code) {
+    return code.getSystem();
+  }
 
 }

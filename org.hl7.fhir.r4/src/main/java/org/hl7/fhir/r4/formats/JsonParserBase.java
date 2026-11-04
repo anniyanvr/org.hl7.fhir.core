@@ -29,7 +29,6 @@ package org.hl7.fhir.r4.formats;
   
  */
 
-
 /*
 Copyright (c) 2011+, HL7, Inc
 All rights reserved.
@@ -64,17 +63,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.util.regex.Pattern;
 import java.util.List;
 
 import org.hl7.fhir.exceptions.FHIRFormatError;
 import org.hl7.fhir.instance.model.api.IIdType;
+import org.hl7.fhir.r4.model.DecimalType;
 import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.Element;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Type;
-import org.hl7.fhir.utilities.TextFile;
+import org.hl7.fhir.utilities.FileUtilities;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.json.JsonTrackingParser;
 import org.hl7.fhir.utilities.xhtml.XhtmlComposer;
@@ -85,38 +86,46 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+
 /**
- * General parser for JSON content. You instantiate an JsonParser of these, but you 
- * actually use parse or parseGeneral defined on this class
+ * General parser for JSON content. You instantiate an JsonParser of these, but
+ * you actually use parse or parseGeneral defined on this class
  * 
- * The two classes are separated to keep generated and manually maintained code apart.
+ * The two classes are separated to keep generated and manually maintained code
+ * apart.
  */
 public abstract class JsonParserBase extends ParserBase implements IParser {
-	
+
   @Override
   public ParserType getType() {
-	  return ParserType.JSON;
+    return ParserType.JSON;
   }
 
-	// private static com.google.gson.JsonParser  parser = new com.google.gson.JsonParser();
-  
+  // private static com.google.gson.JsonParser parser = new
+  // com.google.gson.JsonParser();
+
   // -- in descendent generated code --------------------------------------
-  
+
   abstract protected Resource parseResource(JsonObject json) throws IOException, FHIRFormatError;
+
   abstract protected Type parseType(JsonObject json, String type) throws IOException, FHIRFormatError;
+
   abstract protected Type parseAnyType(JsonObject json, String type) throws IOException, FHIRFormatError;
+
   abstract protected Type parseType(String prefix, JsonObject json) throws IOException, FHIRFormatError;
+
   abstract protected boolean hasTypeName(JsonObject json, String prefix);
+
   abstract protected void composeResource(Resource resource) throws IOException;
+
   abstract protected void composeTypeInner(Type type) throws IOException;
 
   /* -- entry points --------------------------------------------------- */
 
   /**
-   * @throws FHIRFormatError 
-   * Parse content that is known to be a resource
-   * @throws IOException 
-   * @throws  
+   * @throws FHIRFormatError Parse content that is known to be a resource
+   * @throws IOException
+   * @throws
    */
   @Override
   public Resource parse(InputStream input) throws IOException, FHIRFormatError {
@@ -125,9 +134,11 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
   }
 
   /**
-   * parse xml that is known to be a resource, and that has already been read into a JSON object  
-   * @throws IOException 
-   * @throws FHIRFormatError 
+   * parse xml that is known to be a resource, and that has already been read into
+   * a JSON object
+   * 
+   * @throws IOException
+   * @throws FHIRFormatError
    */
   public Resource parse(JsonObject json) throws FHIRFormatError, IOException {
     return parseResource(json);
@@ -145,21 +156,36 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
     return parseAnyType(json, type);
   }
 
+  /**
+   * Whether the object has a property whose name starts with {@code prefix} or {@code "_" + prefix}.
+   * {@code parseType(prefix, json)} and {@code hasTypeName(json, prefix)} only look for properties
+   * like that, so when there are none they can stop without trying every type name in turn.
+   */
+  protected boolean hasPropertyWithPrefix(JsonObject json, String prefix) {
+    for (String name : json.keySet()) {
+      if (name.startsWith(prefix) || (name.startsWith("_") && name.startsWith(prefix, 1))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   protected JsonObject getJObject(JsonObject parent, String name) throws IOException {
     JsonElement j = parent.get(name);
-    if (j == null) { 
+    if (j == null) {
       return null;
     }
     if (!(j instanceof JsonObject)) {
-      throw new IOException("property "+name+" is a "+j.getClass()+" looking for an object");
+      throw new IOException("property " + name + " is a " + j.getClass() + " looking for an object");
     }
     return (JsonObject) j;
   }
-  
 
   /**
-   * Compose a resource to a stream, possibly using pretty presentation for a human reader (used in the spec, for example, but not normally in production)
-   * @throws IOException 
+   * Compose a resource to a stream, possibly using pretty presentation for a
+   * human reader (used in the spec, for example, but not normally in production)
+   * 
+   * @throws IOException
    */
   @Override
   public void compose(OutputStream stream, Resource resource) throws IOException {
@@ -178,13 +204,14 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
 
   /**
    * Compose a resource using a pre-existing JsonWriter
-   * @throws IOException 
+   * 
+   * @throws IOException
    */
   public void compose(JsonCreator writer, Resource resource) throws IOException {
     json = writer;
     composeResource(resource);
   }
-  
+
   @Override
   public void compose(OutputStream stream, Type type, String rootName) throws IOException {
     OutputStreamWriter osw = new OutputStreamWriter(stream, "UTF-8");
@@ -199,19 +226,17 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
     json.finish();
     osw.flush();
   }
-    
 
-  
   /* -- json routines --------------------------------------------------- */
 
   protected JsonCreator json;
   private boolean htmlPretty;
-  
+
   private JsonObject loadJson(InputStream input) throws JsonSyntaxException, IOException {
-    return JsonTrackingParser.parse(TextFile.streamToString(input), null, allowUnknownContent, allowComments);
-    // return parser.parse(TextFile.streamToString(input)).getAsJsonObject();
+    return JsonTrackingParser.parse(FileUtilities.streamToString(input), null, allowUnknownContent, allowComments);
+    // return parser.parse(FileUtilities.streamToString(input)).getAsJsonObject();
   }
-  
+
 //  private JsonObject loadJson(String input) {
 //    return parser.parse(input).getAsJsonObject();
 //  }
@@ -228,28 +253,29 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
       }
     }
   }
-  
+
   protected XhtmlNode parseXhtml(String value) throws IOException, FHIRFormatError {
     XhtmlParser prsr = new XhtmlParser();
     try {
-		return prsr.parse(value, "div").getChildNodes().get(0);
-	} catch (org.hl7.fhir.exceptions.FHIRFormatError e) {
-		throw new FHIRFormatError(e.getMessage(), e);
-	}
-  }
-  
-  protected DomainResource parseDomainResource(JsonObject json) throws FHIRFormatError, IOException {
-	  return (DomainResource) parseResource(json);
+      return prsr.parse(value, "div").getChildNodes().get(0);
+    } catch (org.hl7.fhir.exceptions.FHIRFormatError e) {
+      throw new FHIRFormatError(e.getMessage(), e);
+    }
   }
 
-	protected void writeNull(String name) throws IOException {
-		json.nullValue();
-	}
-	protected void prop(String name, String value) throws IOException {
-		if (name != null)
-			json.name(name);
-		json.value(value);
-	}
+  protected DomainResource parseDomainResource(JsonObject json) throws FHIRFormatError, IOException {
+    return (DomainResource) parseResource(json);
+  }
+
+  protected void writeNull(String name) throws IOException {
+    json.nullValue();
+  }
+
+  protected void prop(String name, String value) throws IOException {
+    if (name != null)
+      json.name(name);
+    json.value(value);
+  }
 
   protected void prop(String name, java.lang.Boolean value) throws IOException {
     if (name != null)
@@ -269,50 +295,73 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
     json.valueNum(value);
   }
 
+  @SuppressWarnings("checkstyle:patternUsage")
+  //the FHIR decimal grammar; a fixed literal, never user input
+  private static final Pattern JSON_NUMBER = Pattern.compile("-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
+
+  /**
+   * Write a decimal using the literal the parser saw, so that the presented form survives a round
+   * trip - 1.0e0 is not silently rewritten as 1.0, nor 1e2 as 1E+2. asStringValue() is the presented
+   * form when the parser captured one (see DecimalType.setRepresentation) and BigDecimal.toString()
+   * otherwise. Guarded because BigDecimal accepts forms JSON does not (a leading + or .), and those
+   * fall back to writing the numeric value. Canonical JSON is unaffected: JsonCreatorCanonical runs
+   * both routes through JsonNumberCanonicalizer.
+   */
+  @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+  //False positive: Matcher.matches() on pattern which has been independently reviewed
+  protected void propDecimal(String name, DecimalType value) throws IOException {
+    String s = value.asStringValue();
+    if (s != null && JSON_NUMBER.matcher(s).matches()) {
+      propNum(name, s);
+    } else {
+      prop(name, value.getValue());
+    }
+  }
+
   protected void prop(String name, java.lang.Integer value) throws IOException {
     if (name != null)
       json.name(name);
     json.value(value);
   }
 
-	protected void composeXhtml(String name, XhtmlNode html) throws IOException {
-		if (!Utilities.noString(xhtmlMessage)) {
-      prop(name, "<div>!-- "+xhtmlMessage+" --></div>");
-		} else {
-		XhtmlComposer comp = new XhtmlComposer(XhtmlComposer.XML, htmlPretty);
-		prop(name, comp.compose(html));
-		}
-	}
+  protected void composeXhtml(String name, XhtmlNode html) throws IOException {
+    if (!Utilities.noString(xhtmlMessage)) {
+      prop(name, "<div>!-- " + xhtmlMessage + " --></div>");
+    } else {
+      XhtmlComposer comp = new XhtmlComposer(XhtmlComposer.XML, htmlPretty);
+      prop(name, comp.compose(html));
+    }
+  }
 
-	protected void open(String name) throws IOException {
-		if (name != null) 
-			json.name(name);
-		json.beginObject();
-	}
+  protected void open(String name) throws IOException {
+    if (name != null)
+      json.name(name);
+    json.beginObject();
+  }
 
-	protected void close() throws IOException {
-		json.endObject();
-	}
+  protected void close() throws IOException {
+    json.endObject();
+  }
 
-	protected void openArray(String name) throws IOException {
-		if (name != null) 
-			json.name(name);
-		json.beginArray();
-	}
+  protected void openArray(String name) throws IOException {
+    if (name != null)
+      json.name(name);
+    json.beginArray();
+  }
 
-	protected void closeArray() throws IOException {
-		json.endArray();
-	}
+  protected void closeArray() throws IOException {
+    json.endArray();
+  }
 
-	protected void openObject(String name) throws IOException {
-		if (name != null) 
-			json.name(name);
-		json.beginObject();
-	}
+  protected void openObject(String name) throws IOException {
+    if (name != null)
+      json.name(name);
+    json.beginObject();
+  }
 
-	protected void closeObject() throws IOException {
-		json.endObject();
-	}
+  protected void closeObject() throws IOException {
+    json.endObject();
+  }
 
 //  protected void composeBinary(String name, Binary element) {
 //    if (element != null) {
@@ -326,45 +375,47 @@ public abstract class JsonParserBase extends ParserBase implements IParser {
 //  }
 
   protected boolean anyHasExtras(List<? extends Element> list) {
-	  for (Element e : list) {
-	  	if (e.hasExtension() || !Utilities.noString(e.getId()))
-	  		return true;
-	  }
-	  return false;
+    for (Element e : list) {
+      if (e.hasExtension() || !Utilities.noString(e.getId()))
+        return true;
+    }
+    return false;
   }
 
-	protected boolean makeComments(Element element) {
-		return handleComments && (style != OutputStyle.CANONICAL) && !(element.getFormatCommentsPre().isEmpty() && element.getFormatCommentsPost().isEmpty());
-	}
-	
+  protected boolean makeComments(Element element) {
+    return handleComments && (style != OutputStyle.CANONICAL)
+        && !(element.getFormatCommentsPre().isEmpty() && element.getFormatCommentsPost().isEmpty());
+  }
+
   protected void composeDomainResource(String name, DomainResource e) throws IOException {
-	  openObject(name);
-	  composeResource(e);
-	  close();
-	  
+    openObject(name);
+    composeResource(e);
+    close();
+
   }
 
   protected abstract void composeType(String prefix, Type type) throws IOException;
 
-  
   abstract void composeStringCore(String name, StringType value, boolean inArray) throws IOException;
 
   protected void composeStringCore(String name, IIdType value, boolean inArray) throws IOException {
-	  composeStringCore(name, new StringType(value.getValue()), inArray);
-  }    
+    composeStringCore(name, new StringType(value.getValue()), inArray);
+  }
 
   abstract void composeStringExtras(String name, StringType value, boolean inArray) throws IOException;
 
   protected void composeStringExtras(String name, IIdType value, boolean inArray) throws IOException {
-	  composeStringExtras(name, new StringType(value.getValue()), inArray);
-  }    
-  
-  protected void parseElementProperties(JsonObject theAsJsonObject, IIdType theReferenceElement) throws FHIRFormatError, IOException {
-	  parseElementProperties(theAsJsonObject, (Element)theReferenceElement);
+    composeStringExtras(name, new StringType(value.getValue()), inArray);
   }
 
-  protected void parseElementProperties(JsonObject theAsJsonObject, IdType theReferenceElement) throws FHIRFormatError, IOException {
-	  parseElementProperties(theAsJsonObject, (Element)theReferenceElement);
+  protected void parseElementProperties(JsonObject theAsJsonObject, IIdType theReferenceElement)
+      throws FHIRFormatError, IOException {
+    parseElementProperties(theAsJsonObject, (Element) theReferenceElement);
+  }
+
+  protected void parseElementProperties(JsonObject theAsJsonObject, IdType theReferenceElement)
+      throws FHIRFormatError, IOException {
+    parseElementProperties(theAsJsonObject, (Element) theReferenceElement);
   }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3ContainerCapEnumFactory implements EnumFactory<V3ContainerCap> {
@@ -56,11 +52,13 @@ public class V3ContainerCapEnumFactory implements EnumFactory<V3ContainerCap> {
       return V3ContainerCap.PUSH;
     if ("SCR".equals(codeString))
       return V3ContainerCap.SCR;
-    throw new IllegalArgumentException("Unknown V3ContainerCap code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ContainerCap code '" + codeString + "'");
   }
 
   public String toCode(V3ContainerCap code) {
-    if (code == V3ContainerCap._MEDICATIONCAP)
+       if (code == V3ContainerCap.NULL)
+           return null;
+       if (code == V3ContainerCap._MEDICATIONCAP)
       return "_MedicationCap";
     if (code == V3ContainerCap.CHILD)
       return "CHILD";
@@ -75,10 +73,10 @@ public class V3ContainerCapEnumFactory implements EnumFactory<V3ContainerCap> {
     if (code == V3ContainerCap.SCR)
       return "SCR";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ContainerCap code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ContainerCap code) {
+    return code.getSystem();
+  }
 
 }

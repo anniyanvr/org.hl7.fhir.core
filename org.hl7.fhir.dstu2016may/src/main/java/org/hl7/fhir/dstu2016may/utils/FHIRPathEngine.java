@@ -29,8 +29,6 @@ package org.hl7.fhir.dstu2016may.utils;
   
  */
 
-
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,11 +38,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+import lombok.Getter;
+import lombok.Setter;
 import org.fhir.ucum.Decimal;
 import org.fhir.ucum.UcumException;
-import org.hl7.fhir.dstu2016may.metamodel.ParserBase;
 import org.hl7.fhir.dstu2016may.model.Base;
 import org.hl7.fhir.dstu2016may.model.BooleanType;
 import org.hl7.fhir.dstu2016may.model.DateTimeType;
@@ -66,13 +65,16 @@ import org.hl7.fhir.dstu2016may.model.StringType;
 import org.hl7.fhir.dstu2016may.model.StructureDefinition;
 import org.hl7.fhir.dstu2016may.model.StructureDefinition.TypeDerivationRule;
 import org.hl7.fhir.dstu2016may.model.TimeType;
-import org.hl7.fhir.dstu2016may.model.Type;
 import org.hl7.fhir.dstu2016may.utils.FHIRLexer.FHIRLexerException;
-import org.hl7.fhir.dstu2016may.utils.FHIRPathEngine.IEvaluationContext.FunctionDetails;
+import org.hl7.fhir.dstu2016may.utils.IHostApplicationServices.FunctionDetails;
 import org.hl7.fhir.exceptions.DefinitionException;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.exceptions.PathEngineException;
 import org.hl7.fhir.utilities.Utilities;
+
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+import org.hl7.fhir.utilities.fhirpath.FHIRPathConstantEvaluationMode;
+import org.hl7.fhir.utilities.regex.RegexTimeout;
 
 /**
  * 
@@ -81,68 +83,16 @@ import org.hl7.fhir.utilities.Utilities;
  */
 public class FHIRPathEngine {
   private IWorkerContext worker;
-  private IEvaluationContext hostServices;
+  private IHostApplicationServices hostServices;
   private StringBuilder log = new StringBuilder();
   private Set<String> primitiveTypes = new HashSet<String>();
   private Map<String, StructureDefinition> allTypes = new HashMap<String, StructureDefinition>();
-
-  // if the fhir path expressions are allowed to use constants beyond those defined in the specification
-  // the application can implement them by providing a constant resolver 
-  public interface IEvaluationContext {
-    public class FunctionDetails {
-      private String description;
-      private int minParameters;
-      private int maxParameters;
-      public FunctionDetails(String description, int minParameters, int maxParameters) {
-        super();
-        this.description = description;
-        this.minParameters = minParameters;
-        this.maxParameters = maxParameters;
-      }
-      public String getDescription() {
-        return description;
-      }
-      public int getMinParameters() {
-        return minParameters;
-      }
-      public int getMaxParameters() {
-        return maxParameters;
-      }
-
-    }
-
-    public Type resolveConstant(Object appContext, String name);
-    public String resolveConstantType(Object appContext, String name);
-    public boolean Log(String argument, List<Base> focus);
-
-    // extensibility for functions
-    /**
-     * 
-     * @param functionName
-     * @return null if the function is not known
-     */
-    public FunctionDetails resolveFunction(String functionName);
-    
-    /**
-     * Check the function parameters, and throw an error if they are incorrect, or return the type for the function
-     * @param functionName
-     * @param parameters
-     * @return
-     */
-    public TypeDetails checkFunction(Object appContext, String functionName, List<TypeDetails> parameters) throws PathEngineException;
-    
-    /**
-     * @param appContext
-     * @param functionName
-     * @param parameters
-     * @return
-     */
-    public List<Base> executeFunction(Object appContext, String functionName, List<List<Base>> parameters);
-  }
-
+  @Getter @Setter
+  private long regexTimeoutMillis = 500;
 
   /**
-   * @param worker - used when validating paths (@check), and used doing value set membership when executing tests (once that's defined)
+   * @param worker - used when validating paths (@check), and used doing value set
+   *               membership when executing tests (once that's defined)
    */
   public FHIRPathEngine(IWorkerContext worker) {
     super();
@@ -156,49 +106,46 @@ public class FHIRPathEngine {
     }
   }
 
-
   private boolean isPrimitive(StructureDefinition sd) {
     for (ElementDefinition ed : sd.getSnapshot().getElement())
-      if (ed.getPath().equals(sd.getName()+".value") && ed.hasRepresentation(PropertyRepresentation.XMLATTR))
+      if (ed.getPath().equals(sd.getName() + ".value") && ed.hasRepresentation(PropertyRepresentation.XMLATTR))
         return true;
     return false;
   }
 
-
-  // --- 3 methods to override in children -------------------------------------------------------
-  // if you don't override, it falls through to the using the base reference implementation 
+  // --- 3 methods to override in children
+  // -------------------------------------------------------
+  // if you don't override, it falls through to the using the base reference
+  // implementation
   // HAPI overrides to these to support extensing the base model
 
-  public IEvaluationContext getConstantResolver() {
+  public IHostApplicationServices getConstantResolver() {
     return hostServices;
   }
 
-
-  public void setConstantResolver(IEvaluationContext constantResolver) {
+  public void setConstantResolver(IHostApplicationServices constantResolver) {
     this.hostServices = constantResolver;
   }
 
-
   /**
-   * Given an item, return all the children that conform to the pattern described in name
+   * Given an item, return all the children that conform to the pattern described
+   * in name
    * 
-   * Possible patterns:
-   *  - a simple name (which may be the base of a name with [] e.g. value[x])
-   *  - a name with a type replacement e.g. valueCodeableConcept
-   *  - * which means all children
-   *  - ** which means all descendents
-   *  
+   * Possible patterns: - a simple name (which may be the base of a name with []
+   * e.g. value[x]) - a name with a type replacement e.g. valueCodeableConcept - *
+   * which means all children - ** which means all descendents
+   * 
    * @param item
    * @param name
    * @param result
-	 * @throws FHIRException 
+   * @throws FHIRException
    */
   protected void getChildrenByName(Base item, String name, List<Base> result) throws FHIRException {
-  	Base[] list = item.listChildrenByName(name, false);
-  	if (list != null)
-  		for (Base v : list)
-      if (v != null)
-        result.add(v);
+    Base[] list = item.listChildrenByName(name, false);
+    if (list != null)
+      for (Base v : list)
+        if (v != null)
+          result.add(v);
   }
 
   // --- public API -------------------------------------------------------
@@ -207,86 +154,88 @@ public class FHIRPathEngine {
    * 
    * @param path
    * @return
-   * @throws PathEngineException 
+   * @throws PathEngineException
    * @throws Exception
    */
   public ExpressionNode parse(String path) throws FHIRLexerException {
     FHIRLexer lexer = new FHIRLexer(path);
     if (lexer.done())
       throw lexer.error("Path cannot be empty");
-    ExpressionNode result = parseExpression(lexer, true);
+    ExpressionNode result = parseExpression(lexer, true, 0);
     if (!lexer.done())
-      throw lexer.error("Premature ExpressionNode termination at unexpected token \""+lexer.getCurrent()+"\"");
+      throw lexer.error("Premature ExpressionNode termination at unexpected token \"" + lexer.getCurrent() + "\"");
     result.check();
-    return result;    
+    return result;
   }
 
   /**
    * Parse a path that is part of some other syntax
-   *  
+   * 
    * @return
-   * @throws PathEngineException 
+   * @throws PathEngineException
    * @throws Exception
    */
   public ExpressionNode parse(FHIRLexer lexer) throws FHIRLexerException {
-    ExpressionNode result = parseExpression(lexer, true);
+    ExpressionNode result = parseExpression(lexer, true, 0);
     result.check();
-    return result;    
+    return result;
   }
 
   /**
    * check that paths referred to in the ExpressionNode are valid
    * 
-   * xPathStartsWithValueRef is a hack work around for the fact that FHIR Path sometimes needs a different starting point than the xpath
+   * xPathStartsWithValueRef is a hack work around for the fact that FHIR Path
+   * sometimes needs a different starting point than the xpath
    * 
-   * returns a list of the possible types that might be returned by executing the ExpressionNode against a particular context
+   * returns a list of the possible types that might be returned by executing the
+   * ExpressionNode against a particular context
    * 
    * @param context - the logical type against which this path is applied
    * @throws DefinitionException
-   * @throws PathEngineException 
+   * @throws PathEngineException
    * @if the path is not valid
    */
-  public TypeDetails check(Object appContext, String resourceType, String context, ExpressionNode expr) throws FHIRLexerException, PathEngineException, DefinitionException {
-    // if context is a path that refers to a type, do that conversion now 
-	TypeDetails types; 
-	if (!context.contains("."))
-	  types = new TypeDetails(CollectionStatus.SINGLETON, context);
-	else {
-	  StructureDefinition sd = worker.fetchTypeDefinition(context.substring(0, context.indexOf('.')));
-	  if (sd == null) 
-	    throw new PathEngineException("Unknown context "+context);
-	  ElementDefinitionMatch ed = getElementDefinition(sd, context, true);
-	  if (ed == null) 
-	    throw new PathEngineException("Unknown context element "+context);
-	  if (ed.fixedType != null) 
-	    types = new TypeDetails(CollectionStatus.SINGLETON, ed.fixedType);
-	  else if (ed.getDefinition().getType().isEmpty() || isAbstractType(ed.getDefinition().getType())) 
-	    types = new TypeDetails(CollectionStatus.SINGLETON, context);
-	  else {
-	    types = new TypeDetails(CollectionStatus.SINGLETON);
-		for (TypeRefComponent t : ed.getDefinition().getType()) 
-		  types.addType(t.getCode());
-	  }
-	}
+  public TypeDetails check(Object appContext, String resourceType, String context, ExpressionNode expr)
+      throws FHIRLexerException, PathEngineException, DefinitionException {
+    // if context is a path that refers to a type, do that conversion now
+    TypeDetails types;
+    if (!context.contains("."))
+      types = new TypeDetails(CollectionStatus.SINGLETON, context);
+    else {
+      StructureDefinition sd = worker.fetchTypeDefinition(context.substring(0, context.indexOf('.')));
+      if (sd == null)
+        throw new PathEngineException("Unknown context " + context);
+      ElementDefinitionMatch ed = getElementDefinition(sd, context, true);
+      if (ed == null)
+        throw new PathEngineException("Unknown context element " + context);
+      if (ed.fixedType != null)
+        types = new TypeDetails(CollectionStatus.SINGLETON, ed.fixedType);
+      else if (ed.getDefinition().getType().isEmpty() || isAbstractType(ed.getDefinition().getType()))
+        types = new TypeDetails(CollectionStatus.SINGLETON, context);
+      else {
+        types = new TypeDetails(CollectionStatus.SINGLETON);
+        for (TypeRefComponent t : ed.getDefinition().getType())
+          types.addType(t.getCode());
+      }
+    }
 
     return executeType(new ExecutionTypeContext(appContext, resourceType, types), types, expr, true);
   }
 
-  public TypeDetails check(Object appContext, String resourceType, String context, String expr) throws FHIRLexerException, PathEngineException, DefinitionException {
+  public TypeDetails check(Object appContext, String resourceType, String context, String expr)
+      throws FHIRLexerException, PathEngineException, DefinitionException {
     return check(appContext, resourceType, context, parse(expr));
   }
-
 
   /**
    * evaluate a path and return the matching elements
    * 
-   * @param base - the object against which the path is being evaluated
+   * @param base           - the object against which the path is being evaluated
    * @param ExpressionNode - the parsed ExpressionNode statement to use
    * @return
-   * @throws FHIRException 
-   * @
+   * @throws FHIRException @
    */
-	public List<Base> evaluate(Base base, ExpressionNode ExpressionNode) throws FHIRException {
+  public List<Base> evaluate(Base base, ExpressionNode ExpressionNode) throws FHIRException {
     List<Base> list = new ArrayList<Base>();
     if (base != null)
       list.add(base);
@@ -300,10 +249,9 @@ public class FHIRPathEngine {
    * @param base - the object against which the path is being evaluated
    * @param path - the FHIR Path statement to use
    * @return
-	 * @throws FHIRException 
-   * @
+   * @throws FHIRException @
    */
-	public List<Base> evaluate(Base base, String path) throws FHIRException {
+  public List<Base> evaluate(Base base, String path) throws FHIRException {
     ExpressionNode exp = parse(path);
     List<Base> list = new ArrayList<Base>();
     if (base != null)
@@ -315,13 +263,13 @@ public class FHIRPathEngine {
   /**
    * evaluate a path and return the matching elements
    * 
-   * @param base - the object against which the path is being evaluated
+   * @param base           - the object against which the path is being evaluated
    * @param ExpressionNode - the parsed ExpressionNode statement to use
    * @return
-	 * @throws FHIRException 
-   * @
+   * @throws FHIRException @
    */
-	public List<Base> evaluate(Object appContext, Resource resource, Base base, ExpressionNode ExpressionNode) throws FHIRException {
+  public List<Base> evaluate(Object appContext, Resource resource, Base base, ExpressionNode ExpressionNode)
+      throws FHIRException {
     List<Base> list = new ArrayList<Base>();
     if (base != null)
       list.add(base);
@@ -332,13 +280,13 @@ public class FHIRPathEngine {
   /**
    * evaluate a path and return the matching elements
    * 
-   * @param base - the object against which the path is being evaluated
+   * @param base           - the object against which the path is being evaluated
    * @param ExpressionNode - the parsed ExpressionNode statement to use
    * @return
-   * @throws FHIRException 
-   * @
+   * @throws FHIRException @
    */
-  public List<Base> evaluate(Object appContext, Base resource, Base base, ExpressionNode ExpressionNode) throws FHIRException {
+  public List<Base> evaluate(Object appContext, Base resource, Base base, ExpressionNode ExpressionNode)
+      throws FHIRException {
     List<Base> list = new ArrayList<Base>();
     if (base != null)
       list.add(base);
@@ -352,10 +300,9 @@ public class FHIRPathEngine {
    * @param base - the object against which the path is being evaluated
    * @param path - the FHIR Path statement to use
    * @return
-	 * @throws FHIRException 
-   * @
+   * @throws FHIRException @
    */
-	public List<Base> evaluate(Object appContext, Resource resource, Base base, String path) throws FHIRException {
+  public List<Base> evaluate(Object appContext, Resource resource, Base base, String path) throws FHIRException {
     ExpressionNode exp = parse(path);
     List<Base> list = new ArrayList<Base>();
     if (base != null)
@@ -370,10 +317,9 @@ public class FHIRPathEngine {
    * @param base - the object against which the path is being evaluated
    * @param path - the FHIR Path statement to use
    * @return
-	 * @throws FHIRException 
-   * @
+   * @throws FHIRException @
    */
-	public boolean evaluateToBoolean(Resource resource, Base base, String path) throws FHIRException {
+  public boolean evaluateToBoolean(Resource resource, Base base, String path) throws FHIRException {
     return convertToBoolean(evaluate(null, resource, base, path));
   }
 
@@ -382,8 +328,7 @@ public class FHIRPathEngine {
    * 
    * @param base - the object against which the path is being evaluated
    * @return
-   * @throws FHIRException 
-   * @
+   * @throws FHIRException @
    */
   public boolean evaluateToBoolean(Resource resource, Base base, ExpressionNode node) throws FHIRException {
     return convertToBoolean(evaluate(null, resource, base, node));
@@ -394,8 +339,7 @@ public class FHIRPathEngine {
    * 
    * @param base - the object against which the path is being evaluated
    * @return
-   * @throws FHIRException 
-   * @
+   * @throws FHIRException @
    */
   public boolean evaluateToBoolean(Base resource, Base base, ExpressionNode node) throws FHIRException {
     return convertToBoolean(evaluate(null, resource, base, node));
@@ -407,10 +351,9 @@ public class FHIRPathEngine {
    * @param base - the object against which the path is being evaluated
    * @param path - the FHIR Path statement to use
    * @return
-	 * @throws FHIRException 
-   * @
+   * @throws FHIRException @
    */
-	public String evaluateToString(Base base, String path) throws FHIRException {
+  public String evaluateToString(Base base, String path) throws FHIRException {
     return convertToString(evaluate(base, path));
   }
 
@@ -424,7 +367,7 @@ public class FHIRPathEngine {
     StringBuilder b = new StringBuilder();
     boolean first = true;
     for (Base item : items) {
-      if (first) 
+      if (first)
         first = false;
       else
         b.append(',');
@@ -437,12 +380,13 @@ public class FHIRPathEngine {
   private String convertToString(Base item) {
     if (item.isPrimitive())
       return item.primitiveValue();
-    else 
+    else
       return item.getClass().getName();
   }
 
   /**
-   * worker routine for converting a set of objects to a boolean representation (for invariants)
+   * worker routine for converting a set of objects to a boolean representation
+   * (for invariants)
    * 
    * @param items - result from @evaluate
    * @return
@@ -452,10 +396,9 @@ public class FHIRPathEngine {
       return false;
     else if (items.size() == 1 && items.get(0) instanceof BooleanType)
       return ((BooleanType) items.get(0)).getValue();
-    else 
+    else
       return items.size() > 0;
   }
-
 
   private void log(String name, List<Base> contents) {
     if (hostServices == null || !hostServices.Log(name, contents)) {
@@ -469,7 +412,7 @@ public class FHIRPathEngine {
 
   public String forLog() {
     if (log.length() > 0)
-      return " ("+log.toString()+")";
+      return " (" + log.toString() + ")";
     else
       return "";
   }
@@ -478,24 +421,26 @@ public class FHIRPathEngine {
     private Object appInfo;
     private Base resource;
     private Base thisItem;
+
     public ExecutionContext(Object appInfo, Base resource, Base thisItem) {
       this.appInfo = appInfo;
-      this.resource = resource; 
+      this.resource = resource;
       this.thisItem = thisItem;
     }
+
     public Base getResource() {
       return resource;
     }
+
     public Base getThisItem() {
       return thisItem;
     }
   }
 
   private class ExecutionTypeContext {
-    private Object appInfo; 
+    private Object appInfo;
     private String resource;
     private TypeDetails context;
-
 
     public ExecutionTypeContext(Object appInfo, String resource, TypeDetails context) {
       super();
@@ -503,66 +448,79 @@ public class FHIRPathEngine {
       this.resource = resource;
       this.context = context;
     }
+
     public String getResource() {
       return resource;
     }
+
     public TypeDetails getContext() {
       return context;
     }
   }
 
-  private ExpressionNode parseExpression(FHIRLexer lexer, boolean proximal) throws FHIRLexerException {
+  // bounds the parser's recursion, so that a hostile or broken expression - e.g. "(".repeat(4000) - gets a
+  // parse error, not a StackOverflowError. Real expressions don't go much deeper than 15-20
+  private static final int MAX_PARSE_DEPTH = 100;
+
+  private ExpressionNode parseExpression(FHIRLexer lexer, boolean proximal, int depth) throws FHIRLexerException {
+    if (depth > MAX_PARSE_DEPTH) {
+      throw lexer.error("The expression is nested too deeply (more than "+MAX_PARSE_DEPTH+" levels)");
+    }
     ExpressionNode result = new ExpressionNode(lexer.nextId());
     SourceLocation c = lexer.getCurrentStartLocation();
-    result.setStart(lexer.getCurrentLocation());
+    result.setStart(lexer.getCurrentLocation().copy());
+    if (lexer.getCurrent() == null) {
+      throw lexer.error("Expression terminated unexpectedly");
+    }
     // special:
-    if (lexer.getCurrent().equals("-")) {
+    if ("-".equals(lexer.getCurrent())) {
       lexer.take();
-      lexer.setCurrent("-"+lexer.getCurrent());
+      lexer.setCurrent("-" + lexer.getCurrent());
     }
     if (lexer.isConstant(false)) {
       checkConstant(lexer.getCurrent(), lexer);
       result.setConstant(lexer.take());
       result.setKind(Kind.Constant);
-      result.setEnd(lexer.getCurrentLocation());
+      result.setEnd(lexer.getCurrentLocation().copy());
     } else if ("(".equals(lexer.getCurrent())) {
       lexer.next();
       result.setKind(Kind.Group);
-      result.setGroup(parseExpression(lexer, true));
-      if (!")".equals(lexer.getCurrent())) 
-        throw lexer.error("Found "+lexer.getCurrent()+" expecting a \")\"");
-      result.setEnd(lexer.getCurrentLocation());
+      result.setGroup(parseExpression(lexer, true, depth + 1));
+      if (!")".equals(lexer.getCurrent()))
+        throw lexer.error("Found " + lexer.getCurrent() + " expecting a \")\"");
+      result.setEnd(lexer.getCurrentLocation().copy());
       lexer.next();
     } else {
-      if (!lexer.isToken() && !lexer.getCurrent().startsWith("\"")) 
-        throw lexer.error("Found "+lexer.getCurrent()+" expecting a token name");
+      if (!lexer.isToken() && !lexer.getCurrent().startsWith("\""))
+        throw lexer.error("Found " + lexer.getCurrent() + " expecting a token name");
       if (lexer.getCurrent().startsWith("\""))
         result.setName(lexer.readConstant("Path Name"));
       else
         result.setName(lexer.take());
-      result.setEnd(lexer.getCurrentLocation());
+      result.setEnd(lexer.getCurrentLocation().copy());
       if (!result.checkName())
-        throw lexer.error("Found "+result.getName()+" expecting a valid token name");
+        throw lexer.error("Found " + result.getName() + " expecting a valid token name");
       if ("(".equals(lexer.getCurrent())) {
         Function f = Function.fromCode(result.getName());
         FunctionDetails details = null;
         if (f == null) {
-          details = hostServices.resolveFunction(result.getName());
+          details = hostServices != null ? hostServices.resolveFunction(result.getName()) : null;
           if (details == null)
-            throw lexer.error("The name "+result.getName()+" is not a valid function name");
+            throw lexer.error("The name " + result.getName() + " is not a valid function name");
           f = Function.Custom;
         }
         result.setKind(Kind.Function);
         result.setFunction(f);
         lexer.next();
-        while (!")".equals(lexer.getCurrent())) { 
-          result.getParameters().add(parseExpression(lexer, true));
+        while (!")".equals(lexer.getCurrent())) {
+          result.getParameters().add(parseExpression(lexer, true, depth + 1));
           if (",".equals(lexer.getCurrent()))
             lexer.next();
           else if (!")".equals(lexer.getCurrent()))
-            throw lexer.error("The token "+lexer.getCurrent()+" is not expected here - either a \",\" or a \")\" expected");
+            throw lexer.error(
+                "The token " + lexer.getCurrent() + " is not expected here - either a \",\" or a \")\" expected");
         }
-        result.setEnd(lexer.getCurrentLocation());
+        result.setEnd(lexer.getCurrentLocation().copy());
         lexer.next();
         checkParameters(lexer, c, result, details);
       } else
@@ -574,16 +532,16 @@ public class FHIRPathEngine {
       ExpressionNode item = new ExpressionNode(lexer.nextId());
       item.setKind(Kind.Function);
       item.setFunction(ExpressionNode.Function.Item);
-      item.getParameters().add(parseExpression(lexer, true));
-      if (!lexer.getCurrent().equals("]"))
-        throw lexer.error("The token "+lexer.getCurrent()+" is not expected here - a \"]\" expected");
+      item.getParameters().add(parseExpression(lexer, true, depth + 1));
+      if (!"]".equals(lexer.getCurrent()))
+        throw lexer.error("The token " + lexer.getCurrent() + " is not expected here - a \"]\" expected");
       lexer.next();
       result.setInner(item);
       focus = item;
     }
     if (".".equals(lexer.getCurrent())) {
       lexer.next();
-      focus.setInner(parseExpression(lexer, false));
+      focus.setInner(parseExpression(lexer, false, depth + 1));
     }
     result.setProximal(proximal);
     if (proximal) {
@@ -592,7 +550,7 @@ public class FHIRPathEngine {
         focus.setOpStart(lexer.getCurrentStartLocation());
         focus.setOpEnd(lexer.getCurrentLocation());
         lexer.next();
-        focus.setOpNext(parseExpression(lexer, false));
+        focus.setOpNext(parseExpression(lexer, false, depth + 1));
         focus = focus.getOpNext();
       }
       result = organisePrecedence(lexer, result);
@@ -601,12 +559,14 @@ public class FHIRPathEngine {
   }
 
   private ExpressionNode organisePrecedence(FHIRLexer lexer, ExpressionNode node) {
-    node = gatherPrecedence(lexer, node, EnumSet.of(Operation.Times, Operation.DivideBy, Operation.Div, Operation.Mod)); 
-    node = gatherPrecedence(lexer, node, EnumSet.of(Operation.Plus, Operation.Minus, Operation.Concatenate)); 
-    node = gatherPrecedence(lexer, node, EnumSet.of(Operation.Union)); 
-    node = gatherPrecedence(lexer, node, EnumSet.of(Operation.LessThen, Operation.Greater, Operation.LessOrEqual, Operation.GreaterOrEqual));
+    node = gatherPrecedence(lexer, node, EnumSet.of(Operation.Times, Operation.DivideBy, Operation.Div, Operation.Mod));
+    node = gatherPrecedence(lexer, node, EnumSet.of(Operation.Plus, Operation.Minus, Operation.Concatenate));
+    node = gatherPrecedence(lexer, node, EnumSet.of(Operation.Union));
+    node = gatherPrecedence(lexer, node,
+        EnumSet.of(Operation.LessThen, Operation.Greater, Operation.LessOrEqual, Operation.GreaterOrEqual));
     node = gatherPrecedence(lexer, node, EnumSet.of(Operation.Is));
-    node = gatherPrecedence(lexer, node, EnumSet.of(Operation.Equals, Operation.Equivalent, Operation.NotEquals, Operation.NotEquivalent));
+    node = gatherPrecedence(lexer, node,
+        EnumSet.of(Operation.Equals, Operation.Equivalent, Operation.NotEquals, Operation.NotEquivalent));
     node = gatherPrecedence(lexer, node, EnumSet.of(Operation.And));
     node = gatherPrecedence(lexer, node, EnumSet.of(Operation.Xor, Operation.Or));
     // last: implies
@@ -614,10 +574,10 @@ public class FHIRPathEngine {
   }
 
   private ExpressionNode gatherPrecedence(FHIRLexer lexer, ExpressionNode start, EnumSet<Operation> ops) {
-    //	  work : boolean;
-    //	  focus, node, group : ExpressionNode;
+    // work : boolean;
+    // focus, node, group : ExpressionNode;
 
-    assert(start.isProximal());
+    assert (start.isProximal());
 
     // is there anything to do?
     boolean work = false;
@@ -632,7 +592,7 @@ public class FHIRPathEngine {
         work = work || ops.contains(focus.getOperation());
         focus = focus.getOpNext();
       }
-    }  
+    }
     if (!work)
       return start;
 
@@ -656,8 +616,9 @@ public class FHIRPathEngine {
     }
 
     // now, at this point:
-    //   group is the group we are adding to, it already has a .group property filled out.
-    //   focus points at the group.group
+    // group is the group we are adding to, it already has a .group property filled
+    // out.
+    // focus points at the group.group
     do {
       // run until we find the end of the sequence
       while (ops.contains(focus.getOperation()))
@@ -670,22 +631,20 @@ public class FHIRPathEngine {
         // now look for another sequence, and start it
         ExpressionNode node = group;
         focus = group.getOpNext();
-        if (focus != null) { 
+        if (focus != null) {
           while (focus == null && !ops.contains(focus.getOperation())) {
             node = focus;
             focus = focus.getOpNext();
           }
-          if (focus != null) { // && (focus.Operation in Ops) - must be true 
+          if (focus != null) { // && (focus.Operation in Ops) - must be true
             group = newGroup(lexer, focus);
             node.setOpNext(group);
           }
         }
       }
-    }
-    while (focus != null && focus.getOperation() != null);
+    } while (focus != null && focus.getOperation() != null);
     return start;
   }
-
 
   private ExpressionNode newGroup(FHIRLexer lexer, ExpressionNode next) {
     ExpressionNode result = new ExpressionNode(lexer.nextId());
@@ -698,25 +657,25 @@ public class FHIRPathEngine {
   private void checkConstant(String s, FHIRLexer lexer) throws FHIRLexerException {
     if (s.startsWith("\'") && s.endsWith("\'")) {
       int i = 1;
-      while (i < s.length()-1) {
+      while (i < s.length() - 1) {
         char ch = s.charAt(i);
         if (ch == '\\') {
           switch (ch) {
-          case 't': 
+          case 't':
           case 'r':
-          case 'n': 
-          case 'f': 
+          case 'n':
+          case 'f':
           case '\'':
-          case '\\': 
-          case '/': 
-            i++; 
+          case '\\':
+          case '/':
+            i++;
             break;
           case 'u':
-            if (!Utilities.isHex("0x"+s.substring(i, i+4)))
-              throw lexer.error("Improper unicode escape \\u"+s.substring(i, i+4));
+            if (!Utilities.isHex("0x" + s.substring(i, i + 4)))
+              throw lexer.error("Improper unicode escape \\u" + s.substring(i, i + 4));
             break;
           default:
-            throw lexer.error("Unknown character escape \\"+ch);
+            throw lexer.error("Unknown character escape \\" + ch);
           }
         } else
           i++;
@@ -724,73 +683,122 @@ public class FHIRPathEngine {
     }
   }
 
-  //  procedure CheckParamCount(c : integer);
-  //  begin
-  //    if exp.Parameters.Count <> c then
-  //      raise lexer.error('The function "'+exp.name+'" requires '+inttostr(c)+' parameters', offset);
-  //  end;
+  // procedure CheckParamCount(c : integer);
+  // begin
+  // if exp.Parameters.Count <> c then
+  // raise lexer.error('The function "'+exp.name+'" requires '+inttostr(c)+'
+  // parameters', offset);
+  // end;
 
-  private boolean checkParamCount(FHIRLexer lexer, SourceLocation location, ExpressionNode exp, int count) throws FHIRLexerException {
+  private boolean checkParamCount(FHIRLexer lexer, SourceLocation location, ExpressionNode exp, int count)
+      throws FHIRLexerException {
     if (exp.getParameters().size() != count)
-      throw lexer.error("The function \""+exp.getName()+"\" requires "+Integer.toString(count)+" parameters", location.toString());
+      throw lexer.error("The function \"" + exp.getName() + "\" requires " + Integer.toString(count) + " parameters",
+          location.toString());
     return true;
   }
 
-  private boolean checkParamCount(FHIRLexer lexer, SourceLocation location, ExpressionNode exp, int countMin, int countMax) throws FHIRLexerException {
+  private boolean checkParamCount(FHIRLexer lexer, SourceLocation location, ExpressionNode exp, int countMin,
+      int countMax) throws FHIRLexerException {
     if (exp.getParameters().size() < countMin || exp.getParameters().size() > countMax)
-      throw lexer.error("The function \""+exp.getName()+"\" requires between "+Integer.toString(countMin)+" and "+Integer.toString(countMax)+" parameters", location.toString());
+      throw lexer.error("The function \"" + exp.getName() + "\" requires between " + Integer.toString(countMin)
+          + " and " + Integer.toString(countMax) + " parameters", location.toString());
     return true;
   }
 
-  private boolean checkParameters(FHIRLexer lexer, SourceLocation location, ExpressionNode exp, FunctionDetails details) throws FHIRLexerException {
+  private boolean checkParameters(FHIRLexer lexer, SourceLocation location, ExpressionNode exp, FunctionDetails details)
+      throws FHIRLexerException {
     switch (exp.getFunction()) {
-    case Empty: return checkParamCount(lexer, location, exp, 0);
-    case Not: return checkParamCount(lexer, location, exp, 0);
-    case Exists: return checkParamCount(lexer, location, exp, 0);
-    case SubsetOf: return checkParamCount(lexer, location, exp, 1);
-    case SupersetOf: return checkParamCount(lexer, location, exp, 1);
-    case IsDistinct: return checkParamCount(lexer, location, exp, 0);
-    case Distinct: return checkParamCount(lexer, location, exp, 0);
-    case Count: return checkParamCount(lexer, location, exp, 0);
-    case Where: return checkParamCount(lexer, location, exp, 1);
-    case Select: return checkParamCount(lexer, location, exp, 1);
-    case All: return checkParamCount(lexer, location, exp, 0, 1);
-    case Repeat: return checkParamCount(lexer, location, exp, 1);
-    case Item: return checkParamCount(lexer, location, exp, 1);
-    case As: return checkParamCount(lexer, location, exp, 1);
-    case Is: return checkParamCount(lexer, location, exp, 1);
-    case Single: return checkParamCount(lexer, location, exp, 0);
-    case First: return checkParamCount(lexer, location, exp, 0);
-    case Last: return checkParamCount(lexer, location, exp, 0);
-    case Tail: return checkParamCount(lexer, location, exp, 0);
-    case Skip: return checkParamCount(lexer, location, exp, 1);
-    case Take: return checkParamCount(lexer, location, exp, 1);
-    case Iif: return checkParamCount(lexer, location, exp, 2,3);
-    case ToInteger: return checkParamCount(lexer, location, exp, 0);
-    case ToDecimal: return checkParamCount(lexer, location, exp, 0);
-    case ToString: return checkParamCount(lexer, location, exp, 0);
-    case Substring: return checkParamCount(lexer, location, exp, 1, 2);
-    case StartsWith: return checkParamCount(lexer, location, exp, 1);
-    case EndsWith: return checkParamCount(lexer, location, exp, 1);
-    case Matches: return checkParamCount(lexer, location, exp, 1);
-    case ReplaceMatches: return checkParamCount(lexer, location, exp, 2);
-    case Contains: return checkParamCount(lexer, location, exp, 1);
-    case Replace: return checkParamCount(lexer, location, exp, 2);
-    case Length: return checkParamCount(lexer, location, exp, 0);
-    case Children: return checkParamCount(lexer, location, exp, 0);
-    case Descendents: return checkParamCount(lexer, location, exp, 0);
-    case MemberOf: return checkParamCount(lexer, location, exp, 1);
-    case Trace: return checkParamCount(lexer, location, exp, 1);
-    case Today: return checkParamCount(lexer, location, exp, 0);
-    case Now: return checkParamCount(lexer, location, exp, 0);
-    case Resolve: return checkParamCount(lexer, location, exp, 0);
-    case Extension: return checkParamCount(lexer, location, exp, 1);
-    case Custom: return checkParamCount(lexer, location, exp, details.getMinParameters(), details.getMaxParameters());
+    case Empty:
+      return checkParamCount(lexer, location, exp, 0);
+    case Not:
+      return checkParamCount(lexer, location, exp, 0);
+    case Exists:
+      return checkParamCount(lexer, location, exp, 0);
+    case SubsetOf:
+      return checkParamCount(lexer, location, exp, 1);
+    case SupersetOf:
+      return checkParamCount(lexer, location, exp, 1);
+    case IsDistinct:
+      return checkParamCount(lexer, location, exp, 0);
+    case Distinct:
+      return checkParamCount(lexer, location, exp, 0);
+    case Count:
+      return checkParamCount(lexer, location, exp, 0);
+    case Where:
+      return checkParamCount(lexer, location, exp, 1);
+    case Select:
+      return checkParamCount(lexer, location, exp, 1);
+    case All:
+      return checkParamCount(lexer, location, exp, 0, 1);
+    case Repeat:
+      return checkParamCount(lexer, location, exp, 1);
+    case Item:
+      return checkParamCount(lexer, location, exp, 1);
+    case As:
+      return checkParamCount(lexer, location, exp, 1);
+    case Is:
+      return checkParamCount(lexer, location, exp, 1);
+    case Single:
+      return checkParamCount(lexer, location, exp, 0);
+    case First:
+      return checkParamCount(lexer, location, exp, 0);
+    case Last:
+      return checkParamCount(lexer, location, exp, 0);
+    case Tail:
+      return checkParamCount(lexer, location, exp, 0);
+    case Skip:
+      return checkParamCount(lexer, location, exp, 1);
+    case Take:
+      return checkParamCount(lexer, location, exp, 1);
+    case Iif:
+      return checkParamCount(lexer, location, exp, 2, 3);
+    case ToInteger:
+      return checkParamCount(lexer, location, exp, 0);
+    case ToDecimal:
+      return checkParamCount(lexer, location, exp, 0);
+    case ToString:
+      return checkParamCount(lexer, location, exp, 0);
+    case Substring:
+      return checkParamCount(lexer, location, exp, 1, 2);
+    case StartsWith:
+      return checkParamCount(lexer, location, exp, 1);
+    case EndsWith:
+      return checkParamCount(lexer, location, exp, 1);
+    case Matches:
+      return checkParamCount(lexer, location, exp, 1);
+    case ReplaceMatches:
+      return checkParamCount(lexer, location, exp, 2);
+    case Contains:
+      return checkParamCount(lexer, location, exp, 1);
+    case Replace:
+      return checkParamCount(lexer, location, exp, 2);
+    case Length:
+      return checkParamCount(lexer, location, exp, 0);
+    case Children:
+      return checkParamCount(lexer, location, exp, 0);
+    case Descendents:
+      return checkParamCount(lexer, location, exp, 0);
+    case MemberOf:
+      return checkParamCount(lexer, location, exp, 1);
+    case Trace:
+      return checkParamCount(lexer, location, exp, 1);
+    case Today:
+      return checkParamCount(lexer, location, exp, 0);
+    case Now:
+      return checkParamCount(lexer, location, exp, 0);
+    case Resolve:
+      return checkParamCount(lexer, location, exp, 0);
+    case Extension:
+      return checkParamCount(lexer, location, exp, 1);
+    case Custom:
+      return checkParamCount(lexer, location, exp, details.getMinParameters(), details.getMaxParameters());
     }
     return false;
   }
 
-	private List<Base> execute(ExecutionContext context, List<Base> focus, ExpressionNode exp, boolean atEntry) throws FHIRException {
+  private List<Base> execute(ExecutionContext context, List<Base> focus, ExpressionNode exp, boolean atEntry)
+      throws FHIRException {
     List<Base> work = new ArrayList<Base>();
     switch (exp.getKind()) {
     case Name:
@@ -802,14 +810,14 @@ public class FHIRPathEngine {
           for (Base base : outcome)
             if (base != null)
               work.add(base);
-        }        		
+        }
       break;
     case Function:
       List<Base> work2 = evaluateFunction(context, focus, exp);
       work.addAll(work2);
       break;
     case Constant:
-      Base b = processConstant(context, exp.getConstant());
+      Base b = processConstant(context, exp.getConstant(), FHIRPathConstantEvaluationMode.EXPLICIT);
       if (b != null)
         work.add(b);
       break;
@@ -848,7 +856,6 @@ public class FHIRPathEngine {
     return result;
   }
 
-
   private List<Base> preOperate(List<Base> left, Operation operation) {
     switch (operation) {
     case And:
@@ -857,7 +864,7 @@ public class FHIRPathEngine {
       return isBoolean(left, true) ? makeBoolean(true) : null;
     case Implies:
       return convertToBoolean(left) ? null : makeBoolean(true);
-    default: 
+    default:
       return null;
     }
   }
@@ -868,11 +875,13 @@ public class FHIRPathEngine {
     return res;
   }
 
-  private TypeDetails executeTypeName(ExecutionTypeContext context, TypeDetails focus, ExpressionNode exp, boolean atEntry) throws PathEngineException, DefinitionException {
+  private TypeDetails executeTypeName(ExecutionTypeContext context, TypeDetails focus, ExpressionNode exp,
+      boolean atEntry) throws PathEngineException, DefinitionException {
     return new TypeDetails(CollectionStatus.SINGLETON, exp.getName());
   }
 
-  private TypeDetails executeType(ExecutionTypeContext context, TypeDetails focus, ExpressionNode exp, boolean atEntry) throws PathEngineException, DefinitionException {
+  private TypeDetails executeType(ExecutionTypeContext context, TypeDetails focus, ExpressionNode exp, boolean atEntry)
+      throws PathEngineException, DefinitionException {
     TypeDetails result = new TypeDetails(null);
     switch (exp.getKind()) {
     case Name:
@@ -882,15 +891,16 @@ public class FHIRPathEngine {
         for (String s : focus.getTypes()) {
           result.update(executeType(s, exp, atEntry));
         }
-        if (result.hasNoTypes()) 
-          throw new PathEngineException("The name "+exp.getName()+" is not valid for any of the possible types: "+focus.describe());
+        if (result.hasNoTypes())
+          throw new PathEngineException(
+              "The name " + exp.getName() + " is not valid for any of the possible types: " + focus.describe());
       }
       break;
     case Function:
       result.update(evaluateFunctionType(context, focus, exp));
       break;
     case Constant:
-      result.addType(readConstantType(context, exp.getConstant()));
+      result.addType(readConstantType(context, exp.getConstant(), FHIRPathConstantEvaluationMode.EXPLICIT));
       break;
     case Group:
       result.update(executeType(context, focus, exp.getGroup(), atEntry));
@@ -919,7 +929,7 @@ public class FHIRPathEngine {
     return result;
   }
 
-  private Base processConstant(ExecutionContext context, String constant) throws PathEngineException {
+  private Base processConstant(ExecutionContext context, String constant, FHIRPathConstantEvaluationMode mode) throws PathEngineException {
     if (constant.equals("true")) {
       return new BooleanType(true);
     } else if (constant.equals("false")) {
@@ -933,7 +943,7 @@ public class FHIRPathEngine {
     } else if (constant.startsWith("\'")) {
       return new StringType(processConstantString(constant));
     } else if (constant.startsWith("%")) {
-      return resolveConstant(context, constant);
+      return resolveConstant(context, constant, mode);
     } else if (constant.startsWith("@")) {
       return processDateConstant(context.appInfo, constant.substring(1));
     } else {
@@ -951,16 +961,15 @@ public class FHIRPathEngine {
         i = v.substring(10).indexOf("+");
       if (i == -1)
         i = v.substring(10).indexOf("Z");
-      v = i == -1 ? value : v.substring(0,  10+i);
+      v = i == -1 ? value : v.substring(0, 10 + i);
     }
     if (v.length() > 10)
       return new DateTimeType(value);
-    else 
+    else
       return new DateType(value);
   }
 
-
-  private Base resolveConstant(ExecutionContext context, String s) throws PathEngineException {
+  private Base resolveConstant(ExecutionContext context, String s, FHIRPathConstantEvaluationMode mode) throws PathEngineException {
     if (s.equals("%sct"))
       return new StringType("http://snomed.info/sct");
     else if (s.equals("%loinc"))
@@ -974,55 +983,64 @@ public class FHIRPathEngine {
     } else if (s.equals("%us-zip"))
       return new StringType("[0-9]{5}(-[0-9]{4}){0,1}");
     else if (s.startsWith("%\"vs-"))
-      return new StringType("http://hl7.org/fhir/ValueSet/"+s.substring(5, s.length()-1)+"");
+      return new StringType("http://hl7.org/fhir/ValueSet/" + s.substring(5, s.length() - 1) + "");
     else if (s.startsWith("%\"cs-"))
-      return new StringType("http://hl7.org/fhir/"+s.substring(5, s.length()-1)+"");
+      return new StringType("http://hl7.org/fhir/" + s.substring(5, s.length() - 1) + "");
     else if (s.startsWith("%\"ext-"))
-      return new StringType("http://hl7.org/fhir/StructureDefinition/"+s.substring(6, s.length()-1));
+      return new StringType("http://hl7.org/fhir/StructureDefinition/" + s.substring(6, s.length() - 1));
     else if (hostServices == null)
-      throw new PathEngineException("Unknown fixed constant '"+s+"'");
+      throw new PathEngineException("Unknown fixed constant '" + s + "'");
     else
-      return hostServices.resolveConstant(context.appInfo, s);
+      return justOne(hostServices.resolveConstant(this, context.appInfo, s, mode));
   }
 
+  private Base justOne(List<Base> bases) {
+    if (bases.size() == 0) {
+      return null;
+    } else if (bases.size() == 1) {
+      return bases.get(0);
+    } else {
+      throw new Error("In this version, only singleton constants");
+    }
+  }
 
   private String processConstantString(String s) throws PathEngineException {
     StringBuilder b = new StringBuilder();
     int i = 1;
-    while (i < s.length()-1) {
+    while (i < s.length() - 1) {
       char ch = s.charAt(i);
       if (ch == '\\') {
         i++;
         switch (s.charAt(i)) {
-        case 't': 
+        case 't':
           b.append('\t');
           break;
         case 'r':
           b.append('\r');
           break;
-        case 'n': 
+        case 'n':
           b.append('\n');
           break;
-        case 'f': 
+        case 'f':
           b.append('\f');
           break;
         case '\'':
           b.append('\'');
           break;
-        case '\\': 
+        case '\\':
           b.append('\\');
           break;
-        case '/': 
+        case '/':
           b.append('\\');
           break;
         case 'u':
           i++;
-          int uc = Integer.parseInt(s.substring(i, i+4), 16);
+          int uc = Integer.parseInt(s.substring(i, i + 4), 16);
           b.append((char) uc);
           i = i + 4;
           break;
         default:
-          throw new PathEngineException("Unknown character escape \\"+s.charAt(i));
+          throw new PathEngineException("Unknown character escape \\" + s.charAt(i));
         }
       } else {
         b.append(ch);
@@ -1032,35 +1050,58 @@ public class FHIRPathEngine {
     return b.toString();
   }
 
-
   private List<Base> operate(List<Base> left, Operation operation, List<Base> right) throws FHIRException {
     switch (operation) {
-    case Equals: return opEquals(left, right);
-    case Equivalent: return opEquivalent(left, right);
-    case NotEquals: return opNotEquals(left, right);
-    case NotEquivalent: return opNotEquivalent(left, right);
-    case LessThen: return opLessThen(left, right);
-    case Greater: return opGreater(left, right);
-    case LessOrEqual: return opLessOrEqual(left, right);
-    case GreaterOrEqual: return opGreaterOrEqual(left, right);
-    case Union: return opUnion(left, right);
-    case In: return opIn(left, right);
-    case Contains: return opContains(left, right);
-    case Or:  return opOr(left, right);
-    case And:  return opAnd(left, right);
-    case Xor: return opXor(left, right);
-    case Implies: return opImplies(left, right);
-    case Plus: return opPlus(left, right);
-    case Times: return opTimes(left, right);
-    case Minus: return opMinus(left, right);
-    case Concatenate: return opConcatenate(left, right);
-    case DivideBy: return opDivideBy(left, right);
-    case Div: return opDiv(left, right);
-    case Mod: return opMod(left, right);
-    case Is: return opIs(left, right);
-    case As: return opAs(left, right);
-    default: 
-      throw new Error("Not Done Yet: "+operation.toCode());
+    case Equals:
+      return opEquals(left, right);
+    case Equivalent:
+      return opEquivalent(left, right);
+    case NotEquals:
+      return opNotEquals(left, right);
+    case NotEquivalent:
+      return opNotEquivalent(left, right);
+    case LessThen:
+      return opLessThen(left, right);
+    case Greater:
+      return opGreater(left, right);
+    case LessOrEqual:
+      return opLessOrEqual(left, right);
+    case GreaterOrEqual:
+      return opGreaterOrEqual(left, right);
+    case Union:
+      return opUnion(left, right);
+    case In:
+      return opIn(left, right);
+    case Contains:
+      return opContains(left, right);
+    case Or:
+      return opOr(left, right);
+    case And:
+      return opAnd(left, right);
+    case Xor:
+      return opXor(left, right);
+    case Implies:
+      return opImplies(left, right);
+    case Plus:
+      return opPlus(left, right);
+    case Times:
+      return opTimes(left, right);
+    case Minus:
+      return opMinus(left, right);
+    case Concatenate:
+      return opConcatenate(left, right);
+    case DivideBy:
+      return opDivideBy(left, right);
+    case Div:
+      return opDiv(left, right);
+    case Mod:
+      return opMod(left, right);
+    case Is:
+      return opIs(left, right);
+    case As:
+      return opAs(left, right);
+    default:
+      throw new Error("Not Done Yet: " + operation.toCode());
     }
   }
 
@@ -1076,10 +1117,9 @@ public class FHIRPathEngine {
     return result;
   }
 
-
   private List<Base> opIs(List<Base> left, List<Base> right) {
     List<Base> result = new ArrayList<Base>();
-    if (left.size() != 1 || right.size() != 1) 
+    if (left.size() != 1 || right.size() != 1)
       result.add(new BooleanType(false));
     else {
       String tn = convertToString(right);
@@ -1088,32 +1128,46 @@ public class FHIRPathEngine {
     return result;
   }
 
-
   private TypeDetails operateTypes(TypeDetails left, Operation operation, TypeDetails right) {
     switch (operation) {
-    case Equals: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case Equivalent: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case NotEquals: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case NotEquivalent: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case LessThen: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case Greater: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case LessOrEqual: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case GreaterOrEqual: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case Is: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case As: return new TypeDetails(CollectionStatus.SINGLETON, right.getTypes());
-    case Union: return left.union(right);
-    case Or: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case And: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case Xor: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case Implies : return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case Times: 
+    case Equals:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case Equivalent:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case NotEquals:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case NotEquivalent:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case LessThen:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case Greater:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case LessOrEqual:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case GreaterOrEqual:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case Is:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case As:
+      return new TypeDetails(CollectionStatus.SINGLETON, right.getTypes());
+    case Union:
+      return left.union(right);
+    case Or:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case And:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case Xor:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case Implies:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case Times:
       TypeDetails result = new TypeDetails(CollectionStatus.SINGLETON);
       if (left.hasType("integer") && right.hasType("integer"))
         result.addType("integer");
       else if (left.hasType("integer", "decimal") && right.hasType("integer", "decimal"))
         result.addType("decimal");
       return result;
-    case DivideBy: 
+    case DivideBy:
       result = new TypeDetails(CollectionStatus.SINGLETON);
       if (left.hasType("integer") && right.hasType("integer"))
         result.addType("decimal");
@@ -1138,21 +1192,22 @@ public class FHIRPathEngine {
       else if (left.hasType("integer", "decimal") && right.hasType("integer", "decimal"))
         result.addType("decimal");
       return result;
-    case Div: 
-    case Mod: 
+    case Div:
+    case Mod:
       result = new TypeDetails(CollectionStatus.SINGLETON);
       if (left.hasType("integer") && right.hasType("integer"))
         result.addType("integer");
       else if (left.hasType("integer", "decimal") && right.hasType("integer", "decimal"))
         result.addType("decimal");
       return result;
-    case In: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case Contains: return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    default: 
+    case In:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case Contains:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    default:
       return null;
     }
   }
-
 
   private List<Base> opEquals(List<Base> left, List<Base> right) {
     if (left.size() != right.size())
@@ -1160,7 +1215,7 @@ public class FHIRPathEngine {
 
     boolean res = true;
     for (int i = 0; i < left.size(); i++) {
-      if (!doEquals(left.get(i), right.get(i))) { 
+      if (!doEquals(left.get(i), right.get(i))) {
         res = false;
         break;
       }
@@ -1174,7 +1229,7 @@ public class FHIRPathEngine {
 
     boolean res = true;
     for (int i = 0; i < left.size(); i++) {
-      if (!doEquals(left.get(i), right.get(i))) { 
+      if (!doEquals(left.get(i), right.get(i))) {
         res = false;
         break;
       }
@@ -1184,7 +1239,7 @@ public class FHIRPathEngine {
 
   private boolean doEquals(Base left, Base right) {
     if (left.isPrimitive() && right.isPrimitive())
-			return Base.equals(left.primitiveValue(), right.primitiveValue());
+      return Base.equals(left.primitiveValue(), right.primitiveValue());
     else
       return Base.compareDeep(left, right, false);
   }
@@ -1201,7 +1256,8 @@ public class FHIRPathEngine {
     if (left.hasType("string", "id", "code", "uri") && right.hasType("string", "id", "code", "uri"))
       return Utilities.equivalent(convertToString(left), convertToString(right));
 
-    throw new PathEngineException(String.format("Unable to determine equivalence between %s and %s", left.fhirType(), right.fhirType()));
+    throw new PathEngineException(
+        String.format("Unable to determine equivalence between %s and %s", left.fhirType(), right.fhirType()));
   }
 
   private List<Base> opEquivalent(List<Base> left, List<Base> right) throws PathEngineException {
@@ -1246,19 +1302,20 @@ public class FHIRPathEngine {
     return makeBoolean(!res);
   }
 
-	private List<Base> opLessThen(List<Base> left, List<Base> right) throws FHIRException {
+  private List<Base> opLessThen(List<Base> left, List<Base> right) throws FHIRException {
     if (left.size() == 1 && right.size() == 1 && left.get(0).isPrimitive() && right.get(0).isPrimitive()) {
       Base l = left.get(0);
       Base r = right.get(0);
-      if (l.hasType("string") && r.hasType("string")) 
+      if (l.hasType("string") && r.hasType("string"))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) < 0);
-      else if ((l.hasType("integer") || l.hasType("decimal")) && (r.hasType("integer") || r.hasType("decimal"))) 
-        return makeBoolean(new Double(l.primitiveValue()) < new Double(r.primitiveValue()));
-      else if ((l.hasType("date", "dateTime", "instant")) && (r.hasType("date", "dateTime", "instant"))) 
+      else if ((l.hasType("integer") || l.hasType("decimal")) && (r.hasType("integer") || r.hasType("decimal")))
+        return makeBoolean(Double.valueOf(l.primitiveValue()) < Double.valueOf(r.primitiveValue()));
+      else if ((l.hasType("date", "dateTime", "instant")) && (r.hasType("date", "dateTime", "instant")))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) < 0);
-      else if ((l.hasType("time")) && (r.hasType("time"))) 
+      else if ((l.hasType("time")) && (r.hasType("time")))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) < 0);
-    } else if (left.size() == 1 && right.size() == 1 && left.get(0).fhirType().equals("Quantity") && right.get(0).fhirType().equals("Quantity") ) {
+    } else if (left.size() == 1 && right.size() == 1 && left.get(0).fhirType().equals("Quantity")
+        && right.get(0).fhirType().equals("Quantity")) {
       List<Base> lUnit = left.get(0).listChildrenByName("unit");
       List<Base> rUnit = right.get(0).listChildrenByName("unit");
       if (Base.compareDeep(lUnit, rUnit, true)) {
@@ -1270,19 +1327,20 @@ public class FHIRPathEngine {
     return new ArrayList<Base>();
   }
 
-	private List<Base> opGreater(List<Base> left, List<Base> right) throws FHIRException {
+  private List<Base> opGreater(List<Base> left, List<Base> right) throws FHIRException {
     if (left.size() == 1 && right.size() == 1 && left.get(0).isPrimitive() && right.get(0).isPrimitive()) {
       Base l = left.get(0);
       Base r = right.get(0);
-      if (l.hasType("string") && r.hasType("string")) 
+      if (l.hasType("string") && r.hasType("string"))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) > 0);
-      else if ((l.hasType("integer", "decimal")) && (r.hasType("integer", "decimal"))) 
-        return makeBoolean(new Double(l.primitiveValue()) > new Double(r.primitiveValue()));
-      else if ((l.hasType("date", "dateTime", "instant")) && (r.hasType("date", "dateTime", "instant"))) 
+      else if ((l.hasType("integer", "decimal")) && (r.hasType("integer", "decimal")))
+        return makeBoolean(Double.valueOf(l.primitiveValue()) > Double.valueOf(r.primitiveValue()));
+      else if ((l.hasType("date", "dateTime", "instant")) && (r.hasType("date", "dateTime", "instant")))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) > 0);
-      else if ((l.hasType("time")) && (r.hasType("time"))) 
+      else if ((l.hasType("time")) && (r.hasType("time")))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) > 0);
-    } else if (left.size() == 1 && right.size() == 1 && left.get(0).fhirType().equals("Quantity") && right.get(0).fhirType().equals("Quantity") ) {
+    } else if (left.size() == 1 && right.size() == 1 && left.get(0).fhirType().equals("Quantity")
+        && right.get(0).fhirType().equals("Quantity")) {
       List<Base> lUnit = left.get(0).listChildrenByName("unit");
       List<Base> rUnit = right.get(0).listChildrenByName("unit");
       if (Base.compareDeep(lUnit, rUnit, true)) {
@@ -1294,19 +1352,20 @@ public class FHIRPathEngine {
     return new ArrayList<Base>();
   }
 
-	private List<Base> opLessOrEqual(List<Base> left, List<Base> right) throws FHIRException {
+  private List<Base> opLessOrEqual(List<Base> left, List<Base> right) throws FHIRException {
     if (left.size() == 1 && right.size() == 1 && left.get(0).isPrimitive() && right.get(0).isPrimitive()) {
       Base l = left.get(0);
       Base r = right.get(0);
-      if (l.hasType("string") && r.hasType("string")) 
+      if (l.hasType("string") && r.hasType("string"))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) <= 0);
-      else if ((l.hasType("integer", "decimal")) && (r.hasType("integer", "decimal"))) 
-        return makeBoolean(new Double(l.primitiveValue()) <= new Double(r.primitiveValue()));
-      else if ((l.hasType("date", "dateTime", "instant")) && (r.hasType("date", "dateTime", "instant"))) 
+      else if ((l.hasType("integer", "decimal")) && (r.hasType("integer", "decimal")))
+        return makeBoolean(Double.valueOf(l.primitiveValue()) <= Double.valueOf(r.primitiveValue()));
+      else if ((l.hasType("date", "dateTime", "instant")) && (r.hasType("date", "dateTime", "instant")))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) <= 0);
-      else if ((l.hasType("time")) && (r.hasType("time"))) 
+      else if ((l.hasType("time")) && (r.hasType("time")))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) <= 0);
-    } else if (left.size() == 1 && right.size() == 1 && left.get(0).fhirType().equals("Quantity") && right.get(0).fhirType().equals("Quantity") ) {
+    } else if (left.size() == 1 && right.size() == 1 && left.get(0).fhirType().equals("Quantity")
+        && right.get(0).fhirType().equals("Quantity")) {
       List<Base> lUnits = left.get(0).listChildrenByName("unit");
       String lunit = lUnits.size() == 1 ? lUnits.get(0).primitiveValue() : null;
       List<Base> rUnits = right.get(0).listChildrenByName("unit");
@@ -1320,19 +1379,20 @@ public class FHIRPathEngine {
     return new ArrayList<Base>();
   }
 
-	private List<Base> opGreaterOrEqual(List<Base> left, List<Base> right) throws FHIRException {
+  private List<Base> opGreaterOrEqual(List<Base> left, List<Base> right) throws FHIRException {
     if (left.size() == 1 && right.size() == 1 && left.get(0).isPrimitive() && right.get(0).isPrimitive()) {
       Base l = left.get(0);
       Base r = right.get(0);
-      if (l.hasType("string") && r.hasType("string")) 
+      if (l.hasType("string") && r.hasType("string"))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) >= 0);
-      else if ((l.hasType("integer", "decimal")) && (r.hasType("integer", "decimal"))) 
-        return makeBoolean(new Double(l.primitiveValue()) >= new Double(r.primitiveValue()));
-      else if ((l.hasType("date", "dateTime", "instant")) && (r.hasType("date", "dateTime", "instant"))) 
+      else if ((l.hasType("integer", "decimal")) && (r.hasType("integer", "decimal")))
+        return makeBoolean(Double.valueOf(l.primitiveValue()) >= Double.valueOf(r.primitiveValue()));
+      else if ((l.hasType("date", "dateTime", "instant")) && (r.hasType("date", "dateTime", "instant")))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) >= 0);
-      else if ((l.hasType("time")) && (r.hasType("time"))) 
+      else if ((l.hasType("time")) && (r.hasType("time")))
         return makeBoolean(l.primitiveValue().compareTo(r.primitiveValue()) >= 0);
-    } else if (left.size() == 1 && right.size() == 1 && left.get(0).fhirType().equals("Quantity") && right.get(0).fhirType().equals("Quantity") ) {
+    } else if (left.size() == 1 && right.size() == 1 && left.get(0).fhirType().equals("Quantity")
+        && right.get(0).fhirType().equals("Quantity")) {
       List<Base> lUnit = left.get(0).listChildrenByName("unit");
       List<Base> rUnit = right.get(0).listChildrenByName("unit");
       if (Base.compareDeep(lUnit, rUnit, true)) {
@@ -1384,25 +1444,29 @@ public class FHIRPathEngine {
     if (left.size() > 1)
       throw new PathEngineException("Error performing +: left operand has more than one value");
     if (!left.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing +: left operand has the wrong type (%s)", left.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing +: left operand has the wrong type (%s)", left.get(0).fhirType()));
     if (right.size() == 0)
       throw new PathEngineException("Error performing +: right operand has no value");
     if (right.size() > 1)
       throw new PathEngineException("Error performing +: right operand has more than one value");
     if (!right.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing +: right operand has the wrong type (%s)", right.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing +: right operand has the wrong type (%s)", right.get(0).fhirType()));
 
     List<Base> result = new ArrayList<Base>();
     Base l = left.get(0);
     Base r = right.get(0);
-    if (l.hasType("string", "id", "code", "uri") && r.hasType("string", "id", "code", "uri")) 
+    if (l.hasType("string", "id", "code", "uri") && r.hasType("string", "id", "code", "uri"))
       result.add(new StringType(l.primitiveValue() + r.primitiveValue()));
-    else if (l.hasType("integer") && r.hasType("integer")) 
+    else if (l.hasType("integer") && r.hasType("integer"))
       result.add(new IntegerType(Integer.parseInt(l.primitiveValue()) + Integer.parseInt(r.primitiveValue())));
-    else if (l.hasType("decimal", "integer") && r.hasType("decimal", "integer")) 
+    else if (l.hasType("decimal", "integer") && r.hasType("decimal", "integer"))
       result.add(new DecimalType(new BigDecimal(l.primitiveValue()).add(new BigDecimal(r.primitiveValue()))));
     else
-      throw new PathEngineException(String.format("Error performing +: left and right operand have incompatible or illegal types (%s, %s)", left.get(0).fhirType(), right.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing +: left and right operand have incompatible or illegal types (%s, %s)",
+              left.get(0).fhirType(), right.get(0).fhirType()));
     return result;
   }
 
@@ -1412,24 +1476,28 @@ public class FHIRPathEngine {
     if (left.size() > 1)
       throw new PathEngineException("Error performing *: left operand has more than one value");
     if (!left.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing +: left operand has the wrong type (%s)", left.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing +: left operand has the wrong type (%s)", left.get(0).fhirType()));
     if (right.size() == 0)
       throw new PathEngineException("Error performing *: right operand has no value");
     if (right.size() > 1)
       throw new PathEngineException("Error performing *: right operand has more than one value");
     if (!right.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing *: right operand has the wrong type (%s)", right.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing *: right operand has the wrong type (%s)", right.get(0).fhirType()));
 
     List<Base> result = new ArrayList<Base>();
     Base l = left.get(0);
     Base r = right.get(0);
 
-    if (l.hasType("integer") && r.hasType("integer")) 
+    if (l.hasType("integer") && r.hasType("integer"))
       result.add(new IntegerType(Integer.parseInt(l.primitiveValue()) * Integer.parseInt(r.primitiveValue())));
-    else if (l.hasType("decimal", "integer") && r.hasType("decimal", "integer")) 
+    else if (l.hasType("decimal", "integer") && r.hasType("decimal", "integer"))
       result.add(new DecimalType(new BigDecimal(l.primitiveValue()).multiply(new BigDecimal(r.primitiveValue()))));
     else
-      throw new PathEngineException(String.format("Error performing *: left and right operand have incompatible or illegal types (%s, %s)", left.get(0).fhirType(), right.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing *: left and right operand have incompatible or illegal types (%s, %s)",
+              left.get(0).fhirType(), right.get(0).fhirType()));
     return result;
   }
 
@@ -1459,7 +1527,6 @@ public class FHIRPathEngine {
     return false;
   }
 
-
   private List<Base> opAnd(List<Base> left, List<Base> right) {
     if (left.isEmpty() && right.isEmpty())
       return new ArrayList<Base>();
@@ -1469,7 +1536,7 @@ public class FHIRPathEngine {
       return new ArrayList<Base>();
     else if (convertToBoolean(left) && convertToBoolean(right))
       return makeBoolean(true);
-    else 
+    else
       return makeBoolean(false);
   }
 
@@ -1484,26 +1551,25 @@ public class FHIRPathEngine {
       return makeBoolean(true);
     else if (left.isEmpty() || right.isEmpty())
       return new ArrayList<Base>();
-    else 
+    else
       return makeBoolean(false);
   }
 
   private List<Base> opXor(List<Base> left, List<Base> right) {
     if (left.isEmpty() || right.isEmpty())
       return new ArrayList<Base>();
-    else 
+    else
       return makeBoolean(convertToBoolean(left) ^ convertToBoolean(right));
   }
 
   private List<Base> opImplies(List<Base> left, List<Base> right) {
-    if (!convertToBoolean(left)) 
+    if (!convertToBoolean(left))
       return makeBoolean(true);
     else if (right.size() == 0)
-      return new ArrayList<Base>();      
+      return new ArrayList<Base>();
     else
       return makeBoolean(convertToBoolean(right));
   }
-
 
   private List<Base> opMinus(List<Base> left, List<Base> right) throws PathEngineException {
     if (left.size() == 0)
@@ -1511,24 +1577,28 @@ public class FHIRPathEngine {
     if (left.size() > 1)
       throw new PathEngineException("Error performing -: left operand has more than one value");
     if (!left.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing -: left operand has the wrong type (%s)", left.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing -: left operand has the wrong type (%s)", left.get(0).fhirType()));
     if (right.size() == 0)
       throw new PathEngineException("Error performing -: right operand has no value");
     if (right.size() > 1)
       throw new PathEngineException("Error performing -: right operand has more than one value");
     if (!right.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing -: right operand has the wrong type (%s)", right.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing -: right operand has the wrong type (%s)", right.get(0).fhirType()));
 
     List<Base> result = new ArrayList<Base>();
     Base l = left.get(0);
     Base r = right.get(0);
 
-    if (l.hasType("integer") && r.hasType("integer")) 
+    if (l.hasType("integer") && r.hasType("integer"))
       result.add(new IntegerType(Integer.parseInt(l.primitiveValue()) - Integer.parseInt(r.primitiveValue())));
-    else if (l.hasType("decimal", "integer") && r.hasType("decimal", "integer")) 
+    else if (l.hasType("decimal", "integer") && r.hasType("decimal", "integer"))
       result.add(new DecimalType(new BigDecimal(l.primitiveValue()).subtract(new BigDecimal(r.primitiveValue()))));
     else
-      throw new PathEngineException(String.format("Error performing -: left and right operand have incompatible or illegal types (%s, %s)", left.get(0).fhirType(), right.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing -: left and right operand have incompatible or illegal types (%s, %s)",
+              left.get(0).fhirType(), right.get(0).fhirType()));
     return result;
   }
 
@@ -1538,13 +1608,15 @@ public class FHIRPathEngine {
     if (left.size() > 1)
       throw new PathEngineException("Error performing /: left operand has more than one value");
     if (!left.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing -: left operand has the wrong type (%s)", left.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing -: left operand has the wrong type (%s)", left.get(0).fhirType()));
     if (right.size() == 0)
       throw new PathEngineException("Error performing /: right operand has no value");
     if (right.size() > 1)
       throw new PathEngineException("Error performing /: right operand has more than one value");
     if (!right.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing /: right operand has the wrong type (%s)", right.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing /: right operand has the wrong type (%s)", right.get(0).fhirType()));
 
     List<Base> result = new ArrayList<Base>();
     Base l = left.get(0);
@@ -1559,9 +1631,10 @@ public class FHIRPathEngine {
       } catch (UcumException e) {
         throw new PathEngineException(e);
       }
-    }
-    else
-      throw new PathEngineException(String.format("Error performing /: left and right operand have incompatible or illegal types (%s, %s)", left.get(0).fhirType(), right.get(0).fhirType()));
+    } else
+      throw new PathEngineException(
+          String.format("Error performing /: left and right operand have incompatible or illegal types (%s, %s)",
+              left.get(0).fhirType(), right.get(0).fhirType()));
     return result;
   }
 
@@ -1571,21 +1644,23 @@ public class FHIRPathEngine {
     if (left.size() > 1)
       throw new PathEngineException("Error performing div: left operand has more than one value");
     if (!left.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing div: left operand has the wrong type (%s)", left.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing div: left operand has the wrong type (%s)", left.get(0).fhirType()));
     if (right.size() == 0)
       throw new PathEngineException("Error performing div: right operand has no value");
     if (right.size() > 1)
       throw new PathEngineException("Error performing div: right operand has more than one value");
     if (!right.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing div: right operand has the wrong type (%s)", right.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing div: right operand has the wrong type (%s)", right.get(0).fhirType()));
 
     List<Base> result = new ArrayList<Base>();
     Base l = left.get(0);
     Base r = right.get(0);
 
-    if (l.hasType("integer") && r.hasType("integer")) 
+    if (l.hasType("integer") && r.hasType("integer"))
       result.add(new IntegerType(Integer.parseInt(l.primitiveValue()) / Integer.parseInt(r.primitiveValue())));
-    else if (l.hasType("decimal", "integer") && r.hasType("decimal", "integer")) { 
+    else if (l.hasType("decimal", "integer") && r.hasType("decimal", "integer")) {
       Decimal d1;
       try {
         d1 = new Decimal(l.primitiveValue());
@@ -1594,9 +1669,10 @@ public class FHIRPathEngine {
       } catch (UcumException e) {
         throw new PathEngineException(e);
       }
-    }
-    else
-      throw new PathEngineException(String.format("Error performing div: left and right operand have incompatible or illegal types (%s, %s)", left.get(0).fhirType(), right.get(0).fhirType()));
+    } else
+      throw new PathEngineException(
+          String.format("Error performing div: left and right operand have incompatible or illegal types (%s, %s)",
+              left.get(0).fhirType(), right.get(0).fhirType()));
     return result;
   }
 
@@ -1606,19 +1682,21 @@ public class FHIRPathEngine {
     if (left.size() > 1)
       throw new PathEngineException("Error performing mod: left operand has more than one value");
     if (!left.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing mod: left operand has the wrong type (%s)", left.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing mod: left operand has the wrong type (%s)", left.get(0).fhirType()));
     if (right.size() == 0)
       throw new PathEngineException("Error performing mod: right operand has no value");
     if (right.size() > 1)
       throw new PathEngineException("Error performing mod: right operand has more than one value");
     if (!right.get(0).isPrimitive())
-      throw new PathEngineException(String.format("Error performing mod: right operand has the wrong type (%s)", right.get(0).fhirType()));
+      throw new PathEngineException(
+          String.format("Error performing mod: right operand has the wrong type (%s)", right.get(0).fhirType()));
 
     List<Base> result = new ArrayList<Base>();
     Base l = left.get(0);
     Base r = right.get(0);
 
-    if (l.hasType("integer") && r.hasType("integer")) 
+    if (l.hasType("integer") && r.hasType("integer"))
       result.add(new IntegerType(Integer.parseInt(l.primitiveValue()) % Integer.parseInt(r.primitiveValue())));
     else if (l.hasType("decimal", "integer") && r.hasType("decimal", "integer")) {
       Decimal d1;
@@ -1629,29 +1707,29 @@ public class FHIRPathEngine {
       } catch (UcumException e) {
         throw new PathEngineException(e);
       }
-    }
-    else
-      throw new PathEngineException(String.format("Error performing mod: left and right operand have incompatible or illegal types (%s, %s)", left.get(0).fhirType(), right.get(0).fhirType()));
+    } else
+      throw new PathEngineException(
+          String.format("Error performing mod: left and right operand have incompatible or illegal types (%s, %s)",
+              left.get(0).fhirType(), right.get(0).fhirType()));
     return result;
   }
 
-
-  private String readConstantType(ExecutionTypeContext context, String constant) throws PathEngineException {
-    if (constant.equals("true")) 
+  private String readConstantType(ExecutionTypeContext context, String constant, FHIRPathConstantEvaluationMode mode) throws PathEngineException {
+    if (constant.equals("true"))
       return "boolean";
-    else if (constant.equals("false")) 
+    else if (constant.equals("false"))
       return "boolean";
     else if (Utilities.isInteger(constant))
       return "integer";
     else if (Utilities.isDecimal(constant, false))
       return "decimal";
     else if (constant.startsWith("%"))
-      return resolveConstantType(context, constant);
+      return resolveConstantType(context, constant, mode);
     else
       return "string";
   }
 
-  private String resolveConstantType(ExecutionTypeContext context, String s) throws PathEngineException {
+  private String resolveConstantType(ExecutionTypeContext context, String s, FHIRPathConstantEvaluationMode mode) throws PathEngineException {
     if (s.equals("%sct"))
       return "string";
     else if (s.equals("%loinc"))
@@ -1673,192 +1751,199 @@ public class FHIRPathEngine {
     else if (s.startsWith("%\"ext-"))
       return "string";
     else if (hostServices == null)
-      throw new PathEngineException("Unknown fixed constant type for '"+s+"'");
+      throw new PathEngineException("Unknown fixed constant type for '" + s + "'");
     else
-      return hostServices.resolveConstantType(context.appInfo, s);
+      return hostServices.resolveConstantType(this, context.appInfo, s, mode).getType();
   }
 
-	private List<Base> execute(ExecutionContext context, Base item, ExpressionNode exp, boolean atEntry) throws FHIRException {
-    List<Base> result = new ArrayList<Base>(); 
+  private List<Base> execute(ExecutionContext context, Base item, ExpressionNode exp, boolean atEntry)
+      throws FHIRException {
+    List<Base> result = new ArrayList<Base>();
     if (atEntry && Character.isUpperCase(exp.getName().charAt(0))) {// special case for start up
-      if (item instanceof Resource && ((Resource) item).getResourceType().toString().equals(exp.getName()))  
+      if (item instanceof Resource && ((Resource) item).getResourceType().toString().equals(exp.getName()))
         result.add(item);
     } else
       getChildrenByName(item, exp.getName(), result);
     return result;
-  }	
+  }
 
-  private TypeDetails executeType(String type, ExpressionNode exp, boolean atEntry) throws PathEngineException, DefinitionException {
-    if (atEntry && Character.isUpperCase(exp.getName().charAt(0)) && type.equals(exp.getName())) // special case for start up
+  private TypeDetails executeType(String type, ExpressionNode exp, boolean atEntry)
+      throws PathEngineException, DefinitionException {
+    if (atEntry && Character.isUpperCase(exp.getName().charAt(0)) && type.equals(exp.getName())) // special case for
+                                                                                                 // start up
       return new TypeDetails(CollectionStatus.SINGLETON, type);
     TypeDetails result = new TypeDetails(null);
     getChildTypesByName(type, exp.getName(), result);
     return result;
   }
 
-
   @SuppressWarnings("unchecked")
-  private TypeDetails evaluateFunctionType(ExecutionTypeContext context, TypeDetails focus, ExpressionNode exp) throws PathEngineException, DefinitionException {
+  private TypeDetails evaluateFunctionType(ExecutionTypeContext context, TypeDetails focus, ExpressionNode exp)
+      throws PathEngineException, DefinitionException {
     List<TypeDetails> paramTypes = new ArrayList<TypeDetails>();
     if (exp.getFunction() == Function.Is || exp.getFunction() == Function.As)
       paramTypes.add(new TypeDetails(CollectionStatus.SINGLETON, "string"));
     else
       for (ExpressionNode expr : exp.getParameters()) {
-        if (exp.getFunction() == Function.Where || exp.getFunction() == Function.Select || exp.getFunction() == Function.Repeat)
+        if (exp.getFunction() == Function.Where || exp.getFunction() == Function.Select
+            || exp.getFunction() == Function.Repeat)
           paramTypes.add(executeType(changeThis(context, focus), focus, expr, true));
         else
           paramTypes.add(executeType(context, focus, expr, true));
       }
     switch (exp.getFunction()) {
-    case Empty : 
+    case Empty:
       return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case Not : 
+    case Not:
       return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case Exists : 
+    case Exists:
       return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case SubsetOf : {
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, focus); 
-      return new TypeDetails(CollectionStatus.SINGLETON, "boolean"); 
+    case SubsetOf: {
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, focus);
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
     }
-    case SupersetOf : {
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, focus); 
-      return new TypeDetails(CollectionStatus.SINGLETON, "boolean"); 
-    }
-    case IsDistinct : 
+    case SupersetOf: {
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, focus);
       return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case Distinct : 
+    }
+    case IsDistinct:
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    case Distinct:
       return focus;
-    case Count : 
+    case Count:
       return new TypeDetails(CollectionStatus.SINGLETON, "integer");
-    case Where : 
+    case Where:
       return focus;
-    case Select : 
+    case Select:
       return anything(focus.getCollectionStatus());
-    case All : 
+    case All:
       return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    case Repeat : 
+    case Repeat:
       return anything(focus.getCollectionStatus());
-    case Item : {
+    case Item: {
       checkOrdered(focus, "item");
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "integer")); 
-      return focus; 
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "integer"));
+      return focus;
     }
-    case As : {
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string")); 
+    case As: {
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"));
       return new TypeDetails(CollectionStatus.SINGLETON, exp.getParameters().get(0).getName());
     }
-    case Is : {
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string")); 
-      return new TypeDetails(CollectionStatus.SINGLETON, "boolean"); 
+    case Is: {
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"));
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
     }
-    case Single :
+    case Single:
       return focus.toSingleton();
-    case First : {
+    case First: {
       checkOrdered(focus, "first");
       return focus.toSingleton();
     }
-    case Last : {
+    case Last: {
       checkOrdered(focus, "last");
       return focus.toSingleton();
     }
-    case Tail : {
+    case Tail: {
       checkOrdered(focus, "tail");
       return focus;
     }
-    case Skip : {
+    case Skip: {
       checkOrdered(focus, "skip");
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "integer")); 
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "integer"));
       return focus;
     }
-    case Take : {
+    case Take: {
       checkOrdered(focus, "take");
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "integer")); 
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "integer"));
       return focus;
     }
-    case Iif : {
+    case Iif: {
       TypeDetails types = new TypeDetails(null);
       types.update(paramTypes.get(0));
       if (paramTypes.size() > 1)
         types.update(paramTypes.get(1));
       return types;
     }
-    case ToInteger : {
+    case ToInteger: {
       checkContextPrimitive(focus, "toInteger");
       return new TypeDetails(CollectionStatus.SINGLETON, "integer");
     }
-    case ToDecimal : {
+    case ToDecimal: {
       checkContextPrimitive(focus, "toDecimal");
       return new TypeDetails(CollectionStatus.SINGLETON, "decimal");
     }
-    case ToString : {
+    case ToString: {
       checkContextPrimitive(focus, "toString");
       return new TypeDetails(CollectionStatus.SINGLETON, "string");
     }
-    case Substring : {
+    case Substring: {
       checkContextString(focus, "subString");
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "integer"), new TypeDetails(CollectionStatus.SINGLETON, "integer")); 
-      return new TypeDetails(CollectionStatus.SINGLETON, "string"); 
-    }
-    case StartsWith : {
-      checkContextString(focus, "startsWith");
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string")); 
-      return new TypeDetails(CollectionStatus.SINGLETON, "boolean"); 
-    }
-    case EndsWith : {
-      checkContextString(focus, "endsWith");
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string")); 
-      return new TypeDetails(CollectionStatus.SINGLETON, "boolean"); 
-    }
-    case Matches : {
-      checkContextString(focus, "matches");
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string")); 
-      return new TypeDetails(CollectionStatus.SINGLETON, "boolean"); 
-    }
-    case ReplaceMatches : {
-      checkContextString(focus, "replaceMatches");
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"), new TypeDetails(CollectionStatus.SINGLETON, "string")); 
-      return new TypeDetails(CollectionStatus.SINGLETON, "string"); 
-    }
-    case Contains : {
-      checkContextString(focus, "contains");
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string")); 
-      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
-    }
-    case Replace : {
-      checkContextString(focus, "replace");
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"), new TypeDetails(CollectionStatus.SINGLETON, "string")); 
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "integer"),
+          new TypeDetails(CollectionStatus.SINGLETON, "integer"));
       return new TypeDetails(CollectionStatus.SINGLETON, "string");
     }
-    case Length : { 
+    case StartsWith: {
+      checkContextString(focus, "startsWith");
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"));
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    }
+    case EndsWith: {
+      checkContextString(focus, "endsWith");
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"));
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    }
+    case Matches: {
+      checkContextString(focus, "matches");
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"));
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    }
+    case ReplaceMatches: {
+      checkContextString(focus, "replaceMatches");
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"),
+          new TypeDetails(CollectionStatus.SINGLETON, "string"));
+      return new TypeDetails(CollectionStatus.SINGLETON, "string");
+    }
+    case Contains: {
+      checkContextString(focus, "contains");
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"));
+      return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
+    }
+    case Replace: {
+      checkContextString(focus, "replace");
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"),
+          new TypeDetails(CollectionStatus.SINGLETON, "string"));
+      return new TypeDetails(CollectionStatus.SINGLETON, "string");
+    }
+    case Length: {
       checkContextPrimitive(focus, "length");
       return new TypeDetails(CollectionStatus.SINGLETON, "integer");
     }
-    case Children : 
+    case Children:
       return childTypes(focus, "*");
-    case Descendents : 
+    case Descendents:
       return childTypes(focus, "**");
-    case MemberOf : {
+    case MemberOf: {
       checkContextCoded(focus, "memberOf");
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string")); 
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"));
       return new TypeDetails(CollectionStatus.SINGLETON, "boolean");
     }
-    case Trace : {
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string")); 
-      return focus; 
+    case Trace: {
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"));
+      return focus;
     }
-    case Today : 
+    case Today:
       return new TypeDetails(CollectionStatus.SINGLETON, "date");
-    case Now : 
+    case Now:
       return new TypeDetails(CollectionStatus.SINGLETON, "dateTime");
-    case Resolve : {
+    case Resolve: {
       checkContextReference(focus, "resolve");
-      return new TypeDetails(CollectionStatus.SINGLETON, "DomainResource"); 
+      return new TypeDetails(CollectionStatus.SINGLETON, "DomainResource");
     }
-    case Extension : {
-      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string")); 
-      return new TypeDetails(CollectionStatus.SINGLETON, "Extension"); 
+    case Extension: {
+      checkParamTypes(exp.getFunction().toCode(), paramTypes, new TypeDetails(CollectionStatus.SINGLETON, "string"));
+      return new TypeDetails(CollectionStatus.SINGLETON, "Extension");
     }
-    case Custom : {
+    case Custom: {
       return hostServices.checkFunction(context.appInfo, exp.getName(), paramTypes);
     }
     default:
@@ -1867,8 +1952,8 @@ public class FHIRPathEngine {
     throw new Error("not Implemented yet");
   }
 
-
-  private void checkParamTypes(String funcName, List<TypeDetails> paramTypes, TypeDetails... typeSet) throws PathEngineException {
+  private void checkParamTypes(String funcName, List<TypeDetails> paramTypes, TypeDetails... typeSet)
+      throws PathEngineException {
     int i = 0;
     for (TypeDetails pt : typeSet) {
       if (i == paramTypes.size())
@@ -1877,43 +1962,43 @@ public class FHIRPathEngine {
       i++;
       for (String a : actual.getTypes()) {
         if (!pt.hasType(a))
-          throw new PathEngineException("The parameter type '"+a+"' is not legal for "+funcName+" parameter "+Integer.toString(i)+". expecting "+pt.toString()); 
+          throw new PathEngineException("The parameter type '" + a + "' is not legal for " + funcName + " parameter "
+              + Integer.toString(i) + ". expecting " + pt.toString());
       }
     }
   }
 
   private void checkOrdered(TypeDetails focus, String name) throws PathEngineException {
     if (focus.getCollectionStatus() == CollectionStatus.UNORDERED)
-      throw new PathEngineException("The function '"+name+"'() can only be used on ordered collections"); 
+      throw new PathEngineException("The function '" + name + "'() can only be used on ordered collections");
   }
 
   private void checkContextReference(TypeDetails focus, String name) throws PathEngineException {
     if (!focus.hasType("string") && !focus.hasType("uri") && !focus.hasType("Reference"))
-      throw new PathEngineException("The function '"+name+"'() can only be used on string, uri, Reference"); 
+      throw new PathEngineException("The function '" + name + "'() can only be used on string, uri, Reference");
   }
-
 
   private void checkContextCoded(TypeDetails focus, String name) throws PathEngineException {
-    if (!focus.hasType("string") && !focus.hasType("code") && !focus.hasType("uri") && !focus.hasType("Coding") && !focus.hasType("CodeableConcept"))
-      throw new PathEngineException("The function '"+name+"'() can only be used on string, code, uri, Coding, CodeableConcept");     
+    if (!focus.hasType("string") && !focus.hasType("code") && !focus.hasType("uri") && !focus.hasType("Coding")
+        && !focus.hasType("CodeableConcept"))
+      throw new PathEngineException(
+          "The function '" + name + "'() can only be used on string, code, uri, Coding, CodeableConcept");
   }
-
 
   private void checkContextString(TypeDetails focus, String name) throws PathEngineException {
     if (!focus.hasType("string") && !focus.hasType("code") && !focus.hasType("uri") && !focus.hasType("id"))
-      throw new PathEngineException("The function '"+name+"'() can only be used on string, uri, code, id, but found "+focus.describe()); 
+      throw new PathEngineException(
+          "The function '" + name + "'() can only be used on string, uri, code, id, but found " + focus.describe());
   }
-
 
   private void checkContextPrimitive(TypeDetails focus, String name) throws PathEngineException {
     if (!focus.hasType(primitiveTypes))
-      throw new PathEngineException("The function '"+name+"'() can only be used on "+primitiveTypes.toString()); 
+      throw new PathEngineException("The function '" + name + "'() can only be used on " + primitiveTypes.toString());
   }
-
 
   private TypeDetails childTypes(TypeDetails focus, String mask) throws PathEngineException, DefinitionException {
     TypeDetails result = new TypeDetails(CollectionStatus.UNORDERED);
-    for (String f : focus.getTypes()) 
+    for (String f : focus.getTypes())
       getChildTypesByName(f, mask, result);
     return result;
   }
@@ -1922,56 +2007,102 @@ public class FHIRPathEngine {
     return new TypeDetails(status, allTypes.keySet());
   }
 
-  //	private boolean isPrimitiveType(String s) {
-  //		return s.equals("boolean") || s.equals("integer") || s.equals("decimal") || s.equals("base64Binary") || s.equals("instant") || s.equals("string") || s.equals("uri") || s.equals("date") || s.equals("dateTime") || s.equals("time") || s.equals("code") || s.equals("oid") || s.equals("id") || s.equals("unsignedInt") || s.equals("positiveInt") || s.equals("markdown");
-  //	}
+  // private boolean isPrimitiveType(String s) {
+  // return s.equals("boolean") || s.equals("integer") || s.equals("decimal") ||
+  // s.equals("base64Binary") || s.equals("instant") || s.equals("string") ||
+  // s.equals("uri") || s.equals("date") || s.equals("dateTime") ||
+  // s.equals("time") || s.equals("code") || s.equals("oid") || s.equals("id") ||
+  // s.equals("unsignedInt") || s.equals("positiveInt") || s.equals("markdown");
+  // }
 
-	private List<Base> evaluateFunction(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> evaluateFunction(ExecutionContext context, List<Base> focus, ExpressionNode exp)
+      throws FHIRException {
     switch (exp.getFunction()) {
-    case Empty : return funcEmpty(context, focus, exp);
-    case Not : return funcNot(context, focus, exp);
-    case Exists : return funcExists(context, focus, exp);
-    case SubsetOf : return funcSubsetOf(context, focus, exp);
-    case SupersetOf : return funcSupersetOf(context, focus, exp);
-    case IsDistinct : return funcIsDistinct(context, focus, exp);
-    case Distinct : return funcDistinct(context, focus, exp);
-    case Count : return funcCount(context, focus, exp);
-    case Where : return funcWhere(context, focus, exp);
-    case Select : return funcSelect(context, focus, exp);
-    case All : return funcAll(context, focus, exp);
-    case Repeat : return funcRepeat(context, focus, exp);
-    case Item : return funcItem(context, focus, exp);
-    case As : return funcAs(context, focus, exp);
-    case Is : return funcIs(context, focus, exp);
-    case Single : return funcSingle(context, focus, exp);
-    case First : return funcFirst(context, focus, exp);
-    case Last : return funcLast(context, focus, exp);
-    case Tail : return funcTail(context, focus, exp);
-    case Skip : return funcSkip(context, focus, exp);
-    case Take : return funcTake(context, focus, exp);
-    case Iif : return funcIif(context, focus, exp);
-    case ToInteger : return funcToInteger(context, focus, exp);
-    case ToDecimal : return funcToDecimal(context, focus, exp);
-    case ToString : return funcToString(context, focus, exp);
-    case Substring : return funcSubstring(context, focus, exp);
-    case StartsWith : return funcStartsWith(context, focus, exp);
-    case EndsWith : return funcEndsWith(context, focus, exp);
-    case Matches : return funcMatches(context, focus, exp);
-    case ReplaceMatches : return funcReplaceMatches(context, focus, exp);
-    case Contains : return funcContains(context, focus, exp);
-    case Replace : return funcReplace(context, focus, exp);
-    case Length : return funcLength(context, focus, exp);
-    case Children : return funcChildren(context, focus, exp);
-    case Descendents : return funcDescendents(context, focus, exp);
-    case MemberOf : return funcMemberOf(context, focus, exp);
-    case Trace : return funcTrace(context, focus, exp);
-    case Today : return funcToday(context, focus, exp);
-    case Now : return funcNow(context, focus, exp);
-    case Resolve : return funcResolve(context, focus, exp);
-    case Extension : return funcExtension(context, focus, exp);
-    case Custom: { 
+    case Empty:
+      return funcEmpty(context, focus, exp);
+    case Not:
+      return funcNot(context, focus, exp);
+    case Exists:
+      return funcExists(context, focus, exp);
+    case SubsetOf:
+      return funcSubsetOf(context, focus, exp);
+    case SupersetOf:
+      return funcSupersetOf(context, focus, exp);
+    case IsDistinct:
+      return funcIsDistinct(context, focus, exp);
+    case Distinct:
+      return funcDistinct(context, focus, exp);
+    case Count:
+      return funcCount(context, focus, exp);
+    case Where:
+      return funcWhere(context, focus, exp);
+    case Select:
+      return funcSelect(context, focus, exp);
+    case All:
+      return funcAll(context, focus, exp);
+    case Repeat:
+      return funcRepeat(context, focus, exp);
+    case Item:
+      return funcItem(context, focus, exp);
+    case As:
+      return funcAs(context, focus, exp);
+    case Is:
+      return funcIs(context, focus, exp);
+    case Single:
+      return funcSingle(context, focus, exp);
+    case First:
+      return funcFirst(context, focus, exp);
+    case Last:
+      return funcLast(context, focus, exp);
+    case Tail:
+      return funcTail(context, focus, exp);
+    case Skip:
+      return funcSkip(context, focus, exp);
+    case Take:
+      return funcTake(context, focus, exp);
+    case Iif:
+      return funcIif(context, focus, exp);
+    case ToInteger:
+      return funcToInteger(context, focus, exp);
+    case ToDecimal:
+      return funcToDecimal(context, focus, exp);
+    case ToString:
+      return funcToString(context, focus, exp);
+    case Substring:
+      return funcSubstring(context, focus, exp);
+    case StartsWith:
+      return funcStartsWith(context, focus, exp);
+    case EndsWith:
+      return funcEndsWith(context, focus, exp);
+    case Matches:
+      return funcMatches(context, focus, exp);
+    case ReplaceMatches:
+      return funcReplaceMatches(context, focus, exp);
+    case Contains:
+      return funcContains(context, focus, exp);
+    case Replace:
+      return funcReplace(context, focus, exp);
+    case Length:
+      return funcLength(context, focus, exp);
+    case Children:
+      return funcChildren(context, focus, exp);
+    case Descendents:
+      return funcDescendents(context, focus, exp);
+    case MemberOf:
+      return funcMemberOf(context, focus, exp);
+    case Trace:
+      return funcTrace(context, focus, exp);
+    case Today:
+      return funcToday(context, focus, exp);
+    case Now:
+      return funcNow(context, focus, exp);
+    case Resolve:
+      return funcResolve(context, focus, exp);
+    case Extension:
+      return funcExtension(context, focus, exp);
+    case Custom: {
       List<List<Base>> params = new ArrayList<List<Base>>();
-      for (ExpressionNode p : exp.getParameters()) 
+      for (ExpressionNode p : exp.getParameters())
         params.add(execute(context, focus, p, true));
       return hostServices.executeFunction(context.appInfo, exp.getName(), params);
     }
@@ -1980,7 +2111,7 @@ public class FHIRPathEngine {
     }
   }
 
-	private List<Base> funcAll(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcAll(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     if (exp.getParameters().size() == 1) {
       List<Base> result = new ArrayList<Base>();
       List<Base> pc = new ArrayList<Base>();
@@ -2002,7 +2133,7 @@ public class FHIRPathEngine {
         boolean v = false;
         if (item instanceof BooleanType) {
           v = ((BooleanType) item).booleanValue();
-        } else 
+        } else
           v = item != null;
         if (!v) {
           all = false;
@@ -2014,7 +2145,6 @@ public class FHIRPathEngine {
     }
   }
 
-
   private ExecutionContext changeThis(ExecutionContext context, Base newThis) {
     return new ExecutionContext(context.appInfo, context.resource, newThis);
   }
@@ -2023,13 +2153,11 @@ public class FHIRPathEngine {
     return new ExecutionTypeContext(context.appInfo, context.resource, newThis);
   }
 
-
   private List<Base> funcNow(ExecutionContext context, List<Base> focus, ExpressionNode exp) {
     List<Base> result = new ArrayList<Base>();
     result.add(DateTimeType.now());
     return result;
   }
-
 
   private List<Base> funcToday(ExecutionContext context, List<Base> focus, ExpressionNode exp) {
     List<Base> result = new ArrayList<Base>();
@@ -2037,13 +2165,12 @@ public class FHIRPathEngine {
     return result;
   }
 
-
   private List<Base> funcMemberOf(ExecutionContext context, List<Base> focus, ExpressionNode exp) {
     throw new Error("not Implemented yet");
   }
 
-
-  private List<Base> funcDescendents(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcDescendents(ExecutionContext context, List<Base> focus, ExpressionNode exp)
+      throws FHIRException {
     List<Base> result = new ArrayList<Base>();
     List<Base> current = new ArrayList<Base>();
     current.addAll(focus);
@@ -2062,7 +2189,6 @@ public class FHIRPathEngine {
     return result;
   }
 
-
   private List<Base> funcChildren(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     List<Base> result = new ArrayList<Base>();
     for (Base b : focus)
@@ -2070,13 +2196,12 @@ public class FHIRPathEngine {
     return result;
   }
 
-
   private List<Base> funcReplace(ExecutionContext context, List<Base> focus, ExpressionNode exp) {
     throw new Error("not Implemented yet");
   }
 
-
-  private List<Base> funcReplaceMatches(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcReplaceMatches(ExecutionContext context, List<Base> focus, ExpressionNode exp)
+      throws FHIRException {
     List<Base> result = new ArrayList<Base>();
     String sw = convertToString(execute(context, focus, exp.getParameters().get(0), true));
 
@@ -2086,7 +2211,6 @@ public class FHIRPathEngine {
       result.add(new BooleanType(false));
     return result;
   }
-
 
   private List<Base> funcEndsWith(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     List<Base> result = new ArrayList<Base>();
@@ -2099,13 +2223,17 @@ public class FHIRPathEngine {
     return result;
   }
 
-
   private List<Base> funcToString(ExecutionContext context, List<Base> focus, ExpressionNode exp) {
     List<Base> result = new ArrayList<Base>();
+    for (Base item : focus) {
+      // only primitives can be converted to a string; anything else is {}
+      if (!item.isPrimitive()) {
+        return result;
+      }
+    }
     result.add(new StringType(convertToString(focus)));
     return result;
   }
-
 
   private List<Base> funcToDecimal(ExecutionContext context, List<Base> focus, ExpressionNode exp) {
     String s = convertToString(focus);
@@ -2114,7 +2242,6 @@ public class FHIRPathEngine {
       result.add(new DecimalType(s));
     return result;
   }
-
 
   private List<Base> funcIif(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     List<Base> n1 = execute(context, focus, exp.getParameters().get(0), true);
@@ -2128,7 +2255,6 @@ public class FHIRPathEngine {
       return execute(context, focus, exp.getParameters().get(2), true);
   }
 
-
   private List<Base> funcTake(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     List<Base> n1 = execute(context, focus, exp.getParameters().get(0), true);
     int i1 = Integer.parseInt(n1.get(0).primitiveValue());
@@ -2139,17 +2265,16 @@ public class FHIRPathEngine {
     return result;
   }
 
-
-  private List<Base> funcSingle(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws PathEngineException {
+  private List<Base> funcSingle(ExecutionContext context, List<Base> focus, ExpressionNode exp)
+      throws PathEngineException {
     if (focus.size() == 1)
       return focus;
     throw new PathEngineException(String.format("Single() : checking for 1 item but found %d items", focus.size()));
   }
 
-
   private List<Base> funcIs(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws PathEngineException {
     List<Base> result = new ArrayList<Base>();
-    if (focus.size() == 0 || focus.size() > 1) 
+    if (focus.size() == 0 || focus.size() > 1)
       result.add(new BooleanType(false));
     else {
       String tn = exp.getParameters().get(0).getName();
@@ -2157,7 +2282,6 @@ public class FHIRPathEngine {
     }
     return result;
   }
-
 
   private List<Base> funcAs(ExecutionContext context, List<Base> focus, ExpressionNode exp) {
     List<Base> result = new ArrayList<Base>();
@@ -2167,7 +2291,6 @@ public class FHIRPathEngine {
         result.add(b);
     return result;
   }
-
 
   private List<Base> funcRepeat(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     List<Base> result = new ArrayList<Base>();
@@ -2191,15 +2314,13 @@ public class FHIRPathEngine {
     return result;
   }
 
-
-
   private List<Base> funcIsDistinct(ExecutionContext context, List<Base> focus, ExpressionNode exp) {
     if (focus.size() <= 1)
       return makeBoolean(true);
 
     boolean distinct = true;
     for (int i = 0; i < focus.size(); i++) {
-      for (int j = i+1; j < focus.size(); j++) {
+      for (int j = i + 1; j < focus.size(); j++) {
         if (doEquals(focus.get(j), focus.get(i))) {
           distinct = false;
           break;
@@ -2209,8 +2330,8 @@ public class FHIRPathEngine {
     return makeBoolean(distinct);
   }
 
-
-  private List<Base> funcSupersetOf(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcSupersetOf(ExecutionContext context, List<Base> focus, ExpressionNode exp)
+      throws FHIRException {
     List<Base> target = execute(context, focus, exp.getParameters().get(0), true);
 
     boolean valid = true;
@@ -2231,7 +2352,6 @@ public class FHIRPathEngine {
     result.add(new BooleanType(valid));
     return result;
   }
-
 
   private List<Base> funcSubsetOf(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     List<Base> target = execute(context, focus, exp.getParameters().get(0), true);
@@ -2255,19 +2375,18 @@ public class FHIRPathEngine {
     return result;
   }
 
-
   private List<Base> funcExists(ExecutionContext context, List<Base> focus, ExpressionNode exp) {
     List<Base> result = new ArrayList<Base>();
     result.add(new BooleanType(!focus.isEmpty()));
     return result;
   }
 
-
   private List<Base> funcResolve(ExecutionContext context, List<Base> focus, ExpressionNode exp) {
     throw new Error("not Implemented yet");
   }
 
-	private List<Base> funcExtension(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcExtension(ExecutionContext context, List<Base> focus, ExpressionNode exp)
+      throws FHIRException {
     List<Base> result = new ArrayList<Base>();
     List<Base> nl = execute(context, focus, exp.getParameters().get(0), true);
     String url = nl.get(0).primitiveValue();
@@ -2286,7 +2405,7 @@ public class FHIRPathEngine {
     return result;
   }
 
-	private List<Base> funcTrace(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcTrace(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     List<Base> nl = execute(context, focus, exp.getParameters().get(0), true);
     String name = nl.get(0).primitiveValue();
 
@@ -2301,7 +2420,7 @@ public class FHIRPathEngine {
     List<Base> result = new ArrayList<Base>();
     for (int i = 0; i < focus.size(); i++) {
       boolean found = false;
-      for (int j = i+1; j < focus.size(); j++) {
+      for (int j = i + 1; j < focus.size(); j++) {
         if (doEquals(focus.get(j), focus.get(i))) {
           found = true;
           break;
@@ -2313,18 +2432,25 @@ public class FHIRPathEngine {
     return result;
   }
 
-	private List<Base> funcMatches(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcMatches(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     List<Base> result = new ArrayList<Base>();
     String sw = convertToString(execute(context, focus, exp.getParameters().get(0), true));
 
-    if (focus.size() == 1 && !Utilities.noString(sw))
-      result.add(new BooleanType(convertToString(focus.get(0)).matches(sw)));
-    else
+    if (focus.size() == 1 && !Utilities.noString(sw)) {
+      try {
+        @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+        //False positive: RegexTimeout.matches is safe for user-supplied regular expressions
+        boolean matched = RegexTimeout.matches(convertToString(focus.get(0)), sw, regexTimeoutMillis);
+        result.add(new BooleanType(matched));
+      } catch (TimeoutException e) {
+        throw new FHIRException("Timeout evaluating regex: " + sw, e);
+      }
+    } else
       result.add(new BooleanType(false));
     return result;
   }
 
-	private List<Base> funcContains(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcContains(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     List<Base> result = new ArrayList<Base>();
     String sw = convertToString(execute(context, focus, exp.getParameters().get(0), true));
 
@@ -2344,7 +2470,8 @@ public class FHIRPathEngine {
     return result;
   }
 
-	private List<Base> funcStartsWith(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcStartsWith(ExecutionContext context, List<Base> focus, ExpressionNode exp)
+      throws FHIRException {
     List<Base> result = new ArrayList<Base>();
     String sw = convertToString(execute(context, focus, exp.getParameters().get(0), true));
 
@@ -2355,7 +2482,8 @@ public class FHIRPathEngine {
     return result;
   }
 
-	private List<Base> funcSubstring(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcSubstring(ExecutionContext context, List<Base> focus, ExpressionNode exp)
+      throws FHIRException {
     List<Base> result = new ArrayList<Base>();
     List<Base> n1 = execute(context, focus, exp.getParameters().get(0), true);
     int i1 = Integer.parseInt(n1.get(0).primitiveValue());
@@ -2371,10 +2499,10 @@ public class FHIRPathEngine {
       if (i1 < 0 || i1 >= sw.length())
         return new ArrayList<Base>();
       if (exp.parameterCount() == 2)
-        s = sw.substring(i1, Math.min(sw.length(), i1+i2));
+        s = sw.substring(i1, Math.min(sw.length(), i1 + i2));
       else
         s = sw.substring(i1);
-      if (!Utilities.noString(s)) 
+      if (!Utilities.noString(s))
         result.add(new StringType(s));
     }
     return result;
@@ -2414,7 +2542,7 @@ public class FHIRPathEngine {
   private List<Base> funcLast(ExecutionContext context, List<Base> focus, ExpressionNode exp) {
     List<Base> result = new ArrayList<Base>();
     if (focus.size() > 0)
-      result.add(focus.get(focus.size()-1));
+      result.add(focus.get(focus.size() - 1));
     return result;
   }
 
@@ -2425,8 +2553,7 @@ public class FHIRPathEngine {
     return result;
   }
 
-
-	private List<Base> funcWhere(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcWhere(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     List<Base> result = new ArrayList<Base>();
     List<Base> pc = new ArrayList<Base>();
     for (Base item : focus) {
@@ -2449,8 +2576,7 @@ public class FHIRPathEngine {
     return result;
   }
 
-
-	private List<Base> funcItem(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
+  private List<Base> funcItem(ExecutionContext context, List<Base> focus, ExpressionNode exp) throws FHIRException {
     List<Base> result = new ArrayList<Base>();
     String s = convertToString(execute(context, focus, exp.getParameters().get(0), true));
     if (Utilities.isInteger(s) && Integer.parseInt(s) < focus.size())
@@ -2471,51 +2597,55 @@ public class FHIRPathEngine {
   public class ElementDefinitionMatch {
     private ElementDefinition definition;
     private String fixedType;
+
     public ElementDefinitionMatch(ElementDefinition definition, String fixedType) {
       super();
       this.definition = definition;
       this.fixedType = fixedType;
     }
+
     public ElementDefinition getDefinition() {
       return definition;
     }
+
     public String getFixedType() {
       return fixedType;
     }
 
   }
 
-  private void getChildTypesByName(String type, String name, TypeDetails result) throws PathEngineException, DefinitionException {
+  private void getChildTypesByName(String type, String name, TypeDetails result)
+      throws PathEngineException, DefinitionException {
     if (Utilities.noString(type))
       throw new PathEngineException("No type provided in BuildToolPathEvaluator.getChildTypesByName");
     if (type.equals("xhtml"))
       return;
     String url = null;
     if (type.contains(".")) {
-      url = "http://hl7.org/fhir/StructureDefinition/"+type.substring(0, type.indexOf("."));
+      url = "http://hl7.org/fhir/StructureDefinition/" + type.substring(0, type.indexOf("."));
     } else {
-      url = "http://hl7.org/fhir/StructureDefinition/"+type;
+      url = "http://hl7.org/fhir/StructureDefinition/" + type;
     }
     String tail = "";
     StructureDefinition sd = worker.fetchResource(StructureDefinition.class, url);
     if (sd == null)
-      throw new DefinitionException("Unknown type "+type); // this really is an error, because we can only get to here if the internal infrastrucgture is wrong
+      throw new DefinitionException("Unknown type " + type); // this really is an error, because we can only get to here
+                                                             // if the internal infrastrucgture is wrong
     List<StructureDefinition> sdl = new ArrayList<StructureDefinition>();
     ElementDefinitionMatch m = null;
     if (type.contains("."))
       m = getElementDefinition(sd, type, false);
     if (m != null && hasDataType(m.definition)) {
-      if (m.fixedType != null)
-      {
+      if (m.fixedType != null) {
         StructureDefinition dt = worker.fetchTypeDefinition(m.fixedType);
         if (dt == null)
-          throw new DefinitionException("unknown data type "+m.fixedType);
+          throw new DefinitionException("unknown data type " + m.fixedType);
         sdl.add(dt);
       } else
         for (TypeRefComponent t : m.definition.getType()) {
           StructureDefinition dt = worker.fetchTypeDefinition(t.getCode());
           if (dt == null)
-            throw new DefinitionException("unknown data type "+t.getCode());
+            throw new DefinitionException("unknown data type " + t.getCode());
           sdl.add(dt);
         }
     } else {
@@ -2525,9 +2655,9 @@ public class FHIRPathEngine {
     }
 
     for (StructureDefinition sdi : sdl) {
-      String path = sdi.getSnapshot().getElement().get(0).getPath()+tail+".";
+      String path = sdi.getSnapshot().getElement().get(0).getPath() + tail + ".";
       if (name.equals("**")) {
-        assert(result.getCollectionStatus() == CollectionStatus.UNORDERED);
+        assert (result.getCollectionStatus() == CollectionStatus.UNORDERED);
         for (ElementDefinition ed : sdi.getSnapshot().getElement()) {
           if (ed.getPath().startsWith(path))
             for (TypeRefComponent t : ed.getType()) {
@@ -2542,7 +2672,7 @@ public class FHIRPathEngine {
                     if (!result.hasType(rn)) {
                       result.addType(rn);
                       getChildTypesByName(rn, "**", result);
-                    }                  
+                    }
                   }
                 } else if (!result.hasType(tn)) {
                   result.addType(tn);
@@ -2550,9 +2680,9 @@ public class FHIRPathEngine {
                 }
               }
             }
-        }      
+        }
       } else if (name.equals("*")) {
-        assert(result.getCollectionStatus() == CollectionStatus.UNORDERED);
+        assert (result.getCollectionStatus() == CollectionStatus.UNORDERED);
         for (ElementDefinition ed : sdi.getSnapshot().getElement()) {
           if (ed.getPath().startsWith(path) && !ed.getPath().substring(path.length()).contains("."))
             for (TypeRefComponent t : ed.getType()) {
@@ -2565,7 +2695,7 @@ public class FHIRPathEngine {
             }
         }
       } else {
-        path = sdi.getSnapshot().getElement().get(0).getPath()+tail+"."+name;
+        path = sdi.getSnapshot().getElement().get(0).getPath() + tail + "." + name;
 
         ElementDefinitionMatch ed = getElementDefinition(sdi, path, false);
         if (ed != null) {
@@ -2574,7 +2704,8 @@ public class FHIRPathEngine {
           else
             for (TypeRefComponent t : ed.getDefinition().getType()) {
               if (Utilities.noString(t.getCode()))
-                break; // throw new PathEngineException("Illegal reference to primitive value attribute @ "+path);
+                break; // throw new PathEngineException("Illegal reference to primitive value attribute
+                       // @ "+path);
 
               if (t.getCode().equals("Element") || t.getCode().equals("BackboneElement"))
                 result.addType(path);
@@ -2588,7 +2719,8 @@ public class FHIRPathEngine {
     }
   }
 
-  private ElementDefinitionMatch getElementDefinition(StructureDefinition sd, String path, boolean allowTypedName) throws PathEngineException {
+  private ElementDefinitionMatch getElementDefinition(StructureDefinition sd, String path, boolean allowTypedName)
+      throws PathEngineException {
     for (ElementDefinition ed : sd.getSnapshot().getElement()) {
       if (ed.getPath().equals(path)) {
         if (ed.hasContentReference()) {
@@ -2596,61 +2728,70 @@ public class FHIRPathEngine {
         } else
           return new ElementDefinitionMatch(ed, null);
       }
-      if (ed.getPath().endsWith("[x]") && path.startsWith(ed.getPath().substring(0, ed.getPath().length()-3)) && path.length() == ed.getPath().length()-3)
+      if (ed.getPath().endsWith("[x]") && path.startsWith(ed.getPath().substring(0, ed.getPath().length() - 3))
+          && path.length() == ed.getPath().length() - 3)
         return new ElementDefinitionMatch(ed, null);
-      if (allowTypedName && ed.getPath().endsWith("[x]") && path.startsWith(ed.getPath().substring(0, ed.getPath().length()-3)) && path.length() > ed.getPath().length()-3) {
-    	String s = Utilities.uncapitalize(path.substring(ed.getPath().length()-3));
-    	if (ParserBase.isPrimitive(s))
+      if (allowTypedName && ed.getPath().endsWith("[x]")
+          && path.startsWith(ed.getPath().substring(0, ed.getPath().length() - 3))
+          && path.length() > ed.getPath().length() - 3) {
+        String s = Utilities.uncapitalize(path.substring(ed.getPath().length() - 3));
+        if (isPrimitive(s))
           return new ElementDefinitionMatch(ed, s);
-    	else
-          return new ElementDefinitionMatch(ed, path.substring(ed.getPath().length()-3));
+        else
+          return new ElementDefinitionMatch(ed, path.substring(ed.getPath().length() - 3));
       }
-      if (ed.getPath().contains(".") && path.startsWith(ed.getPath()+".") && (ed.getType().size() > 0) && !isAbstractType(ed.getType())) { 
+      if (ed.getPath().contains(".") && path.startsWith(ed.getPath() + ".") && (ed.getType().size() > 0)
+          && !isAbstractType(ed.getType())) {
         // now we walk into the type.
-        if (ed.getType().size() > 1)  // if there's more than one type, the test above would fail this
+        if (ed.getType().size() > 1) // if there's more than one type, the test above would fail this
           throw new PathEngineException("Internal typing issue....");
         StructureDefinition nsd = worker.fetchTypeDefinition(ed.getType().get(0).getCode());
-  	    if (nsd == null) 
-  	      throw new PathEngineException("Unknown type "+ed.getType().get(0).getCode());
-        return getElementDefinition(sd, sd.getId()+path.substring(ed.getPath().length()), allowTypedName);
+        if (nsd == null)
+          throw new PathEngineException("Unknown type " + ed.getType().get(0).getCode());
+        return getElementDefinition(sd, sd.getId() + path.substring(ed.getPath().length()), allowTypedName);
       }
-      if (ed.hasContentReference() && path.startsWith(ed.getPath()+".")) {
+      if (ed.hasContentReference() && path.startsWith(ed.getPath() + ".")) {
         ElementDefinitionMatch m = getElementDefinitionById(sd, ed.getContentReference());
-        return getElementDefinition(sd, m.definition.getPath()+path.substring(ed.getPath().length()), allowTypedName);
+        return getElementDefinition(sd, m.definition.getPath() + path.substring(ed.getPath().length()), allowTypedName);
       }
     }
     return null;
   }
 
+  private static boolean isPrimitive(String code) {
+    return Utilities.existsInList(code, "xhtml", "boolean", "integer", "string", "decimal", "uri", "base64Binary",
+        "instant", "date", "dateTime", "time", "code", "oid", "id", "markdown", "unsignedInt", "positiveInt", "xhtml",
+        "base64Binary");
+  }
+
   private boolean isAbstractType(List<TypeRefComponent> list) {
-	return list.size() != 1 ? true : Utilities.existsInList(list.get(0).getCode(), "Element", "BackboneElement", "Resource", "DomainResource");
-}
+    return list.size() != 1 ? true
+        : Utilities.existsInList(list.get(0).getCode(), "Element", "BackboneElement", "Resource", "DomainResource");
+  }
 
-
-private boolean hasType(ElementDefinition ed, String s) {
-    for (TypeRefComponent t : ed.getType()) 
+  private boolean hasType(ElementDefinition ed, String s) {
+    for (TypeRefComponent t : ed.getType())
       if (s.equalsIgnoreCase(t.getCode()))
         return true;
     return false;
   }
 
   private boolean hasDataType(ElementDefinition ed) {
-    return ed.hasType() && !(ed.getType().get(0).getCode().equals("Element") || ed.getType().get(0).getCode().equals("BackboneElement"));
+    return ed.hasType() && !(ed.getType().get(0).getCode().equals("Element")
+        || ed.getType().get(0).getCode().equals("BackboneElement"));
   }
 
   private ElementDefinitionMatch getElementDefinitionById(StructureDefinition sd, String ref) {
     for (ElementDefinition ed : sd.getSnapshot().getElement()) {
-      if (ref.equals("#"+ed.getId())) 
+      if (ref.equals("#" + ed.getId()))
         return new ElementDefinitionMatch(ed, null);
     }
     return null;
   }
 
-
   public boolean hasLog() {
     return log != null && log.length() > 0;
   }
-
 
   public String takeLog() {
     if (!hasLog())

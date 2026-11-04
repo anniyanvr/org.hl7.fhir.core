@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -128,11 +124,13 @@ public class V3EthnicityEnumFactory implements EnumFactory<V3Ethnicity> {
       return V3Ethnicity._21840;
     if ("2186-5".equals(codeString))
       return V3Ethnicity._21865;
-    throw new IllegalArgumentException("Unknown V3Ethnicity code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3Ethnicity code '" + codeString + "'");
   }
 
   public String toCode(V3Ethnicity code) {
-    if (code == V3Ethnicity._21352)
+       if (code == V3Ethnicity.NULL)
+           return null;
+       if (code == V3Ethnicity._21352)
       return "2135-2";
     if (code == V3Ethnicity._21378)
       return "2137-8";
@@ -219,10 +217,10 @@ public class V3EthnicityEnumFactory implements EnumFactory<V3Ethnicity> {
     if (code == V3Ethnicity._21865)
       return "2186-5";
     return "?";
-  }
+   }
 
-    public String toSystem(V3Ethnicity code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3Ethnicity code) {
+    return code.getSystem();
+  }
 
 }

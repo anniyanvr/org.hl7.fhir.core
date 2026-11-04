@@ -4,71 +4,42 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-/*
-  Copyright (c) 2011+, HL7, Inc.
-  All rights reserved.
-  
-  Redistribution and use in source and binary forms, with or without modification, 
-  are permitted provided that the following conditions are met:
-    
-   * Redistributions of source code must retain the above copyright notice, this 
-     list of conditions and the following disclaimer.
-   * Redistributions in binary form must reproduce the above copyright notice, 
-     this list of conditions and the following disclaimer in the documentation 
-     and/or other materials provided with the distribution.
-   * Neither the name of HL7 nor the names of its contributors may be used to 
-     endorse or promote products derived from this software without specific 
-     prior written permission.
-  
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
-  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
-  POSSIBILITY OF SUCH DAMAGE.
-  
- */
+import javax.annotation.Nullable;
 
-
-import org.apache.commons.io.FileUtils;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+import org.hl7.fhir.utilities.regex.RegexConstants;
+import org.hl7.fhir.utilities.settings.FhirSettings;
 
 public class Utilities {
 
-  private static final String UUID_REGEX = "[0-9a-f]{8}\\-[0-9a-f]{4}\\-[0-9a-f]{4}\\-[0-9a-f]{4}\\-[0-9a-f]{12}";
-  private static final String OID_REGEX = "[0-2](\\.(0|[1-9][0-9]*))+";
+  static final String C_TEMP_DIR = "c:\\temp";
 
   /**
    * Returns the plural form of the word in the string.
@@ -90,7 +61,7 @@ public class Utilities {
    *
    * @param word the word that is to be pluralized.
    * @return the pluralized form of the word, or the word itself if it could not be pluralized
-   * @see #singularize(Object)
+   * @see Inflector#singularize(Object)
    */
   public static String pluralizeMe(String word) {
     Inflector inf = new Inflector();
@@ -104,12 +75,20 @@ public class Utilities {
     return inf.pluralize(word);
   }
 
+  public static String singularise(String word) {
+    Inflector inf = new Inflector();
+    return inf.singularize(word);
+  }
 
+  
   public static boolean isInteger(String string) {
     if (isBlank(string)) {
       return false;
     }
     String value = string.startsWith("-") ? string.substring(1) : string;
+    if (Utilities.noString(value)) {
+      return false;
+    }
     for (char next : value.toCharArray()) {
       if (!Character.isDigit(next)) {
         return false;
@@ -160,6 +139,84 @@ public class Utilities {
     }
   }
 
+  @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+  //bounded character class, safe
+  public static boolean isValidId(String id) {
+    return id.matches(RegexConstants.ID_REGEX);
+  }
+
+  public static String[] concatStringArray(String[] array1, String[] array2) {
+    String[] result = new String[array1.length + array2.length];
+    System.arraycopy(array1, 0, result, 0, array1.length);
+    System.arraycopy(array2, 0, result, array1.length, array2.length);
+    return result;
+  }
+
+  private static final Set<String> EXCLUDED_FILES = Set.of(
+    "arch-uml1.png", "arch-uml2.png", "arch-uml3.png", "change.png", "conformance-module-resources.png", "dt-map.png",
+    "fhr.icns", "financial-module.png", "genomics-image10.png", "genomics-image16.png", "genomics-image19.png", "genomics-image24.png", "medication-definition-and-prescribing-resources.png", "pkb.png", "res-map.png", "sdmap.details",
+    "terminology-module-relationships.png", "togaf.png", "workflow-relations.png", "xver-paths-1.0.json", "xver-paths-1.4.json", "xver-paths-3.0.json", "xver-paths-4.0.json", "xver-paths-5.0.json", "zachman.png",
+    "13f2d978-cac6-493f-a3cf-16c32e3ad411.png", "951ae1e2-60d2-457e-9ce2-42e37f122808.gif", "action-and-activity-definition.png", "administration-module-interactions.png", "administration-module-person.png", "administration-module-prov-dir.png", "administration-module-research.png", "administration-module-scheduling.png", "basic-product-structure-simpler.png", "basic-product-structure-simplest.png",
+    "basic-product-structure.png", "cands1.png", "cands2.png", "claim-3-tiers.png", "clinicalreasoning-cdshooks-approach.png", "clinicalreasoning-components-diagram.jpg", "clinicalreasoning-ig-types.png",
+    "clinicalreasoning-knowledge-artifact-distribution.png", "clinicalreasoning-knowledge-artifact-types.png", "clinicalreasoning-measure-report-individual.png", "clinicalreasoning-measure-report-patient-list.png", "clinicalreasoning-measure-report-population.png", "clinicalreasoning-measure-structure.png", "'complex-pack-2(mix-and-device).png'", "'complex-pack-3(tablet-and-cream).png'",
+    "consent-provisions-example.png", "consent-provisions.png", "diagnostic-module-resources.png", "examplescenario-example-laborder.png", "examplescenario-example.png", "framework-2.png", "genomics-image02.png", "genomics-image03.png", "genomics-image04.png",
+    "genomics-image07.png", "genomics-image08.png", "genomics-image09.png", "genomics-image11.png", "genomics-image13.png", "genomics-image14.png", "genomics-image17.png", "genomics-image18.png", "genomics-image21.png", "genomics-image23.png",
+    "genomics-image25.png", "genomics-image29.png", "genomics-image30.png", "genomics-image36.png", "genomics-image37.png", "icon-administration.png", "icon-clinical.png", "icon-documentation.png", "icon-fhir-720.png", "icon-implementation.png",
+    "icon-infrastructure.png", "layout.png", "legal_state_machine_final.png", "manufactured-item-components.png", "manufactured-item-without-components.png", "packages-and-backbone.png", "packages-for-products-1.png", "parent-child-structure-1.png", "parent-child-structure-2.png",
+    "parent-child-structure-3.png", "researchstudy-profile-proposal.png", "researchstudy-state-machine.png", "researchsubject-state-machine.png", "saif.png", "security-layout.png", "shot.png", "slicing.png", "spec.internals", "treestructure.png", "validation-oo.json",
+    "watermark.png", "workflow-optionb.png", "workflow-optionc.png", "workflow-optionf.png", "workflow-optiong.png", "workflow-optionh-a.png", "workflow-optionh.png", "workflow-optioni.png", "workflow-optionl.png", "administration.jpg"
+  );
+
+  // work around bad practices in past binary handling
+  public static boolean isProhibitedBinaryFile(String k) {
+    return EXCLUDED_FILES.contains(k);
+  }
+
+  public static String insertBreakingSpaces(String text, Set<Character> breakingChars) {
+    if (text == null || text.isEmpty() || breakingChars == null || breakingChars.isEmpty()) {
+      return text;
+    }
+
+    StringBuilder result = new StringBuilder();
+    int charsSinceLastBreak = 0;
+
+    for (int i = 0; i < text.length(); i++) {
+      char currentChar = text.charAt(i);
+      result.append(currentChar);
+      charsSinceLastBreak++;
+
+      // If we've gone 20+ chars and current char is a breaking char, insert zero-width space
+      if (charsSinceLastBreak >= 20 && breakingChars.contains(currentChar)) {
+        result.append('\u200B');
+        charsSinceLastBreak = 0;
+      }
+    }
+
+    return result.toString();
+  }
+
+  public static String escapeUrl(String canonical) {
+    StringBuilder sb = new StringBuilder();
+    byte[] bytes = canonical.getBytes(StandardCharsets.UTF_8);
+    for (byte b : bytes) {
+      int c = b & 0xFF;
+      if (isUnreserved(c)) {
+        sb.append((char) c);
+      } else {
+        sb.append('%');
+        sb.append(Character.forDigit((c >> 4) & 0xF, 16));
+        sb.append(Character.forDigit(c & 0xF, 16));
+      }
+    }
+    return sb.toString();
+  }
+
+  private static boolean isUnreserved(int c) {
+    return (c >= 'A' && c <= 'Z')
+      || (c >= 'a' && c <= 'z')
+      || (c >= '0' && c <= '9')
+      || c == '-' || c == '_' || c == '.' || c == '~';
+  }
   public enum DecimalStatus {
     BLANK, SYNTAX, RANGE, OK
   }
@@ -253,6 +310,10 @@ public class Utilities {
     return new Inflector().camelCase(value.trim().replace(" ", "_"), false);
   }
 
+  public static String upperCamelCase(String value) {
+    return new Inflector().upperCamelCase(value.trim().replace(" ", "_"));
+  }
+
   public static String escapeXml(String doco) {
     if (doco == null)
       return "";
@@ -267,6 +328,24 @@ public class Utilities {
         b.append("&amp;");
       else if (c == '"')
         b.append("&quot;");
+      else
+        b.append(c);
+    }
+    return b.toString();
+  }
+
+  public static String escapeXmlText(String doco) {
+    if (doco == null)
+      return "";
+
+    StringBuilder b = new StringBuilder();
+    for (char c : doco.toCharArray()) {
+      if (c == '<')
+        b.append("&lt;");
+      else if (c == '>')
+        b.append("&gt;");
+      else if (c == '&')
+        b.append("&amp;");
       else
         b.append(c);
     }
@@ -294,74 +373,6 @@ public class Utilities {
     return s.substring(0, 1).toUpperCase() + s.substring(1);
   }
 
-  public static void copyDirectory(String sourceFolder, String destFolder, FileNotifier notifier) throws IOException, FHIRException {
-    CSFile src = new CSFile(sourceFolder);
-    if (!src.exists())
-      throw new FHIRException("Folder " + sourceFolder + " not found");
-    createDirectory(destFolder);
-
-    String[] files = src.list();
-    for (String f : files) {
-      if (new CSFile(sourceFolder + File.separator + f).isDirectory()) {
-        if (!f.startsWith(".")) // ignore .git files...
-          copyDirectory(sourceFolder + File.separator + f, destFolder + File.separator + f, notifier);
-      } else {
-        if (notifier != null)
-          notifier.copyFile(sourceFolder + File.separator + f, destFolder + File.separator + f);
-        copyFile(new CSFile(sourceFolder + File.separator + f), new CSFile(destFolder + File.separator + f));
-      }
-    }
-  }
-
-  public static void copyFile(String source, String dest) throws IOException {
-    copyFile(new File(source), new File(dest));
-  }
-
-  public static void copyFile(File sourceFile, File destFile) throws IOException {
-    if (!destFile.exists()) {
-      if (!new CSFile(destFile.getParent()).exists()) {
-        createDirectory(destFile.getParent());
-      }
-      destFile.createNewFile();
-    }
-
-    FileInputStream source = null;
-    FileOutputStream destination = null;
-
-    try {
-      source = new FileInputStream(sourceFile);
-      destination = new FileOutputStream(destFile);
-      destination.getChannel().transferFrom(source.getChannel(), 0, source.getChannel().size());
-    } finally {
-      if (source != null) {
-        source.close();
-      }
-      if (destination != null) {
-        destination.close();
-      }
-    }
-  }
-
-  public static boolean checkFolder(String dir, List<String> errors)
-    throws IOException {
-    if (!new CSFile(dir).exists()) {
-      errors.add("Unable to find directory " + dir);
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  public static boolean checkFile(String purpose, String dir, String file, List<String> errors)
-    throws IOException {
-    if (!new CSFile(dir + file).exists()) {
-      if (errors != null)
-        errors.add("Unable to find " + purpose + " file " + file + " in " + dir);
-      return false;
-    } else {
-      return true;
-    }
-  }
 
   public static String asCSV(List<String> strings) {
     StringBuilder s = new StringBuilder();
@@ -388,37 +399,19 @@ public class Utilities {
     return s.toString();
   }
 
-  public static void clearDirectory(String folder, String... exemptions) throws IOException {
-    File dir = new File(folder);
-    if (dir.exists()) {
-      if (exemptions.length == 0)
-        FileUtils.cleanDirectory(dir);
-      else {
-        String[] files = new CSFile(folder).list();
-        if (files != null) {
-          for (String f : files) {
-            if (!existsInList(f, exemptions)) {
-              File fh = new CSFile(folder + File.separatorChar + f);
-              if (fh.isDirectory())
-                clearDirectory(fh.getAbsolutePath());
-              fh.delete();
-            }
-            }
-          }
+  public static String generateUniqueRandomUUIDPath(String path) throws IOException {
+    String randomUUIDPath = null;
+
+    while (randomUUIDPath == null) {
+      final String uuid = UUID.randomUUID().toString().toLowerCase();
+      final String pathCandidate = Utilities.path(path, uuid);
+
+      if (!ManagedFileAccess.file(pathCandidate).exists()) {
+        randomUUIDPath = pathCandidate;
       }
     }
-  }
 
-  public static File createDirectory(String path) throws IOException {
-    new CSFile(path).mkdirs();
-    return new File(path);
-  }
-
-  public static String changeFileExt(String name, String ext) {
-    if (name.lastIndexOf('.') > -1)
-      return name.substring(0, name.lastIndexOf('.')) + ext;
-    else
-      return name + ext;
+    return randomUUIDPath;
   }
 
   public static String cleanupTextString(String contents) {
@@ -428,36 +421,20 @@ public class Utilities {
       return contents.trim();
   }
 
-
   public static boolean noString(String v) {
     return v == null || v.equals("");
   }
-
-
-  public static void bytesToFile(byte[] content, String filename) throws IOException {
-    FileOutputStream out = new FileOutputStream(filename);
-    out.write(content);
-    out.close();
-
-  }
-
 
   public static String appendSlash(String definitions) {
     return definitions.endsWith(File.separator) ? definitions : definitions + File.separator;
   }
 
   public static String appendForwardSlash(String definitions) {
+    if (definitions == null) {
+      return "/";
+    }
     return definitions.endsWith("/") ? definitions : definitions + "/";
   }
-
-
-  public static String fileTitle(String file) {
-    if (file == null)
-      return null;
-    String s = new File(file).getName();
-    return s.indexOf(".") == -1 ? s : s.substring(0, s.indexOf("."));
-  }
-
 
   public static String systemEol() {
     return System.getProperty("line.separator");
@@ -466,7 +443,6 @@ public class Utilities {
   public static String normaliseEolns(String value) {
     return value.replace("\r\n", "\r").replace("\n", "\r").replace("\r", "\r\n");
   }
-
 
   public static String unescapeXml(String xml) throws FHIRException {
     if (xml == null)
@@ -501,6 +477,8 @@ public class Utilities {
     return b.toString();
   }
 
+
+    
   public static String unescapeJson(String json) throws FHIRException {
     if (json == null)
       return null;
@@ -510,38 +488,50 @@ public class Utilities {
     while (i < json.length()) {
       if (json.charAt(i) == '\\') {
         i++;
+        if (i == json.length()) {
+          throw new FHIRException("Unterminated JSON escape at the end of the string");
+        }
         char ch = json.charAt(i);
         switch (ch) {
-          case '"':
-            b.append('b');
-            break;
-          case '\\':
-            b.append('\\');
-            break;
-          case '/':
-            b.append('/');
-            break;
-          case 'b':
-            b.append('\b');
-            break;
-          case 'f':
-            b.append('\f');
-            break;
-          case 'n':
-            b.append('\n');
-            break;
-          case 'r':
-            b.append('\r');
-            break;
-          case 't':
-            b.append('\t');
-            break;
-          case 'u':
-            String hex = json.substring(i + 1, i + 5);
-            b.append((char) Integer.parseInt(hex, 16));
-            break;
-          default:
-            throw new FHIRException("Unknown JSON escape \\" + ch);
+        case '"':
+          b.append('"');
+          break;
+        case '\\':
+          b.append('\\');
+          break;
+        case '/':
+          b.append('/');
+          break;
+        case 'b':
+          b.append('\b');
+          break;
+        case 'f':
+          b.append('\f');
+          break;
+        case 'n':
+          b.append('\n');
+          break;
+        case 'r':
+          b.append('\r');
+          break;
+        case 't':
+          b.append('\t');
+          break;
+        case 'u':
+          if (i + 5 > json.length()) {
+            throw new FHIRException("Incomplete JSON escape \\" + json.substring(i));
+          }
+          String hex = json.substring(i + 1, i + 5);
+          for (char h : hex.toCharArray()) {
+            if (Character.digit(h, 16) < 0) {
+              throw new FHIRException("Invalid JSON escape \\u" + hex);
+            }
+          }
+          b.append(Character.toString(Integer.parseInt(hex, 16)));
+          i += 4;
+          break;
+        default:
+          throw new FHIRException("Unknown JSON escape \\" + ch);
         }
       } else
         b.append(json.charAt(i));
@@ -554,7 +544,7 @@ public class Utilities {
   public static boolean isPlural(String word) {
     word = word.toLowerCase();
     if ("restricts".equals(word) || "contains".equals(word) || "data".equals(word) || "specimen".equals(word) || "replaces".equals(word) || "addresses".equals(word)
-      || "supplementalData".equals(word) || "instantiates".equals(word) || "imports".equals(word))
+        || "supplementalData".equals(word) || "instantiates".equals(word) || "imports".equals(word) || "covers".equals(word))
       return false;
     Inflector inf = new Inflector();
     return !inf.singularize(word).equals(word);
@@ -563,10 +553,16 @@ public class Utilities {
 
   public static String padRight(String src, char c, int len) {
     StringBuilder s = new StringBuilder();
-    s.append(src);
-    for (int i = 0; i < len - src.length(); i++)
-      s.append(c);
+    if (src != null) {
+      s.append(src);
+      for (int i = 0; i < len - src.length(); i++)
+        s.append(c);
+    }
     return s.toString();
+  }
+
+  public static String padRight(int num, char c, int len) {
+    return padRight(Integer.toString(num), c, len);
   }
 
 
@@ -578,95 +574,79 @@ public class Utilities {
     return s.toString();
   }
 
-
+  /**
+   * Composes a path string using by concatenating the passed arguments.
+   *
+   * This method enables all checks for unintended path locations.
+   *
+   * @param args
+   * @return
+   * @throws IOException
+   * @see PathBuilder#buildPath(String...)
+   */
   public static String path(String... args) throws IOException {
-    StringBuilder s = new StringBuilder();
-    boolean d = false;
-    boolean first = true;
-    for (String arg : args) {
-      if (first && arg == null)
-        continue;
-      first = false;
-      if (!d)
-        d = !noString(arg);
-      else if (!s.toString().endsWith(File.separator))
-        s.append(File.separator);
-      String a = arg;
-      if (s.length() == 0) {
-        if ("[tmp]".equals(a)) {
-          if (hasCTempDir()) {
-            a = "c:\\temp";
-          } else {
-            a = System.getProperty("java.io.tmpdir");
-          }
-        } else if ("[user]".equals(a)) {
-          a = System.getProperty("user.home");
-        } else if (a.startsWith("[") && a.endsWith("]")) {
-          String ev = System.getenv(a.replace("[", "").replace("]", ""));
-          if (ev != null) {
-            a = ev;
-          } else {
-            a = "null";
-          }
-        }
-      }
-      a = a.replace("\\", File.separator);
-      a = a.replace("/", File.separator);
-      if (s.length() > 0 && a.startsWith(File.separator))
-        a = a.substring(File.separator.length());
-
-      while (a.startsWith(".." + File.separator)) {
-        if (s.length() == 0) {
-          s = new StringBuilder(Paths.get(".").toAbsolutePath().normalize().toString());
-        } else {
-          String p = s.toString().substring(0, s.length() - 1);
-          if (!p.contains(File.separator)) {
-            s = new StringBuilder();
-          } else {
-            s = new StringBuilder(p.substring(0, p.lastIndexOf(File.separator)) + File.separator);
-          }
-        }
-        a = a.substring(3);
-      }
-      if ("..".equals(a)) {
-        int i = s.substring(0, s.length() - 1).lastIndexOf(File.separator);
-        s = new StringBuilder(s.substring(0, i + 1));
-      } else
-        s.append(a);
-    }
-    return s.toString();
+    return PathBuilder.getPathBuilder().buildPath(args);
   }
 
-  private static boolean hasCTempDir() {
-    if (!System.getProperty("os.name").toLowerCase().contains("win")) {
-      return false;
-    }
-    File tmp = new File("c:\\temp");
-    return tmp.exists() && tmp.isDirectory() && tmp.canWrite();
+  public static File pathFile(String... args) throws IOException {
+    return ManagedFileAccess.file(PathBuilder.getPathBuilder().buildPath(args));
   }
+
+  public static String path(File f, String... args) throws IOException {
+    String[] a = new String[args.length+1];
+    a[0] = f.getAbsolutePath();
+    for (int i = 0; i < args.length; i++) {
+      a[i+1] = args[i];
+    }
+    return PathBuilder.getPathBuilder().buildPath(a);
+  }
+
+  public static String forcePath(String... args) throws IOException {
+    String path = path(args);
+    String folder = FileUtilities.getDirectoryForFile(path);
+    FileUtilities.createDirectory(folder);
+    return path;
+  }
+
+  /**
+     * Composes a path string using by concatenating the passed arguments.
+     *
+     * This method does not check for unintentional access to areas of the file
+     * system outside of the first entry. ONLY USE THIS METHOD IN CASES WHERE YOU
+     * ARE CERTAIN THE COMPOSED PATH IS NOT MALICIOUS.
+     *
+     * @param args
+     * @return
+     * @throws IOException
+     *
+     * @see PathBuilder#buildPath(String...)
+     */
+    @Deprecated
+    public static String uncheckedPath(String... args) throws IOException {
+      return PathBuilder.getPathBuilder()
+          .withRequireNonRootFirstEntry(false)
+          .withRequireNonNullNonEmptyFirstEntry(false)
+          .withRequirePathIsChildOfTarget(false)
+          .buildPath(args);
+    }
+
+
+
 
   public static String pathURL(String... args) {
     StringBuilder s = new StringBuilder();
     boolean d = false;
     for (String arg : args) {
-      if (args != null) {
+      if (arg != null) {
         if (!d)
           d = !noString(arg);
-        else if (s.toString() != null && !s.toString().endsWith("/") && !arg.startsWith("/"))
+        else if (s.toString() != null && !s.toString().endsWith("/") && !arg.startsWith("/") && !arg.startsWith("?") && !arg.startsWith("&"))
           s.append("/");
         s.append(arg);
       }
     }
     return s.toString();
   }
-
-
-//  public static void checkCase(String filename) {
-//    File f = new CSFile(filename);
-//    if (!f.getName().equals(filename))
-//      throw new FHIRException("Filename  ")
-//    
-//  }
 
   public static String nmtokenize(String cs) {
     if (cs == null)
@@ -682,7 +662,89 @@ public class Utilities {
     return s.toString();
   }
 
+  public static String javaTokenize(String cs, boolean capFirst) {
+    if (cs == null)
+      return "";
+    StringBuilder s = new StringBuilder();
+    boolean upcase = capFirst;
+    for (int i = 0; i < cs.length(); i++) {
+      char c = cs.charAt(i);
+      if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_') {
+        if (upcase) {
+          s.append(Character.toUpperCase(c));
+          upcase = false;
+        } else {
+          s.append(c);
+        }
+      } else {
+        upcase = true;
+      }
+    }
+    String res = s.toString();
+    if (isJavaReservedWord(res)) {
+      return "_"+res;
+    } else { 
+      return res;
+    }
+  }
 
+  public static boolean isJavaReservedWord(String word) {
+    if (word.equals("abstract")) return true;   
+    if (word.equals("assert")) return true;
+    if (word.equals("boolean")) return true;
+    if (word.equals("break")) return true;  
+    if (word.equals("byte")) return true;   
+    if (word.equals("case")) return true;
+    if (word.equals("catch")) return true;  
+    if (word.equals("char")) return true;   
+    if (word.equals("class")) return true;  
+    if (word.equals("const")) return true;  
+    if (word.equals("continue")) return true;   
+    if (word.equals("default")) return true;
+    if (word.equals("double")) return true;   
+    if (word.equals("do")) return true;   
+    if (word.equals("else")) return true;   
+    if (word.equals("enum")) return true;   
+    if (word.equals("extends")) return true;  
+    if (word.equals("false")) return true;
+    if (word.equals("final")) return true;  
+    if (word.equals("finally")) return true;  
+    if (word.equals("float")) return true;  
+    if (word.equals("for")) return true;  
+    if (word.equals("goto")) return true;   
+    if (word.equals("if")) return true;
+    if (word.equals("implements")) return true;   
+    if (word.equals("import")) return true;   
+    if (word.equals("instanceof")) return true;   
+    if (word.equals("int")) return true;  
+    if (word.equals("interface")) return true;  
+    if (word.equals("long")) return true;
+    if (word.equals("native")) return true;   
+    if (word.equals("new")) return true;  
+    if (word.equals("null")) return true;   
+    if (word.equals("package")) return true;  
+    if (word.equals("private")) return true;  
+    if (word.equals("protected")) return true;
+    if (word.equals("public")) return true;   
+    if (word.equals("return")) return true;   
+    if (word.equals("short")) return true;  
+    if (word.equals("static")) return true;   
+    if (word.equals("strictfp")) return true;   
+    if (word.equals("super")) return true;
+    if (word.equals("switch")) return true;   
+    if (word.equals("synchronized")) return true;   
+    if (word.equals("this")) return true;   
+    if (word.equals("throw")) return true;  
+    if (word.equals("throws")) return true;   
+    if (word.equals("transient")) return true;
+    if (word.equals("true")) return true;   
+    if (word.equals("try")) return true;  
+    if (word.equals("void")) return true;   
+    if (word.equals("volatile")) return true;
+    if (word.equals("while")) return true;
+    if (word.equals("Exception")) return true;
+    return false;
+  }
   public static boolean isToken(String tail) {
     if (tail == null || tail.length() == 0)
       return false;
@@ -693,6 +755,9 @@ public class Utilities {
     return result;
   }
 
+  public static boolean isTokenChar(char ch) {
+    return isAlphabetic(ch) || (ch == '_'); 
+  }
 
   public static boolean isDigit(char c) {
     return (c >= '0') && (c <= '9');
@@ -701,12 +766,6 @@ public class Utilities {
 
   public static boolean isAlphabetic(char c) {
     return ((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z'));
-  }
-
-
-  public static String getDirectoryForFile(String filepath) {
-    File f = new File(filepath);
-    return f.getParent();
   }
 
   public static String appendPeriod(String s) {
@@ -729,23 +788,12 @@ public class Utilities {
 
 
   public static String stripBOM(String string) {
-    return string.replace("\uFEFF", "");
+    return string == null ? null : string.replace("\uFEFF", "");
   }
 
 
-  public static String oidTail(String id) {
-    if (id == null || !id.contains("."))
-      return id;
-    return id.substring(id.lastIndexOf(".") + 1);
-  }
-
-
-  public static String oidRoot(String id) {
-    if (id == null || !id.contains("."))
-      return id;
-    return id.substring(0, id.indexOf("."));
-  }
-
+  /** Escapes special characters in a Java string: \n \r " and \
+   */
   public static String escapeJava(String doco) {
     if (doco == null)
       return "";
@@ -781,24 +829,43 @@ public class Utilities {
     return parts.toArray(new String[]{});
   }
 
-
-  public static String encodeUri(String v) {
-    return v.replace(" ", "%20").replace("?", "%3F").replace("=", "%3D").replace("|", "%7C");
+  @Deprecated
+  public static String encodeUri(String string) {
+    return encodeUriParam(string);
   }
 
+  public static String encodeUriParam(String key, String value) {
+    new BasicNameValuePair(key, value);
+    return URLEncodedUtils.format(Collections.singletonList(new BasicNameValuePair(key, value)), StandardCharsets.UTF_8);
+  }
+
+  @Deprecated
+  /* The following should not be used, as encodeUriParam automatically adds the key. The implementation below is a hack
+  * that ensures both methods are using apache utils to do the encoding. */
+  public static String encodeUriParam(String param) {
+    String dummyEncode = encodeUriParam("dummy", param);
+    return dummyEncode.substring("dummy=".length());
+  }
 
   public static String normalize(String s) {
+    return normalize(s, true);
+  }
+  public static String normalize(String s, boolean lower) {
     if (noString(s))
       return null;
     StringBuilder b = new StringBuilder();
     boolean isWhitespace = false;
     for (int i = 0; i < s.length(); i++) {
       char c = s.charAt(i);
-      if (!Character.isWhitespace(c)) {
-        b.append(Character.toLowerCase(c));
+      if (!isWhitespace(c)) {
+        b.append(lower ? Character.toLowerCase(c) : c);
         isWhitespace = false;
       } else if (!isWhitespace) {
-        b.append(' ');
+        if (c == '\r' || c == '\n') {
+          b.append('\n');
+        } else {
+          b.append(' ');
+        }
         isWhitespace = true;
       }
     }
@@ -823,21 +890,6 @@ public class Utilities {
     return b.toString().trim();
   }
 
-
-  public static void copyFileToDirectory(File source, File destDir) throws IOException {
-    copyFile(source, new File(path(destDir.getAbsolutePath(), source.getName())));
-  }
-
-
-  public static boolean isWhitespace(String s) {
-    boolean ok = true;
-    for (int i = 0; i < s.length(); i++)
-      ok = ok && Character.isWhitespace(s.charAt(i));
-    return ok;
-
-  }
-
-
   public static String URLEncode(String string) {
     try {
       return URLEncoder.encode(string, "UTF-8");
@@ -853,6 +905,32 @@ public class Utilities {
     } catch (UnsupportedEncodingException e) {
       throw new Error(e.getMessage());
     }
+  }
+
+  // fixed-arity overloads for the common cases. The varargs form below allocates a char[]
+  // on every call, which matters in per-character loops such as the JSON lexer's whitespace skip.
+  public static boolean charInSet(char value, char c1) {
+    return value == c1;
+  }
+
+  public static boolean charInSet(char value, char c1, char c2) {
+    return value == c1 || value == c2;
+  }
+
+  public static boolean charInSet(char value, char c1, char c2, char c3) {
+    return value == c1 || value == c2 || value == c3;
+  }
+
+  public static boolean charInSet(char value, char c1, char c2, char c3, char c4) {
+    return value == c1 || value == c2 || value == c3 || value == c4;
+  }
+
+  public static boolean charInSet(char value, char c1, char c2, char c3, char c4, char c5) {
+    return value == c1 || value == c2 || value == c3 || value == c4 || value == c5;
+  }
+
+  public static boolean charInSet(char value, char c1, char c2, char c3, char c4, char c5, char c6) {
+    return value == c1 || value == c2 || value == c3 || value == c4 || value == c5 || value == c6;
   }
 
   public static boolean charInSet(char value, char... array) {
@@ -876,11 +954,29 @@ public class Utilities {
     return false;
   }
 
+  public static boolean containsInList(String value, String... array) {
+    if (value == null)
+      return false;
+    for (String s : array)
+      if (value.contains(s))
+        return true;
+    return false;
+  }
+
   public static boolean existsInList(String value, String... array) {
     if (value == null)
       return false;
     for (String s : array)
       if (value.equals(s))
+        return true;
+    return false;
+  }
+  
+  public static boolean existsInListTrimmed(String value, String... array) {
+    if (value == null)
+      return false;
+    for (String s : array)
+      if (value.equals(s.trim()))
         return true;
     return false;
   }
@@ -899,59 +995,99 @@ public class Utilities {
     return false;
   }
 
+  public static String stringJoin(String sep, String... array) {
+    CommaSeparatedStringBuilder b = new CommaSeparatedStringBuilder(sep);
+    for (String s : array)
+      if (!noString(s))
+        b.append(s);
+    return b.toString();
+  }
+
 
   public static String getFileNameForName(String name) {
     return name.toLowerCase();
   }
-
-  public static void deleteTempFiles() throws IOException {
-    File file = createTempFile("test", "test");
-    String folder = getDirectoryForFile(file.getAbsolutePath());
-    String[] list = new File(folder).list(new FilenameFilter() {
-      public boolean accept(File dir, String name) {
-        return name.startsWith("ohfu-");
-      }
-    });
-    if (list != null) {
-      for (String n : list) {
-        new File(path(folder, n)).delete();
-      }
-    }
-  }
-
-  public static File createTempFile(String prefix, String suffix) throws IOException {
-    // this allows use to eaily identify all our dtemp files and delete them, since delete on Exit doesn't really work.
-    File file = File.createTempFile("ohfu-" + prefix, suffix);
-    file.deleteOnExit();
-    return file;
-  }
-
 
   public static boolean isAsciiChar(char ch) {
     return ch >= ' ' && ch <= '~';
   }
 
 
-  public static String makeUuidLC() {
-    return UUID.randomUUID().toString().toLowerCase();
-  }
-
-  public static String makeUuidUrn() {
-    return "urn:uuid:" + UUID.randomUUID().toString().toLowerCase();
-  }
-
   public static boolean isURL(String s) {
+    //TODO Check if this can be replaced with RegexConstants.URL_REGEX
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //anchored, safe
     boolean ok = s.matches("^http(s{0,1})://[a-zA-Z0-9_/\\-\\.]+\\.([A-Za-z/]{2,5})[a-zA-Z0-9_/\\&\\?\\=\\-\\.\\~\\%]*");
     return ok;
   }
 
 
-  public static String escapeJson(String value) {
+  public static String escapeCSV(String value) {
     if (value == null)
       return "";
 
     StringBuilder b = new StringBuilder();
     for (char c : value.toCharArray()) {
+      if (c == '"')
+        b.append("\"\"");
+      else if (isWhitespace(c)) 
+        b.append(" ");
+      else
+        b.append(c);
+    }
+    return b.toString();
+  }
+
+  /** escape a string based on FHIRPaths encoding rules */
+  public static String escapeFhirPathString(String s) {
+    if (s == null) {
+      return "";
+    }
+    StringBuilder b = new StringBuilder(s.length());
+    for (char c : s.toCharArray()) {
+      switch (c) {
+        case '\\': b.append("\\\\"); break;
+        case '\'': b.append("\\'"); break;
+        case '\r': b.append("\\r"); break;
+        case '\n': b.append("\\n"); break;
+        case '\t': b.append("\\t"); break;
+        case ' ': b.append(" "); break;
+        default:
+          if ((c == '\r' || c == '\n') || isWhitespace(c) || c < 32) { 
+            b.append("\\u");
+            b.append(Utilities.padLeft(Integer.toHexString(c), '0', 4));
+          } else
+            b.append(c);
+      }
+    }
+    return b.toString();
+  }
+  public static String escapeJson(String value) {
+    return escapeJson(value, true);
+  }
+  
+  public static String escapeJson(String value, boolean escapeUnicodeWhitespace) {
+    if (value == null)
+      return "";
+
+    // Almost every string written to JSON needs no escaping at all, and this is called for every one of
+    // them. Scan first: when nothing has to change, hand back the original rather than copying it into a
+    // char[] and rebuilding it a character at a time
+    int first = -1;
+    for (int i = 0; i < value.length(); i++) {
+      if (needsJsonEscape(value.charAt(i), escapeUnicodeWhitespace)) {
+        first = i;
+        break;
+      }
+    }
+    if (first == -1) {
+      return value;
+    }
+
+    StringBuilder b = new StringBuilder(value.length() + 16);
+    b.append(value, 0, first);
+    for (int i = first; i < value.length(); i++) {
+      char c = value.charAt(i);
       if (c == '\r')
         b.append("\\r");
       else if (c == '\n')
@@ -962,12 +1098,30 @@ public class Utilities {
         b.append("\\\"");
       else if (c == '\\')
         b.append("\\\\");
-      else if (((int) c) < 32)
-        b.append("\\u" + Utilities.padLeft(String.valueOf((int) c), '0', 4));
+      else if (c == ' ')
+        b.append(" ");
+      else if ((c == '\r' || c == '\n') || (isWhitespace(c) && escapeUnicodeWhitespace)) { 
+        b.append("\\u" + Utilities.padLeft(Integer.toHexString(c), '0', 4));
+      } else if (((int) c) < 32)
+        b.append("\\u" + Utilities.padLeft(Integer.toHexString(c), '0', 4));
       else
         b.append(c);
     }
     return b.toString();
+  }
+
+  /**
+   * whether escapeJson would write this character as anything other than itself - the exact complement of
+   * the branches above, so that the scan and the rewrite can never disagree
+   */
+  private static boolean needsJsonEscape(char c, boolean escapeUnicodeWhitespace) {
+    if (c == '\r' || c == '\n' || c == '\t' || c == '"' || c == '\\') {
+      return true;
+    }
+    if (c == ' ') {
+      return false;
+    }
+    return (isWhitespace(c) && escapeUnicodeWhitespace) || ((int) c) < 32;
   }
 
   public static String humanize(String code) {
@@ -1003,7 +1157,6 @@ public class Utilities {
     return s.substring(0, 1).toLowerCase() + s.substring(1);
   }
 
-
   public static int charCount(String s, char c) {
     int res = 0;
     for (char ch : s.toCharArray())
@@ -1013,11 +1166,19 @@ public class Utilities {
   }
 
 
-  public static boolean isOid(String cc) {
-    return cc.matches(OID_REGEX) && cc.lastIndexOf('.') >= 5;
+  public static int startCharCount(String s, char c) {
+    int res = 0;
+    for (char ch : s.toCharArray()) {
+      if (ch == c) {
+        res++;
+      } else {
+        break;
+      }
+    } 
+    return res;
   }
 
-
+  
   public static boolean equals(String one, String two) {
     if (one == null && two == null)
       return true;
@@ -1027,37 +1188,24 @@ public class Utilities {
   }
 
 
-  public static void deleteAllFiles(String folder, String type) {
-    File src = new File(folder);
-    String[] files = src.list();
-    for (String f : files) {
-      if (new File(folder + File.separator + f).isDirectory()) {
-        deleteAllFiles(folder + File.separator + f, type);
-      } else if (f.endsWith(type)) {
-        new File(folder + File.separator + f).delete();
-      }
-    }
-
-  }
-
   public static boolean compareIgnoreWhitespace(File f1, File f2) throws IOException {
     InputStream in1 = null;
     InputStream in2 = null;
     try {
-      in1 = new BufferedInputStream(new FileInputStream(f1));
-      in2 = new BufferedInputStream(new FileInputStream(f2));
+      in1 = new BufferedInputStream(ManagedFileAccess.inStream(f1));
+      in2 = new BufferedInputStream(ManagedFileAccess.inStream(f2));
 
       int expectedByte = in1.read();
       while (expectedByte != -1) {
-        boolean w1 = isWhitespace(expectedByte);
+        boolean w1 = Character.isWhitespace(expectedByte);
         if (w1)
-          while (isWhitespace(expectedByte))
+          while (Character.isWhitespace(expectedByte))
             expectedByte = in1.read();
         int foundByte = in2.read();
         if (w1) {
-          if (!isWhitespace(foundByte))
+          if (!Character.isWhitespace(foundByte))
             return false;
-          while (isWhitespace(foundByte))
+          while (Character.isWhitespace(foundByte))
             foundByte = in2.read();
         }
         if (expectedByte != foundByte)
@@ -1084,13 +1232,9 @@ public class Utilities {
     }
   }
 
-  private static boolean isWhitespace(int b) {
-    return b == 9 || b == 10 || b == 13 || b == 32;
-  }
-
 
   public static boolean compareIgnoreWhitespace(String fn1, String fn2) throws IOException {
-    return compareIgnoreWhitespace(new File(fn1), new File(fn2));
+    return compareIgnoreWhitespace(ManagedFileAccess.file(fn1), ManagedFileAccess.file(fn2));
   }
 
 
@@ -1098,12 +1242,12 @@ public class Utilities {
     if (ref != null && ref.contains(":")) {
       String scheme = ref.substring(0, ref.indexOf(":"));
       String details = ref.substring(ref.indexOf(":")+1);
-      return (existsInList(scheme, "http", "https", "urn") || (isToken(scheme) && scheme.equals(scheme.toLowerCase())) || Utilities.startsWithInList(ref, "urn:iso:", "urn:iso-iec:", "urn:iso-cie:", "urn:iso-astm:", "urn:iso-ieee:", "urn:iec:"))
+      return (existsInList(scheme, "http", "https", "urn", "file:") || (isToken(scheme) && scheme.equals(scheme.toLowerCase())) || Utilities.startsWithInList(ref, "urn:iso:", "urn:iso-iec:", "urn:iso-cie:", "urn:iso-astm:", "urn:iso-ieee:", "urn:iec:"))
           && details != null && details.length() > 0 && !details.contains(" "); // rfc5141
     }
     return false; 
   }
-  
+
   public static boolean isAbsoluteUrlLinkable(String ref) {
     if (ref != null && ref.contains(":")) {
       String scheme = ref.substring(0, ref.indexOf(":"));
@@ -1144,6 +1288,20 @@ public class Utilities {
     return fn.contains(".") ? fn.substring(fn.lastIndexOf(".") + 1) : "";
   }
 
+  public static String unCamelCaseKeepCapitals(String name) {
+    StringBuilder b = new StringBuilder();
+    boolean first = true;
+    for (char c : name.toCharArray()) {
+      if (Character.isUpperCase(c)) {
+        if (!first)
+          b.append(" ");
+        b.append(c);
+      } else
+        b.append(c);
+      first = false;
+    }
+    return b.toString();
+  }
 
   public static String unCamelCase(String name) {
     StringBuilder b = new StringBuilder();
@@ -1198,19 +1356,6 @@ public class Utilities {
     return b.toString();
   }
 
-
-  public static int countFilesInDirectory(String dirName) {
-    File dir = new File(dirName);
-    if (dir.exists() == false) {
-      return 0;
-    }
-    int i = 0;
-    for (File f : dir.listFiles())
-      if (!f.isDirectory())
-        i++;
-    return i;
-  }
-
   public static String makeId(String name) {
     StringBuilder b = new StringBuilder();
     for (char ch : name.toCharArray()) {
@@ -1226,22 +1371,33 @@ public class Utilities {
     return b.toString();
   }
 
-  public interface FileVisitor {
-    void visitFile(File file) throws FileNotFoundException, IOException;
-  }
-
-  public static void visitFiles(String folder, String extension, FileVisitor visitor) throws FileNotFoundException, IOException {
-    visitFiles(new File(folder), extension, visitor);
-  }
-
-  public static void visitFiles(File folder, String extension, FileVisitor visitor) throws FileNotFoundException, IOException {
-    for (File file : folder.listFiles()) {
-      if (file.isDirectory())
-        visitFiles(file, extension, visitor);
-      else if (extension == null || file.getName().endsWith(extension))
-        visitor.visitFile(file);
+  public static String makeNameFromCode(String code) {
+    StringBuilder b = new StringBuilder();
+    boolean upcase = false;
+    for (char ch : code.toCharArray()) {
+      if (ch >= 'a' && ch <= 'z') {
+        if (upcase) {
+          b.append(Character.toUpperCase(ch));
+        } else {
+          b.append(ch);
+        }
+        upcase = false;
+      } else if (ch >= 'A' && ch <= 'Z') {
+        upcase = false;
+        b.append(ch);
+      } else if (ch >= '0' && ch <= '9') {
+        upcase = false;
+        b.append(ch);
+      } else {
+        upcase = true;
+      }
     }
+    if (b.isEmpty()) {
+      b.append("name");
+    }
+    return b.toString();
   }
+
 
   public static String extractBaseUrl(String url) {
     if (url == null)
@@ -1256,16 +1412,85 @@ public class Utilities {
     return keys.toString();
   }
 
-  public static boolean isValidId(String id) {
-    return id.matches("[A-Za-z0-9\\-\\.]{1,64}");
+  public static class CaseInsensitiveSorter implements Comparator<String> {
+    @Override
+    public int compare(String o1, String o2) {
+      return o1.compareToIgnoreCase(o2);
+    }
   }
 
-  public static List<String> sorted(Set<String> set) {
+  public static List<String> sortedCaseInsensitive(Collection<String> set) {
     List<String> list = new ArrayList<>();
-    list.addAll(set);
+    for (String s : set) {
+      if (s != null) {
+        list.add(s);
+      }
+    }
+    Collections.sort(list, new CaseInsensitiveSorter());
+    return list;
+  }
+
+  
+  public static List<String> sorted(Collection<String> set) {
+    List<String> list = new ArrayList<>();
+    for (String s : set) {
+      if (s != null) {
+        list.add(s);
+      }
+    }
     Collections.sort(list);
     return list;
   }
+
+  public static List<String> sortedReverse(Collection<String> set) {
+    List<String> list = new ArrayList<>();
+    for (String s : set) {
+      if (s != null) {
+        list.add(s);
+      }
+    }
+    Collections.sort(list);
+    List<String> rlist = new ArrayList<>();
+    for (int i = list.size()-1; i >= 0; i--) {
+      rlist.add(list.get(i));
+    }
+    return rlist;
+  }
+
+  public static List<String> sorted(String[] set) {
+    List<String> list = new ArrayList<>();
+    for (String s : set) {
+      if (s != null) {
+        list.add(s);
+      }
+    }
+    Collections.sort(list);
+    return list;
+  }
+
+
+  public static List<String> reverseSorted(Collection<String> set) {
+    List<String> list = new ArrayList<>();
+    for (String s : set) {
+      if (s != null) {
+        list.add(s);
+      }
+    }
+    Collections.sort(list, Collections.reverseOrder());
+    return list;
+  }
+
+  public static List<String> reverseSorted(String[] set) {
+    List<String> list = new ArrayList<>();
+    for (String s : set) {
+      if (s != null) {
+        list.add(s);
+      }
+    }
+    Collections.sort(list, Collections.reverseOrder());
+    return list;
+  }
+
 
   public static void analyseStringDiffs(Set<String> source, Set<String> target, Set<String> missed, Set<String> extra) {
     for (String s : source)
@@ -1284,6 +1509,8 @@ public class Utilities {
    * @return
    */
   public static String fhirPathToXPath(String path) {
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //single literal character split
     String[] p = path.split("\\.");
     CommaSeparatedStringBuilder b = new CommaSeparatedStringBuilder(".");
     int i = 0;
@@ -1317,8 +1544,39 @@ public class Utilities {
     }
   }
 
+  public static String describeDuration(long ms) {
+    long days = ms / (1000 * 60 * 60 * 24);
+    long hours = ms / (1000 * 60 * 60) % 24;
+    long mins = ms / (1000 * 60) % 60;
+    long secs = ms / (1000) % 60;
+    ms = ms % 1000;
+    if (days > 0) {
+      return ""+days+"d "+pad(hours,2)+":"+pad(mins,2)+":"+pad(secs,2)+"."+ms;      
+    } else {
+      return ""+pad(hours, 2)+":"+pad(mins,2)+":"+pad(secs,2)+"."+ms;
+    }
+  }
+
+  private static String pad(long v, int i) {
+    return padLeft(Long.toString(v), '0', i);
+  }
+
   public static boolean startsWithInList(String s, String... list) {
     if (s == null) {
+      return false;
+    }
+    for (String l : list) {
+      if (l != null) {
+        if (s.startsWith(l)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public static boolean startsWithInList(String s, Collection<String> list) {
+    if (s == null || list == null) {
       return false;
     }
     for (String l : list) {
@@ -1328,13 +1586,25 @@ public class Utilities {
     }
     return false;
   }
-  
-  public static boolean startsWithInList(String s, Collection<String> list) {
+
+  public static boolean endsWithInList(String s, String... list) {
     if (s == null) {
       return false;
     }
     for (String l : list) {
-      if (s.startsWith(l)) {
+      if (s.endsWith(l)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static boolean endsWithInList(String s, Collection<String> list) {
+    if (s == null) {
+      return false;
+    }
+    for (String l : list) {
+      if (s.endsWith(l)) {
         return true;
       }
     }
@@ -1407,98 +1677,11 @@ public class Utilities {
 
     return byteArrays;
   }
-  
-  public static String presentDuration(long duration) {
-    duration = duration / 1000000;
-    String res = "";    // ;
-    long days       = TimeUnit.MILLISECONDS.toDays(duration);
-    long hours      = TimeUnit.MILLISECONDS.toHours(duration) -
-        TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(duration));
-    long minutes    = TimeUnit.MILLISECONDS.toMinutes(duration) -
-        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration));
-    long seconds    = TimeUnit.MILLISECONDS.toSeconds(duration) -
-        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration));
-    long millis     = TimeUnit.MILLISECONDS.toMillis(duration) -
-        TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(duration));
-
-    if (days > 0)
-      res = String.format("%dd %02d:%02d:%02d.%04d", days, hours, minutes, seconds, millis);
-    else if (hours > 0)
-      res = String.format("%02d:%02d:%02d.%04d", hours, minutes, seconds, millis);
-    else //
-      res = String.format("%02d:%02d.%04d", minutes, seconds, millis);
-//    else
-//      res = String.format("%02d.%04d", seconds, millis);
-    return res;
-  }
-
-  public static void unzip(InputStream zip, Path target) throws IOException {
-    try (ZipInputStream zis = new ZipInputStream(zip)) {
-      ZipEntry zipEntry = zis.getNextEntry();
-      while (zipEntry != null) {
-        boolean isDirectory = false;
-        if (zipEntry.getName().endsWith("/") || zipEntry.getName().endsWith("\\")) {
-          isDirectory = true;
-        }
-        Path newPath = zipSlipProtect(zipEntry, target);
-        if (isDirectory) {
-          Files.createDirectories(newPath);
-        } else {
-          if (newPath.getParent() != null) {
-            if (Files.notExists(newPath.getParent())) {
-              Files.createDirectories(newPath.getParent());
-            }
-          }
-          Files.copy(zis, newPath, StandardCopyOption.REPLACE_EXISTING);
-        }
-        zipEntry = zis.getNextEntry();
-      }
-      zis.closeEntry();
-    }
-  }
-
-  private static Path zipSlipProtect(ZipEntry zipEntry, Path targetDir)
-      throws IOException {
-
-    // test zip slip vulnerability
-    // Path targetDirResolved = targetDir.resolve("../../" + zipEntry.getName());
-
-    Path targetDirResolved = targetDir.resolve(zipEntry.getName());
-
-    // make sure normalized file still has targetDir as its prefix
-    // else throws exception
-    Path normalizePath = targetDirResolved.normalize();
-    if (!normalizePath.startsWith(targetDir)) {
-      throw new IOException("Bad zip entry: " + zipEntry.getName());
-    }
-
-    return normalizePath;
-  }
 
   final static int[] illegalChars = {34, 60, 62, 124, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 58, 42, 63, 92, 47};
-  
+
   static {
     Arrays.sort(illegalChars);
-  }
-
-  public static String cleanFileName(String badFileName) {
-    StringBuilder cleanName = new StringBuilder();
-    int len = badFileName.codePointCount(0, badFileName.length());
-    for (int i=0; i<len; i++) {
-      int c = badFileName.codePointAt(i);
-      if (Arrays.binarySearch(illegalChars, c) < 0) {
-        cleanName.appendCodePoint(c);
-      }
-    }
-    return cleanName.toString();
-  }
-
-  public static boolean isValidUUID(String uuid) {
-    return uuid.matches(UUID_REGEX);
-  }
-
-  public static boolean isValidOID(String oid) {
-    return oid.matches(OID_REGEX);
   }
 
   public static int findinList(String[] list, String val) {
@@ -1510,5 +1693,610 @@ public class Utilities {
     return -1;
   }
 
+  public static String toString(String[] expected) {
+    return "['"+String.join("' | '", expected)+"']";
+  }
 
+  public static String lowBoundaryForDecimal(String value, int precision) {
+    if (Utilities.noString(value)) {
+      throw new FHIRException("Unable to calculate lowBoundary for a null decimal string");
+    }
+    return boundaryForDecimal(value, precision, false);
+  }
+
+  private static String applyPrecision(String v, int p, boolean down) {
+    String nv = v;
+    int dp = -1;
+    if (nv.contains(".")) {
+      dp = nv.indexOf(".");
+      nv = nv.substring(0, dp)+nv.substring(dp+1);
+    }
+    String s = null;
+    int d = p - getDecimalPrecision(v);
+    if (d == 0) {
+      s = nv;
+    } else if (d > 0) {
+      s = nv + padLeft("", '0', d);
+    } else {
+      int l = v.length();
+      int ld = l+d;
+      if (dp > -1) {
+        ld--;
+      }
+      if (nv.charAt(ld) >= '5' && !down) {
+        s = plusOne(nv.substring(0, ld));
+        if (s.length() > ld && dp > -1) {
+          // the carry added a leading digit (9.96 to 10.0), so the decimal point moves one place right
+          dp++;
+        }
+      } else {
+        s = nv.substring(0, ld);
+      }
+    }
+    if (s.endsWith(".")) {
+      s = s.substring(0, s.length()-1);
+    }
+    return dp == -1 || dp >= s.length() ? s : s.substring(0, dp)+"."+s.substring(dp);
+  }
+
+  private static String plusOne(String digits) {
+    StringBuilder s = new StringBuilder(digits);
+    for (int i = s.length()-1; i >= 0; i--) {
+      if (s.charAt(i) == '9') {
+        s.setCharAt(i, '0');
+      } else {
+        s.setCharAt(i, (char) (s.charAt(i)+1));
+        return s.toString();
+      }
+    }
+    return "1"+s;
+  }
+
+  private static String minusOne(String value) {
+    StringBuffer s = new StringBuffer(value);
+    for (int i = s.length()-1; i >= 0; i--) {
+      if (s.charAt(i) == '0') {
+        s.setCharAt(i, '9');
+      } else if (s.charAt(i) != '.') {
+        s.setCharAt(i, (char) (s.charAt(i)-1));
+        break;
+      }
+    }
+    return s.toString();
+  }
+
+
+  public static String highBoundaryForDecimal(String value, int precision) {
+    if (Utilities.noString(value)) {
+      throw new FHIRException("Unable to calculate highBoundary for a null decimal string");
+    }
+    return boundaryForDecimal(value, precision, true);
+  }
+
+  /**
+   * The boundary is worked out from the digits as presented, since they carry the precision. If the value has an
+   * exponent (9.5e2), that's done on the mantissa, and then the decimal point is moved, so 9.5e2 has the boundaries
+   * 945 and 955 (to the requested precision). The result never has an exponent.
+   */
+  private static String boundaryForDecimal(String value, int precision, boolean high) {
+    int exponent = 0;
+    int e = Math.max(value.indexOf('e'), value.indexOf('E'));
+    if (e > -1) {
+      exponent = Integer.parseInt(value.substring(e+1));
+      value = value.substring(0, e);
+    }
+    if (isZero(value)) {
+      return high ? applyPrecision("0.50000000000000000000000000000", precision, false) : applyPrecision("-0.5000000000000000000000000", precision, true);
+    } else if (value.startsWith("-")) {
+      // the high boundary of a negative number is the negative of the low boundary of its magnitude, and vice versa
+      return "-"+boundaryForPositiveDecimal(value.substring(1), exponent, precision, !high);
+    } else {
+      return boundaryForPositiveDecimal(value, exponent, precision, high);
+    }
+  }
+
+  private static String boundaryForPositiveDecimal(String value, int exponent, int precision, boolean high) {
+    String v = value.contains(".") ? value : value+".";
+    String boundary = (high ? v : minusOne(v))+"50000000000000000000000000000";
+    return applyPrecision(stripLeadingZeros(moveDecimalPoint(boundary, exponent)), precision, !high);
+  }
+
+  /**
+   * moves the decimal point (which must be present) by places (right if positive, left if negative). The result always
+   * has at least one digit on each side of the point
+   */
+  private static String moveDecimalPoint(String value, int places) {
+    if (places == 0) {
+      return value;
+    }
+    int dp = value.indexOf('.');
+    String digits = value.substring(0, dp)+value.substring(dp+1);
+    int ndp = dp+places;
+    if (ndp < 1) {
+      digits = padLeft("", '0', 1-ndp)+digits;
+      ndp = 1;
+    }
+    if (ndp >= digits.length()) {
+      digits = digits+padLeft("", '0', ndp+1-digits.length());
+    }
+    return digits.substring(0, ndp)+"."+digits.substring(ndp);
+  }
+
+  /**
+   * minusOne leaves a leading zero behind when it borrows from the first digit (10 to 09)
+   */
+  private static String stripLeadingZeros(String value) {
+    int i = 0;
+    while (i < value.length()-1 && value.charAt(i) == '0' && value.charAt(i+1) != '.') {
+      i++;
+    }
+    return value.substring(i);
+  }
+
+  private static boolean isZero(String value) {
+    return value.replace(".", "").replace("-", "").replace("0", "").length() == 0;
+  }
+
+  public static Integer getDecimalPrecision(String value) {
+    if (value.contains("e")) {
+      value = value.substring(0, value.indexOf("e"));
+    }
+    if (value.contains(".")) {
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //single literal character split
+      String[] decimalParts = value.split("\\.");
+      return decimalParts[1].length();
+    } else {
+      return 0;
+    }
+  }
+
+
+  public static String padInt(int i, int len) {
+    return Utilities.padLeft(Integer.toString(i), ' ', len);
+  }
+
+  public static String padInt(long i, int len) {
+    return Utilities.padLeft(Long.toString(i), ' ', len);
+  }
+
+  public static Object makeSingleLine(String text) {
+    text = text.replace("\r", " ");
+    text = text.replace("\n", " ");
+    while (text.contains("  ")) {
+      text = text.replace("  ", " ");
+    }
+    return text;
+  }
+
+  public static int parseInt(String value, int def) {
+    if (isInteger(value)) {
+      return Integer.parseInt(value);
+    } else {
+      return def;
+    }
+  }
+
+  /**
+   * Appends a text from a derived element to its base element.
+   *
+   * @param baseText The text set in the base element, or {@code null}.
+   * @param derivedText The text set in the derived element, starting with "...".
+   * @return The resulting text.
+   */
+  public static String appendDerivedTextToBase(@Nullable final String baseText,
+      final String derivedText) {
+    if (baseText == null) {
+      return derivedText.substring(3);
+    }
+    return baseText + "\r\n" + derivedText.substring(3);
+  }
+
+  public static String getRelativeUrlPath(String root, String path) {
+    String res = path.substring(root.length());
+    if (res.startsWith("/")) {
+      res = res.substring(1);
+    }
+    return res;
+  }
+
+  @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+  //anchored, bounded, safe
+  public static boolean isValidCRName(String name) {
+    return name != null && name.matches("[A-Z]([A-Za-z0-9_]){1,254}");
+  }
+
+  public static boolean isAllWhitespace(String s) {
+    if (Utilities.noString(s)) {
+      return true;
+    }
+    for (char ch : s.toCharArray()) {
+      if (!isWhitespace(ch)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public static String trimWS(String s) {
+    if (Utilities.noString(s)) {
+      return s;
+    }
+    int start = 0;
+    while (start < s.length() && isWhitespace(s.charAt(start))) {
+      start++;      
+    }
+    if (start == s.length()) {
+      return "";
+    }
+    int end = s.length() - 1;
+    while (end >= 0 && isWhitespace(s.charAt(end))) {
+      end--;      
+    }
+    if (start > end) {
+      return "";
+    }
+    return s.substring(start, end+1);    
+  }
+
+  public static String trimProhibitedWS(String s) {
+    final String prohibitedWhitespace = " \t\n\r";
+    if (Utilities.noString(s)) {
+      return s;
+    }
+    int start = 0;
+    while (start < s.length() && prohibitedWhitespace.indexOf(s.charAt(start)) != -1) {
+      start++;      
+    }
+    if (start == s.length()) {
+      return "";
+    }
+    int end = s.length() - 1;
+    while (end >= 0 && prohibitedWhitespace.indexOf(s.charAt(end)) != -1) {
+      end--;      
+    }
+    if (start > end) {
+      return "";
+    }
+    return s.substring(start, end+1);    
+  }
+
+  /**
+   * Decode FHIR base64Binary content.
+   *
+   * FHIR says that base64Binary content does not include whitespace, but that readers should ignore it
+   * (per RFC 4648), and before R5 line-wrapped content was common. So whitespace is always skipped.
+   *
+   * What happens to other characters that are not valid base64 depends on stripInvalid:
+   * <ul>
+   *   <li>false: this is as strict as {@link Base64#getDecoder()}: illegal characters, bad padding and
+   *     content after the padding all throw an IllegalArgumentException with the JDK's message</li>
+   *   <li>true: every character that is not in the base64 alphabet (A-Z, a-z, 0-9, '+', '/') or the
+   *     padding character '=' is skipped, like whitespace. Padding is still checked: bad padding and
+   *     content after the padding still throw, as does content that is the wrong length once the
+   *     invalid characters are gone</li>
+   * </ul>
+   * (Don't use the MIME decoder or commons-codec as a substitute for stripInvalid = true: they skip illegal
+   * characters, but are also lax about padding and trailing content, so they will "decode" any string at all.)
+   *
+   * This costs no more than Base64.getDecoder().decode(String), which copies the string into a byte[]
+   * before decoding anyway; this just makes that copy itself and leaves the skipped characters out. When
+   * there is nothing to skip, it is exactly that call. Note that when characters are skipped, the offset
+   * in a 'incorrect ending byte at n' message is into the content without them.
+   *
+   * @param value the base64 content
+   * @param stripInvalid true to skip all characters that are not valid base64, not just whitespace
+   * @return the decoded bytes
+   * @throws IllegalArgumentException if the content is not valid base64 (after skipping)
+   */
+  public static byte[] decodeBase64(String value, boolean stripInvalid) {
+    int len = value.length();
+    int skip = 0;
+    for (int i = 0; i < len; i++) {
+      if (isSkippedInBase64(value.charAt(i), stripInvalid)) {
+        skip++;
+      }
+    }
+    if (skip == 0) {
+      return Base64.getDecoder().decode(value);
+    }
+    byte[] src = new byte[len - skip];
+    int n = 0;
+    for (int i = 0; i < len; i++) {
+      char ch = value.charAt(i);
+      if (!isSkippedInBase64(ch, stripInvalid)) {
+        // a non-ASCII character is never valid base64. Map it to a character that isn't either, rather
+        // than letting the cast truncate it into one that is (U+0141 would become 'A'). (When stripInvalid
+        // is true, non-ASCII characters have already been skipped)
+        src[n++] = ch < 0x80 ? (byte) ch : (byte) '?';
+      }
+    }
+    return Base64.getDecoder().decode(src);
+  }
+
+  /**
+   * Whether a character is left out of base64 content before it is decoded: always the ASCII whitespace
+   * (space, tab, LF, VT, FF, CR - the same characters that {@link #isWhitespace(int)} accepts below 0x80),
+   * and, if stripInvalid, anything else that isn't in the base64 alphabet or '='.
+   */
+  private static boolean isSkippedInBase64(char ch, boolean stripInvalid) {
+    return stripInvalid ? !isBase64Char(ch) : isBase64Whitespace(ch);
+  }
+
+  private static boolean isBase64Whitespace(char ch) {
+    return ch == ' ' || (ch >= 0x09 && ch <= 0x0D);
+  }
+
+  /**
+   * The base64 alphabet (RFC 4648 table 1, not the URL safe one) plus the padding character
+   */
+  private static boolean isBase64Char(char ch) {
+    return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == '+' || ch == '/' || ch == '=';
+  }
+
+  // from https://en.wikipedia.org/wiki/Whitespace_character#Unicode  
+  public static boolean isWhitespace(int ch) {
+    // Hot path: escapeJson calls this for nearly every character of every string
+    // it writes. existsInList is varargs, so the old form allocated a fresh
+    // int[25] on every call. The only sub-0x80 whitespace is 0x20 and the
+    // 0x09-0x0D control range, so ASCII (the overwhelming majority of characters)
+    // resolves in two comparisons; the rare Unicode space separators fall through
+    // to a non-allocating switch. Behaviour is identical to the previous list.
+    if (ch < 0x80) {
+      return ch == 0x0020 || (ch >= 0x0009 && ch <= 0x000D);
+    }
+    switch (ch) {
+      case 0x0085: case 0x00A0: case 0x1680:
+      case 0x2000: case 0x2001: case 0x2002: case 0x2003: case 0x2004:
+      case 0x2005: case 0x2006: case 0x2007: case 0x2008: case 0x2009: case 0x200A:
+      case 0x2028: case 0x2029: case 0x202F: case 0x205F: case 0x3000:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  public static boolean stringsEqual(String s1, String s2) {
+    if  (s1 == null && s2 == null) {
+      return true;
+    } else if (s1 == null) {
+      return false;
+    } else {
+      return s1.equals(s2);
+    }
+  }
+
+  public static String tail(String url) {
+    int i = url.length()-1;
+    while (i >= 0 && (isTokenChar(url.charAt(i)) || isDigit(url.charAt(i))) ) {
+      i--;
+    }
+    if (i < 0) {
+      return url;
+    } else {
+      return url.substring(i+1);
+    }
+  }
+
+  public static List<String> strings(String... members) {
+    List<String> ret = new ArrayList<>();
+    for (String m : members) {
+      ret.add(m);
+    }
+    return ret;
+  }
+
+  public static Set<String> stringSet(String... members) {
+    Set<String> ret = new HashSet<>();
+    for (String m : members) {
+      ret.add(m);
+    }
+    return ret;
+  }
+
+  public static List<String> splitStrings(String src, String regex) {
+    List<String> ret = new ArrayList<>();
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //Regexes sourced from known callers; reviewed in MappingAssistant
+    String[] parts = src.split(regex);
+    for (String m : parts) {
+      ret.add(m);
+    }
+    return ret;
+  }
+
+  public static String stripPara(String p) {
+    if (noString(p)) {
+      return "";
+    }
+    p = p.trim();
+    if (p.startsWith("<p>")) {
+      p = p.substring(3);
+    }
+    if (p.endsWith("</p>")) {
+      p = p.substring(0, p.length()-4);
+    }
+    return p;
+  }
+
+  public static String stripAllPara(String p) {
+    if (noString(p)) {
+      return "";
+    }
+    p = p.trim();
+    if (p.startsWith("<p>")) {
+      p = p.substring(3);
+    }
+    if (p.endsWith("</p>")) {
+      p = p.substring(0, p.length()-4);
+    }
+    p = p.replace("</p>", " ");
+    p = p.replace("<p>", "");
+    while (p.contains("<p ")) {
+      int start = p.indexOf("<p ");
+      int end = start;
+      while (end < p.length() && p.charAt(end) != '>') {
+        end++;
+      }
+      p = p.substring(start, end);
+    }
+    return p;
+  }
+
+
+
+  //public static boolean !isWhitespace(String s) {
+  //boolean ok = true;
+  //for (int i = 0; i < s.length(); i++)
+  //  ok = ok && Character.isWhitespace(s.charAt(i));
+  //return ok;
+  //
+  //}
+
+
+  public static boolean isTxFhirOrgServer(String s) {
+    return Utilities.startsWithInList(s.replace("http://", "https://"), FhirSettings.getTxFhirProduction(), FhirSettings.getTxFhirDevelopment(), FhirSettings.getTxFhirLocal());
+  }
+
+  public static String[] splitLines(String txt) {
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //simple character class split; safe
+    String[] lines = txt.split("\\r?\\n|\\r");
+    return lines;
+  }
+
+  public static String rightTrim(String s) {
+    int i = s.length()-1;
+    while (i > 0 && Character.isWhitespace(s.charAt(i))) {
+      i--;
+    }
+    return i == 0 ? "" : s.substring(0, i+1);
+  }
+
+  public static String urlTail(String url) {
+    if (url == null) {
+      return null;
+    }
+    return url.contains("/") ? url.substring(url.lastIndexOf("/")+1) : url;
+  }
+
+  public static String pathTail(String path) {
+    return path.substring(path.lastIndexOf('.') + 1);
+  }
+
+  public static String escapeSql(String s) {
+    return s.replace("'", "''");
+  }
+
+  public static String[] simpleSplit(String cnt, String div) {
+    if (cnt == null) {
+      return new String[] {};
+    }
+    List<String> parts = new ArrayList<>();
+    int cursor = 0;
+    int last = 0;
+    while (cursor < cnt.length()) {
+      if (matches(cnt, div, cursor)) {
+        parts.add(cnt.substring(last, cursor));
+        cursor = cursor + div.length();
+        last = cursor;
+      } else {
+        cursor++;
+      }
+    }
+    parts.add(cnt.substring(last, cursor));
+    return parts.toArray(new String[] {});
+  }
+
+  private static boolean matches(String cnt, String div, int cursor) {
+    if (div.length() + cursor > cnt.length()) {
+      return false;
+    }
+    for (int i = 0; i < div.length(); i++) {
+      if (cnt.charAt(cursor+i) != div.charAt(i)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public static String stripEoln(String text) {
+    if (text == null) {
+      return "";
+    }
+    return text.replace("\r\n",  " ").replace("\n",  " ").replace("\r",  " ");
+  }
+
+  public static String extractDomain(String source) {
+    try {
+      URI uri = URI.create(source);
+      return uri.getHost();
+    } catch (Exception e) {
+      return "??";
+    }
+  }
+
+  public static boolean isValidHtmlAnchorChar(char c) {
+    if ( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
+      return true;
+    } 
+    switch (c) {
+    case '!':
+    case '$':
+    case '&':
+    case '\'':
+    case '(':
+    case ')':
+    case '*':
+    case '+':
+    case ',':
+    case ';':
+    case '=':
+    case '.':
+    case '_':
+    case '-':
+    case '~':
+    case ':':
+    case '@':
+    case '/':
+    case '?':
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  public static boolean listValueStartsWith(String s, Set<String> list) {
+    if (s == null || list == null) {
+      return false;
+    }
+    for (String l : list) {
+      if (l.startsWith(s)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static String getDirectoryForURL(String url) {
+    return url.contains("/") && url.lastIndexOf("/") > 10 ? url.substring(0, url.lastIndexOf("/")) : url;
+  }
+
+  public static List<String> copyAdd(List<String> oldList, String newItem) {
+    List<String> newList = new ArrayList<>(oldList);
+    newList.add(newItem);
+    return newList;
+  }
+
+  public static String limitString(String text, int length) {
+    text = text.trim();
+    if (text.length() > length) {
+      return text.substring(0, length-1)+"...";
+    } else {
+      return text;
+    }
+  }
+
+
+  
 }

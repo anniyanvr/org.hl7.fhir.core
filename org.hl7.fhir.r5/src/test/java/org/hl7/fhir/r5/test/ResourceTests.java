@@ -1,6 +1,8 @@
 package org.hl7.fhir.r5.test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
@@ -10,6 +12,7 @@ import org.hl7.fhir.r5.model.CapabilityStatement;
 import org.hl7.fhir.r5.model.CodeSystem;
 import org.hl7.fhir.r5.model.CompartmentDefinition;
 import org.hl7.fhir.r5.model.ConceptMap;
+import org.hl7.fhir.r5.model.Constants;
 import org.hl7.fhir.r5.model.ExampleScenario;
 import org.hl7.fhir.r5.model.GraphDefinition;
 import org.hl7.fhir.r5.model.ImplementationGuide;
@@ -38,11 +41,11 @@ class ResourceTests {
     assertTrue(new MessageDefinition().supportsCopyright()); 
     assertTrue(new StructureMap().supportsCopyright()); 
     assertTrue(new ExampleScenario().supportsCopyright()); 
-    assertFalse(new SearchParameter().supportsCopyright());
-    assertFalse(new NamingSystem().supportsCopyright()); 
-    assertFalse(new OperationDefinition().supportsCopyright()); 
+    assertTrue(new SearchParameter().supportsCopyright());
+    assertTrue(new NamingSystem().supportsCopyright()); 
+    assertTrue(new OperationDefinition().supportsCopyright()); 
     assertFalse(new CompartmentDefinition().supportsCopyright()); 
-    assertFalse(new GraphDefinition().supportsCopyright()); 
+    assertTrue(new GraphDefinition().supportsCopyright()); 
   }
 
   private String SRC = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n"+
@@ -67,5 +70,12 @@ class ResourceTests {
     Resource res = xml.parse(SRC);
     String output = xml.composeString(res);
     assertEquals(TGT, output);
+  }
+
+  @Test
+  void testCapabilityStatementFhirVersion() {
+    CapabilityStatement cap = new CapabilityStatement();
+    cap.getFhirVersionElement().setValueAsString(Constants.VERSION);
+    assertEquals(Constants.VERSION, cap.getFhirVersion().getDisplay());
   }
 }

@@ -51,8 +51,17 @@ public class SimpleQuantity extends Quantity {
         return dst;
       }
 
+      public void assignValues(Base dst) {
+        copyValues((SimpleQuantity) dst);
+      }
+
       public void copyValues(SimpleQuantity dst) {
         super.copyValues(dst);
+        dst.value = value == null ? null : value.copy();
+        dst.comparator = comparator == null ? null : comparator.copy();
+        dst.unit = unit == null ? null : unit.copy();
+        dst.system = system == null ? null : system.copy();
+        dst.code = code == null ? null : code.copy();
       }
 
       protected SimpleQuantity typedCopy() {

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class AnimalGenderstatusEnumFactory implements EnumFactory<AnimalGenderstatus> {
@@ -48,21 +44,23 @@ public class AnimalGenderstatusEnumFactory implements EnumFactory<AnimalGenderst
       return AnimalGenderstatus.INTACT;
     if ("unknown".equals(codeString))
       return AnimalGenderstatus.UNKNOWN;
-    throw new IllegalArgumentException("Unknown AnimalGenderstatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown AnimalGenderstatus code '" + codeString + "'");
   }
 
   public String toCode(AnimalGenderstatus code) {
-    if (code == AnimalGenderstatus.NEUTERED)
+       if (code == AnimalGenderstatus.NULL)
+           return null;
+       if (code == AnimalGenderstatus.NEUTERED)
       return "neutered";
     if (code == AnimalGenderstatus.INTACT)
       return "intact";
     if (code == AnimalGenderstatus.UNKNOWN)
       return "unknown";
     return "?";
-  }
+   }
 
-    public String toSystem(AnimalGenderstatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(AnimalGenderstatus code) {
+    return code.getSystem();
+  }
 
 }

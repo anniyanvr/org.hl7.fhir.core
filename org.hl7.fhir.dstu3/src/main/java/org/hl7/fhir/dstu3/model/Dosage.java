@@ -399,8 +399,8 @@ public class Dosage extends Type implements ICompositeType {
       return (BooleanType) this.asNeeded;
     }
 
-    public boolean hasAsNeededBooleanType() { 
-      return this != null && this.asNeeded instanceof BooleanType;
+    public boolean hasAsNeededBooleanType() {
+        return this.asNeeded instanceof BooleanType;
     }
 
     /**
@@ -414,8 +414,8 @@ public class Dosage extends Type implements ICompositeType {
       return (CodeableConcept) this.asNeeded;
     }
 
-    public boolean hasAsNeededCodeableConcept() { 
-      return this != null && this.asNeeded instanceof CodeableConcept;
+    public boolean hasAsNeededCodeableConcept() {
+        return this.asNeeded instanceof CodeableConcept;
     }
 
     public boolean hasAsNeeded() { 
@@ -522,8 +522,8 @@ public class Dosage extends Type implements ICompositeType {
       return (Range) this.dose;
     }
 
-    public boolean hasDoseRange() { 
-      return this != null && this.dose instanceof Range;
+    public boolean hasDoseRange() {
+        return this.dose instanceof Range;
     }
 
     /**
@@ -537,8 +537,8 @@ public class Dosage extends Type implements ICompositeType {
       return (SimpleQuantity) this.dose;
     }
 
-    public boolean hasDoseSimpleQuantity() { 
-      return this != null && this.dose instanceof SimpleQuantity;
+    public boolean hasDoseSimpleQuantity() {
+        return this.dose instanceof SimpleQuantity;
     }
 
     public boolean hasDose() { 
@@ -645,8 +645,8 @@ public class Dosage extends Type implements ICompositeType {
       return (Ratio) this.rate;
     }
 
-    public boolean hasRateRatio() { 
-      return this != null && this.rate instanceof Ratio;
+    public boolean hasRateRatio() {
+        return this.rate instanceof Ratio;
     }
 
     /**
@@ -660,8 +660,8 @@ public class Dosage extends Type implements ICompositeType {
       return (Range) this.rate;
     }
 
-    public boolean hasRateRange() { 
-      return this != null && this.rate instanceof Range;
+    public boolean hasRateRange() {
+        return this.rate instanceof Range;
     }
 
     /**
@@ -675,8 +675,8 @@ public class Dosage extends Type implements ICompositeType {
       return (SimpleQuantity) this.rate;
     }
 
-    public boolean hasRateSimpleQuantity() { 
-      return this != null && this.rate instanceof SimpleQuantity;
+    public boolean hasRateSimpleQuantity() {
+        return this.rate instanceof SimpleQuantity;
     }
 
     public boolean hasRate() { 
@@ -900,16 +900,16 @@ public class Dosage extends Type implements ICompositeType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("sequence")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Dosage.sequence");
+          throw new FHIRException("Cannot call addChild on a singleton property Dosage.sequence");
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Dosage.text");
+          throw new FHIRException("Cannot call addChild on a singleton property Dosage.text");
         }
         else if (name.equals("additionalInstruction")) {
           return addAdditionalInstruction();
         }
         else if (name.equals("patientInstruction")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Dosage.patientInstruction");
+          throw new FHIRException("Cannot call addChild on a singleton property Dosage.patientInstruction");
         }
         else if (name.equals("timing")) {
           this.timing = new Timing();

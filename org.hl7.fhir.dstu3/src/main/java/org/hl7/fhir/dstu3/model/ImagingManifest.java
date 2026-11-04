@@ -252,28 +252,6 @@ public class ImagingManifest extends DomainResource {
         }
 
         /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Endpoint> getEndpointTarget() { 
-          if (this.endpointTarget == null)
-            this.endpointTarget = new ArrayList<Endpoint>();
-          return this.endpointTarget;
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public Endpoint addEndpointTarget() { 
-          Endpoint r = new Endpoint();
-          if (this.endpointTarget == null)
-            this.endpointTarget = new ArrayList<Endpoint>();
-          this.endpointTarget.add(r);
-          return r;
-        }
-
-        /**
          * @return {@link #series} (Series identity and locating information of the DICOM SOP instances in the selection.)
          */
         public List<SeriesComponent> getSeries() { 
@@ -420,7 +398,7 @@ public class ImagingManifest extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("uid")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingManifest.uid");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingManifest.uid");
         }
         else if (name.equals("imagingStudy")) {
           this.imagingStudy = new Reference();
@@ -631,28 +609,6 @@ public class ImagingManifest extends DomainResource {
         }
 
         /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Endpoint> getEndpointTarget() { 
-          if (this.endpointTarget == null)
-            this.endpointTarget = new ArrayList<Endpoint>();
-          return this.endpointTarget;
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public Endpoint addEndpointTarget() { 
-          Endpoint r = new Endpoint();
-          if (this.endpointTarget == null)
-            this.endpointTarget = new ArrayList<Endpoint>();
-          this.endpointTarget.add(r);
-          return r;
-        }
-
-        /**
          * @return {@link #instance} (Identity and locating information of the selected DICOM SOP instances.)
          */
         public List<InstanceComponent> getInstance() { 
@@ -789,7 +745,7 @@ public class ImagingManifest extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("uid")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingManifest.uid");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingManifest.uid");
         }
         else if (name.equals("endpoint")) {
           return addEndpoint();
@@ -1049,10 +1005,10 @@ public class ImagingManifest extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("sopClass")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingManifest.sopClass");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingManifest.sopClass");
         }
         else if (name.equals("uid")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingManifest.uid");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingManifest.uid");
         }
         else
           return super.addChild(name);
@@ -1551,14 +1507,14 @@ The value may be derived from the DICOM Standard Part 16, CID-7010 descriptions 
           return this.patient;
         }
         else if (name.equals("authoringTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingManifest.authoringTime");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingManifest.authoringTime");
         }
         else if (name.equals("author")) {
           this.author = new Reference();
           return this.author;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ImagingManifest.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ImagingManifest.description");
         }
         else if (name.equals("study")) {
           return addStudy();

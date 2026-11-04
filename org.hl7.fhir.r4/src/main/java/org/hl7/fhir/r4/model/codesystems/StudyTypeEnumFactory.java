@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class StudyTypeEnumFactory implements EnumFactory<StudyType> {
@@ -56,11 +52,13 @@ public class StudyTypeEnumFactory implements EnumFactory<StudyType> {
       return StudyType.CASEREPORT;
     if ("mixed".equals(codeString))
       return StudyType.MIXED;
-    throw new IllegalArgumentException("Unknown StudyType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown StudyType code '" + codeString + "'");
   }
 
   public String toCode(StudyType code) {
-    if (code == StudyType.RCT)
+       if (code == StudyType.NULL)
+           return null;
+       if (code == StudyType.RCT)
       return "RCT";
     if (code == StudyType.CCT)
       return "CCT";
@@ -75,10 +73,10 @@ public class StudyTypeEnumFactory implements EnumFactory<StudyType> {
     if (code == StudyType.MIXED)
       return "mixed";
     return "?";
-  }
+   }
 
-    public String toSystem(StudyType code) {
-      return code.getSystem();
-      }
+  public String toSystem(StudyType code) {
+    return code.getSystem();
+  }
 
 }

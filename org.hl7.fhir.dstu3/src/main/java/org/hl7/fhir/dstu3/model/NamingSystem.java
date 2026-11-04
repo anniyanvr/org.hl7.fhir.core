@@ -137,12 +137,12 @@ public class NamingSystem extends MetadataResource {
           return NamingSystemType.ROOT;
         throw new IllegalArgumentException("Unknown NamingSystemType code '"+codeString+"'");
         }
-        public Enumeration<NamingSystemType> fromType(Base code) throws FHIRException {
+        public Enumeration<NamingSystemType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<NamingSystemType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("codesystem".equals(codeString))
@@ -154,14 +154,16 @@ public class NamingSystem extends MetadataResource {
         throw new FHIRException("Unknown NamingSystemType code '"+codeString+"'");
         }
     public String toCode(NamingSystemType code) {
-      if (code == NamingSystemType.CODESYSTEM)
+       if (code == NamingSystemType.NULL)
+           return null;
+       if (code == NamingSystemType.CODESYSTEM)
         return "codesystem";
       if (code == NamingSystemType.IDENTIFIER)
         return "identifier";
       if (code == NamingSystemType.ROOT)
         return "root";
       return "?";
-      }
+   }
     public String toSystem(NamingSystemType code) {
       return code.getSystem();
       }
@@ -261,12 +263,12 @@ public class NamingSystem extends MetadataResource {
           return NamingSystemIdentifierType.OTHER;
         throw new IllegalArgumentException("Unknown NamingSystemIdentifierType code '"+codeString+"'");
         }
-        public Enumeration<NamingSystemIdentifierType> fromType(Base code) throws FHIRException {
+        public Enumeration<NamingSystemIdentifierType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<NamingSystemIdentifierType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("oid".equals(codeString))
@@ -280,7 +282,9 @@ public class NamingSystem extends MetadataResource {
         throw new FHIRException("Unknown NamingSystemIdentifierType code '"+codeString+"'");
         }
     public String toCode(NamingSystemIdentifierType code) {
-      if (code == NamingSystemIdentifierType.OID)
+       if (code == NamingSystemIdentifierType.NULL)
+           return null;
+       if (code == NamingSystemIdentifierType.OID)
         return "oid";
       if (code == NamingSystemIdentifierType.UUID)
         return "uuid";
@@ -289,7 +293,7 @@ public class NamingSystem extends MetadataResource {
       if (code == NamingSystemIdentifierType.OTHER)
         return "other";
       return "?";
-      }
+   }
     public String toSystem(NamingSystemIdentifierType code) {
       return code.getSystem();
       }
@@ -665,16 +669,16 @@ public class NamingSystem extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.type");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.type");
         }
         else if (name.equals("value")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.value");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.value");
         }
         else if (name.equals("preferred")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.preferred");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.preferred");
         }
         else if (name.equals("comment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.comment");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.comment");
         }
         else if (name.equals("period")) {
           this.period = new Period();
@@ -1652,32 +1656,32 @@ public class NamingSystem extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.name");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.name");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.status");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.status");
         }
         else if (name.equals("kind")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.kind");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.kind");
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.date");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.date");
         }
         else if (name.equals("publisher")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.publisher");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.publisher");
         }
         else if (name.equals("contact")) {
           return addContact();
         }
         else if (name.equals("responsible")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.responsible");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.responsible");
         }
         else if (name.equals("type")) {
           this.type = new CodeableConcept();
           return this.type;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.description");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.description");
         }
         else if (name.equals("useContext")) {
           return addUseContext();
@@ -1686,7 +1690,7 @@ public class NamingSystem extends MetadataResource {
           return addJurisdiction();
         }
         else if (name.equals("usage")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NamingSystem.usage");
+          throw new FHIRException("Cannot call addChild on a singleton property NamingSystem.usage");
         }
         else if (name.equals("uniqueId")) {
           return addUniqueId();

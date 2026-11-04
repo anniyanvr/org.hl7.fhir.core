@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ContactPointSystemEnumFactory implements EnumFactory<ContactPointSystem> {
@@ -56,11 +52,13 @@ public class ContactPointSystemEnumFactory implements EnumFactory<ContactPointSy
       return ContactPointSystem.SMS;
     if ("other".equals(codeString))
       return ContactPointSystem.OTHER;
-    throw new IllegalArgumentException("Unknown ContactPointSystem code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ContactPointSystem code '" + codeString + "'");
   }
 
   public String toCode(ContactPointSystem code) {
-    if (code == ContactPointSystem.PHONE)
+       if (code == ContactPointSystem.NULL)
+           return null;
+       if (code == ContactPointSystem.PHONE)
       return "phone";
     if (code == ContactPointSystem.FAX)
       return "fax";
@@ -75,10 +73,10 @@ public class ContactPointSystemEnumFactory implements EnumFactory<ContactPointSy
     if (code == ContactPointSystem.OTHER)
       return "other";
     return "?";
-  }
+   }
 
-    public String toSystem(ContactPointSystem code) {
-      return code.getSystem();
-      }
+  public String toSystem(ContactPointSystem code) {
+    return code.getSystem();
+  }
 
 }

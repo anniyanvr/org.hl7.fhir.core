@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3CodingRationaleEnumFactory implements EnumFactory<V3CodingRationale> {
@@ -58,11 +54,13 @@ public class V3CodingRationaleEnumFactory implements EnumFactory<V3CodingRationa
       return V3CodingRationale.SH;
     if ("SRC".equals(codeString))
       return V3CodingRationale.SRC;
-    throw new IllegalArgumentException("Unknown V3CodingRationale code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3CodingRationale code '" + codeString + "'");
   }
 
   public String toCode(V3CodingRationale code) {
-    if (code == V3CodingRationale.O)
+       if (code == V3CodingRationale.NULL)
+           return null;
+       if (code == V3CodingRationale.O)
       return "O";
     if (code == V3CodingRationale.OR)
       return "OR";
@@ -79,10 +77,10 @@ public class V3CodingRationaleEnumFactory implements EnumFactory<V3CodingRationa
     if (code == V3CodingRationale.SRC)
       return "SRC";
     return "?";
-  }
+   }
 
-    public String toSystem(V3CodingRationale code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3CodingRationale code) {
+    return code.getSystem();
+  }
 
 }

@@ -52,8 +52,8 @@ import org.hl7.fhir.r4.model.StructureDefinition;
 import org.hl7.fhir.r4.model.StructureDefinition.StructureDefinitionKind;
 import org.hl7.fhir.r4.model.Type;
 
-
-public class ObjectConverter  {
+@Deprecated(forRemoval = true)
+public class ObjectConverter {
 
   private IWorkerContext context;
 
@@ -74,19 +74,20 @@ public class ObjectConverter  {
   public Element convert(Property property, Type type) throws FHIRException {
     return convertElement(property, type);
   }
-  
+
   private Element convertElement(Property property, Base base) throws FHIRException {
     if (base == null)
       return null;
     String tn = base.fhirType();
-    StructureDefinition sd = context.fetchResource(StructureDefinition.class, ProfileUtilities.sdNs(tn, context.getOverrideVersionNs()));
+    StructureDefinition sd = context.fetchResource(StructureDefinition.class,
+        ProfileUtilities.sdNs(tn, context.getOverrideVersionNs()));
     if (sd == null)
-      throw new FHIRException("Unable to find definition for type "+tn);
+      throw new FHIRException("Unable to find definition for type " + tn);
     Element res = new Element(property.getName(), property);
-    if (sd.getKind() == StructureDefinitionKind.PRIMITIVETYPE) 
+    if (sd.getKind() == StructureDefinitionKind.PRIMITIVETYPE)
       res.setValue(((PrimitiveType) base).asStringValue());
 
-    List<ElementDefinition> children = ProfileUtilities.getChildMap(sd, sd.getSnapshot().getElementFirstRep()); 
+    List<ElementDefinition> children = ProfileUtilities.getChildMap(sd, sd.getSnapshot().getElementFirstRep());
     for (ElementDefinition child : children) {
       String n = tail(child.getPath());
       if (sd.getKind() != StructureDefinitionKind.PRIMITIVETYPE || !"value".equals(n)) {
@@ -102,7 +103,7 @@ public class ObjectConverter  {
 
   private String tail(String path) {
     if (path.contains("."))
-      return path.substring(path.lastIndexOf('.')+1);
+      return path.substring(path.lastIndexOf('.') + 1);
     else
       return path;
   }
@@ -123,13 +124,13 @@ public class ObjectConverter  {
     ByteArrayOutputStream bo = new ByteArrayOutputStream();
     try {
       new JsonParser(context).compose(element, bo, OutputStyle.NORMAL, null);
-//      TextFile.bytesToFile(bo.toByteArray(), "c:\\temp\\json.json");
+//      FileUtilities.bytesToFile(bo.toByteArray(), Utilities.path("[tmp]", "json.json");
       return new org.hl7.fhir.r4.formats.JsonParser().parse(bo.toByteArray());
     } catch (IOException e) {
       // won't happen
       throw new FHIRException(e);
     }
-    
+
   }
 
   public static CodeableConcept readAsCodeableConcept(Element element) {

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class CompartmentTypeEnumFactory implements EnumFactory<CompartmentType> {
@@ -52,11 +48,13 @@ public class CompartmentTypeEnumFactory implements EnumFactory<CompartmentType> 
       return CompartmentType.PRACTITIONER;
     if ("Device".equals(codeString))
       return CompartmentType.DEVICE;
-    throw new IllegalArgumentException("Unknown CompartmentType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CompartmentType code '" + codeString + "'");
   }
 
   public String toCode(CompartmentType code) {
-    if (code == CompartmentType.PATIENT)
+       if (code == CompartmentType.NULL)
+           return null;
+       if (code == CompartmentType.PATIENT)
       return "Patient";
     if (code == CompartmentType.ENCOUNTER)
       return "Encounter";
@@ -67,10 +65,10 @@ public class CompartmentTypeEnumFactory implements EnumFactory<CompartmentType> 
     if (code == CompartmentType.DEVICE)
       return "Device";
     return "?";
-  }
+   }
 
-    public String toSystem(CompartmentType code) {
-      return code.getSystem();
-      }
+  public String toSystem(CompartmentType code) {
+    return code.getSystem();
+  }
 
 }

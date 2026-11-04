@@ -1,6 +1,5 @@
 package org.hl7.fhir.r5.test;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -17,19 +16,20 @@ import org.hl7.fhir.r5.formats.XmlParser;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r5.model.Bundle.BundleLinkComponent;
+import org.hl7.fhir.r5.model.Bundle.LinkRelationTypes;
 import org.hl7.fhir.r5.model.Bundle.SearchEntryMode;
 import org.hl7.fhir.r5.model.DomainResource;
 import org.hl7.fhir.r5.model.Resource;
+import org.hl7.fhir.r5.test.utils.CompareUtilities;
 import org.hl7.fhir.r5.test.utils.TestingUtilities;
 import org.hl7.fhir.r5.utils.GraphQLEngine;
-import org.hl7.fhir.utilities.TextFile;
+import org.hl7.fhir.utilities.FileUtilities;
 import org.hl7.fhir.utilities.Utilities;
-import org.hl7.fhir.utilities.graphql.Argument;
-import org.hl7.fhir.utilities.graphql.IGraphQLStorageServices;
-import org.hl7.fhir.utilities.graphql.NameValue;
-import org.hl7.fhir.utilities.graphql.Parser;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+import org.hl7.fhir.utilities.graphql.*;
 import org.hl7.fhir.utilities.xml.XMLUtil;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -65,10 +65,16 @@ public class GraphQLEngineTests implements IGraphQLStorageServices {
         stream = TestingUtilities.loadTestResourceStream("r5", parts[0].toLowerCase()+"-"+parts[1].toLowerCase()+".xml");
     }
 
-    GraphQLEngine gql = new GraphQLEngine(TestingUtilities.context());
+    Resource parsedResource =  stream != null ? new XmlParser().parse(stream) : null;
+
+    testResource(name, parsedResource, output, source, operation);
+  }
+
+  private void testResource(String id, Resource resource, String output, String source, String operation) throws IOException, EGraphEngine, EGraphQLException {
+    GraphQLEngine gql = new GraphQLEngine(TestingUtilities.getSharedWorkerContext());
     gql.setServices(this);
-    if (stream != null)
-      gql.setFocus(new XmlParser().parse(stream));
+    if (resource != null)
+      gql.setFocus(resource);
     gql.setGraphQL(Parser.parse(TestingUtilities.loadTestResource("r5", "graphql", source)));
     gql.getGraphQL().setOperationName(operation);
     gql.getGraphQL().getVariables().add(new Argument("var", new NameValue("true")));
@@ -88,14 +94,32 @@ public class GraphQLEngineTests implements IGraphQLStorageServices {
       StringBuilder str = new StringBuilder();
       gql.getOutput().setWriteWrapper(false);
       gql.getOutput().write(str, 0);
-      IOUtils.copy(TestingUtilities.loadTestResourceStream("r5", "graphql", source), new FileOutputStream(TestingUtilities.tempFile("graphql", source)));
-      IOUtils.copy(TestingUtilities.loadTestResourceStream("r5", "graphql", output), new FileOutputStream(TestingUtilities.tempFile("graphql", output)));
-      TextFile.stringToFile(str.toString(), TestingUtilities.tempFile("graphql", output+".out"));
-      msg = TestingUtilities.checkJsonIsSame(TestingUtilities.tempFile("graphql", output+".out"), TestingUtilities.tempFile("graphql", output));
+      IOUtils.copy(CompareUtilities.loadTestResourceStream("r5", "graphql", source), ManagedFileAccess.outStream(CompareUtilities.tempFile("graphql", source)));
+      IOUtils.copy(CompareUtilities.loadTestResourceStream("r5", "graphql", output), ManagedFileAccess.outStream(CompareUtilities.tempFile("graphql", output)));
+      FileUtilities.stringToFile(str.toString(), CompareUtilities.tempFile("graphql", output+".out"));
+      msg = new CompareUtilities().checkJsonIsSame(id, CompareUtilities.tempFile("graphql", output), CompareUtilities.tempFile("graphql", output+".out"));
       Assertions.assertTrue(Utilities.noString(msg), msg);
     }
     else
       Assertions.assertTrue(output.equals("$error"), "Error, but proper output was expected ("+msg+")");
+
+  }
+
+  @Test
+  public void testReferenceReverseHistory() throws Exception {
+    String context = "Patient/example/$graphql";
+    String source = "reference-reverse.gql";
+    String output="reference-reverse-history.json";
+
+    String[] parts = context.split("/");
+    InputStream stream  = TestingUtilities.loadTestResourceStream("r5", parts[0].toLowerCase()+"-"+parts[1].toLowerCase()+".xml");
+
+    Resource parsedResource = new XmlParser().parse(stream);
+
+    //Rather than duplicate the entire resource we modify the ID with a _history path
+    parsedResource.setId("example/_history/1");
+
+    testResource("testReferenceReverseHistory", parsedResource, output, source, null);
   }
 
   @Override
@@ -136,7 +160,7 @@ public class GraphQLEngineTests implements IGraphQLStorageServices {
   @Override
   public void listResources(Object appInfo, String type, List<Argument> searchParams, List<IBaseResource> matches) throws FHIRException {
     try {
-      if (type.equals("Condition")) 
+      if (type.equals("Condition") && searchParams.get(0).hasValue("Patient/example"))
         matches.add(new XmlParser().parse(TestingUtilities.loadTestResourceStream("r5", "condition-example.xml")));
       else if (type.equals("Patient")) {
         matches.add(new XmlParser().parse(TestingUtilities.loadTestResourceStream("r5", "patient-example.xml")));
@@ -152,10 +176,10 @@ public class GraphQLEngineTests implements IGraphQLStorageServices {
     try {
       Bundle bnd = new Bundle();
       BundleLinkComponent bl = bnd.addLink();
-      bl.setRelation("next");
+      bl.setRelation(LinkRelationTypes.fromCode("next"));
       bl.setUrl("http://test.fhir.org/r4/Patient?_format=text/xhtml&search-id=77c97e03-8a6c-415f-a63d-11c80cf73f&&active=true&_sort=_id&search-offset=50&_count=50");
       bl = bnd.addLink();
-      bl.setRelation("self");
+      bl.setRelation(LinkRelationTypes.fromCode("self"));
       bl.setUrl("http://test.fhir.org/r4/Patient?_format=text/xhtml&search-id=77c97e03-8a6c-415f-a63d-11c80cf73f&&active=true&_sort=_id&search-offset=0&_count=50");
       BundleEntryComponent be = bnd.addEntry();
       be.setFullUrl("http://hl7.org/fhir/Patient/example");

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class IssueSeverityEnumFactory implements EnumFactory<IssueSeverity> {
@@ -50,11 +46,13 @@ public class IssueSeverityEnumFactory implements EnumFactory<IssueSeverity> {
       return IssueSeverity.WARNING;
     if ("information".equals(codeString))
       return IssueSeverity.INFORMATION;
-    throw new IllegalArgumentException("Unknown IssueSeverity code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown IssueSeverity code '" + codeString + "'");
   }
 
   public String toCode(IssueSeverity code) {
-    if (code == IssueSeverity.FATAL)
+       if (code == IssueSeverity.NULL)
+           return null;
+       if (code == IssueSeverity.FATAL)
       return "fatal";
     if (code == IssueSeverity.ERROR)
       return "error";
@@ -63,10 +61,10 @@ public class IssueSeverityEnumFactory implements EnumFactory<IssueSeverity> {
     if (code == IssueSeverity.INFORMATION)
       return "information";
     return "?";
-  }
+   }
 
-    public String toSystem(IssueSeverity code) {
-      return code.getSystem();
-      }
+  public String toSystem(IssueSeverity code) {
+    return code.getSystem();
+  }
 
 }

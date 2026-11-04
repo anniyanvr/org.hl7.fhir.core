@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class BenefitCategoryEnumFactory implements EnumFactory<BenefitCategory> {
@@ -50,11 +46,13 @@ public class BenefitCategoryEnumFactory implements EnumFactory<BenefitCategory> 
       return BenefitCategory.MEDICAL;
     if ("pharmacy".equals(codeString))
       return BenefitCategory.PHARMACY;
-    throw new IllegalArgumentException("Unknown BenefitCategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown BenefitCategory code '" + codeString + "'");
   }
 
   public String toCode(BenefitCategory code) {
-    if (code == BenefitCategory.ORAL)
+       if (code == BenefitCategory.NULL)
+           return null;
+       if (code == BenefitCategory.ORAL)
       return "oral";
     if (code == BenefitCategory.VISION)
       return "vision";
@@ -63,10 +61,10 @@ public class BenefitCategoryEnumFactory implements EnumFactory<BenefitCategory> 
     if (code == BenefitCategory.PHARMACY)
       return "pharmacy";
     return "?";
-  }
+   }
 
-    public String toSystem(BenefitCategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(BenefitCategory code) {
+    return code.getSystem();
+  }
 
 }

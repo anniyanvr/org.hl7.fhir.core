@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +45,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for Age Type: A duration of time during which an organism (or a process) has existed.
+ * Age Type: A duration of time during which an organism (or a process) has existed.
  */
 @DatatypeDef(name="Age")
 public class Age extends Quantity implements ICompositeType {
@@ -68,6 +68,10 @@ public class Age extends Quantity implements ICompositeType {
         Age dst = new Age();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Age) dst);
       }
 
       public void copyValues(Age dst) {

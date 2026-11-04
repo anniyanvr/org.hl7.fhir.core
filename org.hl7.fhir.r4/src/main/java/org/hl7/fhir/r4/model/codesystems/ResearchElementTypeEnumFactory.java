@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ResearchElementTypeEnumFactory implements EnumFactory<ResearchElementType> {
@@ -48,21 +44,23 @@ public class ResearchElementTypeEnumFactory implements EnumFactory<ResearchEleme
       return ResearchElementType.EXPOSURE;
     if ("outcome".equals(codeString))
       return ResearchElementType.OUTCOME;
-    throw new IllegalArgumentException("Unknown ResearchElementType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ResearchElementType code '" + codeString + "'");
   }
 
   public String toCode(ResearchElementType code) {
-    if (code == ResearchElementType.POPULATION)
+       if (code == ResearchElementType.NULL)
+           return null;
+       if (code == ResearchElementType.POPULATION)
       return "population";
     if (code == ResearchElementType.EXPOSURE)
       return "exposure";
     if (code == ResearchElementType.OUTCOME)
       return "outcome";
     return "?";
-  }
+   }
 
-    public String toSystem(ResearchElementType code) {
-      return code.getSystem();
-      }
+  public String toSystem(ResearchElementType code) {
+    return code.getSystem();
+  }
 
 }

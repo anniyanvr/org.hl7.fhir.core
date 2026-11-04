@@ -1,34 +1,34 @@
 package org.hl7.fhir.r5.terminologies;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.hl7.fhir.utilities.SimpleHTTPClient;
-import org.hl7.fhir.utilities.SimpleHTTPClient.HTTPResult;
-import org.hl7.fhir.utilities.IniFile;
-import org.hl7.fhir.utilities.TextFile;
-import org.hl7.fhir.utilities.Utilities;
-import org.hl7.fhir.utilities.VersionUtilities;
+import lombok.extern.slf4j.Slf4j;
+import org.hl7.fhir.utilities.*;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+import org.hl7.fhir.utilities.http.HTTPResult;
+import org.hl7.fhir.utilities.http.IHTTPAuthenticationProvider;
+import org.hl7.fhir.utilities.http.ManagedWebAccess;
 
+
+@Slf4j
 public class TerminologyCacheManager {
 
   // if either the CACHE_VERSION of the stated maj/min server versions change, the 
@@ -42,34 +42,50 @@ public class TerminologyCacheManager {
   private String ghRepo;
   private String ghBranch;
 
-  public TerminologyCacheManager(String serverVersion, String rootDir, String ghOrg, String ghRepo, String ghBranch) throws IOException {
+  /**
+   * kindling only
+   * @param serverVersion
+   * @param rootDir
+   * @param ghOrg
+   * @param ghRepo
+   * @param ghBranch
+   * @throws IOException
+   */
+  public TerminologyCacheManager(String serverVersion, String rootDir, String ghOrg, String ghRepo, String ghBranch, boolean clear) throws IOException {
     super();
     //    this.rootDir = rootDir;
     this.ghOrg = ghOrg;
     this.ghRepo = ghRepo;
     this.ghBranch = ghBranch;
-
     version = CACHE_VERSION+"/"+VersionUtilities.getMajMin(serverVersion);
-
     if (Utilities.noString(ghOrg) || Utilities.noString(ghRepo) || Utilities.noString(ghBranch)) {
       cacheFolder = Utilities.path(rootDir, "temp", "tx-cache");
     } else {
       cacheFolder = Utilities.path(System.getProperty("user.home"), ".fhir", "tx-cache", ghOrg, ghRepo, ghBranch);
     }
+    if (clear) {
+      FileUtilities.clearDirectory(cacheFolder);
+    }
   }
 
-  public void initialize() throws IOException {
-    File f = new File(cacheFolder);
+  /**
+   * only for use with Kindling
+   *
+   * @throws IOException
+   */
+  public void initializeForKindling() throws IOException {
+    File f = ManagedFileAccess.file(cacheFolder);
     if (!f.exists()) {
-      Utilities.createDirectory(cacheFolder);      
+      FileUtilities.createDirectory(cacheFolder);      
+    }
+
+    if (!version.equals(getCacheVersion())) {
+      clearCache();
+      fillCache("https://tx.fhir.org/tx-cache/"+ghOrg+"/"+ghRepo+"/"+ghBranch+".zip");
     }
     if (!version.equals(getCacheVersion())) {
       clearCache();
-      fillCache("http://tx.fhir.org/tx-cache/"+ghOrg+"/"+ghRepo+"/"+ghBranch+".zip");
-    }
-    if (!version.equals(getCacheVersion())) {
-      clearCache();
-      fillCache("http://tx.fhir.org/tx-cache/"+ghOrg+"/"+ghRepo+"/default.zip");
+      fillCache("https://tx.fhir.org/tx-cache/"+ghOrg+"/"+ghRepo+"/default.zip");
     }
     if (!version.equals(getCacheVersion())) {
       clearCache();
@@ -83,37 +99,37 @@ public class TerminologyCacheManager {
 
   private void fillCache(String source) throws IOException {
     try {
-      System.out.println("Initialise terminology cache from "+source);
+      log.info("Initialise terminology cache from "+source);
 
-      SimpleHTTPClient http = new SimpleHTTPClient();
-      HTTPResult res = http.get(source+"?nocache=" + System.currentTimeMillis());
+      HTTPResult res = ManagedWebAccess.get(Arrays.asList("web"), source+"?nocache=" + System.currentTimeMillis());
       res.checkThrowException();
       unzip(new ByteArrayInputStream(res.getContent()), cacheFolder);
     } catch (Exception e) {
-      System.out.println("No - can't initialise cache from "+source+": "+e.getMessage());
+      log.error("No - can't initialise cache from "+source+": "+e.getMessage(), e);
     }
   }
 
   public static void unzip(InputStream is, String targetDir) throws IOException {
     try (ZipInputStream zipIn = new ZipInputStream(is)) {
       for (ZipEntry ze; (ze = zipIn.getNextEntry()) != null; ) {
-        String path = Utilities.path(targetDir, ze.getName());
-        if (!path.startsWith(targetDir)) {
+        Path path = Path.of(Utilities.path(targetDir, ze.getName())).normalize();
+        String pathString = ManagedFileAccess.fromPath(path).getAbsolutePath();
+        if (!path.startsWith(Path.of(targetDir).normalize())) {
           // see: https://snyk.io/research/zip-slip-vulnerability
           throw new RuntimeException("Entry with an illegal path: " + ze.getName());
         }
         if (ze.isDirectory()) {
-          Utilities.createDirectory(path);
+          FileUtilities.createDirectory(pathString);
         } else {
-          Utilities.createDirectory(Utilities.getDirectoryForFile(path));
-          TextFile.streamToFileNoClose(zipIn, path);
+          FileUtilities.createDirectory(FileUtilities.getDirectoryForFile(pathString));
+          FileUtilities.streamToFileNoClose(zipIn, pathString);
         }
       }
     }
   }
 
   private void clearCache() throws IOException {
-    Utilities.clearDirectory(cacheFolder);    
+    FileUtilities.clearDirectory(cacheFolder);    
   }
 
   private String getCacheVersion() throws IOException {
@@ -140,30 +156,62 @@ public class TerminologyCacheManager {
             zs.closeEntry();
           }
         } catch (IOException e) {
-          System.err.println(e);
+          log.error(e.getMessage(), e);
         }
       });
     }
   }
 
-  
   public void commit(String token) throws IOException {
     // create a zip of all the files 
     ByteArrayOutputStream bs = new ByteArrayOutputStream();
     zipDirectory(bs);
 
     // post it to
-    String url = "https://tx.fhir.org/post/tx-cache/"+ghOrg+"/"+ghRepo+"/"+ghBranch+".zip";
-    System.out.println("Sending tx-cache to "+url+" ("+Utilities.describeSize(bs.toByteArray().length)+")");
-    SimpleHTTPClient http = new SimpleHTTPClient();
-    http.setUsername(token.substring(0, token.indexOf(':')));
-    http.setPassword(token.substring(token.indexOf(':')+1));
-    HTTPResult res = http.put(url, "application/zip", bs.toByteArray(), null); // accept doesn't matter
+    String url = "https://tx.fhir.org/tx-cache/"+ghOrg+"/"+ghRepo+"/"+ghBranch+".zip";
+    log.info("Sending tx-cache to "+url+" ("+Utilities.describeSize(bs.toByteArray().length)+")");
+    HTTPResult res = ManagedWebAccess.accessor(Arrays.asList("web"), new TerminologyCacheManagerAuthenticationProvider(token))
+        .put(url, bs.toByteArray(), null, "application/zip");
+    
     if (res.getCode() >= 300) {
-      System.out.println("sending cache failed: "+res.getCode());
+      log.error("sending cache failed: "+res.getCode()+" "+res.getMessage()+" ("+res.getContentAsString()+")");
     } else {
-      System.out.println("Sent cache");      
+      log.info("Sent cache");
     }
   }
 
+  private class TerminologyCacheManagerAuthenticationProvider implements IHTTPAuthenticationProvider {
+    private String basicAuth;
+
+    public TerminologyCacheManagerAuthenticationProvider(String token) {
+      super();
+      basicAuth = token;
+    }
+
+    @Override
+    public boolean isProtocolAllowed(URL url) {
+      return url.getProtocol().equals("https");
+    }
+
+    @Override
+    public boolean canProvideHeaders(URL url) {
+      return url.getHost().equals("tx.fhir.org");
+    }
+
+    @Override
+    public boolean isPrivateNetworkAllowed(URL url) {
+      return false;
+    }
+
+    @Override
+    public Map<String, String> getHeaders(URL url) {
+      Map<String, String> map = new HashMap<>();
+      if (canProvideHeaders(url)) {
+        // encodeToString, not encode: encode() returns byte[], and concatenating
+        // that yields "Basic [B@1a2b3c" - a header the server can never parse
+        map.put("Authorization", "Basic " + Base64.getEncoder().encodeToString(basicAuth.getBytes(StandardCharsets.UTF_8)));
+      }
+      return map;
+    }
+  }
 }

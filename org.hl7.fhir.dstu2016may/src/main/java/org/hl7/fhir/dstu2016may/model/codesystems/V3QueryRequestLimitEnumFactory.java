@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3QueryRequestLimitEnumFactory implements EnumFactory<V3QueryRequestLimit> {
@@ -46,19 +42,21 @@ public class V3QueryRequestLimitEnumFactory implements EnumFactory<V3QueryReques
       return V3QueryRequestLimit._QUERYREQUESTLIMIT;
     if ("RD".equals(codeString))
       return V3QueryRequestLimit.RD;
-    throw new IllegalArgumentException("Unknown V3QueryRequestLimit code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3QueryRequestLimit code '" + codeString + "'");
   }
 
   public String toCode(V3QueryRequestLimit code) {
-    if (code == V3QueryRequestLimit._QUERYREQUESTLIMIT)
+       if (code == V3QueryRequestLimit.NULL)
+           return null;
+       if (code == V3QueryRequestLimit._QUERYREQUESTLIMIT)
       return "_QueryRequestLimit";
     if (code == V3QueryRequestLimit.RD)
       return "RD";
     return "?";
-  }
+   }
 
-    public String toSystem(V3QueryRequestLimit code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3QueryRequestLimit code) {
+    return code.getSystem();
+  }
 
 }

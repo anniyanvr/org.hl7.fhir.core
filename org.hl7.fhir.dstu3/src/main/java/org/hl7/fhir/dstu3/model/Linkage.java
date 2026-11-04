@@ -132,12 +132,12 @@ public class Linkage extends DomainResource {
           return LinkageType.HISTORICAL;
         throw new IllegalArgumentException("Unknown LinkageType code '"+codeString+"'");
         }
-        public Enumeration<LinkageType> fromType(Base code) throws FHIRException {
+        public Enumeration<LinkageType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<LinkageType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("source".equals(codeString))
@@ -149,14 +149,16 @@ public class Linkage extends DomainResource {
         throw new FHIRException("Unknown LinkageType code '"+codeString+"'");
         }
     public String toCode(LinkageType code) {
-      if (code == LinkageType.SOURCE)
+       if (code == LinkageType.NULL)
+           return null;
+       if (code == LinkageType.SOURCE)
         return "source";
       if (code == LinkageType.ALTERNATE)
         return "alternate";
       if (code == LinkageType.HISTORICAL)
         return "historical";
       return "?";
-      }
+   }
     public String toSystem(LinkageType code) {
       return code.getSystem();
       }
@@ -342,7 +344,7 @@ public class Linkage extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Linkage.type");
+          throw new FHIRException("Cannot call addChild on a singleton property Linkage.type");
         }
         else if (name.equals("resource")) {
           this.resource = new Reference();
@@ -647,7 +649,7 @@ public class Linkage extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("active")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Linkage.active");
+          throw new FHIRException("Cannot call addChild on a singleton property Linkage.active");
         }
         else if (name.equals("author")) {
           this.author = new Reference();

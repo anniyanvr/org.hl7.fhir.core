@@ -1,14 +1,5 @@
 package org.hl7.fhir.convertors.misc;
 
-import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.formats.JsonParser;
-import org.hl7.fhir.r5.model.Enumerations.PublicationStatus;
-import org.hl7.fhir.r5.model.ValueSet;
-import org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent;
-import org.hl7.fhir.utilities.CSVReader;
-import org.hl7.fhir.utilities.TextFile;
-import org.hl7.fhir.utilities.Utilities;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,6 +8,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.context.ContextUtilities;
+import org.hl7.fhir.r5.formats.IParser.OutputStyle;
+import org.hl7.fhir.r5.formats.JsonParser;
+import org.hl7.fhir.r5.model.Enumerations.PublicationStatus;
+import org.hl7.fhir.r5.model.ValueSet;
+import org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent;
+import org.hl7.fhir.utilities.CSVReader;
+import org.hl7.fhir.utilities.FileUtilities;
+import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
+
+@SuppressWarnings("checkstyle:systemout")
 public class PhinVadsImporter extends OIDBasedValueSetImporter {
 
   public PhinVadsImporter() throws FHIRException, IOException {
@@ -25,18 +29,18 @@ public class PhinVadsImporter extends OIDBasedValueSetImporter {
   }
 
   public static void main(String[] args) throws FHIRException, IOException, ParseException {
-//    new PhinVadsImporter().importValueSet(TextFile.fileToBytes("C:\\work\\org.hl7.fhir\\packages\\us.cdc.phinvads-source\\source\\PHVS_BirthDefectsLateralityatDiagnosis_HL7_V1.txt"));
+//    new PhinVadsImporter().importValueSet(FileUtilities.fileToBytes("C:\\work\\org.hl7.fhir\\packages\\us.cdc.phinvads-source\\source\\PHVS_BirthDefectsLateralityatDiagnosis_HL7_V1.txt"));
     PhinVadsImporter self = new PhinVadsImporter();
     self.process(args[0], args[1]);
   }
 
-  private void process(String source, String dest) {
-    for (File f : new File(source).listFiles()) {
+  private void process(String source, String dest) throws IOException {
+    for (File f : ManagedFileAccess.file(source).listFiles()) {
       try {
         System.out.println("Process " + f.getName());
-        ValueSet vs = importValueSet(TextFile.fileToBytes(f));
+        ValueSet vs = importValueSet(FileUtilities.fileToBytes(f));
         if (vs.getId() != null) {
-          new JsonParser().compose(new FileOutputStream(Utilities.path(dest, "ValueSet-" + vs.getId() + ".json")), vs);
+          new JsonParser().setOutputStyle(OutputStyle.PRETTY).compose(ManagedFileAccess.outStream(Utilities.path(dest, "ValueSet-" + vs.getId() + ".json")), vs);
         }
       } catch (Exception e) {
         e.printStackTrace();
@@ -48,7 +52,7 @@ public class PhinVadsImporter extends OIDBasedValueSetImporter {
     // first thing do is split into 2 
     List<byte[]> parts = Utilities.splitBytes(source, "\r\n\r\n".getBytes());
     if (parts.size() < 2) {
-      TextFile.bytesToFile(source, "c:\\temp\\phinvads.txt");
+      FileUtilities.bytesToFile(source, Utilities.path("[tmp]", "phinvads.txt"));
       throw new FHIRException("Unable to parse phinvads value set: " + parts.size() + " parts found");
     }
     CSVReader rdr = new CSVReader(new ByteArrayInputStream(parts.get(0)));
@@ -83,7 +87,7 @@ public class PhinVadsImporter extends OIDBasedValueSetImporter {
       String display = rdr.cell("Preferred Concept Name");
       String csoid = rdr.cell("Code System OID");
       String csver = rdr.cell("Code System Version");
-      String url = context.oid2Uri(csoid);
+      String url = new ContextUtilities(context).oid2Uri(csoid);
       if (url == null) {
         url = "urn:oid:" + csoid;
       }

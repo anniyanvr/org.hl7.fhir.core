@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class RelationTypeEnumFactory implements EnumFactory<RelationType> {
@@ -46,19 +42,21 @@ public class RelationTypeEnumFactory implements EnumFactory<RelationType> {
       return RelationType.TRIGGERS;
     if ("is-replaced-by".equals(codeString))
       return RelationType.ISREPLACEDBY;
-    throw new IllegalArgumentException("Unknown RelationType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown RelationType code '" + codeString + "'");
   }
 
   public String toCode(RelationType code) {
-    if (code == RelationType.TRIGGERS)
+       if (code == RelationType.NULL)
+           return null;
+       if (code == RelationType.TRIGGERS)
       return "triggers";
     if (code == RelationType.ISREPLACEDBY)
       return "is-replaced-by";
     return "?";
-  }
+   }
 
-    public String toSystem(RelationType code) {
-      return code.getSystem();
-      }
+  public String toSystem(RelationType code) {
+    return code.getSystem();
+  }
 
 }

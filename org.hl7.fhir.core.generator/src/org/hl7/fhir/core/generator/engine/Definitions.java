@@ -1,6 +1,10 @@
 package org.hl7.fhir.core.generator.engine;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.hl7.fhir.r5.context.CanonicalResourceManager;
+import org.hl7.fhir.r5.extensions.ExtensionDefinitions;
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
 import org.hl7.fhir.r5.model.CapabilityStatement;
 import org.hl7.fhir.r5.model.CodeSystem;
 import org.hl7.fhir.r5.model.CodeSystem.ConceptDefinitionComponent;
@@ -12,18 +16,27 @@ import org.hl7.fhir.r5.model.StructureDefinition;
 import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
 import org.hl7.fhir.r5.model.StructureDefinition.TypeDerivationRule;
 import org.hl7.fhir.r5.model.ValueSet;
+import org.hl7.fhir.utilities.Utilities;
 
 public class Definitions {
 
-  private CanonicalResourceManager<CodeSystem> codeSystems = new CanonicalResourceManager<>(true);
-  private CanonicalResourceManager<ValueSet> valuesets = new CanonicalResourceManager<>(true);
-  private CanonicalResourceManager<ConceptMap> conceptMaps = new CanonicalResourceManager<>(true);
+  // the packages (id#version) these definitions were loaded from. Only used for the header
+  // comment on generated files
+  private List<String> packages = new ArrayList<>();
+
+  public List<String> getPackages() {
+    return packages;
+  }
+
+  private CanonicalResourceManager<CodeSystem> codeSystems = new CanonicalResourceManager<>(true, false);
+  private CanonicalResourceManager<ValueSet> valuesets = new CanonicalResourceManager<>(true, false);
+  private CanonicalResourceManager<ConceptMap> conceptMaps = new CanonicalResourceManager<>(true, false);
   
-  private CanonicalResourceManager<CapabilityStatement> statements = new CanonicalResourceManager<>(true);
-  private CanonicalResourceManager<StructureDefinition> structures = new CanonicalResourceManager<>(true);
-  private CanonicalResourceManager<OperationDefinition> operations = new CanonicalResourceManager<>(true);
-  private CanonicalResourceManager<SearchParameter> searchParams = new CanonicalResourceManager<>(true);
-  private CanonicalResourceManager<CompartmentDefinition> compartments = new CanonicalResourceManager<>(true);
+  private CanonicalResourceManager<CapabilityStatement> statements = new CanonicalResourceManager<>(true, false);
+  private CanonicalResourceManager<StructureDefinition> structures = new CanonicalResourceManager<>(true, false);
+  private CanonicalResourceManager<OperationDefinition> operations = new CanonicalResourceManager<>(true, false);
+  private CanonicalResourceManager<SearchParameter> searchParams = new CanonicalResourceManager<>(true, false);
+  private CanonicalResourceManager<CompartmentDefinition> compartments = new CanonicalResourceManager<>(true, false);
   
   
   public CanonicalResourceManager<CodeSystem> getCodeSystems() {
@@ -75,6 +88,33 @@ public class Definitions {
     StructureDefinition sd = structures.get("http://hl7.org/fhir/StructureDefinition/"+tn);
     return sd;
   }
+  public void fix() {
+//    StructureDefinition aa = structures.get("http://hl7.org/fhir/StructureDefinition/ArtifactAssessment");
+//    if (aa != null) {
+//      for (ElementDefinition ed : aa.getSnapshot().getElement()) {
+//        fixAATypes(ed);
+//      }
+//      for (ElementDefinition ed : aa.getDifferential().getElement()) {
+//        fixAATypes(ed);
+//      }
+//    }
+    for (StructureDefinition sd : structures.getList()) {
+      if (sd.hasExtension(ExtensionDefinitions.EXT_RESOURCE_IMPLEMENTS) &&
+          !Utilities.existsInList(sd.getType(), "MedicationKnowledge", "ObservationDefinition", "SpecimenDefinition")) {
+        sd.setBaseDefinition(ExtensionUtilities.readStringExtension(sd, ExtensionDefinitions.EXT_RESOURCE_IMPLEMENTS));
+      }
+    }
+  }
+  
+//  private void fixAATypes(ElementDefinition ed) {
+//    if (ed.getPath().equals("ArtifactAssessment.approvalDate")) {
+//      ed.getTypeFirstRep().setCode("date");
+//    }
+//    if (ed.getPath().equals("ArtifactAssessment.lastReviewDate")) {
+//      ed.getTypeFirstRep().setCode("date");
+//    }
+//  }
+ 
  
   
 }

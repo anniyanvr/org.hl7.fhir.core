@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -270,6 +270,19 @@ public class Binary extends BaseBinary implements IBaseBinary {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("contentType")) {
+          this.contentType = null;
+        } else if (name.equals("securityContext")) {
+          this.securityContext = null;
+        } else if (name.equals("data")) {
+          this.data = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -295,14 +308,14 @@ public class Binary extends BaseBinary implements IBaseBinary {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("contentType")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Binary.contentType");
+          throw new FHIRException("Cannot call addChild on a singleton property Binary.contentType");
         }
         else if (name.equals("securityContext")) {
           this.securityContext = new Reference();
           return this.securityContext;
         }
         else if (name.equals("data")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Binary.data");
+          throw new FHIRException("Cannot call addChild on a singleton property Binary.data");
         }
         else
           return super.addChild(name);
@@ -317,6 +330,10 @@ public class Binary extends BaseBinary implements IBaseBinary {
         Binary dst = new Binary();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Binary) dst);
       }
 
       public void copyValues(Binary dst) {

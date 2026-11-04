@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -84,11 +80,13 @@ public class MedicationdispenseStatusReasonEnumFactory implements EnumFactory<Me
       return MedicationdispenseStatusReason.OUTOFSTOCK;
     if ("offmarket".equals(codeString))
       return MedicationdispenseStatusReason.OFFMARKET;
-    throw new IllegalArgumentException("Unknown MedicationdispenseStatusReason code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MedicationdispenseStatusReason code '" + codeString + "'");
   }
 
   public String toCode(MedicationdispenseStatusReason code) {
-    if (code == MedicationdispenseStatusReason.FRR01)
+       if (code == MedicationdispenseStatusReason.NULL)
+           return null;
+       if (code == MedicationdispenseStatusReason.FRR01)
       return "frr01";
     if (code == MedicationdispenseStatusReason.FRR02)
       return "frr02";
@@ -131,10 +129,10 @@ public class MedicationdispenseStatusReasonEnumFactory implements EnumFactory<Me
     if (code == MedicationdispenseStatusReason.OFFMARKET)
       return "offmarket";
     return "?";
-  }
+   }
 
-    public String toSystem(MedicationdispenseStatusReason code) {
-      return code.getSystem();
-      }
+  public String toSystem(MedicationdispenseStatusReason code) {
+    return code.getSystem();
+  }
 
 }

@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v5.0.0-snapshot2
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -233,6 +233,17 @@ public class OrderedDistribution extends BackboneType implements ICompositeType 
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("rankOrder")) {
+          this.rankOrder = null;
+        } else if (name.equals("intervalStatistic")) {
+          this.getIntervalStatistic().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -256,7 +267,7 @@ public class OrderedDistribution extends BackboneType implements ICompositeType 
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("rankOrder")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OrderedDistribution.interval.rankOrder");
+          throw new FHIRException("Cannot call addChild on a singleton property OrderedDistribution.interval.rankOrder");
         }
         else if (name.equals("intervalStatistic")) {
           return addIntervalStatistic();
@@ -269,6 +280,10 @@ public class OrderedDistribution extends BackboneType implements ICompositeType 
         OrderedDistributionIntervalComponent dst = new OrderedDistributionIntervalComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((OrderedDistributionIntervalComponent) dst);
       }
 
       public void copyValues(OrderedDistributionIntervalComponent dst) {
@@ -705,6 +720,25 @@ public class OrderedDistribution extends BackboneType implements ICompositeType 
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("description")) {
+          this.description = null;
+        } else if (name.equals("note")) {
+          this.getNote().remove(value);
+        } else if (name.equals("numberOfIntervals")) {
+          this.numberOfIntervals = null;
+        } else if (name.equals("bottomOfFirstInterval")) {
+          this.bottomOfFirstInterval = null;
+        } else if (name.equals("interval")) {
+          this.getInterval().remove((OrderedDistributionIntervalComponent) value);
+        } else if (name.equals("topOfInterval")) {
+          this.topOfInterval = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -736,13 +770,13 @@ public class OrderedDistribution extends BackboneType implements ICompositeType 
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OrderedDistribution.description");
+          throw new FHIRException("Cannot call addChild on a singleton property OrderedDistribution.description");
         }
         else if (name.equals("note")) {
           return addNote();
         }
         else if (name.equals("numberOfIntervals")) {
-          throw new FHIRException("Cannot call addChild on a primitive type OrderedDistribution.numberOfIntervals");
+          throw new FHIRException("Cannot call addChild on a singleton property OrderedDistribution.numberOfIntervals");
         }
         else if (name.equals("bottomOfFirstInterval")) {
           this.bottomOfFirstInterval = new Quantity();
@@ -768,6 +802,10 @@ public class OrderedDistribution extends BackboneType implements ICompositeType 
         OrderedDistribution dst = new OrderedDistribution();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((OrderedDistribution) dst);
       }
 
       public void copyValues(OrderedDistribution dst) {

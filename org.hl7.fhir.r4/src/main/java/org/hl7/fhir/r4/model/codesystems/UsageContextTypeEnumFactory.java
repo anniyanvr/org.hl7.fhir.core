@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class UsageContextTypeEnumFactory implements EnumFactory<UsageContextType> {
@@ -60,11 +56,13 @@ public class UsageContextTypeEnumFactory implements EnumFactory<UsageContextType
       return UsageContextType.SPECIES;
     if ("program".equals(codeString))
       return UsageContextType.PROGRAM;
-    throw new IllegalArgumentException("Unknown UsageContextType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown UsageContextType code '" + codeString + "'");
   }
 
   public String toCode(UsageContextType code) {
-    if (code == UsageContextType.GENDER)
+       if (code == UsageContextType.NULL)
+           return null;
+       if (code == UsageContextType.GENDER)
       return "gender";
     if (code == UsageContextType.AGE)
       return "age";
@@ -83,10 +81,10 @@ public class UsageContextTypeEnumFactory implements EnumFactory<UsageContextType
     if (code == UsageContextType.PROGRAM)
       return "program";
     return "?";
-  }
+   }
 
-    public String toSystem(UsageContextType code) {
-      return code.getSystem();
-      }
+  public String toSystem(UsageContextType code) {
+    return code.getSystem();
+  }
 
 }

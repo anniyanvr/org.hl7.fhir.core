@@ -137,12 +137,12 @@ public class ExpansionProfile extends MetadataResource {
           return SystemVersionProcessingMode.OVERRIDE;
         throw new IllegalArgumentException("Unknown SystemVersionProcessingMode code '"+codeString+"'");
         }
-        public Enumeration<SystemVersionProcessingMode> fromType(Base code) throws FHIRException {
+        public Enumeration<SystemVersionProcessingMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<SystemVersionProcessingMode>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("default".equals(codeString))
@@ -154,14 +154,16 @@ public class ExpansionProfile extends MetadataResource {
         throw new FHIRException("Unknown SystemVersionProcessingMode code '"+codeString+"'");
         }
     public String toCode(SystemVersionProcessingMode code) {
-      if (code == SystemVersionProcessingMode.DEFAULT)
+       if (code == SystemVersionProcessingMode.NULL)
+           return null;
+       if (code == SystemVersionProcessingMode.DEFAULT)
         return "default";
       if (code == SystemVersionProcessingMode.CHECK)
         return "check";
       if (code == SystemVersionProcessingMode.OVERRIDE)
         return "override";
       return "?";
-      }
+   }
     public String toSystem(SystemVersionProcessingMode code) {
       return code.getSystem();
       }
@@ -431,13 +433,13 @@ public class ExpansionProfile extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("system")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.system");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.system");
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.version");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.version");
         }
         else if (name.equals("mode")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.mode");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.mode");
         }
         else
           return super.addChild(name);
@@ -686,10 +688,10 @@ public class ExpansionProfile extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("system")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.system");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.system");
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.version");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.version");
         }
         else
           return super.addChild(name);
@@ -1288,7 +1290,7 @@ public class ExpansionProfile extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("language")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.language");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.language");
         }
         else if (name.equals("use")) {
           this.use = new Coding();
@@ -1694,7 +1696,7 @@ public class ExpansionProfile extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("language")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.language");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.language");
         }
         else if (name.equals("use")) {
           this.use = new Coding();
@@ -3163,35 +3165,35 @@ public class ExpansionProfile extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.url");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.url");
         }
         else if (name.equals("identifier")) {
           this.identifier = new Identifier();
           return this.identifier;
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.version");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.version");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.name");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.name");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.status");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.status");
         }
         else if (name.equals("experimental")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.experimental");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.experimental");
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.date");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.date");
         }
         else if (name.equals("publisher")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.publisher");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.publisher");
         }
         else if (name.equals("contact")) {
           return addContact();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.description");
         }
         else if (name.equals("useContext")) {
           return addUseContext();
@@ -3207,32 +3209,32 @@ public class ExpansionProfile extends MetadataResource {
           return this.excludedSystem;
         }
         else if (name.equals("includeDesignations")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.includeDesignations");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.includeDesignations");
         }
         else if (name.equals("designation")) {
           this.designation = new ExpansionProfileDesignationComponent();
           return this.designation;
         }
         else if (name.equals("includeDefinition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.includeDefinition");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.includeDefinition");
         }
         else if (name.equals("activeOnly")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.activeOnly");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.activeOnly");
         }
         else if (name.equals("excludeNested")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.excludeNested");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.excludeNested");
         }
         else if (name.equals("excludeNotForUI")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.excludeNotForUI");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.excludeNotForUI");
         }
         else if (name.equals("excludePostCoordinated")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.excludePostCoordinated");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.excludePostCoordinated");
         }
         else if (name.equals("displayLanguage")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.displayLanguage");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.displayLanguage");
         }
         else if (name.equals("limitedExpansion")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ExpansionProfile.limitedExpansion");
+          throw new FHIRException("Cannot call addChild on a singleton property ExpansionProfile.limitedExpansion");
         }
         else
           return super.addChild(name);

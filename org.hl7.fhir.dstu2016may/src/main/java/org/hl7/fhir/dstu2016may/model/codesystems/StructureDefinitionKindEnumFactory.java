@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class StructureDefinitionKindEnumFactory implements EnumFactory<StructureDefinitionKind> {
@@ -48,21 +44,23 @@ public class StructureDefinitionKindEnumFactory implements EnumFactory<Structure
       return StructureDefinitionKind.RESOURCE;
     if ("logical".equals(codeString))
       return StructureDefinitionKind.LOGICAL;
-    throw new IllegalArgumentException("Unknown StructureDefinitionKind code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown StructureDefinitionKind code '" + codeString + "'");
   }
 
   public String toCode(StructureDefinitionKind code) {
-    if (code == StructureDefinitionKind.DATATYPE)
+       if (code == StructureDefinitionKind.NULL)
+           return null;
+       if (code == StructureDefinitionKind.DATATYPE)
       return "datatype";
     if (code == StructureDefinitionKind.RESOURCE)
       return "resource";
     if (code == StructureDefinitionKind.LOGICAL)
       return "logical";
     return "?";
-  }
+   }
 
-    public String toSystem(StructureDefinitionKind code) {
-      return code.getSystem();
-      }
+  public String toSystem(StructureDefinitionKind code) {
+    return code.getSystem();
+  }
 
 }

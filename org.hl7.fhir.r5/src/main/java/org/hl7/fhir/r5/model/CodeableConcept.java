@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +46,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for CodeableConcept Type: A concept that may be defined by a formal reference to a terminology or ontology or may be provided by text.
+ * CodeableConcept Type: A concept that may be defined by a formal reference to a terminology or ontology or may be provided by text.
  */
 @DatatypeDef(name="CodeableConcept")
 public class CodeableConcept extends DataType implements ICompositeType {
@@ -227,6 +227,17 @@ public class CodeableConcept extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("coding")) {
+          this.getCoding().remove(value);
+        } else if (name.equals("text")) {
+          this.text = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -253,7 +264,7 @@ public class CodeableConcept extends DataType implements ICompositeType {
           return addCoding();
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeableConcept.text");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeableConcept.text");
         }
         else
           return super.addChild(name);
@@ -268,6 +279,10 @@ public class CodeableConcept extends DataType implements ICompositeType {
         CodeableConcept dst = new CodeableConcept();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((CodeableConcept) dst);
       }
 
       public void copyValues(CodeableConcept dst) {
@@ -360,7 +375,10 @@ public boolean hasCoding(String system, String code) {
     for (Coding c : l.getCoding()) {
       boolean done = false;
       for (Coding t : r.getCoding()) {
-        if (t.matches(c)) {
+        @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+        //False positive: not using String.matches
+        boolean codesMatch = t.matches(c);
+        if (codesMatch) {
           handled.add(t);
           res.getCoding().add(Coding.merge(c, t));
           done = true;
@@ -388,7 +406,10 @@ public boolean hasCoding(String system, String code) {
     CodeableConcept res = new CodeableConcept();
     for (Coding c : l.getCoding()) {
       for (Coding t : r.getCoding()) {
-        if (t.matches(c)) {
+        @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+        //False positive: not using String.matches
+        boolean codesMatch = t.matches(c);
+        if (codesMatch) {
           res.getCoding().add(Coding.intersect(c, t));
           break;
         }
@@ -405,6 +426,18 @@ public boolean hasCoding(String system, String code) {
     getCoding().add(new Coding(system, code, display));
   }
   
+  @Override 
+  public String toString() { 
+    return hasCoding() ? getCoding().toString() : "["+getText()+"]"; 
+  }
+
+  public void removeCoding(String system, String version, String code) {
+    getCoding().removeIf(c -> 
+    (system == null || system.equals(c.getSystem())) &&
+    (version == null || version.equals(c.getVersion())) &&
+    (code == null || code.equals(c.getCode())));
+  } 
+   
 // end addition
 
 }

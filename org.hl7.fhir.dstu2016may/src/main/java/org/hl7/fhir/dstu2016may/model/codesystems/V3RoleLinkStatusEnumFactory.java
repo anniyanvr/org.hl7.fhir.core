@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3RoleLinkStatusEnumFactory implements EnumFactory<V3RoleLinkStatus> {
@@ -54,11 +50,13 @@ public class V3RoleLinkStatusEnumFactory implements EnumFactory<V3RoleLinkStatus
       return V3RoleLinkStatus.PENDING;
     if ("NULLIFIED".equals(codeString))
       return V3RoleLinkStatus.NULLIFIED;
-    throw new IllegalArgumentException("Unknown V3RoleLinkStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3RoleLinkStatus code '" + codeString + "'");
   }
 
   public String toCode(V3RoleLinkStatus code) {
-    if (code == V3RoleLinkStatus.NORMAL)
+       if (code == V3RoleLinkStatus.NULL)
+           return null;
+       if (code == V3RoleLinkStatus.NORMAL)
       return "NORMAL";
     if (code == V3RoleLinkStatus.ACTIVE)
       return "ACTIVE";
@@ -71,10 +69,10 @@ public class V3RoleLinkStatusEnumFactory implements EnumFactory<V3RoleLinkStatus
     if (code == V3RoleLinkStatus.NULLIFIED)
       return "NULLIFIED";
     return "?";
-  }
+   }
 
-    public String toSystem(V3RoleLinkStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3RoleLinkStatus code) {
+    return code.getSystem();
+  }
 
 }

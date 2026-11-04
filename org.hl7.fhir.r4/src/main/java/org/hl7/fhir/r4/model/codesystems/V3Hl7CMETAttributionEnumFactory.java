@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3Hl7CMETAttributionEnumFactory implements EnumFactory<V3Hl7CMETAttribution> {
@@ -56,11 +52,13 @@ public class V3Hl7CMETAttributionEnumFactory implements EnumFactory<V3Hl7CMETAtt
       return V3Hl7CMETAttribution.MINIMAL;
     if ("universal".equals(codeString))
       return V3Hl7CMETAttribution.UNIVERSAL;
-    throw new IllegalArgumentException("Unknown V3Hl7CMETAttribution code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3Hl7CMETAttribution code '" + codeString + "'");
   }
 
   public String toCode(V3Hl7CMETAttribution code) {
-    if (code == V3Hl7CMETAttribution.CONTACT)
+       if (code == V3Hl7CMETAttribution.NULL)
+           return null;
+       if (code == V3Hl7CMETAttribution.CONTACT)
       return "contact";
     if (code == V3Hl7CMETAttribution.IDENTIFIED)
       return "identified";
@@ -75,10 +73,10 @@ public class V3Hl7CMETAttributionEnumFactory implements EnumFactory<V3Hl7CMETAtt
     if (code == V3Hl7CMETAttribution.UNIVERSAL)
       return "universal";
     return "?";
-  }
+   }
 
-    public String toSystem(V3Hl7CMETAttribution code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3Hl7CMETAttribution code) {
+    return code.getSystem();
+  }
 
 }

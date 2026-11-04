@@ -131,12 +131,12 @@ public class Media extends DomainResource {
           return DigitalMediaType.AUDIO;
         throw new IllegalArgumentException("Unknown DigitalMediaType code '"+codeString+"'");
         }
-        public Enumeration<DigitalMediaType> fromType(Base code) throws FHIRException {
+        public Enumeration<DigitalMediaType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DigitalMediaType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("photo".equals(codeString))
@@ -148,14 +148,16 @@ public class Media extends DomainResource {
         throw new FHIRException("Unknown DigitalMediaType code '"+codeString+"'");
         }
     public String toCode(DigitalMediaType code) {
-      if (code == DigitalMediaType.PHOTO)
+       if (code == DigitalMediaType.NULL)
+           return null;
+       if (code == DigitalMediaType.PHOTO)
         return "photo";
       if (code == DigitalMediaType.VIDEO)
         return "video";
       if (code == DigitalMediaType.AUDIO)
         return "audio";
       return "?";
-      }
+   }
     public String toSystem(DigitalMediaType code) {
       return code.getSystem();
       }
@@ -442,28 +444,6 @@ public class Media extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<ProcedureRequest> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<ProcedureRequest>();
-      return this.basedOnTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public ProcedureRequest addBasedOnTarget() { 
-      ProcedureRequest r = new ProcedureRequest();
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<ProcedureRequest>();
-      this.basedOnTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #type} (Whether the media is a photo (still image), an audio recording, or a video recording.). This is the underlying object with id, value and extensions. The accessor "getType" gives direct access to the value
      */
     public Enumeration<DigitalMediaType> getTypeElement() { 
@@ -652,8 +632,8 @@ public class Media extends DomainResource {
       return (DateTimeType) this.occurrence;
     }
 
-    public boolean hasOccurrenceDateTimeType() { 
-      return this != null && this.occurrence instanceof DateTimeType;
+    public boolean hasOccurrenceDateTimeType() {
+        return this.occurrence instanceof DateTimeType;
     }
 
     /**
@@ -667,8 +647,8 @@ public class Media extends DomainResource {
       return (Period) this.occurrence;
     }
 
-    public boolean hasOccurrencePeriod() { 
-      return this != null && this.occurrence instanceof Period;
+    public boolean hasOccurrencePeriod() {
+        return this.occurrence instanceof Period;
     }
 
     public boolean hasOccurrence() { 
@@ -1348,7 +1328,7 @@ public class Media extends DomainResource {
           return addBasedOn();
         }
         else if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Media.type");
+          throw new FHIRException("Cannot call addChild on a singleton property Media.type");
         }
         else if (name.equals("subtype")) {
           this.subtype = new CodeableConcept();
@@ -1390,16 +1370,16 @@ public class Media extends DomainResource {
           return this.device;
         }
         else if (name.equals("height")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Media.height");
+          throw new FHIRException("Cannot call addChild on a singleton property Media.height");
         }
         else if (name.equals("width")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Media.width");
+          throw new FHIRException("Cannot call addChild on a singleton property Media.width");
         }
         else if (name.equals("frames")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Media.frames");
+          throw new FHIRException("Cannot call addChild on a singleton property Media.frames");
         }
         else if (name.equals("duration")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Media.duration");
+          throw new FHIRException("Cannot call addChild on a singleton property Media.duration");
         }
         else if (name.equals("content")) {
           this.content = new Attachment();

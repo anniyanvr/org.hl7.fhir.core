@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class CertaintySubcomponentRatingEnumFactory implements EnumFactory<CertaintySubcomponentRating> {
@@ -64,11 +60,13 @@ public class CertaintySubcomponentRatingEnumFactory implements EnumFactory<Certa
       return CertaintySubcomponentRating.PRESENT;
     if ("absent".equals(codeString))
       return CertaintySubcomponentRating.ABSENT;
-    throw new IllegalArgumentException("Unknown CertaintySubcomponentRating code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown CertaintySubcomponentRating code '" + codeString + "'");
   }
 
   public String toCode(CertaintySubcomponentRating code) {
-    if (code == CertaintySubcomponentRating.NOCHANGE)
+       if (code == CertaintySubcomponentRating.NULL)
+           return null;
+       if (code == CertaintySubcomponentRating.NOCHANGE)
       return "no-change";
     if (code == CertaintySubcomponentRating.DOWNCODE1)
       return "downcode1";
@@ -91,10 +89,10 @@ public class CertaintySubcomponentRatingEnumFactory implements EnumFactory<Certa
     if (code == CertaintySubcomponentRating.ABSENT)
       return "absent";
     return "?";
-  }
+   }
 
-    public String toSystem(CertaintySubcomponentRating code) {
-      return code.getSystem();
-      }
+  public String toSystem(CertaintySubcomponentRating code) {
+    return code.getSystem();
+  }
 
 }

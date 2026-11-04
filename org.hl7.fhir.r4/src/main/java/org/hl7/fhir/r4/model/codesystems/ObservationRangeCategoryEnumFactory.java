@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ObservationRangeCategoryEnumFactory implements EnumFactory<ObservationRangeCategory> {
@@ -48,21 +44,23 @@ public class ObservationRangeCategoryEnumFactory implements EnumFactory<Observat
       return ObservationRangeCategory.CRITICAL;
     if ("absolute".equals(codeString))
       return ObservationRangeCategory.ABSOLUTE;
-    throw new IllegalArgumentException("Unknown ObservationRangeCategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ObservationRangeCategory code '" + codeString + "'");
   }
 
   public String toCode(ObservationRangeCategory code) {
-    if (code == ObservationRangeCategory.REFERENCE)
+       if (code == ObservationRangeCategory.NULL)
+           return null;
+       if (code == ObservationRangeCategory.REFERENCE)
       return "reference";
     if (code == ObservationRangeCategory.CRITICAL)
       return "critical";
     if (code == ObservationRangeCategory.ABSOLUTE)
       return "absolute";
     return "?";
-  }
+   }
 
-    public String toSystem(ObservationRangeCategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(ObservationRangeCategory code) {
+    return code.getSystem();
+  }
 
 }

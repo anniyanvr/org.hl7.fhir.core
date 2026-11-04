@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +50,7 @@ import ca.uhn.fhir.model.api.annotation.Block;
 import org.hl7.fhir.instance.model.api.IBaseParameters;
 import  org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
 /**
- * This resource is a non-persisted resource used to pass information into and back from an [operation](operations.html). It has no other use, and there is no RESTful endpoint associated with it.
+ * This resource is used to pass information into and back from an operation (whether invoked directly from REST or within a messaging environment).  It is not persisted or allowed to be referenced by other resources except as described in the definition of the Parameters resource.
  */
 @ResourceDef(name="Parameters", profile="http://hl7.org/fhir/StructureDefinition/Parameters")
 public class Parameters extends Resource implements IBaseParameters {
@@ -67,7 +67,7 @@ public class Parameters extends Resource implements IBaseParameters {
         /**
          * Conveys the content if the parameter is a data type.
          */
-        @Child(name = "value", type = {Base64BinaryType.class, BooleanType.class, CanonicalType.class, CodeType.class, DateType.class, DateTimeType.class, DecimalType.class, IdType.class, InstantType.class, IntegerType.class, Integer64Type.class, MarkdownType.class, OidType.class, PositiveIntType.class, StringType.class, TimeType.class, UnsignedIntType.class, UriType.class, UrlType.class, UuidType.class, Address.class, Age.class, Annotation.class, Attachment.class, CodeableConcept.class, Coding.class, ContactPoint.class, Count.class, Distance.class, Duration.class, HumanName.class, Identifier.class, Money.class, Period.class, Quantity.class, Range.class, Ratio.class, Reference.class, SampledData.class, Signature.class, Timing.class, ContactDetail.class, Contributor.class, DataRequirement.class, Expression.class, ParameterDefinition.class, RelatedArtifact.class, TriggerDefinition.class, UsageContext.class, Dosage.class, Meta.class}, order=2, min=0, max=1, modifier=false, summary=true)
+        @Child(name = "value", type = {Base64BinaryType.class, BooleanType.class, CanonicalType.class, CodeType.class, DateType.class, DateTimeType.class, DecimalType.class, IdType.class, InstantType.class, IntegerType.class, Integer64Type.class, MarkdownType.class, OidType.class, PositiveIntType.class, StringType.class, TimeType.class, UnsignedIntType.class, UriType.class, UrlType.class, UuidType.class, Address.class, Age.class, Annotation.class, Attachment.class, CodeableConcept.class, CodeableReference.class, Coding.class, ContactPoint.class, Count.class, Distance.class, Duration.class, HumanName.class, Identifier.class, Money.class, Period.class, Quantity.class, Range.class, Ratio.class, RatioRange.class, Reference.class, SampledData.class, Signature.class, Timing.class, ContactDetail.class, DataRequirement.class, Expression.class, ParameterDefinition.class, RelatedArtifact.class, TriggerDefinition.class, UsageContext.class, Availability.class, ExtendedContactDetail.class, Dosage.class, Meta.class}, order=2, min=0, max=1, modifier=false, summary=true)
         @Description(shortDefinition="If parameter is a data type", formalDefinition="Conveys the content if the parameter is a data type." )
         protected DataType value;
 
@@ -165,8 +165,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Base64BinaryType) this.value;
         }
 
-        public boolean hasValueBase64BinaryType() { 
-          return this != null && this.value instanceof Base64BinaryType;
+        public boolean hasValueBase64BinaryType() {
+            return this.value instanceof Base64BinaryType;
         }
 
         /**
@@ -180,8 +180,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (BooleanType) this.value;
         }
 
-        public boolean hasValueBooleanType() { 
-          return this != null && this.value instanceof BooleanType;
+        public boolean hasValueBooleanType() {
+            return this.value instanceof BooleanType;
         }
 
         /**
@@ -195,8 +195,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (CanonicalType) this.value;
         }
 
-        public boolean hasValueCanonicalType() { 
-          return this != null && this.value instanceof CanonicalType;
+        public boolean hasValueCanonicalType() {
+            return this.value instanceof CanonicalType;
         }
 
         /**
@@ -210,8 +210,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (CodeType) this.value;
         }
 
-        public boolean hasValueCodeType() { 
-          return this != null && this.value instanceof CodeType;
+        public boolean hasValueCodeType() {
+            return this.value instanceof CodeType;
         }
 
         /**
@@ -225,8 +225,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (DateType) this.value;
         }
 
-        public boolean hasValueDateType() { 
-          return this != null && this.value instanceof DateType;
+        public boolean hasValueDateType() {
+            return this.value instanceof DateType;
         }
 
         /**
@@ -240,8 +240,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (DateTimeType) this.value;
         }
 
-        public boolean hasValueDateTimeType() { 
-          return this != null && this.value instanceof DateTimeType;
+        public boolean hasValueDateTimeType() {
+            return this.value instanceof DateTimeType;
         }
 
         /**
@@ -255,8 +255,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (DecimalType) this.value;
         }
 
-        public boolean hasValueDecimalType() { 
-          return this != null && this.value instanceof DecimalType;
+        public boolean hasValueDecimalType() {
+            return this.value instanceof DecimalType;
         }
 
         /**
@@ -270,8 +270,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (IdType) this.value;
         }
 
-        public boolean hasValueIdType() { 
-          return this != null && this.value instanceof IdType;
+        public boolean hasValueIdType() {
+            return this.value instanceof IdType;
         }
 
         /**
@@ -285,8 +285,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (InstantType) this.value;
         }
 
-        public boolean hasValueInstantType() { 
-          return this != null && this.value instanceof InstantType;
+        public boolean hasValueInstantType() {
+            return this.value instanceof InstantType;
         }
 
         /**
@@ -300,8 +300,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (IntegerType) this.value;
         }
 
-        public boolean hasValueIntegerType() { 
-          return this != null && this.value instanceof IntegerType;
+        public boolean hasValueIntegerType() {
+            return this.value instanceof IntegerType;
         }
 
         /**
@@ -315,8 +315,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Integer64Type) this.value;
         }
 
-        public boolean hasValueInteger64Type() { 
-          return this != null && this.value instanceof Integer64Type;
+        public boolean hasValueInteger64Type() {
+            return this.value instanceof Integer64Type;
         }
 
         /**
@@ -330,8 +330,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (MarkdownType) this.value;
         }
 
-        public boolean hasValueMarkdownType() { 
-          return this != null && this.value instanceof MarkdownType;
+        public boolean hasValueMarkdownType() {
+            return this.value instanceof MarkdownType;
         }
 
         /**
@@ -345,8 +345,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (OidType) this.value;
         }
 
-        public boolean hasValueOidType() { 
-          return this != null && this.value instanceof OidType;
+        public boolean hasValueOidType() {
+            return this.value instanceof OidType;
         }
 
         /**
@@ -360,8 +360,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (PositiveIntType) this.value;
         }
 
-        public boolean hasValuePositiveIntType() { 
-          return this != null && this.value instanceof PositiveIntType;
+        public boolean hasValuePositiveIntType() {
+            return this.value instanceof PositiveIntType;
         }
 
         /**
@@ -375,8 +375,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (StringType) this.value;
         }
 
-        public boolean hasValueStringType() { 
-          return this != null && this.value instanceof StringType;
+        public boolean hasValueStringType() {
+            return this.value instanceof StringType;
         }
 
         /**
@@ -390,8 +390,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (TimeType) this.value;
         }
 
-        public boolean hasValueTimeType() { 
-          return this != null && this.value instanceof TimeType;
+        public boolean hasValueTimeType() {
+            return this.value instanceof TimeType;
         }
 
         /**
@@ -405,8 +405,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (UnsignedIntType) this.value;
         }
 
-        public boolean hasValueUnsignedIntType() { 
-          return this != null && this.value instanceof UnsignedIntType;
+        public boolean hasValueUnsignedIntType() {
+            return this.value instanceof UnsignedIntType;
         }
 
         /**
@@ -420,8 +420,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (UriType) this.value;
         }
 
-        public boolean hasValueUriType() { 
-          return this != null && this.value instanceof UriType;
+        public boolean hasValueUriType() {
+            return this.value instanceof UriType;
         }
 
         /**
@@ -435,8 +435,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (UrlType) this.value;
         }
 
-        public boolean hasValueUrlType() { 
-          return this != null && this.value instanceof UrlType;
+        public boolean hasValueUrlType() {
+            return this.value instanceof UrlType;
         }
 
         /**
@@ -450,8 +450,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (UuidType) this.value;
         }
 
-        public boolean hasValueUuidType() { 
-          return this != null && this.value instanceof UuidType;
+        public boolean hasValueUuidType() {
+            return this.value instanceof UuidType;
         }
 
         /**
@@ -465,8 +465,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Address) this.value;
         }
 
-        public boolean hasValueAddress() { 
-          return this != null && this.value instanceof Address;
+        public boolean hasValueAddress() {
+            return this.value instanceof Address;
         }
 
         /**
@@ -480,8 +480,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Age) this.value;
         }
 
-        public boolean hasValueAge() { 
-          return this != null && this.value instanceof Age;
+        public boolean hasValueAge() {
+            return this.value instanceof Age;
         }
 
         /**
@@ -495,8 +495,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Annotation) this.value;
         }
 
-        public boolean hasValueAnnotation() { 
-          return this != null && this.value instanceof Annotation;
+        public boolean hasValueAnnotation() {
+            return this.value instanceof Annotation;
         }
 
         /**
@@ -510,8 +510,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Attachment) this.value;
         }
 
-        public boolean hasValueAttachment() { 
-          return this != null && this.value instanceof Attachment;
+        public boolean hasValueAttachment() {
+            return this.value instanceof Attachment;
         }
 
         /**
@@ -525,8 +525,23 @@ public class Parameters extends Resource implements IBaseParameters {
           return (CodeableConcept) this.value;
         }
 
-        public boolean hasValueCodeableConcept() { 
-          return this != null && this.value instanceof CodeableConcept;
+        public boolean hasValueCodeableConcept() {
+            return this.value instanceof CodeableConcept;
+        }
+
+        /**
+         * @return {@link #value} (Conveys the content if the parameter is a data type.)
+         */
+        public CodeableReference getValueCodeableReference() throws FHIRException { 
+          if (this.value == null)
+            this.value = new CodeableReference();
+          if (!(this.value instanceof CodeableReference))
+            throw new FHIRException("Type mismatch: the type CodeableReference was expected, but "+this.value.getClass().getName()+" was encountered");
+          return (CodeableReference) this.value;
+        }
+
+        public boolean hasValueCodeableReference() {
+            return this.value instanceof CodeableReference;
         }
 
         /**
@@ -540,8 +555,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Coding) this.value;
         }
 
-        public boolean hasValueCoding() { 
-          return this != null && this.value instanceof Coding;
+        public boolean hasValueCoding() {
+            return this.value instanceof Coding;
         }
 
         /**
@@ -555,8 +570,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (ContactPoint) this.value;
         }
 
-        public boolean hasValueContactPoint() { 
-          return this != null && this.value instanceof ContactPoint;
+        public boolean hasValueContactPoint() {
+            return this.value instanceof ContactPoint;
         }
 
         /**
@@ -570,8 +585,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Count) this.value;
         }
 
-        public boolean hasValueCount() { 
-          return this != null && this.value instanceof Count;
+        public boolean hasValueCount() {
+            return this.value instanceof Count;
         }
 
         /**
@@ -585,8 +600,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Distance) this.value;
         }
 
-        public boolean hasValueDistance() { 
-          return this != null && this.value instanceof Distance;
+        public boolean hasValueDistance() {
+            return this.value instanceof Distance;
         }
 
         /**
@@ -600,8 +615,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Duration) this.value;
         }
 
-        public boolean hasValueDuration() { 
-          return this != null && this.value instanceof Duration;
+        public boolean hasValueDuration() {
+            return this.value instanceof Duration;
         }
 
         /**
@@ -615,8 +630,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (HumanName) this.value;
         }
 
-        public boolean hasValueHumanName() { 
-          return this != null && this.value instanceof HumanName;
+        public boolean hasValueHumanName() {
+            return this.value instanceof HumanName;
         }
 
         /**
@@ -630,8 +645,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Identifier) this.value;
         }
 
-        public boolean hasValueIdentifier() { 
-          return this != null && this.value instanceof Identifier;
+        public boolean hasValueIdentifier() {
+            return this.value instanceof Identifier;
         }
 
         /**
@@ -645,8 +660,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Money) this.value;
         }
 
-        public boolean hasValueMoney() { 
-          return this != null && this.value instanceof Money;
+        public boolean hasValueMoney() {
+            return this.value instanceof Money;
         }
 
         /**
@@ -660,8 +675,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Period) this.value;
         }
 
-        public boolean hasValuePeriod() { 
-          return this != null && this.value instanceof Period;
+        public boolean hasValuePeriod() {
+            return this.value instanceof Period;
         }
 
         /**
@@ -675,8 +690,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Quantity) this.value;
         }
 
-        public boolean hasValueQuantity() { 
-          return this != null && this.value instanceof Quantity;
+        public boolean hasValueQuantity() {
+            return this.value instanceof Quantity;
         }
 
         /**
@@ -690,8 +705,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Range) this.value;
         }
 
-        public boolean hasValueRange() { 
-          return this != null && this.value instanceof Range;
+        public boolean hasValueRange() {
+            return this.value instanceof Range;
         }
 
         /**
@@ -705,8 +720,23 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Ratio) this.value;
         }
 
-        public boolean hasValueRatio() { 
-          return this != null && this.value instanceof Ratio;
+        public boolean hasValueRatio() {
+            return this.value instanceof Ratio;
+        }
+
+        /**
+         * @return {@link #value} (Conveys the content if the parameter is a data type.)
+         */
+        public RatioRange getValueRatioRange() throws FHIRException { 
+          if (this.value == null)
+            this.value = new RatioRange();
+          if (!(this.value instanceof RatioRange))
+            throw new FHIRException("Type mismatch: the type RatioRange was expected, but "+this.value.getClass().getName()+" was encountered");
+          return (RatioRange) this.value;
+        }
+
+        public boolean hasValueRatioRange() {
+            return this.value instanceof RatioRange;
         }
 
         /**
@@ -720,8 +750,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Reference) this.value;
         }
 
-        public boolean hasValueReference() { 
-          return this != null && this.value instanceof Reference;
+        public boolean hasValueReference() {
+            return this.value instanceof Reference;
         }
 
         /**
@@ -735,8 +765,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (SampledData) this.value;
         }
 
-        public boolean hasValueSampledData() { 
-          return this != null && this.value instanceof SampledData;
+        public boolean hasValueSampledData() {
+            return this.value instanceof SampledData;
         }
 
         /**
@@ -750,8 +780,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Signature) this.value;
         }
 
-        public boolean hasValueSignature() { 
-          return this != null && this.value instanceof Signature;
+        public boolean hasValueSignature() {
+            return this.value instanceof Signature;
         }
 
         /**
@@ -765,8 +795,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Timing) this.value;
         }
 
-        public boolean hasValueTiming() { 
-          return this != null && this.value instanceof Timing;
+        public boolean hasValueTiming() {
+            return this.value instanceof Timing;
         }
 
         /**
@@ -780,23 +810,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (ContactDetail) this.value;
         }
 
-        public boolean hasValueContactDetail() { 
-          return this != null && this.value instanceof ContactDetail;
-        }
-
-        /**
-         * @return {@link #value} (Conveys the content if the parameter is a data type.)
-         */
-        public Contributor getValueContributor() throws FHIRException { 
-          if (this.value == null)
-            this.value = new Contributor();
-          if (!(this.value instanceof Contributor))
-            throw new FHIRException("Type mismatch: the type Contributor was expected, but "+this.value.getClass().getName()+" was encountered");
-          return (Contributor) this.value;
-        }
-
-        public boolean hasValueContributor() { 
-          return this != null && this.value instanceof Contributor;
+        public boolean hasValueContactDetail() {
+            return this.value instanceof ContactDetail;
         }
 
         /**
@@ -810,8 +825,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (DataRequirement) this.value;
         }
 
-        public boolean hasValueDataRequirement() { 
-          return this != null && this.value instanceof DataRequirement;
+        public boolean hasValueDataRequirement() {
+            return this.value instanceof DataRequirement;
         }
 
         /**
@@ -825,8 +840,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Expression) this.value;
         }
 
-        public boolean hasValueExpression() { 
-          return this != null && this.value instanceof Expression;
+        public boolean hasValueExpression() {
+            return this.value instanceof Expression;
         }
 
         /**
@@ -840,8 +855,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (ParameterDefinition) this.value;
         }
 
-        public boolean hasValueParameterDefinition() { 
-          return this != null && this.value instanceof ParameterDefinition;
+        public boolean hasValueParameterDefinition() {
+            return this.value instanceof ParameterDefinition;
         }
 
         /**
@@ -855,8 +870,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (RelatedArtifact) this.value;
         }
 
-        public boolean hasValueRelatedArtifact() { 
-          return this != null && this.value instanceof RelatedArtifact;
+        public boolean hasValueRelatedArtifact() {
+            return this.value instanceof RelatedArtifact;
         }
 
         /**
@@ -870,8 +885,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (TriggerDefinition) this.value;
         }
 
-        public boolean hasValueTriggerDefinition() { 
-          return this != null && this.value instanceof TriggerDefinition;
+        public boolean hasValueTriggerDefinition() {
+            return this.value instanceof TriggerDefinition;
         }
 
         /**
@@ -885,8 +900,38 @@ public class Parameters extends Resource implements IBaseParameters {
           return (UsageContext) this.value;
         }
 
-        public boolean hasValueUsageContext() { 
-          return this != null && this.value instanceof UsageContext;
+        public boolean hasValueUsageContext() {
+            return this.value instanceof UsageContext;
+        }
+
+        /**
+         * @return {@link #value} (Conveys the content if the parameter is a data type.)
+         */
+        public Availability getValueAvailability() throws FHIRException { 
+          if (this.value == null)
+            this.value = new Availability();
+          if (!(this.value instanceof Availability))
+            throw new FHIRException("Type mismatch: the type Availability was expected, but "+this.value.getClass().getName()+" was encountered");
+          return (Availability) this.value;
+        }
+
+        public boolean hasValueAvailability() {
+            return this.value instanceof Availability;
+        }
+
+        /**
+         * @return {@link #value} (Conveys the content if the parameter is a data type.)
+         */
+        public ExtendedContactDetail getValueExtendedContactDetail() throws FHIRException { 
+          if (this.value == null)
+            this.value = new ExtendedContactDetail();
+          if (!(this.value instanceof ExtendedContactDetail))
+            throw new FHIRException("Type mismatch: the type ExtendedContactDetail was expected, but "+this.value.getClass().getName()+" was encountered");
+          return (ExtendedContactDetail) this.value;
+        }
+
+        public boolean hasValueExtendedContactDetail() {
+            return this.value instanceof ExtendedContactDetail;
         }
 
         /**
@@ -900,8 +945,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Dosage) this.value;
         }
 
-        public boolean hasValueDosage() { 
-          return this != null && this.value instanceof Dosage;
+        public boolean hasValueDosage() {
+            return this.value instanceof Dosage;
         }
 
         /**
@@ -915,8 +960,8 @@ public class Parameters extends Resource implements IBaseParameters {
           return (Meta) this.value;
         }
 
-        public boolean hasValueMeta() { 
-          return this != null && this.value instanceof Meta;
+        public boolean hasValueMeta() {
+            return this.value instanceof Meta;
         }
 
         public boolean hasValue() { 
@@ -927,8 +972,8 @@ public class Parameters extends Resource implements IBaseParameters {
          * @param value {@link #value} (Conveys the content if the parameter is a data type.)
          */
         public ParametersParameterComponent setValue(DataType value) { 
-          if (value != null && !(value instanceof Base64BinaryType || value instanceof BooleanType || value instanceof CanonicalType || value instanceof CodeType || value instanceof DateType || value instanceof DateTimeType || value instanceof DecimalType || value instanceof IdType || value instanceof InstantType || value instanceof IntegerType || value instanceof Integer64Type || value instanceof MarkdownType || value instanceof OidType || value instanceof PositiveIntType || value instanceof StringType || value instanceof TimeType || value instanceof UnsignedIntType || value instanceof UriType || value instanceof UrlType || value instanceof UuidType || value instanceof Address || value instanceof Age || value instanceof Annotation || value instanceof Attachment || value instanceof CodeableConcept || value instanceof Coding || value instanceof ContactPoint || value instanceof Count || value instanceof Distance || value instanceof Duration || value instanceof HumanName || value instanceof Identifier || value instanceof Money || value instanceof Period || value instanceof Quantity || value instanceof Range || value instanceof Ratio || value instanceof Reference || value instanceof SampledData || value instanceof Signature || value instanceof Timing || value instanceof ContactDetail || value instanceof Contributor || value instanceof DataRequirement || value instanceof Expression || value instanceof ParameterDefinition || value instanceof RelatedArtifact || value instanceof TriggerDefinition || value instanceof UsageContext || value instanceof Dosage || value instanceof Meta))
-            throw new Error("Not the right type for Parameters.parameter.value[x]: "+value.fhirType());
+          if (value != null && !(value instanceof Base64BinaryType || value instanceof BooleanType || value instanceof CanonicalType || value instanceof CodeType || value instanceof DateType || value instanceof DateTimeType || value instanceof DecimalType || value instanceof IdType || value instanceof InstantType || value instanceof IntegerType || value instanceof Integer64Type || value instanceof MarkdownType || value instanceof OidType || value instanceof PositiveIntType || value instanceof StringType || value instanceof TimeType || value instanceof UnsignedIntType || value instanceof UriType || value instanceof UrlType || value instanceof UuidType || value instanceof Address || value instanceof Age || value instanceof Annotation || value instanceof Attachment || value instanceof CodeableConcept || value instanceof CodeableReference || value instanceof Coding || value instanceof ContactPoint || value instanceof Count || value instanceof Distance || value instanceof Duration || value instanceof HumanName || value instanceof Identifier || value instanceof Money || value instanceof Period || value instanceof Quantity || value instanceof Range || value instanceof Ratio || value instanceof RatioRange || value instanceof Reference || value instanceof SampledData || value instanceof Signature || value instanceof Timing || value instanceof ContactDetail || value instanceof DataRequirement || value instanceof Expression || value instanceof ParameterDefinition || value instanceof RelatedArtifact || value instanceof TriggerDefinition || value instanceof UsageContext || value instanceof Availability || value instanceof ExtendedContactDetail || value instanceof Dosage || value instanceof Meta))
+            throw new FHIRException("Not the right type for Parameters.parameter.value[x]: "+value.fhirType());
           this.value = value;
           return this;
         }
@@ -1008,7 +1053,7 @@ public class Parameters extends Resource implements IBaseParameters {
         protected void listChildren(List<Property> children) {
           super.listChildren(children);
           children.add(new Property("name", "string", "The name of the parameter (reference to the operation definition).", 0, 1, name));
-          children.add(new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|Reference|SampledData|Signature|Timing|ContactDetail|Contributor|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Dosage|Meta", "Conveys the content if the parameter is a data type.", 0, 1, value));
+          children.add(new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|CodeableReference|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|RatioRange|Reference|SampledData|Signature|Timing|ContactDetail|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Availability|ExtendedContactDetail|Dosage|Meta", "Conveys the content if the parameter is a data type.", 0, 1, value));
           children.add(new Property("resource", "Resource", "Conveys the content if the parameter is a whole resource.", 0, 1, resource));
           children.add(new Property("part", "@Parameters.parameter", "A named part of a multi-part parameter.", 0, java.lang.Integer.MAX_VALUE, part));
         }
@@ -1017,8 +1062,8 @@ public class Parameters extends Resource implements IBaseParameters {
         public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
           switch (_hash) {
           case 3373707: /*name*/  return new Property("name", "string", "The name of the parameter (reference to the operation definition).", 0, 1, name);
-          case -1410166417: /*value[x]*/  return new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|Reference|SampledData|Signature|Timing|ContactDetail|Contributor|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Dosage|Meta", "Conveys the content if the parameter is a data type.", 0, 1, value);
-          case 111972721: /*value*/  return new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|Reference|SampledData|Signature|Timing|ContactDetail|Contributor|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Dosage|Meta", "Conveys the content if the parameter is a data type.", 0, 1, value);
+          case -1410166417: /*value[x]*/  return new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|CodeableReference|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|RatioRange|Reference|SampledData|Signature|Timing|ContactDetail|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Availability|ExtendedContactDetail|Dosage|Meta", "Conveys the content if the parameter is a data type.", 0, 1, value);
+          case 111972721: /*value*/  return new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|CodeableReference|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|RatioRange|Reference|SampledData|Signature|Timing|ContactDetail|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Availability|ExtendedContactDetail|Dosage|Meta", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -1535024575: /*valueBase64Binary*/  return new Property("value[x]", "base64Binary", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 733421943: /*valueBoolean*/  return new Property("value[x]", "boolean", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -786218365: /*valueCanonical*/  return new Property("value[x]", "canonical", "Conveys the content if the parameter is a data type.", 0, 1, value);
@@ -1044,6 +1089,7 @@ public class Parameters extends Resource implements IBaseParameters {
           case -67108992: /*valueAnnotation*/  return new Property("value[x]", "Annotation", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -475566732: /*valueAttachment*/  return new Property("value[x]", "Attachment", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 924902896: /*valueCodeableConcept*/  return new Property("value[x]", "CodeableConcept", "Conveys the content if the parameter is a data type.", 0, 1, value);
+          case -257955629: /*valueCodeableReference*/  return new Property("value[x]", "CodeableReference", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -1887705029: /*valueCoding*/  return new Property("value[x]", "Coding", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 944904545: /*valueContactPoint*/  return new Property("value[x]", "ContactPoint", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 2017332766: /*valueCount*/  return new Property("value[x]", "Count", "Conveys the content if the parameter is a data type.", 0, 1, value);
@@ -1056,18 +1102,20 @@ public class Parameters extends Resource implements IBaseParameters {
           case -2029823716: /*valueQuantity*/  return new Property("value[x]", "Quantity", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 2030761548: /*valueRange*/  return new Property("value[x]", "Range", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 2030767386: /*valueRatio*/  return new Property("value[x]", "Ratio", "Conveys the content if the parameter is a data type.", 0, 1, value);
+          case -706454461: /*valueRatioRange*/  return new Property("value[x]", "RatioRange", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 1755241690: /*valueReference*/  return new Property("value[x]", "Reference", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -962229101: /*valueSampledData*/  return new Property("value[x]", "SampledData", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -540985785: /*valueSignature*/  return new Property("value[x]", "Signature", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -1406282469: /*valueTiming*/  return new Property("value[x]", "Timing", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -1125200224: /*valueContactDetail*/  return new Property("value[x]", "ContactDetail", "Conveys the content if the parameter is a data type.", 0, 1, value);
-          case 1281021610: /*valueContributor*/  return new Property("value[x]", "Contributor", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 1710554248: /*valueDataRequirement*/  return new Property("value[x]", "DataRequirement", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -307517719: /*valueExpression*/  return new Property("value[x]", "Expression", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 1387478187: /*valueParameterDefinition*/  return new Property("value[x]", "ParameterDefinition", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 1748214124: /*valueRelatedArtifact*/  return new Property("value[x]", "RelatedArtifact", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 976830394: /*valueTriggerDefinition*/  return new Property("value[x]", "TriggerDefinition", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case 588000479: /*valueUsageContext*/  return new Property("value[x]", "UsageContext", "Conveys the content if the parameter is a data type.", 0, 1, value);
+          case 1678530924: /*valueAvailability*/  return new Property("value[x]", "Availability", "Conveys the content if the parameter is a data type.", 0, 1, value);
+          case -1567222041: /*valueExtendedContactDetail*/  return new Property("value[x]", "ExtendedContactDetail", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -1858636920: /*valueDosage*/  return new Property("value[x]", "Dosage", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -765920490: /*valueMeta*/  return new Property("value[x]", "Meta", "Conveys the content if the parameter is a data type.", 0, 1, value);
           case -341064690: /*resource*/  return new Property("resource", "Resource", "Conveys the content if the parameter is a whole resource.", 0, 1, resource);
@@ -1124,6 +1172,21 @@ public class Parameters extends Resource implements IBaseParameters {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("name")) {
+          this.name = null;
+        } else if (name.equals("value[x]")) {
+          this.value = null;
+        } else if (name.equals("resource")) {
+          this.resource = null;
+        } else if (name.equals("part")) {
+          this.getPart().remove((ParametersParameterComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1141,7 +1204,7 @@ public class Parameters extends Resource implements IBaseParameters {
       public String[] getTypesForProperty(int hash, String name) throws FHIRException {
         switch (hash) {
         case 3373707: /*name*/ return new String[] {"string"};
-        case 111972721: /*value*/ return new String[] {"base64Binary", "boolean", "canonical", "code", "date", "dateTime", "decimal", "id", "instant", "integer", "integer64", "markdown", "oid", "positiveInt", "string", "time", "unsignedInt", "uri", "url", "uuid", "Address", "Age", "Annotation", "Attachment", "CodeableConcept", "Coding", "ContactPoint", "Count", "Distance", "Duration", "HumanName", "Identifier", "Money", "Period", "Quantity", "Range", "Ratio", "Reference", "SampledData", "Signature", "Timing", "ContactDetail", "Contributor", "DataRequirement", "Expression", "ParameterDefinition", "RelatedArtifact", "TriggerDefinition", "UsageContext", "Dosage", "Meta"};
+        case 111972721: /*value*/ return new String[] {"base64Binary", "boolean", "canonical", "code", "date", "dateTime", "decimal", "id", "instant", "integer", "integer64", "markdown", "oid", "positiveInt", "string", "time", "unsignedInt", "uri", "url", "uuid", "Address", "Age", "Annotation", "Attachment", "CodeableConcept", "CodeableReference", "Coding", "ContactPoint", "Count", "Distance", "Duration", "HumanName", "Identifier", "Money", "Period", "Quantity", "Range", "Ratio", "RatioRange", "Reference", "SampledData", "Signature", "Timing", "ContactDetail", "DataRequirement", "Expression", "ParameterDefinition", "RelatedArtifact", "TriggerDefinition", "UsageContext", "Availability", "ExtendedContactDetail", "Dosage", "Meta"};
         case -341064690: /*resource*/ return new String[] {"Resource"};
         case 3433459: /*part*/ return new String[] {"@Parameters.parameter"};
         default: return super.getTypesForProperty(hash, name);
@@ -1152,7 +1215,7 @@ public class Parameters extends Resource implements IBaseParameters {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Parameters.parameter.name");
+          throw new FHIRException("Cannot call addChild on a singleton property Parameters.parameter.name");
         }
         else if (name.equals("valueBase64Binary")) {
           this.value = new Base64BinaryType();
@@ -1254,6 +1317,10 @@ public class Parameters extends Resource implements IBaseParameters {
           this.value = new CodeableConcept();
           return this.value;
         }
+        else if (name.equals("valueCodeableReference")) {
+          this.value = new CodeableReference();
+          return this.value;
+        }
         else if (name.equals("valueCoding")) {
           this.value = new Coding();
           return this.value;
@@ -1302,6 +1369,10 @@ public class Parameters extends Resource implements IBaseParameters {
           this.value = new Ratio();
           return this.value;
         }
+        else if (name.equals("valueRatioRange")) {
+          this.value = new RatioRange();
+          return this.value;
+        }
         else if (name.equals("valueReference")) {
           this.value = new Reference();
           return this.value;
@@ -1320,10 +1391,6 @@ public class Parameters extends Resource implements IBaseParameters {
         }
         else if (name.equals("valueContactDetail")) {
           this.value = new ContactDetail();
-          return this.value;
-        }
-        else if (name.equals("valueContributor")) {
-          this.value = new Contributor();
           return this.value;
         }
         else if (name.equals("valueDataRequirement")) {
@@ -1350,6 +1417,14 @@ public class Parameters extends Resource implements IBaseParameters {
           this.value = new UsageContext();
           return this.value;
         }
+        else if (name.equals("valueAvailability")) {
+          this.value = new Availability();
+          return this.value;
+        }
+        else if (name.equals("valueExtendedContactDetail")) {
+          this.value = new ExtendedContactDetail();
+          return this.value;
+        }
         else if (name.equals("valueDosage")) {
           this.value = new Dosage();
           return this.value;
@@ -1372,6 +1447,10 @@ public class Parameters extends Resource implements IBaseParameters {
         ParametersParameterComponent dst = new ParametersParameterComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((ParametersParameterComponent) dst);
       }
 
       public void copyValues(ParametersParameterComponent dst) {
@@ -1437,7 +1516,33 @@ public String toString() {
     }
     return s;
   }
+  
+  
+  public boolean hasValuePrimitive() {
+    return hasValue() && getValue() instanceof PrimitiveType<?>;
+  }
+
+  public ParametersParameterComponent getPart(String name) {
+    for (ParametersParameterComponent t : getPart()) {
+      if (name.equals(t.getName())) {
+        return t;
+      }
+    }
+    return null;
+  }
+
+
+  public boolean hasPart(String name) {
+    for (ParametersParameterComponent t : getPart()) {
+      if (name.equals(t.getName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
 // end addition
+
   }
 
     /**
@@ -1499,6 +1604,23 @@ public String toString() {
       return this;
     }
 
+    public Parameters setParameter(ParametersParameterComponent t) { //3
+      if (t == null)
+        return this;
+      if (this.parameter == null)
+        this.parameter = new ArrayList<ParametersParameterComponent>();
+      ParametersParameterComponent p = getParameter(t.getName());
+      if (p == null) {
+        this.parameter.add(t);
+      } else {
+        p.setValue(t.getValue());
+        p.setResource(t.getResource());
+        p.getPart().clear();
+        p.getPart().addAll(t.getPart());
+      }
+      return this;
+    }
+
     /**
      * @return The first repetition of repeating field {@link #parameter}, creating it if it does not already exist {3}
      */
@@ -1552,6 +1674,15 @@ public String toString() {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("parameter")) {
+          this.getParameter().remove((ParametersParameterComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1588,6 +1719,10 @@ public String toString() {
         Parameters dst = new Parameters();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Parameters) dst);
       }
 
       public void copyValues(Parameters dst) {
@@ -1632,15 +1767,26 @@ public String toString() {
     return ResourceType.Parameters;
    }
 
-// Manual code (from Configuration.txt):
-public Parameters addParameter(String name, boolean b) {
+  // Manual code (from Configuration.txt):
+  public Parameters addParameter(String name, boolean b) {
     addParameter().setName(name).setValue(new BooleanType(b));
+    return this;
+  }
+
+  public Parameters addParameter(String name, int i) {
+    addParameter().setName(name).setValue(new IntegerType(i));
     return this;
   }
 
   public Parameters addParameter(String name, String s) {
     if (s != null)
       addParameter().setName(name).setValue(new StringType(s));
+    return this;
+  }
+
+  public Parameters addCodeParameter(String name, String s) {
+    if (s != null)
+      addParameter().setName(name).setValue(new CodeType(s));
     return this;
   }
 
@@ -1687,6 +1833,22 @@ public Parameters addParameter(String name, boolean b) {
     return this;
   }
 
+  public boolean hasParameterValue(String name) {
+    for (ParametersParameterComponent p : getParameter()) {
+      if (p.getName().equals(name) && p.hasValue())
+        return true;
+    }
+    return false;
+  } 
+
+  public boolean hasParameterValue(String name, String value) {
+    for (ParametersParameterComponent p : getParameter()) {
+      if (p.getName().equals(name) && p.hasValue() && value.equals(p.getValue().primitiveValue()))
+        return true;
+    }
+    return false;
+  }
+
   public boolean hasParameter(String name) {
     for (ParametersParameterComponent p : getParameter()) {
       if (p.getName().equals(name))
@@ -1695,7 +1857,7 @@ public Parameters addParameter(String name, boolean b) {
     return false;
   }
 
-  public DataType getParameter(String name) {
+  public DataType getParameterValue(String name) {
     for (ParametersParameterComponent p : getParameter()) {
       if (p.getName().equals(name))
         return p.getValue();
@@ -1703,7 +1865,15 @@ public Parameters addParameter(String name, boolean b) {
     return null;
   }
 
-  public List<DataType> getParameters(String name) {
+  public ParametersParameterComponent getParameter(String name) {
+    for (ParametersParameterComponent p : getParameter()) {
+      if (p.getName().equals(name))
+        return p;
+    }
+    return null;
+  }
+
+  public List<DataType> getParameterValues(String name) {
     List<DataType> res = new ArrayList<>();
     for (ParametersParameterComponent p : getParameter()) {
       if (p.getName().equals(name))
@@ -1711,20 +1881,56 @@ public Parameters addParameter(String name, boolean b) {
     }
     return res;
   }
-  
-  
+
+  public List<ParametersParameterComponent> getParameters(String name) {
+    List<ParametersParameterComponent> res = new ArrayList<ParametersParameterComponent>();
+    for (ParametersParameterComponent p : getParameter()) {
+      if (p.getName().equals(name))
+        res.add(p);
+    }
+    return res;
+  }
+
   public boolean getParameterBool(String name) {
     for (ParametersParameterComponent p : getParameter()) {
       if (p.getName().equals(name)) {
         if (p.getValue() instanceof BooleanType)
           return ((BooleanType) p.getValue()).booleanValue();
-        boolean ok = Boolean.getBoolean(p.getValue().primitiveValue());
+        boolean ok = "true".equals(p.getValue().primitiveValue());
         return ok;
       }
     }
     return false;
   }
-// end addition
+
+
+  public String getParameterString(String name) {
+    for (ParametersParameterComponent p : getParameter()) {
+      if (p.getName().equals(name)) {
+        if (p.getValue() instanceof PrimitiveType)
+          return ((PrimitiveType) p.getValue()).primitiveValue();
+      }
+    }
+    return null;
+  }
+
+  public void clearParameters(String name) {
+    getParameter().removeIf(p -> name.equals(p.getName()));  
+  }
+
+  public void addParameters(Parameters expParameters) {
+    addParameters(expParameters.getParameter());    
+  }
+
+  private void addParameters(List<ParametersParameterComponent> parameters) {
+    for (ParametersParameterComponent p : parameters) {
+      if (!hasParameter(p.getName())) {
+        addParameter(p);
+      }
+    }
+  }
+
+  // end addition
 
 }
 

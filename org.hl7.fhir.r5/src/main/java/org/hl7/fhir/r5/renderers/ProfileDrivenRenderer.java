@@ -9,263 +9,136 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.NotImplementedException;
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.exceptions.DefinitionException;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
-import org.hl7.fhir.r5.formats.FormatUtilities;
-import org.hl7.fhir.r5.model.Address;
-import org.hl7.fhir.r5.model.Annotation;
-import org.hl7.fhir.r5.model.Attachment;
-import org.hl7.fhir.r5.model.Base;
-import org.hl7.fhir.r5.model.Base64BinaryType;
-import org.hl7.fhir.r5.model.BooleanType;
-import org.hl7.fhir.r5.model.CodeType;
-import org.hl7.fhir.r5.model.CodeableConcept;
-import org.hl7.fhir.r5.model.CodeableReference;
-import org.hl7.fhir.r5.model.Coding;
-import org.hl7.fhir.r5.model.ContactDetail;
-import org.hl7.fhir.r5.model.ContactPoint;
-import org.hl7.fhir.r5.model.DataRequirement;
-import org.hl7.fhir.r5.model.DateTimeType;
-import org.hl7.fhir.r5.model.DomainResource;
-import org.hl7.fhir.r5.model.Dosage;
+import org.hl7.fhir.r5.conformance.profile.ProfileUtilities.SourcedChildDefinitions;
+import org.hl7.fhir.r5.context.ContextUtilities;
+import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
 import org.hl7.fhir.r5.model.ElementDefinition;
-import org.hl7.fhir.r5.model.Enumeration;
-import org.hl7.fhir.r5.model.Expression;
-import org.hl7.fhir.r5.model.Extension;
-import org.hl7.fhir.r5.model.HumanName;
-import org.hl7.fhir.r5.model.IdType;
-import org.hl7.fhir.r5.model.Identifier;
-import org.hl7.fhir.r5.model.InstantType;
-import org.hl7.fhir.r5.model.Meta;
-import org.hl7.fhir.r5.model.Money;
-import org.hl7.fhir.r5.model.Narrative;
-import org.hl7.fhir.r5.model.Narrative.NarrativeStatus;
-import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
-import org.hl7.fhir.r5.model.Period;
-import org.hl7.fhir.r5.model.PrimitiveType;
-import org.hl7.fhir.r5.model.Property;
-import org.hl7.fhir.r5.model.Quantity;
-import org.hl7.fhir.r5.model.Range;
-import org.hl7.fhir.r5.model.Ratio;
-import org.hl7.fhir.r5.model.Reference;
-import org.hl7.fhir.r5.model.RelatedArtifact;
 import org.hl7.fhir.r5.model.Resource;
-import org.hl7.fhir.r5.model.SampledData;
-import org.hl7.fhir.r5.model.Signature;
-import org.hl7.fhir.r5.model.StringType;
 import org.hl7.fhir.r5.model.StructureDefinition;
-import org.hl7.fhir.r5.model.Timing;
-import org.hl7.fhir.r5.model.UriType;
-import org.hl7.fhir.r5.model.UsageContext;
-import org.hl7.fhir.r5.renderers.utils.BaseWrappers.BaseWrapper;
-import org.hl7.fhir.r5.renderers.utils.BaseWrappers.PropertyWrapper;
-import org.hl7.fhir.r5.renderers.utils.BaseWrappers.ResourceWrapper;
-import org.hl7.fhir.r5.renderers.utils.DOMWrappers.BaseWrapperElement;
-import org.hl7.fhir.r5.renderers.utils.DOMWrappers.ResourceWrapperElement;
-import org.hl7.fhir.r5.renderers.utils.DirectWrappers;
-import org.hl7.fhir.r5.renderers.utils.DirectWrappers.BaseWrapperDirect;
-import org.hl7.fhir.r5.renderers.utils.DirectWrappers.PropertyWrapperDirect;
-import org.hl7.fhir.r5.renderers.utils.DirectWrappers.ResourceWrapperDirect;
+import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
 import org.hl7.fhir.r5.renderers.utils.RenderingContext;
-import org.hl7.fhir.r5.renderers.utils.Resolver.ResourceContext;
-import org.hl7.fhir.r5.renderers.utils.Resolver.ResourceWithReference;
+import org.hl7.fhir.r5.renderers.utils.ResourceWrapper;
+import org.hl7.fhir.r5.renderers.utils.ResourceWrapper.NamedResourceWrapperList;
 import org.hl7.fhir.r5.utils.EOperationOutcome;
-import org.hl7.fhir.r5.utils.ToolingExtensions;
-import org.hl7.fhir.r5.utils.XVerExtensionManager;
-import org.hl7.fhir.r5.utils.XVerExtensionManager.XVerExtensionStatus;
-import org.hl7.fhir.utilities.Utilities;
-import org.hl7.fhir.utilities.xhtml.NodeType;
-import org.hl7.fhir.utilities.xhtml.XhtmlComposer;
-import org.hl7.fhir.utilities.xhtml.XhtmlNode;
-import org.hl7.fhir.utilities.xml.XMLUtil;
-import org.w3c.dom.Element;
 
+import org.hl7.fhir.r5.utils.xver.XVerExtensionManager.XVerExtensionStatus;
+import org.hl7.fhir.r5.utils.xver.XVerExtensionManagerFactory;
+import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
+
+import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.i18n.RenderingI18nContext;
+import org.hl7.fhir.utilities.xhtml.NodeType;
+import org.hl7.fhir.utilities.xhtml.XhtmlNode;
+
+
+@Slf4j
 public class ProfileDrivenRenderer extends ResourceRenderer {
 
   private Set<String> containedIds = new HashSet<>();
-  private boolean hasExtensions;
   
-  public ProfileDrivenRenderer(RenderingContext context, ResourceContext rcontext) {
-    super(context, rcontext);
-  }
-
   public ProfileDrivenRenderer(RenderingContext context) {
     super(context);
   }
 
   @Override
-  public boolean render(XhtmlNode x, Resource r) throws FHIRFormatError, DefinitionException, IOException {
-    return render(x, new DirectWrappers.ResourceWrapperDirect(context, r));
-  }
-
-  @Override
-  public boolean render(XhtmlNode x, ResourceWrapper r) throws FHIRFormatError, DefinitionException, IOException {
-    if (context.isAddGeneratedNarrativeHeader()) {
-      x.para().b().tx("Generated Narrative");
-    }
-    if (context.isTechnicalMode()) {
-      renderResourceHeader(r, x);
-    }
+  public void buildNarrative(RenderingStatus status, XhtmlNode x, ResourceWrapper r) throws FHIRFormatError, DefinitionException, IOException {
+    renderResourceTechDetails(r, x);
     try {
-      StructureDefinition sd = r.getDefinition();
+      StructureDefinition sd = context.getContext().fetchTypeDefinition(r.fhirType());
       if (sd == null) {
-        throw new FHIRException("Cannot find definition for "+r.fhirType());
+        throw new FHIRException(context.formatPhrase(RenderingI18nContext.PROF_DRIV_FEXCP, r.fhirType())+" ");
       } else {
         ElementDefinition ed = sd.getSnapshot().getElement().get(0);
         containedIds.clear();
-        hasExtensions = false;
-        generateByProfile(r, sd, r.root(), sd.getSnapshot().getElement(), ed, context.getProfileUtilities().getChildList(sd, ed), x, r.fhirType(), context.isTechnicalMode(), 0);
+        generateByProfile(status, r, sd, r, ed, context.getProfileUtilities().getChildList(sd, ed), x, r.fhirType(), context.isTechnicalMode(), 0);
       }
     } catch (Exception e) {
-      e.printStackTrace();
-      x.para().b().style("color: maroon").tx("Exception generating Narrative: "+e.getMessage());
+      log.debug(context.formatPhrase(RenderingI18nContext.PROF_DRIV_ERR_GEN_NARR) +r.fhirType()+"/"+r.getId()+": "+e.getMessage(), e);
+      x.para().b().style("color: maroon").tx(context.formatPhrase(RenderingI18nContext.PROF_DRIV_EXCP, e.getMessage())+" ");
     }
-    return hasExtensions;
   }
 
-
-  @Override
-  public String display(Resource r) throws UnsupportedEncodingException, IOException {
-    return "todo";
-  }
   
   @Override
-  public String display(ResourceWrapper r) throws UnsupportedEncodingException, IOException {
-    return "Not done yet";
-  }
-
-//
-//  public void inject(Element er, XhtmlNode x, NarrativeStatus status, boolean pretty) {
-//    if (!x.hasAttribute("xmlns"))
-//      x.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-//    Element le = XMLUtil.getNamedChild(er, "language");
-//    String l = le == null ? null : le.getAttribute("value");
-//    if (!Utilities.noString(l)) {
-//      // use both - see https://www.w3.org/TR/i18n-html-tech-lang/#langvalues
-//      x.setAttribute("lang", l);
-//      x.setAttribute("xml:lang", l);
-//    }
-//    Element txt = XMLUtil.getNamedChild(er, "text");
-//    if (txt == null) {
-//      txt = er.getOwnerDocument().createElementNS(FormatUtilities.FHIR_NS, "text");
-//      Element n = XMLUtil.getFirstChild(er);
-//      while (n != null && (n.getNodeName().equals("id") || n.getNodeName().equals("meta") || n.getNodeName().equals("implicitRules") || n.getNodeName().equals("language")))
-//        n = XMLUtil.getNextSibling(n);
-//      if (n == null)
-//        er.appendChild(txt);
-//      else
-//        er.insertBefore(txt, n);
-//    }
-//    Element st = XMLUtil.getNamedChild(txt, "status");
-//    if (st == null) {
-//      st = er.getOwnerDocument().createElementNS(FormatUtilities.FHIR_NS, "status");
-//      Element n = XMLUtil.getFirstChild(txt);
-//      if (n == null)
-//        txt.appendChild(st);
-//      else
-//        txt.insertBefore(st, n);
-//    }
-//    st.setAttribute("value", status.toCode());
-//    Element div = XMLUtil.getNamedChild(txt, "div");
-//    if (div == null) {
-//      div = er.getOwnerDocument().createElementNS(FormatUtilities.XHTML_NS, "div");
-//      div.setAttribute("xmlns", FormatUtilities.XHTML_NS);
-//      txt.appendChild(div);
-//    }
-//    if (div.hasChildNodes())
-//      div.appendChild(er.getOwnerDocument().createElementNS(FormatUtilities.XHTML_NS, "hr"));
-//    new XhtmlComposer(XhtmlComposer.XML, pretty).compose(div, x);
-//  }
-//
-//  public void inject(org.hl7.fhir.r5.elementmodel.Element er, XhtmlNode x, NarrativeStatus status, boolean pretty) throws IOException, FHIRException {
-//    if (!x.hasAttribute("xmlns"))
-//      x.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-//    String l = er.getChildValue("language");
-//    if (!Utilities.noString(l)) {
-//      // use both - see https://www.w3.org/TR/i18n-html-tech-lang/#langvalues
-//      x.setAttribute("lang", l);
-//      x.setAttribute("xml:lang", l);
-//    }
-//    org.hl7.fhir.r5.elementmodel.Element txt = er.getNamedChild("text");
-//    if (txt == null) {
-//      txt = new org.hl7.fhir.r5.elementmodel.Element("text", er.getProperty().getChild(null, "text"));
-//      int i = 0;
-//      while (i < er.getChildren().size() && (er.getChildren().get(i).getName().equals("id") || er.getChildren().get(i).getName().equals("meta") || er.getChildren().get(i).getName().equals("implicitRules") || er.getChildren().get(i).getName().equals("language")))
-//        i++;
-//      if (i >= er.getChildren().size())
-//        er.getChildren().add(txt);
-//      else
-//        er.getChildren().add(i, txt);
-//    }
-//    org.hl7.fhir.r5.elementmodel.Element st = txt.getNamedChild("status");
-//    if (st == null) {
-//      st = new org.hl7.fhir.r5.elementmodel.Element("status", txt.getProperty().getChild(null, "status"));
-//      txt.getChildren().add(0, st);
-//    }
-//    st.setValue(status.toCode());
-//    org.hl7.fhir.r5.elementmodel.Element div = txt.getNamedChild("div");
-//    if (div == null) {
-//      div = new org.hl7.fhir.r5.elementmodel.Element("div", txt.getProperty().getChild(null, "div"));
-//      txt.getChildren().add(div);
-//      div.setValue(new XhtmlComposer(XhtmlComposer.XML, pretty).compose(x));
-//    }
-//    div.setValue(x.toString());
-//    div.setXhtml(x);
-//  }
-//
-
-  
-  public void generateResourceSummary(XhtmlNode x, ResourceWrapper res, boolean textAlready, boolean showCodeDetails, boolean canLink) throws FHIRException, UnsupportedEncodingException, IOException {
-    if (!textAlready) {
-      XhtmlNode div = res.getNarrative();
-      if (div != null) {
-        if (div.allChildrenAreText())
-          x.getChildNodes().addAll(div.getChildNodes());
-        if (div.getChildNodes().size() == 1 && div.getChildNodes().get(0).allChildrenAreText())
-          x.getChildNodes().addAll(div.getChildNodes().get(0).getChildNodes());
-      }
-      x.tx("Generated Summary: ");
-    }
-    String path = res.fhirType();
-    StructureDefinition profile = getContext().getWorker().fetchResource(StructureDefinition.class, path);
+  public String buildSummary(ResourceWrapper res) throws UnsupportedEncodingException, IOException {
+    StructureDefinition profile = getContext().getWorker().fetchTypeDefinition(res.fhirType());
     if (profile == null)
-      x.tx("unknown resource " +path);
+      return "unknown resource type " +res.fhirType();
     else {
-      boolean firstElement = true;
-      boolean last = false;
-      for (PropertyWrapper p : res.children()) {
-        if (!ignoreProperty(p) && !p.getElementDefinition().getBase().getPath().startsWith("Resource.")) {
-          ElementDefinition child = getElementDefinition(profile.getSnapshot().getElement(), path+"."+p.getName(), p);
-          if (p.getValues().size() > 0 && p.getValues().get(0) != null && child != null && isPrimitive(child) && includeInSummary(child, p.getValues())) {
-            if (firstElement)
-              firstElement = false;
-            else if (last)
-              x.tx("; ");
-            boolean first = true;
-            last = false;
-            for (BaseWrapper v : p.getValues()) {
-              if (first)
-                first = false;
-              else if (last)
-                x.tx(", ");
-              last = displayLeaf(res, v, child, x, p.getName(), showCodeDetails, canLink) || last;
+      List<ResourceWrapper> children = res.children();
+      ContextUtilities cu = res.getContextUtilities();
+      for (ResourceWrapper p : children) {
+        if (p.name().equals("title") && cu.isDatatype(p.fhirType()) && !p.isEmpty()) {
+          return res.fhirType()+" "+ displayDataType(p);
+        }
+      }
+      for (ResourceWrapper p : children) {
+        if (p.name().equals("name") && cu.isDatatype(p.fhirType()) && !p.isEmpty()) {
+          return res.fhirType()+" "+ displayDataType(p);
+        }
+      }
+      for (ResourceWrapper p : children) {
+        if (p.name().equals("code") && cu.isDatatype(p.fhirType()) && !p.isEmpty()) {
+          return res.fhirType()+" "+ displayDataType(p);
+        }
+      }
+      switch (res.fhirType()) {
+      case "Binary" : return res.fhirType()+": "+res.primitiveValue("contentType")+" ("+res.primitiveValue("data").length()+" bytes base64)";
+      }
+      return generateResourceSummary(res, profile, profile.getSnapshot().getElementFirstRep(), false, false);
+    }
+  }
+
+  public String generateResourceSummary(ResourceWrapper res, StructureDefinition sd, ElementDefinition ed, boolean showCodeDetails, boolean canLink) throws FHIRException, UnsupportedEncodingException, IOException {
+    if (sd == null)
+      return "unknown resource " +res.fhirType();
+    else {
+      SourcedChildDefinitions childDefs = context.getProfileUtilities().getChildMap(sd, ed, true);
+      CommaSeparatedStringBuilder b = new CommaSeparatedStringBuilder("; ");
+      for (NamedResourceWrapperList p : res.childrenInGroups()) {
+        ElementDefinition pDefn = getElementDefinition(childDefs, p); 
+        if (pDefn != null && !ignoreProperty(p) && !pDefn.getBase().getPath().startsWith("Resource.")) {
+          if (p.getValues().size() > 0 && p.getValues().get(0) != null && pDefn != null && isSimple(pDefn) && includeInSummary(pDefn, p)) {
+            CommaSeparatedStringBuilder b2 = new CommaSeparatedStringBuilder(",");
+            for (ResourceWrapper v : p.getValues()) {
+              b2.append(displayDataType(v));
             }
+            b.append(formatPhrase(RenderingContext.PROF_DRIV_SUMM_PROP, labelForElement(pDefn), b2.toString()));
           }
         }
       }
+      if (b.length() == 0) {
+        return formatPhrase(RenderingContext.PROF_DRIV_SUMM_NONE, res.fhirType());        
+      } else {
+        return formatPhrase(RenderingContext.PROF_DRIV_SUMM, res.fhirType(), b.toString());
+      }
     }
   }
+  
+  private String labelForElement(ElementDefinition pDefn) {
+    return pDefn.getName();
+  }
 
+  private ElementDefinition getElementDefinition(SourcedChildDefinitions childDefs, NamedResourceWrapperList p) {
+    for (ElementDefinition ed : childDefs.getList()) {
+      if (ed.getName().equals(p.getName())) {
+        return ed;
+      }
+    }
+    return null;
+  }
 
-  private boolean ignoreProperty(PropertyWrapper p) {
+  private boolean ignoreProperty(NamedResourceWrapperList p) {
     return Utilities.existsInList(p.getName(), "contained");
   }
 
-  private boolean includeInSummary(ElementDefinition child, List<BaseWrapper> list) throws UnsupportedEncodingException, FHIRException, IOException {
-    if (child.getName().endsWith("active") && list != null && list.size() > 0 && "true".equals(list.get(0).getBase().primitiveValue())) {
+  private boolean includeInSummary(ElementDefinition child, NamedResourceWrapperList list) throws UnsupportedEncodingException, FHIRException, IOException {
+    if (child.getName().endsWith("active") && list != null && list.getValues().size() > 0 && "true".equals(list.getValues().get(0).primitiveValue())) {
       return false;
     }
     if (child.getIsModifier())
@@ -280,315 +153,75 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
     return true;
   }
   
-  private ElementDefinition getElementDefinition(List<ElementDefinition> elements, String path, PropertyWrapper p) {
+  private ElementDefinition getElementDefinition(List<ElementDefinition> elements, String path) {
     for (ElementDefinition element : elements)
       if (element.getPath().equals(path))
         return element;
-    if (path.endsWith("\"]") && p.getStructure() != null)
-      return p.getStructure().getSnapshot().getElement().get(0);
     return null;
   }
 
-  private void renderLeaf(ResourceWrapper res, BaseWrapper ew, ElementDefinition defn, XhtmlNode parent, XhtmlNode x, boolean title, boolean showCodeDetails, Map<String, String> displayHints, String path, int indent) throws FHIRException, UnsupportedEncodingException, IOException, EOperationOutcome {
+  private void renderLeaf(RenderingStatus status, ResourceWrapper res, ResourceWrapper ew, StructureDefinition sd, ElementDefinition defn, XhtmlNode parent, XhtmlNode x, boolean title, boolean showCodeDetails, Map<String, String> displayHints, int indent) throws FHIRException, UnsupportedEncodingException, IOException, EOperationOutcome {
     if (ew == null)
       return;
 
-    Base e = ew.getBase();
-
-    if (e instanceof StringType)
-      x.addText(((StringType) e).getValue());
-    else if (e instanceof CodeType)
-      x.addText(((CodeType) e).getValue());
-    else if (e instanceof IdType)
-      x.addText(((IdType) e).getValue());
-    else if (e instanceof Extension)
+    if (context.isShowComments()) {
+      x = renderCommentsSpan(x, ew);
+    }
+    if (Utilities.existsInList(ew.fhirType(), "Extension") || ew.isResource()) {
       return;
-    else if (e instanceof InstantType)
-      x.addText(((InstantType) e).toHumanDisplay());
-    else if (e instanceof DateTimeType) {
-      renderDateTime(x, e);
-    } else if (e instanceof Base64BinaryType)
-      x.addText(new Base64().encodeAsString(((Base64BinaryType) e).getValue()));
-    else if (e instanceof org.hl7.fhir.r5.model.DateType) {
-      org.hl7.fhir.r5.model.DateType dt = ((org.hl7.fhir.r5.model.DateType) e);
-      if (((org.hl7.fhir.r5.model.DateType) e).hasValue()) {
-        x.addText(((org.hl7.fhir.r5.model.DateType) e).toHumanDisplay());
-      }
-    } else if (e instanceof Enumeration) {
-      Object ev = ((Enumeration<?>) e).getValue();
-      x.addText(ev == null ? "" : ev.toString()); // todo: look up a display name if there is one
-    } else if (e instanceof BooleanType) {
-      x.addText(((BooleanType) e).getValue().toString());
-    } else if (e instanceof CodeableConcept) {
-      renderCodeableConcept(x, (CodeableConcept) e, showCodeDetails);
-    } else if (e instanceof Coding) {
-      renderCoding(x, (Coding) e, showCodeDetails);
-    } else if (e instanceof CodeableReference) {
-      renderCodeableReference(x, (CodeableReference) e, showCodeDetails);
-    } else if (e instanceof Annotation) {
-      renderAnnotation(x, (Annotation) e);
-    } else if (e instanceof Identifier) {
-      renderIdentifier(x, (Identifier) e);
-    } else if (e instanceof org.hl7.fhir.r5.model.IntegerType) {
-      if (((org.hl7.fhir.r5.model.IntegerType) e).hasValue()) {
-        x.addText(Integer.toString(((org.hl7.fhir.r5.model.IntegerType) e).getValue()));
-      } else {
-        x.addText("??");
-      }
-    } else if (e instanceof org.hl7.fhir.r5.model.Integer64Type) {
-      if (((org.hl7.fhir.r5.model.Integer64Type) e).hasValue()) {
-        x.addText(Long.toString(((org.hl7.fhir.r5.model.Integer64Type) e).getValue()));
-      } else {
-        x.addText("??");
-      }
-    } else if (e instanceof org.hl7.fhir.r5.model.DecimalType) {
-      x.addText(((org.hl7.fhir.r5.model.DecimalType) e).getValue().toString());
-    } else if (e instanceof HumanName) {
-      renderHumanName(x, (HumanName) e);
-    } else if (e instanceof SampledData) {
-      renderSampledData(x, (SampledData) e);
-    } else if (e instanceof Address) {
-      renderAddress(x, (Address) e);
-    } else if (e instanceof ContactPoint) {
-      renderContactPoint(x, (ContactPoint) e);
-    } else if (e instanceof Expression) {
-      renderExpression(x, (Expression) e);
-    } else if (e instanceof Money) {
-      renderMoney(x, (Money) e);
-    } else if (e instanceof ContactDetail) {
-      ContactDetail cd = (ContactDetail) e;
-      if (cd.hasName()) {
-        x.tx(cd.getName()+": ");
-      }
-      boolean first = true;
-      for (ContactPoint c : cd.getTelecom()) {
-        if (first) first = false; else x.tx(",");
-        renderContactPoint(x, c);
-      }
-    } else if (e instanceof UriType) {
-      renderUri(x, (UriType) e, defn.getPath(), rcontext != null && rcontext.getResourceResource() != null ? rcontext.getResourceResource().getId() : null);
-    } else if (e instanceof Timing) {
-      renderTiming(x, (Timing) e);
-    } else if (e instanceof Range) {
-      renderRange(x, (Range) e);
-    } else if (e instanceof Quantity) {
-      renderQuantity(x, (Quantity) e, showCodeDetails);
-    } else if (e instanceof Ratio) {
-      renderQuantity(x, ((Ratio) e).getNumerator(), showCodeDetails);
-      x.tx("/");
-      renderQuantity(x, ((Ratio) e).getDenominator(), showCodeDetails);
-    } else if (e instanceof Period) {
-      Period p = (Period) e;
-      renderPeriod(x, p);
-    } else if (e instanceof Reference) {
-      Reference r = (Reference) e;
-      if (r.getReference() != null && r.getReference().contains("#")) {
-        if (containedIds.contains(r.getReference().substring(1))) {
-          x.ah(r.getReference()).tx("See "+r.getReference());
-        } else {
-          // in this case, we render the resource in line
-          ResourceWrapper rw = null;
-          for (ResourceWrapper t : res.getContained()) {
-            if (r.getReference().substring(1).equals(t.getId())) {
-              rw = t;
-            }
-          }
-          if (rw == null) {
-            renderReference(res, x, r);
-          } else {
-            x.an(rw.getId());
-            ResourceRenderer rr = RendererFactory.factory(rw, context.copy().setAddGeneratedNarrativeHeader(false));
-            rr.render(parent.blockquote(), rw);
-          }
-        }
-      } else {
-        renderReference(res, x, r);
-      }
-    } else if (e instanceof Resource) {
-      return;
-    } else if (e instanceof DataRequirement) {
-      DataRequirement p = (DataRequirement) e;
-      renderDataRequirement(x, p);
-    } else if (e instanceof PrimitiveType) {
-      x.tx(((PrimitiveType) e).primitiveValue());
-    } else if (e instanceof ElementDefinition) {
+    } else if (ew.fhirType().equals("ElementDefinition")) {
       x.tx("todo-bundle");
-    } else if (e != null && !(e instanceof Attachment) && !(e instanceof Narrative) && !(e instanceof Meta)) {
-      throw new NotImplementedException("type "+e.getClass().getName()+" not handled - should not be here");
+    } else if (!renderDataType(status, parent, x, ew)) {
+      // well, we have a cell (x) to render this thing, whatever it is
+      // it's not a data type for which we have a built rendering, so we're going to get a list of it's renderable datatype properties, and render them in a list
+      // SourcedChildDefinitions childDefs = context.getProfileUtilities().getChildMap(sd, defn);
+      boolean first = true;
+      x.tx(" (");
+      for (ResourceWrapper child : ew.children()) {
+//        ElementDefinition childDefn = getElementDefinition(childDefs.getList(), child.name());
+        if (child != null && !"Extension".equals(child.fhirType()) && canRenderDataType(child.fhirType())) {
+          if (first) {
+            first = false;
+          } else {
+            x.tx("; ");
+          }
+          x.tx(context.formatMessage(RenderingContext.GENERAL_DATA_DISPLAY_PROPERTY, child.name(), displayDataType(child)));          
+        }
+      }
+      x.tx(")");
+    }    
+  }
+
+  private XhtmlNode renderCommentsSpan(XhtmlNode x, ResourceWrapper e) {
+    if (e.hasFormatComment()) {      
+      return x.span(null, CommaSeparatedStringBuilder.join("&#10;", e.getFormatCommentsPre()));
+    } else {
+      return x;
     }
   }
-
-  private boolean displayLeaf(ResourceWrapper res, BaseWrapper ew, ElementDefinition defn, XhtmlNode x, String name, boolean showCodeDetails) throws FHIRException, UnsupportedEncodingException, IOException {
-    return displayLeaf(res, ew, defn, x, name, showCodeDetails, true);
-  }
   
-  private boolean displayLeaf(ResourceWrapper res, BaseWrapper ew, ElementDefinition defn, XhtmlNode x, String name, boolean showCodeDetails, boolean allowLinks) throws FHIRException, UnsupportedEncodingException, IOException {
-    if (ew == null)
-      return false;
-    Base e = ew.getBase();
-    if (e == null)
-      return false;
-
-    Map<String, String> displayHints = readDisplayHints(defn);
-
-    if (name.endsWith("[x]"))
-      name = name.substring(0, name.length() - 3);
-
-    if (!showCodeDetails && e instanceof PrimitiveType && isDefault(displayHints, ((PrimitiveType) e)))
-      return false;
-
-    if (e instanceof StringType) {
-      x.addText(name+": "+((StringType) e).getValue());
-      return true;
-    } else if (e instanceof CodeType) {
-      x.addText(name+": "+((CodeType) e).getValue());
-      return true;
-    } else if (e instanceof IdType) {
-      x.addText(name+": "+((IdType) e).getValue());
-      return true;
-    } else if (e instanceof UriType) {
-      if (Utilities.isAbsoluteUrlLinkable(((UriType) e).getValue()) && allowLinks) {
-        x.tx(name+": ");
-        x.ah(((UriType) e).getValue()).addText(((UriType) e).getValue());
-      } else {
-        x.addText(name+": "+((UriType) e).getValue());
-      }
-      return true;
-    } else if (e instanceof DateTimeType) {
-      x.addText(name+": "+((DateTimeType) e).toHumanDisplay());
-      return true;
-    } else if (e instanceof InstantType) {
-      x.addText(name+": "+((InstantType) e).toHumanDisplay());
-      return true;
-    } else if (e instanceof Extension) {
-      //      x.tx("Extensions: todo");
-      return false;
-    } else if (e instanceof org.hl7.fhir.r5.model.DateType) {
-      x.addText(name+": "+((org.hl7.fhir.r5.model.DateType) e).toHumanDisplay());
-      return true;
-    } else if (e instanceof Enumeration) {
-      x.addText(((Enumeration<?>) e).getValue().toString()); // todo: look up a display name if there is one
-      return true;
-    } else if (e instanceof BooleanType) {
-      if (((BooleanType) e).hasValue()) {
-        x.addText(name);
-        x.addText(": ");
-        x.addText(((BooleanType) e).getValueAsString());
-        return true;
-      }
-    } else if (e instanceof CodeableReference) {
-      if (((CodeableReference) e).hasReference()) { 
-        Reference r = ((CodeableReference) e).getReference();
-        renderReference(res, x, r, allowLinks);
-      } else {
-        renderCodeableConcept(x, ((CodeableReference) e).getConcept(), showCodeDetails);
-      }
-      return true;
-    } else if (e instanceof CodeableConcept) {
-      renderCodeableConcept(x, (CodeableConcept) e, showCodeDetails);
-      return true;
-    } else if (e instanceof Coding) {
-      renderCoding(x, (Coding) e, showCodeDetails);
-      return true;
-    } else if (e instanceof Annotation) {
-      renderAnnotation(x, (Annotation) e, showCodeDetails);
-      return true;
-    } else if (e instanceof org.hl7.fhir.r5.model.IntegerType) {
-      x.addText(Integer.toString(((org.hl7.fhir.r5.model.IntegerType) e).getValue()));
-      return true;
-    } else if (e instanceof org.hl7.fhir.r5.model.DecimalType) {
-      x.addText(((org.hl7.fhir.r5.model.DecimalType) e).getValue().toString());
-      return true;
-    } else if (e instanceof Identifier) {
-      renderIdentifier(x, (Identifier) e);
-      return true;
-    } else if (e instanceof HumanName) {
-      renderHumanName(x, (HumanName) e);
-      return true;
-    } else if (e instanceof SampledData) {
-      renderSampledData(x, (SampledData) e);
-      return true;
-    } else if (e instanceof Address) {
-      renderAddress(x, (Address) e);
-      return true;
-    } else if (e instanceof ContactPoint) {
-      if (allowLinks) {
-        renderContactPoint(x, (ContactPoint) e);
-      } else {
-        displayContactPoint(x, (ContactPoint) e);
-      }
-      return true;
-    } else if (e instanceof Timing) {
-      renderTiming(x, (Timing) e);
-      return true;
-    } else if (e instanceof Quantity) {
-      renderQuantity(x, (Quantity) e, showCodeDetails);
-      return true;
-    } else if (e instanceof Ratio) {
-      renderQuantity(x, ((Ratio) e).getNumerator(), showCodeDetails);
-      x.tx("/");
-      renderQuantity(x, ((Ratio) e).getDenominator(), showCodeDetails);
-      return true;
-    } else if (e instanceof Period) {
-      Period p = (Period) e;
-      x.addText(name+": ");
-      x.addText(!p.hasStart() ? "?ngen-2?" : p.getStartElement().toHumanDisplay());
-      x.tx(" --> ");
-      x.addText(!p.hasEnd() ? "(ongoing)" : p.getEndElement().toHumanDisplay());
-      return true;
-    } else if (e instanceof Reference) {
-      Reference r = (Reference) e;
-      if (r.hasDisplayElement())
-        x.addText(r.getDisplay());
-      else if (r.hasReferenceElement()) {
-        ResourceWithReference tr = resolveReference(res, r.getReference());
-        x.addText(tr == null ? r.getReference() : "?ngen-3"); // getDisplayForReference(tr.getReference()));
-      } else
-        x.tx("?ngen-4?");
-      return true;
-    } else if (e instanceof Narrative) {
-      return false;
-    } else if (e instanceof Resource) {
-      return false;
-    } else if (e instanceof ContactDetail) {
-      ContactDetail cd = (ContactDetail) e;
-      if (cd.hasName()) {
-        x.tx(cd.getName()+": ");
-      }
-      boolean first = true;
-      for (ContactPoint c : cd.getTelecom()) {
-        if (first) first = false; else x.tx(",");
-        if (allowLinks) {      
-          renderContactPoint(x, c);
-        } else {
-          displayContactPoint(x, c);
-        }
-      }
-      return true;
-    } else if (e instanceof Range) {
-      return false;
-    } else if (e instanceof Meta) {
-      return false;
-    } else if (e instanceof Dosage) {
-      return false;
-    } else if (e instanceof Signature) {
-      return false;
-    } else if (e instanceof UsageContext) {
-      return false;
-    } else if (e instanceof RelatedArtifact) {
-      return false;
-    } else if (e instanceof ElementDefinition) {
-      return false;
-    } else if (e instanceof Base64BinaryType) {
-      return false;
-    } else if (!(e instanceof Attachment))
-      throw new NotImplementedException("type "+e.getClass().getName()+" not handled yet");
-    return false;
-  }
+//  private boolean displayLeaf(ResourceWrapper res, ResourceWrapper ew, ElementDefinition defn, XhtmlNode x, String name, boolean showCodeDetails, boolean allowLinks) throws FHIRException, UnsupportedEncodingException, IOException {
+//    if (ew == null)
+//      return false;
+//
+//    Map<String, String> displayHints = readDisplayHints(defn);
+//
+//    if (name.endsWith("[x]"))
+//      name = name.substring(0, name.length() - 3);
+//
+//    if (!showCodeDetails && ew.isPrimitive() && isDefault(displayHints, ew)) {
+//      return false;
+//    } else if (Utilities.existsInList(ew.fhirType(), "Extension")) {
+//      return false;
+//    } else {
+//      x.addText(name+": "+ displayDataType(ew));
+//      return true;
+//    }
+//  }
 
 
 
-  private boolean isPrimitive(ElementDefinition e) {
+  private boolean isSimple(ElementDefinition e) {
     //we can tell if e is a primitive because it has types
     if (e.getType().isEmpty()) {
       return false;
@@ -615,14 +248,18 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
   }
 
   private boolean isBase(String code) {
-    return code.equals("Element") || code.equals("BackboneElement");
+    return code != null && (code.equals("Element") || code.equals("BackboneElement"));
   }
   
-  private List<ElementDefinition> getChildrenForPath(List<ElementDefinition> elements, String path) throws DefinitionException {
+  private SourcedChildDefinitions getChildrenForPath(StructureDefinition profile, String path) throws DefinitionException {
+    var elements = profile.getSnapshot().getElement();
     // do we need to do a name reference substitution?
     for (ElementDefinition e : elements) {
       if (e.getPath().equals(path) && e.hasContentReference()) {
         String ref = e.getContentReference();
+        if (ref.contains("#")) {
+          ref = ref.substring(ref.indexOf("#"));
+        }
         ElementDefinition t = null;
         // now, resolve the name
         for (ElementDefinition e1 : elements) {
@@ -636,107 +273,115 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
       }
     }
 
+    ElementDefinition t = null;
     List<ElementDefinition> results = new ArrayList<ElementDefinition>();
     for (ElementDefinition e : elements) {
+      if (e.getPath().equals(path)) {
+        t = e; 
+      }
       if (e.getPath().startsWith(path+".") && !e.getPath().substring(path.length()+1).contains("."))
         results.add(e);
     }
-    return results;
-  }
-
-
-  private boolean generateByProfile(StructureDefinition profile, boolean showCodeDetails) {
-    XhtmlNode x = new XhtmlNode(NodeType.Element, "div");
-    if(context.isAddGeneratedNarrativeHeader()) {
-      x.para().b().tx("Generated Narrative"+(showCodeDetails ? " with Details" : ""));
+    if (results.isEmpty() && t != null && t.getType().size() == 1) {
+       StructureDefinition tsd = context.getWorker().fetchTypeDefinition(t.getTypeFirstRep().getWorkingCode());
+       return getChildrenForPath(tsd, tsd.getType());
     }
-    try {
-      generateByProfile(rcontext.getResourceResource(), profile, rcontext.getResourceResource(), profile.getSnapshot().getElement(), profile.getSnapshot().getElement().get(0), getChildrenForPath(profile.getSnapshot().getElement(), rcontext.getResourceResource().getResourceType().toString()), x, rcontext.getResourceResource().getResourceType().toString(), showCodeDetails);
-    } catch (Exception e) {
-      e.printStackTrace();
-      x.para().b().style("color: maroon").tx("Exception generating Narrative: "+e.getMessage());
-    }
-    inject(rcontext.getResourceResource(), x,  NarrativeStatus.GENERATED);
-    return true;
+    return new SourcedChildDefinitions(profile, results, path);
   }
 
-  private void generateByProfile(Resource res, StructureDefinition profile, Base e, List<ElementDefinition> allElements, ElementDefinition defn, List<ElementDefinition> children,  XhtmlNode x, String path, boolean showCodeDetails) throws FHIRException, UnsupportedEncodingException, IOException, EOperationOutcome {
-    generateByProfile(new ResourceWrapperDirect(this.context, res), profile, new BaseWrapperDirect(this.context, e), allElements, defn, children, x, path, showCodeDetails, 0);
-  }
-
-  private void generateByProfile(ResourceWrapper res, StructureDefinition profile, BaseWrapper e, List<ElementDefinition> allElements, ElementDefinition defn, List<ElementDefinition> children,  XhtmlNode x, String path, boolean showCodeDetails, int indent) throws FHIRException, UnsupportedEncodingException, IOException, EOperationOutcome {
+  private void generateByProfile(RenderingStatus status, ResourceWrapper res, StructureDefinition profile, ResourceWrapper e, ElementDefinition defn, List<ElementDefinition> children,  XhtmlNode x, String path, boolean showCodeDetails, int indent) throws FHIRException, UnsupportedEncodingException, IOException, EOperationOutcome {
     if (children.isEmpty()) {
-      renderLeaf(res, e, defn, x, x, false, showCodeDetails, readDisplayHints(defn), path, indent);
+      StructureDefinition sdt = context.getWorker().fetchTypeDefinition(e.fhirType());
+      if (sdt != null && (sdt.getKind() == StructureDefinitionKind.COMPLEXTYPE || sdt.getKind() == StructureDefinitionKind.PRIMITIVETYPE)) {
+        renderLeaf(status, res, e, profile, defn, x, x, false, showCodeDetails, readDisplayHints(defn), indent);
+      } else {
+        // we don't have anything to render?
+      }
     } else {
-      for (PropertyWrapper p : splitExtensions(profile, e.children())) {
-        if (p.hasValues()) {
-          ElementDefinition child = getElementDefinition(children, path+"."+p.getName(), p);
-          if (child == null) {
-            child = p.getElementDefinition();
-          }
-          if (child != null) {
-            if (!child.getBase().hasPath() || !child.getBase().getPath().startsWith("Resource.")) {
-              generateElementByProfile(res, profile, allElements, x, path, showCodeDetails, indent, p, child);
-            }
-          }
+      List<NamedResourceWrapperList> pl = splitExtensions(profile, e.childrenInGroups());
+      for (NamedResourceWrapperList p : pl) {
+        generateForProperty(status, res, profile, children, x, path, showCodeDetails, indent, false, p);
+      }
+      for (NamedResourceWrapperList p : pl) {
+        generateForProperty(status, res, profile, children, x, path, showCodeDetails, indent, true, p);
+      }
+    }
+  }
+
+  private void generateForProperty(RenderingStatus status, ResourceWrapper res, StructureDefinition profile,
+      List<ElementDefinition> children, XhtmlNode x, String path,
+      boolean showCodeDetails, int indent, boolean round2, NamedResourceWrapperList p)
+      throws UnsupportedEncodingException, IOException, EOperationOutcome {
+    if (!p.getValues().isEmpty()) {
+      ElementDefinition child = getElementDefinition(children, path+"."+p.getName());
+      if (child != null) {
+        if (!child.getBase().hasPath() || !child.getBase().getPath().startsWith("Resource.")) {
+          generateElementByProfile(status, res, profile, x, path, showCodeDetails, indent, p, child, round2);
         }
       }
     }
   }
 
-  public void generateElementByProfile(ResourceWrapper res, StructureDefinition profile, List<ElementDefinition> allElements, XhtmlNode x, String path,
-      boolean showCodeDetails, int indent, PropertyWrapper p, ElementDefinition child) throws UnsupportedEncodingException, IOException, EOperationOutcome {
+  public void generateElementByProfile(RenderingStatus status, ResourceWrapper res, StructureDefinition profile, XhtmlNode x, String path,
+      boolean showCodeDetails, int indent, NamedResourceWrapperList p, ElementDefinition child, boolean round2) throws UnsupportedEncodingException, IOException, EOperationOutcome {
     Map<String, String> displayHints = readDisplayHints(child);
     if ("DomainResource.contained".equals(child.getBase().getPath())) {
-//              if (p.getValues().size() > 0 && child != null) {
-//                for (BaseWrapper v : p.getValues()) {
-//                  x.an(v.get("id").primitiveValue());
-//                }
-//              }
-    } else if (!exemptFromRendering(child)) {
-      if (isExtension(p)) {
-        hasExtensions = true;
+      if (round2) {
+        for (ResourceWrapper v : p.getValues()) {
+          RenderingContext ctxt = context.forContained();
+          if (v.getResourceWrapper() != null && !context.getRendererFactory().hasSpecificRenderer(v.fhirType())) {
+            x.hr();
+            ResourceRenderer rnd = context.getRendererFactory().factory(v.fhirType(), ctxt);
+            rnd.buildNarrative(status, x.blockquote(), v);
+          }
+        }
       }
-      List<ElementDefinition> grandChildren = getChildrenForPath(allElements, path+"."+p.getName());
-      filterGrandChildren(grandChildren, path+"."+p.getName(), p);
+    } else if (!round2 && !exemptFromRendering(child)) {
+      boolean isExt = isExtension(p);
+      if (isExt) {
+        status.setExtensions(true);
+      }
+      SourcedChildDefinitions grandChildren = getChildrenForPath(profile, path+"."+p.getName());
+      filterGrandChildren(grandChildren.getList(), path+"."+p.getName(), p);
       if (p.getValues().size() > 0) {
-         if (isPrimitive(child)) {
+         if (isSimple(child) && !isExt) {
            XhtmlNode para = x.isPara() ? para = x : x.para();
            String name = p.getName();
            if (name.endsWith("[x]"))
              name = name.substring(0, name.length() - 3);
            if (showCodeDetails || !isDefaultValue(displayHints, p.getValues())) {
-             para.b().addText(name);
+
+             markBoilerplate(para.b()).addText(name);
              para.tx(": ");
              if (renderAsList(child) && p.getValues().size() > 1) {
                XhtmlNode list = x.ul();
-               for (BaseWrapper v : p.getValues())
-                 renderLeaf(res, v, child, x, list.li(), false, showCodeDetails, displayHints, path, indent);
+               for (ResourceWrapper v : p.getValues())
+                 renderLeaf(status, res, v, profile, child, x, xlinkNarrative(list.li(), v), false, showCodeDetails, displayHints, indent);
              } else {
                boolean first = true;
-               for (BaseWrapper v : p.getValues()) {
+               for (ResourceWrapper v : p.getValues()) {
                  if (first) {
                    first = false;
                  } else {
                    para.tx(", ");
                  }
-                 renderLeaf(res, v, child, x, para, false, showCodeDetails, displayHints, path, indent);
+                 renderLeaf(status, res, v, profile, child, x, spanIfTracking(para, v), false, showCodeDetails, displayHints, indent);
                }
              }
            }
-        } else if (canDoTable(path, p, grandChildren, x)) {
+        } else if (canDoTable(path, p, grandChildren.getList(), x)) {
           XhtmlNode xn = new XhtmlNode(NodeType.Element, getHeader());
           xn.addText(Utilities.capitalize(Utilities.camelCase(Utilities.pluralizeMe(p.getName()))));
           XhtmlNode tbl = new XhtmlNode(NodeType.Element, "table"); 
           tbl.setAttribute("class", "grid");
           XhtmlNode tr = tbl.tr();
-          tr.td().tx("-"); // work around problem with empty table rows
-          boolean add = addColumnHeadings(tr, grandChildren);          
-          for (BaseWrapper v : p.getValues()) {
+          tr.td().style("display: none").tx("-"); // work around problem with empty table rows
+          boolean add = addColumnHeadings(tr, grandChildren.getList());          
+          for (ResourceWrapper v : p.getValues()) {
             if (v != null) {
               tr = tbl.tr();
-              tr.td().tx("*"); // work around problem with empty table rows
-              add = addColumnValues(res, tr, grandChildren, v, showCodeDetails, displayHints, path, indent) || add;
+              tr.td().style("display: none").tx("*"); // work around problem with empty table rows
+              add = addColumnValues(status, res, tr, profile, grandChildren.getList(), v, showCodeDetails, displayHints, indent) || add;
             }
           }
           if (add) {
@@ -744,33 +389,50 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
             x.add(tbl);
           }
         } else if (isExtension(p)) {
-          for (BaseWrapper v : p.getValues()) {
+          StructureDefinition sd = context.getContext().fetchResource(StructureDefinition.class, p.getUrl(), IWorkerContext.VersionResolutionRules.defaultRule());
+          for (ResourceWrapper v : p.getValues()) {
             if (v != null) {
-              PropertyWrapper vp = v.getChildByName("value");
-              PropertyWrapper ev = v.getChildByName("extension");
-              if (vp.hasValues()) {
-                BaseWrapper vv = vp.value();
+              ResourceWrapper vp = v.child("value");
+              List<ResourceWrapper> ev = v.children("extension");
+              if (vp != null) {
                 XhtmlNode para = x.para();
-                para.b().addText(p.getStructure().present());
+                para.b().addText(labelforExtension(sd, p.getUrl()));
                 para.tx(": ");
-                renderLeaf(res, vv, child, x, para, false, showCodeDetails, displayHints, path, indent);
-              } else if (ev.hasValues()) {
-                XhtmlNode bq = x.addTag("blockquote");                
-                bq.para().b().addText(isExtension(p) ? p.getStructure().present() : p.getName());
-                for (BaseWrapper vv : ev.getValues()) {
-                  StructureDefinition ex = context.getWorker().fetchTypeDefinition("Extension");
-                  List<ElementDefinition> children = getChildrenForPath(ex.getSnapshot().getElement(), "Extension");
-                  generateByProfile(res, ex, vv, allElements, child, children, bq, "Extension", showCodeDetails, indent+1);
+                renderLeaf(status, res, vp, profile, child, x, para, false, showCodeDetails, displayHints, indent);
+              } else if (!ev.isEmpty()) {
+                XhtmlNode bq = x.addTag("blockquote");  
+                bq.para().b().addText(labelforExtension(sd, p.getUrl()));
+                // what happens now depends. If all the children are simple extensions, they'll be rendered as properties 
+                boolean allSimple = true;
+                for (ResourceWrapper vv : ev) {
+                  if (!vv.has("value")) {
+                    allSimple = false;
+                  }
+                }
+                if (allSimple) {
+                  XhtmlNode ul = bq.ul();
+                  for (ResourceWrapper vv : ev) {
+                    XhtmlNode li = ul.li();
+                    li.tx(labelForSubExtension(vv.primitiveValue("url"), sd));
+                    li.tx(": ");
+                    renderLeaf(status, res, vv.child("value"), sd, child, x, li, isExt, showCodeDetails, displayHints, indent);
+                  }
+                } else {
+                  for (ResourceWrapper vv : ev) {
+                    StructureDefinition ex = context.getWorker().fetchTypeDefinition("Extension");
+                    SourcedChildDefinitions children = getChildrenForPath(ex, "Extension");
+                    generateByProfile(status, res, ex, vv, child, children.getList(), bq, "Extension", showCodeDetails, indent+1);
+                  }
                 }
               }
             }
           }          
         } else {
-          for (BaseWrapper v : p.getValues()) {
+          for (ResourceWrapper v : p.getValues()) {
             if (v != null) {
               XhtmlNode bq = x.addTag("blockquote");
-              bq.para().b().addText(isExtension(p) ? p.getStructure().present() : p.getName());
-              generateByProfile(res, profile, v, allElements, child, grandChildren, bq, path+"."+p.getName(), showCodeDetails, indent+1);
+              bq.para().b().addText(p.getName());
+              generateByProfile(status, res, grandChildren.getSource(), v, child, grandChildren.getList(), bq, grandChildren.getPath(), showCodeDetails, indent+1);
             }
           }
         }
@@ -778,6 +440,17 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
     }
   }
 
+  private String labelForSubExtension(String url, StructureDefinition sd) {  
+    return url;
+  }
+
+  private String labelforExtension(StructureDefinition sd, String url) {
+    if (sd == null) {
+      return tail(url);
+    } else {
+      return sd.present();
+    }
+  }
 
   private String getHeader() {
     int i = 3;
@@ -788,35 +461,39 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
     return "h"+Integer.toString(i);
   }
 
-  private List<PropertyWrapper> getValues(String path, PropertyWrapper p, ElementDefinition e) {
-    List<PropertyWrapper> res = new ArrayList<PropertyWrapper>();
-    for (BaseWrapper v : p.getValues()) {
-      for (PropertyWrapper g : v.children()) {
-        if ((path+"."+p.getName()+"."+g.getName()).equals(e.getPath()))
-          res.add(p);
+  private List<ResourceWrapper> getValues(String path, NamedResourceWrapperList p, ElementDefinition e) {
+    List<ResourceWrapper> res = new ArrayList<ResourceWrapper>();
+    for (ResourceWrapper v : p.getValues()) {
+      for (ResourceWrapper g : v.children()) {
+        if ((path+"."+p.getName()+"."+g.name()).equals(e.getPath()))
+          res.add(v);
       }
     }
     return res;
   }
   
-  private boolean canDoTable(String path, PropertyWrapper p, List<ElementDefinition> grandChildren, XhtmlNode x) {
+  private boolean canDoTable(String path, NamedResourceWrapperList p, List<ElementDefinition> grandChildren, XhtmlNode x) {
     if (isExtension(p)) {
       return false;
     }
     if (x.getName().equals("p")) {
       return false;
     }
+    
+    if (grandChildren.size() == 0) {
+      return false;
+    }
 
     for (ElementDefinition e : grandChildren) {
-      List<PropertyWrapper> values = getValues(path, p, e);
-      if (values.size() > 1 || !isPrimitive(e) || !canCollapse(e))
+      List<ResourceWrapper> values = getValues(path, p, e);
+      if (values.size() > 1 || !isSimple(e) || !canCollapse(e))
         return false;
     }
     return true;
   }
 
-  public boolean isExtension(PropertyWrapper p) {
-    return p.getName().contains("extension[");
+  public boolean isExtension(NamedResourceWrapperList p) {
+    return p.getUrl() != null;
   }
 
 
@@ -827,10 +504,15 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
   private boolean exemptFromRendering(ElementDefinition child) {
     if (child == null)
       return false;
-    if ("Composition.subject".equals(child.getPath()))
+    if ("DomainResource.text".equals(child.getBase().getPath())) {
       return true;
-    if ("Composition.section".equals(child.getPath()))
+    }
+    if ("Composition.subject".equals(child.getPath())) {
       return true;
+    }
+    if ("Composition.section".equals(child.getPath())) {
+      return true;
+    }
     return false;
   }
 
@@ -852,33 +534,33 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
     return b;
   }
 
-  private boolean addColumnValues(ResourceWrapper res, XhtmlNode tr, List<ElementDefinition> grandChildren, BaseWrapper v, boolean showCodeDetails, Map<String, String> displayHints, String path, int indent) throws FHIRException, UnsupportedEncodingException, IOException, EOperationOutcome {
+  private boolean addColumnValues(RenderingStatus status, ResourceWrapper res, XhtmlNode tr, StructureDefinition profile, List<ElementDefinition> grandChildren, ResourceWrapper v, boolean showCodeDetails, Map<String, String> displayHints, int indent) throws FHIRException, UnsupportedEncodingException, IOException, EOperationOutcome {
     boolean b = false;
     for (ElementDefinition e : grandChildren) {
-      PropertyWrapper p = v.getChildByName(e.getPath().substring(e.getPath().lastIndexOf(".")+1));
+      List<ResourceWrapper> p = v.children(e.getPath().substring(e.getPath().lastIndexOf(".")+1));
       XhtmlNode td = tr.td();
-      if (p == null || p.getValues().size() == 0 || p.getValues().get(0) == null) {
+      if (p == null || p.size() == 0) {
         b = true;
         td.tx(" ");
       } else {
-        for (BaseWrapper vv : p.getValues()) {
+        for (ResourceWrapper vv : p) {
           b = true;
           td.sep(", ");
-          renderLeaf(res, vv, e, td, td, false, showCodeDetails, displayHints, path, indent);
+          renderLeaf(status, res, vv, profile, e, td, td, false, showCodeDetails, displayHints, indent);
         }
       }
     }
     return b;
   }
 
-  private void filterGrandChildren(List<ElementDefinition> grandChildren,  String string, PropertyWrapper prop) {
+  private void filterGrandChildren(List<ElementDefinition> grandChildren,  String string, NamedResourceWrapperList prop) {
     List<ElementDefinition> toRemove = new ArrayList<ElementDefinition>();
     toRemove.addAll(grandChildren);
-    for (BaseWrapper b : prop.getValues()) {
+    for (ResourceWrapper b : prop.getValues()) {
       List<ElementDefinition> list = new ArrayList<ElementDefinition>();
       for (ElementDefinition ed : toRemove) {
-        PropertyWrapper p = b.getChildByName(tail(ed.getPath()));
-        if (p != null && p.hasValues())
+        List<ResourceWrapper> p = b.children(tail(ed.getPath()));
+        if (p != null && !p.isEmpty())
           list.add(ed);
       }
       toRemove.removeAll(list);
@@ -886,50 +568,50 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
     grandChildren.removeAll(toRemove);
   }
 
-  private List<PropertyWrapper> splitExtensions(StructureDefinition profile, List<PropertyWrapper> children) throws UnsupportedEncodingException, IOException, FHIRException {
-    List<PropertyWrapper> results = new ArrayList<PropertyWrapper>();
-    Map<String, PropertyWrapper> map = new HashMap<String, PropertyWrapper>();
-    for (PropertyWrapper p : children)
+  private List<NamedResourceWrapperList> splitExtensions(StructureDefinition profile, List<NamedResourceWrapperList> children) throws UnsupportedEncodingException, IOException, FHIRException {
+    List<NamedResourceWrapperList> results = new ArrayList<NamedResourceWrapperList>();
+    for (NamedResourceWrapperList p : children) {
       if (p.getName().equals("extension") || p.getName().equals("modifierExtension")) {
         // we're going to split these up, and create a property for each url
-        if (p.hasValues()) {
-          for (BaseWrapper v : p.getValues()) {
-            Extension ex  = (Extension) v.getBase();
-            String url = ex.getUrl();
-            StructureDefinition ed = getContext().getWorker().fetchResource(StructureDefinition.class, url);
+        for (ResourceWrapper v : p.getValues()) {
+          String url = v.primitiveValue("url");
+          if (url != null) {
+            // 1. check extension is valid
+            StructureDefinition ed = getContext().getWorker().fetchResource(StructureDefinition.class, url, ExtensionUtilities.getVersionResolutionRulesBase(v.getBase()));
             if (ed == null) {
               if (xverManager == null) {
-                xverManager = new XVerExtensionManager(context.getWorker());
+                xverManager = XVerExtensionManagerFactory.createExtensionManager(context.getWorker());
               }
               if (xverManager.matchingUrl(url) && xverManager.status(url) == XVerExtensionStatus.Valid) {
-                ed = xverManager.makeDefinition(url);
-                getContext().getWorker().generateSnapshot(ed);
-                getContext().getWorker().cacheResource(ed);
-              }
+                ed = xverManager.getDefinition(url);
+                new ContextUtilities(getContext().getWorker()).generateSnapshot(ed);
+                getContext().getWorker().getManager().cacheResource(ed);
+              } 
             }
             if (p.getName().equals("modifierExtension") && ed == null) {
               throw new DefinitionException("Unknown modifier extension "+url);
+            } else {
+              // nothing
             }
-            PropertyWrapper pe = map.get(p.getName()+"["+url+"]");
-            if (pe == null) {
-              if (ed == null) {
-                if (url.startsWith("http://hl7.org/fhir") && !url.startsWith("http://hl7.org/fhir/us")) {
-                  throw new DefinitionException("unknown extension "+url);
-                }
-                // System.out.println("unknown extension "+url);
-                pe = new PropertyWrapperDirect(this.context, new Property(p.getName()+"["+url+"]", p.getTypeCode(), p.getDefinition(), p.getMinCardinality(), p.getMaxCardinality(), ex), null);
-              } else {
-                ElementDefinition def = ed.getSnapshot().getElement().get(0);
-                pe = new PropertyWrapperDirect(this.context, new Property(p.getName()+"["+url+"]", "Extension", def.getDefinition(), def.getMin(), def.getMax().equals("*") ? Integer.MAX_VALUE : Integer.parseInt(def.getMax()), ex), ed.getSnapshot().getElementFirstRep());
-                ((PropertyWrapperDirect) pe).getWrapped().setStructure(ed);
+
+            // 2. Park it
+            NamedResourceWrapperList nl = null;
+            for (NamedResourceWrapperList t : results) {
+              if (t.getUrl() != null && t.getUrl().equals(url)) {
+                nl = t;
               }
-              results.add(pe);
-            } else
-              pe.getValues().add(v);
+            }
+            if (nl == null) {
+              nl = new NamedResourceWrapperList(p.getName(), url);
+              results.add(nl);
+            }
+            nl.getValues().add(v);
           }
-        }
-      } else
+        }          
+      } else {
         results.add(p);
+      }
+    }
     return results;
   }
 
@@ -937,10 +619,14 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
   private Map<String, String> readDisplayHints(ElementDefinition defn) throws DefinitionException {
     Map<String, String> hints = new HashMap<String, String>();
     if (defn != null) {
-      String displayHint = ToolingExtensions.getDisplayHint(defn);
+      String displayHint = ExtensionUtilities.getDisplayHint(defn);
       if (!Utilities.noString(displayHint)) {
+        @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+        //single literal character split
         String[] list = displayHint.split(";");
         for (String item : list) {
+          @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+          //single literal character split
           String[] parts = item.split(":");
           if (parts.length == 1) {
             hints.put("value", parts[0].trim());            
@@ -957,17 +643,17 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
   }
 
   @SuppressWarnings("rawtypes")
-  private boolean isDefaultValue(Map<String, String> displayHints, List<BaseWrapper> list) throws UnsupportedEncodingException, IOException, FHIRException {
+  private boolean isDefaultValue(Map<String, String> displayHints, List<ResourceWrapper> list) throws UnsupportedEncodingException, IOException, FHIRException {
     if (list.size() != 1)
       return false;
-    if (list.get(0).getBase() instanceof PrimitiveType)
-      return isDefault(displayHints, (PrimitiveType) list.get(0).getBase());
+    if (list.get(0).isPrimitive())
+      return isDefault(displayHints, list.get(0));
     else
       return false;
   }
 
-  private boolean isDefault(Map<String, String> displayHints, PrimitiveType primitiveType) {
-    String v = primitiveType.asStringValue();
+  private boolean isDefault(Map<String, String> displayHints, ResourceWrapper primitiveType) {
+    String v = primitiveType.primitiveValue();
     if (!Utilities.noString(v) && displayHints.containsKey("default") && v.equals(displayHints.get("default")))
       return true;
     return false;
@@ -978,8 +664,16 @@ public class ProfileDrivenRenderer extends ResourceRenderer {
     return path.substring(path.lastIndexOf(".")+1);
   }
 
+  protected String utail(String path) {
+    return path.contains("/") ? path.substring(path.lastIndexOf("/")+1) : path;
+  }
+
   public boolean canRender(Resource resource) {
     return context.getWorker().getResourceNames().contains(resource.fhirType());
+  }
+
+  public RendererType getRendererType() {
+    return RendererType.PROFILE;
   }
 
 }

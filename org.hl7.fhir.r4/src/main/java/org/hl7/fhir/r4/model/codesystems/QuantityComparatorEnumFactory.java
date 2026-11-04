@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class QuantityComparatorEnumFactory implements EnumFactory<QuantityComparator> {
@@ -50,11 +46,13 @@ public class QuantityComparatorEnumFactory implements EnumFactory<QuantityCompar
       return QuantityComparator.GREATER_OR_EQUAL;
     if (">".equals(codeString))
       return QuantityComparator.GREATER_THAN;
-    throw new IllegalArgumentException("Unknown QuantityComparator code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown QuantityComparator code '" + codeString + "'");
   }
 
   public String toCode(QuantityComparator code) {
-    if (code == QuantityComparator.LESS_THAN)
+       if (code == QuantityComparator.NULL)
+           return null;
+       if (code == QuantityComparator.LESS_THAN)
       return "<";
     if (code == QuantityComparator.LESS_OR_EQUAL)
       return "<=";
@@ -63,10 +61,10 @@ public class QuantityComparatorEnumFactory implements EnumFactory<QuantityCompar
     if (code == QuantityComparator.GREATER_THAN)
       return ">";
     return "?";
-  }
+   }
 
-    public String toSystem(QuantityComparator code) {
-      return code.getSystem();
-      }
+  public String toSystem(QuantityComparator code) {
+    return code.getSystem();
+  }
 
 }

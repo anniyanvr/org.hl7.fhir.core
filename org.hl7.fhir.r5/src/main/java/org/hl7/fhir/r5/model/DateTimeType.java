@@ -161,7 +161,9 @@ public class DateTimeType extends BaseDateTimeType {
 
 	@Override
 	public DateTimeType copy() {
-		DateTimeType ret = new DateTimeType(getValueAsString());
+		// copyValues copies the value, precision and timezone, so the string is not parsed again: a FHIRPath
+		// literal such as @2015-02-04T10:00 has minute precision, which the parser rejects
+		DateTimeType ret = new DateTimeType();
     copyValues(ret);
     return ret;
 	}
@@ -205,7 +207,7 @@ public class DateTimeType extends BaseDateTimeType {
     r = stripChar(r, 10, 'T');
     r = stripChar(r, 7, '-');
     r = stripChar(r, 4, '-');
-    r = r.replaceAll(":", ""); // might be in the timezone
+    r = r.replace(":", ""); // might be in the timezone
     return r;
   }
 

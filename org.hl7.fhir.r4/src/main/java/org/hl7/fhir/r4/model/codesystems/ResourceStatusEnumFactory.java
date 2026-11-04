@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -104,11 +100,13 @@ public class ResourceStatusEnumFactory implements EnumFactory<ResourceStatus> {
       return ResourceStatus.TRANSDUCDISCON;
     if ("hw-discon".equals(codeString))
       return ResourceStatus.HWDISCON;
-    throw new IllegalArgumentException("Unknown ResourceStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ResourceStatus code '" + codeString + "'");
   }
 
   public String toCode(ResourceStatus code) {
-    if (code == ResourceStatus.ERROR)
+       if (code == ResourceStatus.NULL)
+           return null;
+       if (code == ResourceStatus.ERROR)
       return "error";
     if (code == ResourceStatus.PROPOSED)
       return "proposed";
@@ -171,10 +169,10 @@ public class ResourceStatusEnumFactory implements EnumFactory<ResourceStatus> {
     if (code == ResourceStatus.HWDISCON)
       return "hw-discon";
     return "?";
-  }
+   }
 
-    public String toSystem(ResourceStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(ResourceStatus code) {
+    return code.getSystem();
+  }
 
 }

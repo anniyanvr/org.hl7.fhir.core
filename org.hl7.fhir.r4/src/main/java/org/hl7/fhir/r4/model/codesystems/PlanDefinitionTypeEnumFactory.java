@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class PlanDefinitionTypeEnumFactory implements EnumFactory<PlanDefinitionType> {
@@ -50,11 +46,13 @@ public class PlanDefinitionTypeEnumFactory implements EnumFactory<PlanDefinition
       return PlanDefinitionType.ECARULE;
     if ("workflow-definition".equals(codeString))
       return PlanDefinitionType.WORKFLOWDEFINITION;
-    throw new IllegalArgumentException("Unknown PlanDefinitionType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown PlanDefinitionType code '" + codeString + "'");
   }
 
   public String toCode(PlanDefinitionType code) {
-    if (code == PlanDefinitionType.ORDERSET)
+       if (code == PlanDefinitionType.NULL)
+           return null;
+       if (code == PlanDefinitionType.ORDERSET)
       return "order-set";
     if (code == PlanDefinitionType.CLINICALPROTOCOL)
       return "clinical-protocol";
@@ -63,10 +61,10 @@ public class PlanDefinitionTypeEnumFactory implements EnumFactory<PlanDefinition
     if (code == PlanDefinitionType.WORKFLOWDEFINITION)
       return "workflow-definition";
     return "?";
-  }
+   }
 
-    public String toSystem(PlanDefinitionType code) {
-      return code.getSystem();
-      }
+  public String toSystem(PlanDefinitionType code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3ContentProcessingModeEnumFactory implements EnumFactory<V3ContentProcessingMode> {
@@ -46,19 +42,21 @@ public class V3ContentProcessingModeEnumFactory implements EnumFactory<V3Content
       return V3ContentProcessingMode.SEQL;
     if ("UNOR".equals(codeString))
       return V3ContentProcessingMode.UNOR;
-    throw new IllegalArgumentException("Unknown V3ContentProcessingMode code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ContentProcessingMode code '" + codeString + "'");
   }
 
   public String toCode(V3ContentProcessingMode code) {
-    if (code == V3ContentProcessingMode.SEQL)
+       if (code == V3ContentProcessingMode.NULL)
+           return null;
+       if (code == V3ContentProcessingMode.SEQL)
       return "SEQL";
     if (code == V3ContentProcessingMode.UNOR)
       return "UNOR";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ContentProcessingMode code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ContentProcessingMode code) {
+    return code.getSystem();
+  }
 
 }

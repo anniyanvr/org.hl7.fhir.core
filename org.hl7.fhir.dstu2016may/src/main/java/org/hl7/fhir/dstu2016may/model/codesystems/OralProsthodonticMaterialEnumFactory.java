@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class OralProsthodonticMaterialEnumFactory implements EnumFactory<OralProsthodonticMaterial> {
@@ -50,11 +46,13 @@ public class OralProsthodonticMaterialEnumFactory implements EnumFactory<OralPro
       return OralProsthodonticMaterial._3;
     if ("4".equals(codeString))
       return OralProsthodonticMaterial._4;
-    throw new IllegalArgumentException("Unknown OralProsthodonticMaterial code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown OralProsthodonticMaterial code '" + codeString + "'");
   }
 
   public String toCode(OralProsthodonticMaterial code) {
-    if (code == OralProsthodonticMaterial._1)
+       if (code == OralProsthodonticMaterial.NULL)
+           return null;
+       if (code == OralProsthodonticMaterial._1)
       return "1";
     if (code == OralProsthodonticMaterial._2)
       return "2";
@@ -63,10 +61,10 @@ public class OralProsthodonticMaterialEnumFactory implements EnumFactory<OralPro
     if (code == OralProsthodonticMaterial._4)
       return "4";
     return "?";
-  }
+   }
 
-    public String toSystem(OralProsthodonticMaterial code) {
-      return code.getSystem();
-      }
+  public String toSystem(OralProsthodonticMaterial code) {
+    return code.getSystem();
+  }
 
 }

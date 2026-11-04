@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +49,7 @@ import org.hl7.fhir.instance.model.api.IBaseExtension;
 import  org.hl7.fhir.instance.model.api.IBaseDatatype;
 import  org.hl7.fhir.instance.model.api.IBaseHasExtensions;
 /**
- * Base StructureDefinition for Extension Type: Optional Extension Element - found in all resources.
+ * Extension Type: Optional Extension Element - found in all resources.
  */
 @DatatypeDef(name="Extension")
 public class Extension extends BaseExtension implements IBaseExtension<Extension, DataType>, IBaseHasExtensions {
@@ -64,9 +64,14 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
     /**
      * Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
      */
-    @Child(name = "value", type = {Base64BinaryType.class, BooleanType.class, CanonicalType.class, CodeType.class, DateType.class, DateTimeType.class, DecimalType.class, IdType.class, InstantType.class, IntegerType.class, Integer64Type.class, MarkdownType.class, OidType.class, PositiveIntType.class, StringType.class, TimeType.class, UnsignedIntType.class, UriType.class, UrlType.class, UuidType.class, Address.class, Age.class, Annotation.class, Attachment.class, CodeableConcept.class, Coding.class, ContactPoint.class, Count.class, Distance.class, Duration.class, HumanName.class, Identifier.class, Money.class, Period.class, Quantity.class, Range.class, Ratio.class, Reference.class, SampledData.class, Signature.class, Timing.class, ContactDetail.class, Contributor.class, DataRequirement.class, Expression.class, ParameterDefinition.class, RelatedArtifact.class, TriggerDefinition.class, UsageContext.class, Dosage.class, Meta.class}, order=1, min=0, max=1, modifier=false, summary=false)
+    @Child(name = "value", type = {Base64BinaryType.class, BooleanType.class, CanonicalType.class, CodeType.class, DateType.class, DateTimeType.class, DecimalType.class, IdType.class, InstantType.class, IntegerType.class, Integer64Type.class, MarkdownType.class, OidType.class, PositiveIntType.class, StringType.class, TimeType.class, UnsignedIntType.class, UriType.class, UrlType.class, UuidType.class, Address.class, Age.class, Annotation.class, Attachment.class, CodeableConcept.class, CodeableReference.class, Coding.class, ContactPoint.class, Count.class, Distance.class, Duration.class, HumanName.class, Identifier.class, Money.class, Period.class, Quantity.class, Range.class, Ratio.class, RatioRange.class, Reference.class, SampledData.class, Signature.class, Timing.class, ContactDetail.class, DataRequirement.class, Expression.class, ParameterDefinition.class, RelatedArtifact.class, TriggerDefinition.class, UsageContext.class, Availability.class, ExtendedContactDetail.class, Dosage.class, Meta.class}, order=1, min=0, max=1, modifier=false, summary=false)
     @Description(shortDefinition="Value of extension", formalDefinition="Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list)." )
     protected DataType value;
+
+    @Override
+    public String toString() {
+      return url + "=" + (value == null ? "null" : value.toString());
+    }
 
     private static final long serialVersionUID = 465890108L;
 
@@ -156,8 +161,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Base64BinaryType) this.value;
     }
 
-    public boolean hasValueBase64BinaryType() { 
-      return this != null && this.value instanceof Base64BinaryType;
+    public boolean hasValueBase64BinaryType() {
+        return this.value instanceof Base64BinaryType;
     }
 
     /**
@@ -171,8 +176,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (BooleanType) this.value;
     }
 
-    public boolean hasValueBooleanType() { 
-      return this != null && this.value instanceof BooleanType;
+    public boolean hasValueBooleanType() {
+        return this.value instanceof BooleanType;
     }
 
     /**
@@ -186,8 +191,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (CanonicalType) this.value;
     }
 
-    public boolean hasValueCanonicalType() { 
-      return this != null && this.value instanceof CanonicalType;
+    public boolean hasValueCanonicalType() {
+        return this.value instanceof CanonicalType;
     }
 
     /**
@@ -201,8 +206,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (CodeType) this.value;
     }
 
-    public boolean hasValueCodeType() { 
-      return this != null && this.value instanceof CodeType;
+    public boolean hasValueCodeType() {
+        return this.value instanceof CodeType;
     }
 
     /**
@@ -216,8 +221,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (DateType) this.value;
     }
 
-    public boolean hasValueDateType() { 
-      return this != null && this.value instanceof DateType;
+    public boolean hasValueDateType() {
+        return this.value instanceof DateType;
     }
 
     /**
@@ -231,8 +236,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (DateTimeType) this.value;
     }
 
-    public boolean hasValueDateTimeType() { 
-      return this != null && this.value instanceof DateTimeType;
+    public boolean hasValueDateTimeType() {
+        return this.value instanceof DateTimeType;
     }
 
     /**
@@ -246,8 +251,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (DecimalType) this.value;
     }
 
-    public boolean hasValueDecimalType() { 
-      return this != null && this.value instanceof DecimalType;
+    public boolean hasValueDecimalType() {
+        return this.value instanceof DecimalType;
     }
 
     /**
@@ -261,8 +266,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (IdType) this.value;
     }
 
-    public boolean hasValueIdType() { 
-      return this != null && this.value instanceof IdType;
+    public boolean hasValueIdType() {
+        return this.value instanceof IdType;
     }
 
     /**
@@ -276,8 +281,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (InstantType) this.value;
     }
 
-    public boolean hasValueInstantType() { 
-      return this != null && this.value instanceof InstantType;
+    public boolean hasValueInstantType() {
+        return this.value instanceof InstantType;
     }
 
     /**
@@ -291,8 +296,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (IntegerType) this.value;
     }
 
-    public boolean hasValueIntegerType() { 
-      return this != null && this.value instanceof IntegerType;
+    public boolean hasValueIntegerType() {
+        return this.value instanceof IntegerType;
     }
 
     /**
@@ -306,8 +311,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Integer64Type) this.value;
     }
 
-    public boolean hasValueInteger64Type() { 
-      return this != null && this.value instanceof Integer64Type;
+    public boolean hasValueInteger64Type() {
+        return this.value instanceof Integer64Type;
     }
 
     /**
@@ -321,8 +326,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (MarkdownType) this.value;
     }
 
-    public boolean hasValueMarkdownType() { 
-      return this != null && this.value instanceof MarkdownType;
+    public boolean hasValueMarkdownType() {
+        return this.value instanceof MarkdownType;
     }
 
     /**
@@ -336,8 +341,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (OidType) this.value;
     }
 
-    public boolean hasValueOidType() { 
-      return this != null && this.value instanceof OidType;
+    public boolean hasValueOidType() {
+        return this.value instanceof OidType;
     }
 
     /**
@@ -351,8 +356,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (PositiveIntType) this.value;
     }
 
-    public boolean hasValuePositiveIntType() { 
-      return this != null && this.value instanceof PositiveIntType;
+    public boolean hasValuePositiveIntType() {
+        return this.value instanceof PositiveIntType;
     }
 
     /**
@@ -366,8 +371,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (StringType) this.value;
     }
 
-    public boolean hasValueStringType() { 
-      return this != null && this.value instanceof StringType;
+    public boolean hasValueStringType() {
+        return this.value instanceof StringType;
     }
 
     /**
@@ -381,8 +386,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (TimeType) this.value;
     }
 
-    public boolean hasValueTimeType() { 
-      return this != null && this.value instanceof TimeType;
+    public boolean hasValueTimeType() {
+        return this.value instanceof TimeType;
     }
 
     /**
@@ -396,8 +401,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (UnsignedIntType) this.value;
     }
 
-    public boolean hasValueUnsignedIntType() { 
-      return this != null && this.value instanceof UnsignedIntType;
+    public boolean hasValueUnsignedIntType() {
+        return this.value instanceof UnsignedIntType;
     }
 
     /**
@@ -411,8 +416,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (UriType) this.value;
     }
 
-    public boolean hasValueUriType() { 
-      return this != null && this.value instanceof UriType;
+    public boolean hasValueUriType() {
+        return this.value instanceof UriType;
     }
 
     /**
@@ -426,8 +431,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (UrlType) this.value;
     }
 
-    public boolean hasValueUrlType() { 
-      return this != null && this.value instanceof UrlType;
+    public boolean hasValueUrlType() {
+        return this.value instanceof UrlType;
     }
 
     /**
@@ -441,8 +446,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (UuidType) this.value;
     }
 
-    public boolean hasValueUuidType() { 
-      return this != null && this.value instanceof UuidType;
+    public boolean hasValueUuidType() {
+        return this.value instanceof UuidType;
     }
 
     /**
@@ -456,8 +461,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Address) this.value;
     }
 
-    public boolean hasValueAddress() { 
-      return this != null && this.value instanceof Address;
+    public boolean hasValueAddress() {
+        return this.value instanceof Address;
     }
 
     /**
@@ -471,8 +476,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Age) this.value;
     }
 
-    public boolean hasValueAge() { 
-      return this != null && this.value instanceof Age;
+    public boolean hasValueAge() {
+        return this.value instanceof Age;
     }
 
     /**
@@ -486,8 +491,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Annotation) this.value;
     }
 
-    public boolean hasValueAnnotation() { 
-      return this != null && this.value instanceof Annotation;
+    public boolean hasValueAnnotation() {
+        return this.value instanceof Annotation;
     }
 
     /**
@@ -501,8 +506,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Attachment) this.value;
     }
 
-    public boolean hasValueAttachment() { 
-      return this != null && this.value instanceof Attachment;
+    public boolean hasValueAttachment() {
+        return this.value instanceof Attachment;
     }
 
     /**
@@ -516,8 +521,23 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (CodeableConcept) this.value;
     }
 
-    public boolean hasValueCodeableConcept() { 
-      return this != null && this.value instanceof CodeableConcept;
+    public boolean hasValueCodeableConcept() {
+        return this.value instanceof CodeableConcept;
+    }
+
+    /**
+     * @return {@link #value} (Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).)
+     */
+    public CodeableReference getValueCodeableReference() throws FHIRException { 
+      if (this.value == null)
+        this.value = new CodeableReference();
+      if (!(this.value instanceof CodeableReference))
+        throw new FHIRException("Type mismatch: the type CodeableReference was expected, but "+this.value.getClass().getName()+" was encountered");
+      return (CodeableReference) this.value;
+    }
+
+    public boolean hasValueCodeableReference() {
+        return this.value instanceof CodeableReference;
     }
 
     /**
@@ -531,8 +551,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Coding) this.value;
     }
 
-    public boolean hasValueCoding() { 
-      return this != null && this.value instanceof Coding;
+    public boolean hasValueCoding() {
+        return this.value instanceof Coding;
     }
 
     /**
@@ -546,8 +566,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (ContactPoint) this.value;
     }
 
-    public boolean hasValueContactPoint() { 
-      return this != null && this.value instanceof ContactPoint;
+    public boolean hasValueContactPoint() {
+        return this.value instanceof ContactPoint;
     }
 
     /**
@@ -561,8 +581,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Count) this.value;
     }
 
-    public boolean hasValueCount() { 
-      return this != null && this.value instanceof Count;
+    public boolean hasValueCount() {
+        return this.value instanceof Count;
     }
 
     /**
@@ -576,8 +596,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Distance) this.value;
     }
 
-    public boolean hasValueDistance() { 
-      return this != null && this.value instanceof Distance;
+    public boolean hasValueDistance() {
+        return this.value instanceof Distance;
     }
 
     /**
@@ -591,8 +611,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Duration) this.value;
     }
 
-    public boolean hasValueDuration() { 
-      return this != null && this.value instanceof Duration;
+    public boolean hasValueDuration() {
+        return this.value instanceof Duration;
     }
 
     /**
@@ -606,8 +626,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (HumanName) this.value;
     }
 
-    public boolean hasValueHumanName() { 
-      return this != null && this.value instanceof HumanName;
+    public boolean hasValueHumanName() {
+        return this.value instanceof HumanName;
     }
 
     /**
@@ -621,8 +641,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Identifier) this.value;
     }
 
-    public boolean hasValueIdentifier() { 
-      return this != null && this.value instanceof Identifier;
+    public boolean hasValueIdentifier() {
+        return this.value instanceof Identifier;
     }
 
     /**
@@ -636,8 +656,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Money) this.value;
     }
 
-    public boolean hasValueMoney() { 
-      return this != null && this.value instanceof Money;
+    public boolean hasValueMoney() {
+        return this.value instanceof Money;
     }
 
     /**
@@ -651,8 +671,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Period) this.value;
     }
 
-    public boolean hasValuePeriod() { 
-      return this != null && this.value instanceof Period;
+    public boolean hasValuePeriod() {
+        return this.value instanceof Period;
     }
 
     /**
@@ -666,8 +686,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Quantity) this.value;
     }
 
-    public boolean hasValueQuantity() { 
-      return this != null && this.value instanceof Quantity;
+    public boolean hasValueQuantity() {
+        return this.value instanceof Quantity;
     }
 
     /**
@@ -681,8 +701,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Range) this.value;
     }
 
-    public boolean hasValueRange() { 
-      return this != null && this.value instanceof Range;
+    public boolean hasValueRange() {
+        return this.value instanceof Range;
     }
 
     /**
@@ -696,8 +716,23 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Ratio) this.value;
     }
 
-    public boolean hasValueRatio() { 
-      return this != null && this.value instanceof Ratio;
+    public boolean hasValueRatio() {
+        return this.value instanceof Ratio;
+    }
+
+    /**
+     * @return {@link #value} (Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).)
+     */
+    public RatioRange getValueRatioRange() throws FHIRException { 
+      if (this.value == null)
+        this.value = new RatioRange();
+      if (!(this.value instanceof RatioRange))
+        throw new FHIRException("Type mismatch: the type RatioRange was expected, but "+this.value.getClass().getName()+" was encountered");
+      return (RatioRange) this.value;
+    }
+
+    public boolean hasValueRatioRange() {
+        return this.value instanceof RatioRange;
     }
 
     /**
@@ -711,8 +746,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Reference) this.value;
     }
 
-    public boolean hasValueReference() { 
-      return this != null && this.value instanceof Reference;
+    public boolean hasValueReference() {
+        return this.value instanceof Reference;
     }
 
     /**
@@ -726,8 +761,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (SampledData) this.value;
     }
 
-    public boolean hasValueSampledData() { 
-      return this != null && this.value instanceof SampledData;
+    public boolean hasValueSampledData() {
+        return this.value instanceof SampledData;
     }
 
     /**
@@ -741,8 +776,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Signature) this.value;
     }
 
-    public boolean hasValueSignature() { 
-      return this != null && this.value instanceof Signature;
+    public boolean hasValueSignature() {
+        return this.value instanceof Signature;
     }
 
     /**
@@ -756,8 +791,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Timing) this.value;
     }
 
-    public boolean hasValueTiming() { 
-      return this != null && this.value instanceof Timing;
+    public boolean hasValueTiming() {
+        return this.value instanceof Timing;
     }
 
     /**
@@ -771,23 +806,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (ContactDetail) this.value;
     }
 
-    public boolean hasValueContactDetail() { 
-      return this != null && this.value instanceof ContactDetail;
-    }
-
-    /**
-     * @return {@link #value} (Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).)
-     */
-    public Contributor getValueContributor() throws FHIRException { 
-      if (this.value == null)
-        this.value = new Contributor();
-      if (!(this.value instanceof Contributor))
-        throw new FHIRException("Type mismatch: the type Contributor was expected, but "+this.value.getClass().getName()+" was encountered");
-      return (Contributor) this.value;
-    }
-
-    public boolean hasValueContributor() { 
-      return this != null && this.value instanceof Contributor;
+    public boolean hasValueContactDetail() {
+        return this.value instanceof ContactDetail;
     }
 
     /**
@@ -801,8 +821,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (DataRequirement) this.value;
     }
 
-    public boolean hasValueDataRequirement() { 
-      return this != null && this.value instanceof DataRequirement;
+    public boolean hasValueDataRequirement() {
+        return this.value instanceof DataRequirement;
     }
 
     /**
@@ -816,8 +836,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Expression) this.value;
     }
 
-    public boolean hasValueExpression() { 
-      return this != null && this.value instanceof Expression;
+    public boolean hasValueExpression() {
+        return this.value instanceof Expression;
     }
 
     /**
@@ -831,8 +851,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (ParameterDefinition) this.value;
     }
 
-    public boolean hasValueParameterDefinition() { 
-      return this != null && this.value instanceof ParameterDefinition;
+    public boolean hasValueParameterDefinition() {
+        return this.value instanceof ParameterDefinition;
     }
 
     /**
@@ -846,8 +866,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (RelatedArtifact) this.value;
     }
 
-    public boolean hasValueRelatedArtifact() { 
-      return this != null && this.value instanceof RelatedArtifact;
+    public boolean hasValueRelatedArtifact() {
+        return this.value instanceof RelatedArtifact;
     }
 
     /**
@@ -861,8 +881,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (TriggerDefinition) this.value;
     }
 
-    public boolean hasValueTriggerDefinition() { 
-      return this != null && this.value instanceof TriggerDefinition;
+    public boolean hasValueTriggerDefinition() {
+        return this.value instanceof TriggerDefinition;
     }
 
     /**
@@ -876,8 +896,38 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (UsageContext) this.value;
     }
 
-    public boolean hasValueUsageContext() { 
-      return this != null && this.value instanceof UsageContext;
+    public boolean hasValueUsageContext() {
+        return this.value instanceof UsageContext;
+    }
+
+    /**
+     * @return {@link #value} (Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).)
+     */
+    public Availability getValueAvailability() throws FHIRException { 
+      if (this.value == null)
+        this.value = new Availability();
+      if (!(this.value instanceof Availability))
+        throw new FHIRException("Type mismatch: the type Availability was expected, but "+this.value.getClass().getName()+" was encountered");
+      return (Availability) this.value;
+    }
+
+    public boolean hasValueAvailability() {
+        return this.value instanceof Availability;
+    }
+
+    /**
+     * @return {@link #value} (Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).)
+     */
+    public ExtendedContactDetail getValueExtendedContactDetail() throws FHIRException { 
+      if (this.value == null)
+        this.value = new ExtendedContactDetail();
+      if (!(this.value instanceof ExtendedContactDetail))
+        throw new FHIRException("Type mismatch: the type ExtendedContactDetail was expected, but "+this.value.getClass().getName()+" was encountered");
+      return (ExtendedContactDetail) this.value;
+    }
+
+    public boolean hasValueExtendedContactDetail() {
+        return this.value instanceof ExtendedContactDetail;
     }
 
     /**
@@ -891,8 +941,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Dosage) this.value;
     }
 
-    public boolean hasValueDosage() { 
-      return this != null && this.value instanceof Dosage;
+    public boolean hasValueDosage() {
+        return this.value instanceof Dosage;
     }
 
     /**
@@ -906,8 +956,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       return (Meta) this.value;
     }
 
-    public boolean hasValueMeta() { 
-      return this != null && this.value instanceof Meta;
+    public boolean hasValueMeta() {
+        return this.value instanceof Meta;
     }
 
     public boolean hasValue() { 
@@ -918,8 +968,8 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
      * @param value {@link #value} (Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).)
      */
     public Extension setValue(DataType value) { 
-      if (value != null && !(value instanceof Base64BinaryType || value instanceof BooleanType || value instanceof CanonicalType || value instanceof CodeType || value instanceof DateType || value instanceof DateTimeType || value instanceof DecimalType || value instanceof IdType || value instanceof InstantType || value instanceof IntegerType || value instanceof Integer64Type || value instanceof MarkdownType || value instanceof OidType || value instanceof PositiveIntType || value instanceof StringType || value instanceof TimeType || value instanceof UnsignedIntType || value instanceof UriType || value instanceof UrlType || value instanceof UuidType || value instanceof Address || value instanceof Age || value instanceof Annotation || value instanceof Attachment || value instanceof CodeableConcept || value instanceof Coding || value instanceof ContactPoint || value instanceof Count || value instanceof Distance || value instanceof Duration || value instanceof HumanName || value instanceof Identifier || value instanceof Money || value instanceof Period || value instanceof Quantity || value instanceof Range || value instanceof Ratio || value instanceof Reference || value instanceof SampledData || value instanceof Signature || value instanceof Timing || value instanceof ContactDetail || value instanceof Contributor || value instanceof DataRequirement || value instanceof Expression || value instanceof ParameterDefinition || value instanceof RelatedArtifact || value instanceof TriggerDefinition || value instanceof UsageContext || value instanceof Dosage || value instanceof Meta))
-        throw new Error("Not the right type for Extension.value[x]: "+value.fhirType());
+      if (value != null && !(value instanceof Base64BinaryType || value instanceof BooleanType || value instanceof CanonicalType || value instanceof CodeType || value instanceof DateType || value instanceof DateTimeType || value instanceof DecimalType || value instanceof IdType || value instanceof InstantType || value instanceof IntegerType || value instanceof Integer64Type || value instanceof MarkdownType || value instanceof OidType || value instanceof PositiveIntType || value instanceof StringType || value instanceof TimeType || value instanceof UnsignedIntType || value instanceof UriType || value instanceof UrlType || value instanceof UuidType || value instanceof Address || value instanceof Age || value instanceof Annotation || value instanceof Attachment || value instanceof CodeableConcept || value instanceof CodeableReference || value instanceof Coding || value instanceof ContactPoint || value instanceof Count || value instanceof Distance || value instanceof Duration || value instanceof HumanName || value instanceof Identifier || value instanceof Money || value instanceof Period || value instanceof Quantity || value instanceof Range || value instanceof Ratio || value instanceof RatioRange || value instanceof Reference || value instanceof SampledData || value instanceof Signature || value instanceof Timing || value instanceof ContactDetail || value instanceof DataRequirement || value instanceof Expression || value instanceof ParameterDefinition || value instanceof RelatedArtifact || value instanceof TriggerDefinition || value instanceof UsageContext || value instanceof Availability || value instanceof ExtendedContactDetail || value instanceof Dosage || value instanceof Meta))
+        throw new FHIRException("Not the right type for Extension.value[x]: "+value.fhirType());
       this.value = value;
       return this;
     }
@@ -927,15 +977,15 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
         children.add(new Property("url", "uri", "Source of the definition for the extension code - a logical name or a URL.", 0, 1, url));
-        children.add(new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|Reference|SampledData|Signature|Timing|ContactDetail|Contributor|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Dosage|Meta", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value));
+        children.add(new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|CodeableReference|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|RatioRange|Reference|SampledData|Signature|Timing|ContactDetail|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Availability|ExtendedContactDetail|Dosage|Meta", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value));
       }
 
       @Override
       public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
         switch (_hash) {
         case 116079: /*url*/  return new Property("url", "uri", "Source of the definition for the extension code - a logical name or a URL.", 0, 1, url);
-        case -1410166417: /*value[x]*/  return new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|Reference|SampledData|Signature|Timing|ContactDetail|Contributor|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Dosage|Meta", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
-        case 111972721: /*value*/  return new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|Reference|SampledData|Signature|Timing|ContactDetail|Contributor|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Dosage|Meta", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
+        case -1410166417: /*value[x]*/  return new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|CodeableReference|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|RatioRange|Reference|SampledData|Signature|Timing|ContactDetail|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Availability|ExtendedContactDetail|Dosage|Meta", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
+        case 111972721: /*value*/  return new Property("value[x]", "base64Binary|boolean|canonical|code|date|dateTime|decimal|id|instant|integer|integer64|markdown|oid|positiveInt|string|time|unsignedInt|uri|url|uuid|Address|Age|Annotation|Attachment|CodeableConcept|CodeableReference|Coding|ContactPoint|Count|Distance|Duration|HumanName|Identifier|Money|Period|Quantity|Range|Ratio|RatioRange|Reference|SampledData|Signature|Timing|ContactDetail|DataRequirement|Expression|ParameterDefinition|RelatedArtifact|TriggerDefinition|UsageContext|Availability|ExtendedContactDetail|Dosage|Meta", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case -1535024575: /*valueBase64Binary*/  return new Property("value[x]", "base64Binary", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 733421943: /*valueBoolean*/  return new Property("value[x]", "boolean", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case -786218365: /*valueCanonical*/  return new Property("value[x]", "canonical", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
@@ -961,6 +1011,7 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
         case -67108992: /*valueAnnotation*/  return new Property("value[x]", "Annotation", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case -475566732: /*valueAttachment*/  return new Property("value[x]", "Attachment", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 924902896: /*valueCodeableConcept*/  return new Property("value[x]", "CodeableConcept", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
+        case -257955629: /*valueCodeableReference*/  return new Property("value[x]", "CodeableReference", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case -1887705029: /*valueCoding*/  return new Property("value[x]", "Coding", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 944904545: /*valueContactPoint*/  return new Property("value[x]", "ContactPoint", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 2017332766: /*valueCount*/  return new Property("value[x]", "Count", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
@@ -973,18 +1024,20 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
         case -2029823716: /*valueQuantity*/  return new Property("value[x]", "Quantity", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 2030761548: /*valueRange*/  return new Property("value[x]", "Range", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 2030767386: /*valueRatio*/  return new Property("value[x]", "Ratio", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
+        case -706454461: /*valueRatioRange*/  return new Property("value[x]", "RatioRange", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 1755241690: /*valueReference*/  return new Property("value[x]", "Reference", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case -962229101: /*valueSampledData*/  return new Property("value[x]", "SampledData", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case -540985785: /*valueSignature*/  return new Property("value[x]", "Signature", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case -1406282469: /*valueTiming*/  return new Property("value[x]", "Timing", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case -1125200224: /*valueContactDetail*/  return new Property("value[x]", "ContactDetail", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
-        case 1281021610: /*valueContributor*/  return new Property("value[x]", "Contributor", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 1710554248: /*valueDataRequirement*/  return new Property("value[x]", "DataRequirement", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case -307517719: /*valueExpression*/  return new Property("value[x]", "Expression", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 1387478187: /*valueParameterDefinition*/  return new Property("value[x]", "ParameterDefinition", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 1748214124: /*valueRelatedArtifact*/  return new Property("value[x]", "RelatedArtifact", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 976830394: /*valueTriggerDefinition*/  return new Property("value[x]", "TriggerDefinition", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case 588000479: /*valueUsageContext*/  return new Property("value[x]", "UsageContext", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
+        case 1678530924: /*valueAvailability*/  return new Property("value[x]", "Availability", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
+        case -1567222041: /*valueExtendedContactDetail*/  return new Property("value[x]", "ExtendedContactDetail", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case -1858636920: /*valueDosage*/  return new Property("value[x]", "Dosage", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         case -765920490: /*valueMeta*/  return new Property("value[x]", "Meta", "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).", 0, 1, value);
         default: return super.getNamedProperty(_hash, _name, _checkValid);
@@ -1027,6 +1080,17 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("url")) {
+          this.url = null;
+        } else if (name.equals("value[x]")) {
+          this.value = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1042,7 +1106,7 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       public String[] getTypesForProperty(int hash, String name) throws FHIRException {
         switch (hash) {
         case 116079: /*url*/ return new String[] {"uri"};
-        case 111972721: /*value*/ return new String[] {"base64Binary", "boolean", "canonical", "code", "date", "dateTime", "decimal", "id", "instant", "integer", "integer64", "markdown", "oid", "positiveInt", "string", "time", "unsignedInt", "uri", "url", "uuid", "Address", "Age", "Annotation", "Attachment", "CodeableConcept", "Coding", "ContactPoint", "Count", "Distance", "Duration", "HumanName", "Identifier", "Money", "Period", "Quantity", "Range", "Ratio", "Reference", "SampledData", "Signature", "Timing", "ContactDetail", "Contributor", "DataRequirement", "Expression", "ParameterDefinition", "RelatedArtifact", "TriggerDefinition", "UsageContext", "Dosage", "Meta"};
+        case 111972721: /*value*/ return new String[] {"base64Binary", "boolean", "canonical", "code", "date", "dateTime", "decimal", "id", "instant", "integer", "integer64", "markdown", "oid", "positiveInt", "string", "time", "unsignedInt", "uri", "url", "uuid", "Address", "Age", "Annotation", "Attachment", "CodeableConcept", "CodeableReference", "Coding", "ContactPoint", "Count", "Distance", "Duration", "HumanName", "Identifier", "Money", "Period", "Quantity", "Range", "Ratio", "RatioRange", "Reference", "SampledData", "Signature", "Timing", "ContactDetail", "DataRequirement", "Expression", "ParameterDefinition", "RelatedArtifact", "TriggerDefinition", "UsageContext", "Availability", "ExtendedContactDetail", "Dosage", "Meta"};
         default: return super.getTypesForProperty(hash, name);
         }
 
@@ -1051,7 +1115,7 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Extension.url");
+          throw new FHIRException("Cannot call addChild on a singleton property Extension.url");
         }
         else if (name.equals("valueBase64Binary")) {
           this.value = new Base64BinaryType();
@@ -1153,6 +1217,10 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
           this.value = new CodeableConcept();
           return this.value;
         }
+        else if (name.equals("valueCodeableReference")) {
+          this.value = new CodeableReference();
+          return this.value;
+        }
         else if (name.equals("valueCoding")) {
           this.value = new Coding();
           return this.value;
@@ -1201,6 +1269,10 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
           this.value = new Ratio();
           return this.value;
         }
+        else if (name.equals("valueRatioRange")) {
+          this.value = new RatioRange();
+          return this.value;
+        }
         else if (name.equals("valueReference")) {
           this.value = new Reference();
           return this.value;
@@ -1219,10 +1291,6 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
         }
         else if (name.equals("valueContactDetail")) {
           this.value = new ContactDetail();
-          return this.value;
-        }
-        else if (name.equals("valueContributor")) {
-          this.value = new Contributor();
           return this.value;
         }
         else if (name.equals("valueDataRequirement")) {
@@ -1249,6 +1317,14 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
           this.value = new UsageContext();
           return this.value;
         }
+        else if (name.equals("valueAvailability")) {
+          this.value = new Availability();
+          return this.value;
+        }
+        else if (name.equals("valueExtendedContactDetail")) {
+          this.value = new ExtendedContactDetail();
+          return this.value;
+        }
         else if (name.equals("valueDosage")) {
           this.value = new Dosage();
           return this.value;
@@ -1270,6 +1346,10 @@ public class Extension extends BaseExtension implements IBaseExtension<Extension
         Extension dst = new Extension();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Extension) dst);
       }
 
       public void copyValues(Extension dst) {

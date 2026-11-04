@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class FilterOperatorEnumFactory implements EnumFactory<FilterOperator> {
@@ -54,11 +50,13 @@ public class FilterOperatorEnumFactory implements EnumFactory<FilterOperator> {
       return FilterOperator.IN;
     if ("not-in".equals(codeString))
       return FilterOperator.NOTIN;
-    throw new IllegalArgumentException("Unknown FilterOperator code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown FilterOperator code '" + codeString + "'");
   }
 
   public String toCode(FilterOperator code) {
-    if (code == FilterOperator.EQUAL)
+       if (code == FilterOperator.NULL)
+           return null;
+       if (code == FilterOperator.EQUAL)
       return "=";
     if (code == FilterOperator.ISA)
       return "is-a";
@@ -71,10 +69,10 @@ public class FilterOperatorEnumFactory implements EnumFactory<FilterOperator> {
     if (code == FilterOperator.NOTIN)
       return "not-in";
     return "?";
-  }
+   }
 
-    public String toSystem(FilterOperator code) {
-      return code.getSystem();
-      }
+  public String toSystem(FilterOperator code) {
+    return code.getSystem();
+  }
 
 }

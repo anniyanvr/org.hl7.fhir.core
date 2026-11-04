@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Mon, Mar 21, 2016 12:03+1100 for FHIR v1.3.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class GuidanceResponseActionTypeEnumFactory implements EnumFactory<GuidanceResponseActionType> {
@@ -50,11 +46,13 @@ public class GuidanceResponseActionTypeEnumFactory implements EnumFactory<Guidan
       return GuidanceResponseActionType.REMOVE;
     if ("fire-event".equals(codeString))
       return GuidanceResponseActionType.FIREEVENT;
-    throw new IllegalArgumentException("Unknown GuidanceResponseActionType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown GuidanceResponseActionType code '" + codeString + "'");
   }
 
   public String toCode(GuidanceResponseActionType code) {
-    if (code == GuidanceResponseActionType.CREATE)
+       if (code == GuidanceResponseActionType.NULL)
+           return null;
+       if (code == GuidanceResponseActionType.CREATE)
       return "create";
     if (code == GuidanceResponseActionType.UPDATE)
       return "update";
@@ -63,10 +61,10 @@ public class GuidanceResponseActionTypeEnumFactory implements EnumFactory<Guidan
     if (code == GuidanceResponseActionType.FIREEVENT)
       return "fire-event";
     return "?";
-  }
+   }
 
-    public String toSystem(GuidanceResponseActionType code) {
-      return code.getSystem();
-      }
+  public String toSystem(GuidanceResponseActionType code) {
+    return code.getSystem();
+  }
 
 }

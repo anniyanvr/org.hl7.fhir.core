@@ -1,17 +1,20 @@
 package org.hl7.fhir.r5.model;
 
-import org.hl7.fhir.r5.model.CanonicalType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class CanonicalTypeNullTest {
 
   @Test
   @DisplayName("Test null value toString()")
   void testToString() {
-    CanonicalType nullCanonical = new CanonicalType();
-    System.out.println("Value -> " + nullCanonical);
+    assertDoesNotThrow(() -> {
+      CanonicalType nullCanonical = new CanonicalType();
+      System.out.println("Value -> " + nullCanonical);
+    });
   }
 
   @Test

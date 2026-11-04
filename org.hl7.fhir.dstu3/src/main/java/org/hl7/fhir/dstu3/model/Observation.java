@@ -195,12 +195,12 @@ public class Observation extends DomainResource {
           return ObservationStatus.UNKNOWN;
         throw new IllegalArgumentException("Unknown ObservationStatus code '"+codeString+"'");
         }
-        public Enumeration<ObservationStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ObservationStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ObservationStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("registered".equals(codeString))
@@ -222,7 +222,9 @@ public class Observation extends DomainResource {
         throw new FHIRException("Unknown ObservationStatus code '"+codeString+"'");
         }
     public String toCode(ObservationStatus code) {
-      if (code == ObservationStatus.REGISTERED)
+       if (code == ObservationStatus.NULL)
+           return null;
+       if (code == ObservationStatus.REGISTERED)
         return "registered";
       if (code == ObservationStatus.PRELIMINARY)
         return "preliminary";
@@ -239,7 +241,7 @@ public class Observation extends DomainResource {
       if (code == ObservationStatus.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(ObservationStatus code) {
       return code.getSystem();
       }
@@ -363,12 +365,12 @@ public class Observation extends DomainResource {
           return ObservationRelationshipType.INTERFEREDBY;
         throw new IllegalArgumentException("Unknown ObservationRelationshipType code '"+codeString+"'");
         }
-        public Enumeration<ObservationRelationshipType> fromType(Base code) throws FHIRException {
+        public Enumeration<ObservationRelationshipType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ObservationRelationshipType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("has-member".equals(codeString))
@@ -386,7 +388,9 @@ public class Observation extends DomainResource {
         throw new FHIRException("Unknown ObservationRelationshipType code '"+codeString+"'");
         }
     public String toCode(ObservationRelationshipType code) {
-      if (code == ObservationRelationshipType.HASMEMBER)
+       if (code == ObservationRelationshipType.NULL)
+           return null;
+       if (code == ObservationRelationshipType.HASMEMBER)
         return "has-member";
       if (code == ObservationRelationshipType.DERIVEDFROM)
         return "derived-from";
@@ -399,7 +403,7 @@ public class Observation extends DomainResource {
       if (code == ObservationRelationshipType.INTERFEREDBY)
         return "interfered-by";
       return "?";
-      }
+   }
     public String toSystem(ObservationRelationshipType code) {
       return code.getSystem();
       }
@@ -791,7 +795,7 @@ public class Observation extends DomainResource {
           return this.age;
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Observation.text");
+          throw new FHIRException("Cannot call addChild on a singleton property Observation.text");
         }
         else
           return super.addChild(name);
@@ -1050,7 +1054,7 @@ public class Observation extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Observation.type");
+          throw new FHIRException("Cannot call addChild on a singleton property Observation.type");
         }
         else if (name.equals("target")) {
           this.target = new Reference();
@@ -1198,8 +1202,8 @@ public class Observation extends DomainResource {
           return (Quantity) this.value;
         }
 
-        public boolean hasValueQuantity() { 
-          return this != null && this.value instanceof Quantity;
+        public boolean hasValueQuantity() {
+            return this.value instanceof Quantity;
         }
 
         /**
@@ -1213,8 +1217,8 @@ public class Observation extends DomainResource {
           return (CodeableConcept) this.value;
         }
 
-        public boolean hasValueCodeableConcept() { 
-          return this != null && this.value instanceof CodeableConcept;
+        public boolean hasValueCodeableConcept() {
+            return this.value instanceof CodeableConcept;
         }
 
         /**
@@ -1228,8 +1232,8 @@ public class Observation extends DomainResource {
           return (StringType) this.value;
         }
 
-        public boolean hasValueStringType() { 
-          return this != null && this.value instanceof StringType;
+        public boolean hasValueStringType() {
+            return this.value instanceof StringType;
         }
 
         /**
@@ -1243,8 +1247,8 @@ public class Observation extends DomainResource {
           return (Range) this.value;
         }
 
-        public boolean hasValueRange() { 
-          return this != null && this.value instanceof Range;
+        public boolean hasValueRange() {
+            return this.value instanceof Range;
         }
 
         /**
@@ -1258,8 +1262,8 @@ public class Observation extends DomainResource {
           return (Ratio) this.value;
         }
 
-        public boolean hasValueRatio() { 
-          return this != null && this.value instanceof Ratio;
+        public boolean hasValueRatio() {
+            return this.value instanceof Ratio;
         }
 
         /**
@@ -1273,8 +1277,8 @@ public class Observation extends DomainResource {
           return (SampledData) this.value;
         }
 
-        public boolean hasValueSampledData() { 
-          return this != null && this.value instanceof SampledData;
+        public boolean hasValueSampledData() {
+            return this.value instanceof SampledData;
         }
 
         /**
@@ -1288,8 +1292,8 @@ public class Observation extends DomainResource {
           return (Attachment) this.value;
         }
 
-        public boolean hasValueAttachment() { 
-          return this != null && this.value instanceof Attachment;
+        public boolean hasValueAttachment() {
+            return this.value instanceof Attachment;
         }
 
         /**
@@ -1303,8 +1307,8 @@ public class Observation extends DomainResource {
           return (TimeType) this.value;
         }
 
-        public boolean hasValueTimeType() { 
-          return this != null && this.value instanceof TimeType;
+        public boolean hasValueTimeType() {
+            return this.value instanceof TimeType;
         }
 
         /**
@@ -1318,8 +1322,8 @@ public class Observation extends DomainResource {
           return (DateTimeType) this.value;
         }
 
-        public boolean hasValueDateTimeType() { 
-          return this != null && this.value instanceof DateTimeType;
+        public boolean hasValueDateTimeType() {
+            return this.value instanceof DateTimeType;
         }
 
         /**
@@ -1333,8 +1337,8 @@ public class Observation extends DomainResource {
           return (Period) this.value;
         }
 
-        public boolean hasValuePeriod() { 
-          return this != null && this.value instanceof Period;
+        public boolean hasValuePeriod() {
+            return this.value instanceof Period;
         }
 
         public boolean hasValue() { 
@@ -1984,16 +1988,6 @@ public class Observation extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<Resource>();
-      return this.basedOnTarget;
-    }
-
-    /**
      * @return {@link #status} (The status of the result value.). This is the underlying object with id, value and extensions. The accessor "getStatus" gives direct access to the value
      */
     public Enumeration<ObservationStatus> getStatusElement() { 
@@ -2211,8 +2205,8 @@ public class Observation extends DomainResource {
       return (DateTimeType) this.effective;
     }
 
-    public boolean hasEffectiveDateTimeType() { 
-      return this != null && this.effective instanceof DateTimeType;
+    public boolean hasEffectiveDateTimeType() {
+        return this.effective instanceof DateTimeType;
     }
 
     /**
@@ -2226,8 +2220,8 @@ public class Observation extends DomainResource {
       return (Period) this.effective;
     }
 
-    public boolean hasEffectivePeriod() { 
-      return this != null && this.effective instanceof Period;
+    public boolean hasEffectivePeriod() {
+        return this.effective instanceof Period;
     }
 
     public boolean hasEffective() { 
@@ -2347,16 +2341,6 @@ public class Observation extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getPerformerTarget() { 
-      if (this.performerTarget == null)
-        this.performerTarget = new ArrayList<Resource>();
-      return this.performerTarget;
-    }
-
-    /**
      * @return {@link #value} (The information determined as a result of making the observation, if the information has a simple value.)
      */
     public Type getValue() { 
@@ -2374,8 +2358,8 @@ public class Observation extends DomainResource {
       return (Quantity) this.value;
     }
 
-    public boolean hasValueQuantity() { 
-      return this != null && this.value instanceof Quantity;
+    public boolean hasValueQuantity() {
+        return this.value instanceof Quantity;
     }
 
     /**
@@ -2389,8 +2373,8 @@ public class Observation extends DomainResource {
       return (CodeableConcept) this.value;
     }
 
-    public boolean hasValueCodeableConcept() { 
-      return this != null && this.value instanceof CodeableConcept;
+    public boolean hasValueCodeableConcept() {
+        return this.value instanceof CodeableConcept;
     }
 
     /**
@@ -2404,8 +2388,8 @@ public class Observation extends DomainResource {
       return (StringType) this.value;
     }
 
-    public boolean hasValueStringType() { 
-      return this != null && this.value instanceof StringType;
+    public boolean hasValueStringType() {
+        return this.value instanceof StringType;
     }
 
     /**
@@ -2419,8 +2403,8 @@ public class Observation extends DomainResource {
       return (BooleanType) this.value;
     }
 
-    public boolean hasValueBooleanType() { 
-      return this != null && this.value instanceof BooleanType;
+    public boolean hasValueBooleanType() {
+        return this.value instanceof BooleanType;
     }
 
     /**
@@ -2434,8 +2418,8 @@ public class Observation extends DomainResource {
       return (Range) this.value;
     }
 
-    public boolean hasValueRange() { 
-      return this != null && this.value instanceof Range;
+    public boolean hasValueRange() {
+        return this.value instanceof Range;
     }
 
     /**
@@ -2449,8 +2433,8 @@ public class Observation extends DomainResource {
       return (Ratio) this.value;
     }
 
-    public boolean hasValueRatio() { 
-      return this != null && this.value instanceof Ratio;
+    public boolean hasValueRatio() {
+        return this.value instanceof Ratio;
     }
 
     /**
@@ -2464,8 +2448,8 @@ public class Observation extends DomainResource {
       return (SampledData) this.value;
     }
 
-    public boolean hasValueSampledData() { 
-      return this != null && this.value instanceof SampledData;
+    public boolean hasValueSampledData() {
+        return this.value instanceof SampledData;
     }
 
     /**
@@ -2479,8 +2463,8 @@ public class Observation extends DomainResource {
       return (Attachment) this.value;
     }
 
-    public boolean hasValueAttachment() { 
-      return this != null && this.value instanceof Attachment;
+    public boolean hasValueAttachment() {
+        return this.value instanceof Attachment;
     }
 
     /**
@@ -2494,8 +2478,8 @@ public class Observation extends DomainResource {
       return (TimeType) this.value;
     }
 
-    public boolean hasValueTimeType() { 
-      return this != null && this.value instanceof TimeType;
+    public boolean hasValueTimeType() {
+        return this.value instanceof TimeType;
     }
 
     /**
@@ -2509,8 +2493,8 @@ public class Observation extends DomainResource {
       return (DateTimeType) this.value;
     }
 
-    public boolean hasValueDateTimeType() { 
-      return this != null && this.value instanceof DateTimeType;
+    public boolean hasValueDateTimeType() {
+        return this.value instanceof DateTimeType;
     }
 
     /**
@@ -2524,8 +2508,8 @@ public class Observation extends DomainResource {
       return (Period) this.value;
     }
 
-    public boolean hasValuePeriod() { 
-      return this != null && this.value instanceof Period;
+    public boolean hasValuePeriod() {
+        return this.value instanceof Period;
     }
 
     public boolean hasValue() { 
@@ -3218,7 +3202,7 @@ public class Observation extends DomainResource {
           return addBasedOn();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Observation.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Observation.status");
         }
         else if (name.equals("category")) {
           return addCategory();
@@ -3244,7 +3228,7 @@ public class Observation extends DomainResource {
           return this.effective;
         }
         else if (name.equals("issued")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Observation.issued");
+          throw new FHIRException("Cannot call addChild on a singleton property Observation.issued");
         }
         else if (name.equals("performer")) {
           return addPerformer();
@@ -3302,7 +3286,7 @@ public class Observation extends DomainResource {
           return this.interpretation;
         }
         else if (name.equals("comment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Observation.comment");
+          throw new FHIRException("Cannot call addChild on a singleton property Observation.comment");
         }
         else if (name.equals("bodySite")) {
           this.bodySite = new CodeableConcept();

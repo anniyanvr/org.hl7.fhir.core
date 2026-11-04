@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -245,6 +245,19 @@ public class SubstanceReferenceInformation extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("geneSequenceOrigin")) {
+          this.geneSequenceOrigin = null;
+        } else if (name.equals("gene")) {
+          this.gene = null;
+        } else if (name.equals("source")) {
+          this.getSource().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -288,6 +301,10 @@ public class SubstanceReferenceInformation extends DomainResource {
         SubstanceReferenceInformationGeneComponent dst = new SubstanceReferenceInformationGeneComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SubstanceReferenceInformationGeneComponent) dst);
       }
 
       public void copyValues(SubstanceReferenceInformationGeneComponent dst) {
@@ -526,6 +543,19 @@ public class SubstanceReferenceInformation extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("element")) {
+          this.element = null;
+        } else if (name.equals("source")) {
+          this.getSource().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -569,6 +599,10 @@ public class SubstanceReferenceInformation extends DomainResource {
         SubstanceReferenceInformationGeneElementComponent dst = new SubstanceReferenceInformationGeneElementComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SubstanceReferenceInformationGeneElementComponent) dst);
       }
 
       public void copyValues(SubstanceReferenceInformationGeneElementComponent dst) {
@@ -819,8 +853,8 @@ public class SubstanceReferenceInformation extends DomainResource {
           return (Quantity) this.amount;
         }
 
-        public boolean hasAmountQuantity() { 
-          return this != null && this.amount instanceof Quantity;
+        public boolean hasAmountQuantity() {
+            return this.amount instanceof Quantity;
         }
 
         /**
@@ -834,8 +868,8 @@ public class SubstanceReferenceInformation extends DomainResource {
           return (Range) this.amount;
         }
 
-        public boolean hasAmountRange() { 
-          return this != null && this.amount instanceof Range;
+        public boolean hasAmountRange() {
+            return this.amount instanceof Range;
         }
 
         /**
@@ -849,8 +883,8 @@ public class SubstanceReferenceInformation extends DomainResource {
           return (StringType) this.amount;
         }
 
-        public boolean hasAmountStringType() { 
-          return this != null && this.amount instanceof StringType;
+        public boolean hasAmountStringType() {
+            return this.amount instanceof StringType;
         }
 
         public boolean hasAmount() { 
@@ -862,7 +896,7 @@ public class SubstanceReferenceInformation extends DomainResource {
          */
         public SubstanceReferenceInformationTargetComponent setAmount(DataType value) { 
           if (value != null && !(value instanceof Quantity || value instanceof Range || value instanceof StringType))
-            throw new Error("Not the right type for SubstanceReferenceInformation.target.amount[x]: "+value.fhirType());
+            throw new FHIRException("Not the right type for SubstanceReferenceInformation.target.amount[x]: "+value.fhirType());
           this.amount = value;
           return this;
         }
@@ -1047,6 +1081,29 @@ public class SubstanceReferenceInformation extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("target")) {
+          this.target = null;
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("interaction")) {
+          this.interaction = null;
+        } else if (name.equals("organism")) {
+          this.organism = null;
+        } else if (name.equals("organismType")) {
+          this.organismType = null;
+        } else if (name.equals("amount[x]")) {
+          this.amount = null;
+        } else if (name.equals("amountType")) {
+          this.amountType = null;
+        } else if (name.equals("source")) {
+          this.getSource().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1129,6 +1186,10 @@ public class SubstanceReferenceInformation extends DomainResource {
         SubstanceReferenceInformationTargetComponent dst = new SubstanceReferenceInformationTargetComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SubstanceReferenceInformationTargetComponent) dst);
       }
 
       public void copyValues(SubstanceReferenceInformationTargetComponent dst) {
@@ -1493,6 +1554,21 @@ public class SubstanceReferenceInformation extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("comment")) {
+          this.comment = null;
+        } else if (name.equals("gene")) {
+          this.getGene().remove((SubstanceReferenceInformationGeneComponent) value);
+        } else if (name.equals("geneElement")) {
+          this.getGeneElement().remove((SubstanceReferenceInformationGeneElementComponent) value);
+        } else if (name.equals("target")) {
+          this.getTarget().remove((SubstanceReferenceInformationTargetComponent) value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1520,7 +1596,7 @@ public class SubstanceReferenceInformation extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("comment")) {
-          throw new FHIRException("Cannot call addChild on a primitive type SubstanceReferenceInformation.comment");
+          throw new FHIRException("Cannot call addChild on a singleton property SubstanceReferenceInformation.comment");
         }
         else if (name.equals("gene")) {
           return addGene();
@@ -1544,6 +1620,10 @@ public class SubstanceReferenceInformation extends DomainResource {
         SubstanceReferenceInformation dst = new SubstanceReferenceInformation();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((SubstanceReferenceInformation) dst);
       }
 
       public void copyValues(SubstanceReferenceInformation dst) {

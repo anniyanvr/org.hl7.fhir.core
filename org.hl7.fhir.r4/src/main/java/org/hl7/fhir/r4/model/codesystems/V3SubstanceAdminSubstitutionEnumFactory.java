@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3SubstanceAdminSubstitutionEnumFactory implements EnumFactory<V3SubstanceAdminSubstitution> {
@@ -62,11 +58,13 @@ public class V3SubstanceAdminSubstitutionEnumFactory implements EnumFactory<V3Su
       return V3SubstanceAdminSubstitution.F;
     if ("N".equals(codeString))
       return V3SubstanceAdminSubstitution.N;
-    throw new IllegalArgumentException("Unknown V3SubstanceAdminSubstitution code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3SubstanceAdminSubstitution code '" + codeString + "'");
   }
 
   public String toCode(V3SubstanceAdminSubstitution code) {
-    if (code == V3SubstanceAdminSubstitution._ACTSUBSTANCEADMINSUBSTITUTIONCODE)
+       if (code == V3SubstanceAdminSubstitution.NULL)
+           return null;
+       if (code == V3SubstanceAdminSubstitution._ACTSUBSTANCEADMINSUBSTITUTIONCODE)
       return "_ActSubstanceAdminSubstitutionCode";
     if (code == V3SubstanceAdminSubstitution.E)
       return "E";
@@ -87,10 +85,10 @@ public class V3SubstanceAdminSubstitutionEnumFactory implements EnumFactory<V3Su
     if (code == V3SubstanceAdminSubstitution.N)
       return "N";
     return "?";
-  }
+   }
 
-    public String toSystem(V3SubstanceAdminSubstitution code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3SubstanceAdminSubstitution code) {
+    return code.getSystem();
+  }
 
 }

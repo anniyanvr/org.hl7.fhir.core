@@ -67,7 +67,6 @@ public class Base64BinaryType extends PrimitiveType<byte[]> implements IPrimitiv
   public Base64BinaryType(String theValue) {
     super();
     // Null values still result in non-null instance being created
-    if (theValue != null) checkValidBase64(theValue);
     setValueAsString(theValue);
   }
 
@@ -87,8 +86,24 @@ public class Base64BinaryType extends PrimitiveType<byte[]> implements IPrimitiv
   }
 
   @Override
+  public void assignValues(Base dst) {
+    copyValues((Base64BinaryType) dst);
+  }
+
+  /**
+   * myValue shadows PrimitiveType's coerced value, so it has to be carried across here too. The
+   * array itself is shared with dst, which is what copy() has always done
+   */
+  public void copyValues(Base64BinaryType dst) {
+    super.copyValues(dst);
+    dst.myValue = myValue;
+  }
+
+  @Override
   public Base64BinaryType copy() {
-    return new Base64BinaryType(getValue());
+    Base64BinaryType ret = new Base64BinaryType();
+    copyValues(ret);
+    return ret;
   }
 
   @Override
@@ -117,6 +132,7 @@ public class Base64BinaryType extends PrimitiveType<byte[]> implements IPrimitiv
 
   @Override
   public void setValueAsString(String theValue) throws IllegalArgumentException {
+    if (theValue != null) checkValidBase64(theValue);
     fromStringValue(theValue);
     setValue(parse(theValue));
   }
@@ -129,7 +145,7 @@ public class Base64BinaryType extends PrimitiveType<byte[]> implements IPrimitiv
   @Override
   public Base64BinaryType setValue(byte[] theValue) throws IllegalArgumentException {
     myValue = theValue;
-    return this;
+    return (Base64BinaryType) super.setValue(theValue);
   }
 
   @Override
@@ -156,8 +172,8 @@ public class Base64BinaryType extends PrimitiveType<byte[]> implements IPrimitiv
    * @throws DataFormatException
    */
   public void checkValidBase64(String toCheck) throws DataFormatException {
-    if (!Base64.isBase64(toCheck.getBytes())) {
-      throw new DataFormatException("");
+    if (!org.hl7.fhir.utilities.Base64.isBase64(toCheck.getBytes())) {
+      throw new DataFormatException("Invalid Base64 content: "+toCheck.substring(0, 10)+"...");
     }
   }
 }

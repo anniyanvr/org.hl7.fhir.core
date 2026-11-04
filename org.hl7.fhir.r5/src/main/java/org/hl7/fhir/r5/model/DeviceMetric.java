@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,7 +48,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Describes a measurement, calculation or setting capability of a medical device.
+ * Describes a measurement, calculation or setting capability of a device.  The DeviceMetric resource is derived from the ISO/IEEE 11073-10201 Domain Information Model standard, but is more widely applicable. 
  */
 @ResourceDef(name="DeviceMetric", profile="http://hl7.org/fhir/StructureDefinition/DeviceMetric")
 public class DeviceMetric extends DomainResource {
@@ -90,12 +90,26 @@ public class DeviceMetric extends DomainResource {
         else
           throw new FHIRException("Unknown DeviceMetricCalibrationState code '"+codeString+"'");
         }
+      public static boolean isValidCode(String codeString) {
+        if (codeString == null || "".equals(codeString))
+          return false;
+        if ("not-calibrated".equals(codeString))
+          return true;
+        if ("calibration-required".equals(codeString))
+          return true;
+        if ("calibrated".equals(codeString))
+          return true;
+        if ("unspecified".equals(codeString))
+          return true;
+        return false;
+      }
         public String toCode() {
           switch (this) {
             case NOTCALIBRATED: return "not-calibrated";
             case CALIBRATIONREQUIRED: return "calibration-required";
             case CALIBRATED: return "calibrated";
             case UNSPECIFIED: return "unspecified";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -105,6 +119,7 @@ public class DeviceMetric extends DomainResource {
             case CALIBRATIONREQUIRED: return "http://hl7.org/fhir/metric-calibration-state";
             case CALIBRATED: return "http://hl7.org/fhir/metric-calibration-state";
             case UNSPECIFIED: return "http://hl7.org/fhir/metric-calibration-state";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -114,6 +129,7 @@ public class DeviceMetric extends DomainResource {
             case CALIBRATIONREQUIRED: return "The metric needs to be calibrated.";
             case CALIBRATED: return "The metric has been calibrated.";
             case UNSPECIFIED: return "The state of calibration of this metric is unspecified.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -123,6 +139,7 @@ public class DeviceMetric extends DomainResource {
             case CALIBRATIONREQUIRED: return "Calibration Required";
             case CALIBRATED: return "Calibrated";
             case UNSPECIFIED: return "Unspecified";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -143,26 +160,28 @@ public class DeviceMetric extends DomainResource {
           return DeviceMetricCalibrationState.UNSPECIFIED;
         throw new IllegalArgumentException("Unknown DeviceMetricCalibrationState code '"+codeString+"'");
         }
-        public Enumeration<DeviceMetricCalibrationState> fromType(Base code) throws FHIRException {
+        public Enumeration<DeviceMetricCalibrationState> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<DeviceMetricCalibrationState>(this);
+            return new Enumeration<DeviceMetricCalibrationState>(this, DeviceMetricCalibrationState.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<DeviceMetricCalibrationState>(this, DeviceMetricCalibrationState.NULL, code);
         if ("not-calibrated".equals(codeString))
-          return new Enumeration<DeviceMetricCalibrationState>(this, DeviceMetricCalibrationState.NOTCALIBRATED);
+          return new Enumeration<DeviceMetricCalibrationState>(this, DeviceMetricCalibrationState.NOTCALIBRATED, code);
         if ("calibration-required".equals(codeString))
-          return new Enumeration<DeviceMetricCalibrationState>(this, DeviceMetricCalibrationState.CALIBRATIONREQUIRED);
+          return new Enumeration<DeviceMetricCalibrationState>(this, DeviceMetricCalibrationState.CALIBRATIONREQUIRED, code);
         if ("calibrated".equals(codeString))
-          return new Enumeration<DeviceMetricCalibrationState>(this, DeviceMetricCalibrationState.CALIBRATED);
+          return new Enumeration<DeviceMetricCalibrationState>(this, DeviceMetricCalibrationState.CALIBRATED, code);
         if ("unspecified".equals(codeString))
-          return new Enumeration<DeviceMetricCalibrationState>(this, DeviceMetricCalibrationState.UNSPECIFIED);
+          return new Enumeration<DeviceMetricCalibrationState>(this, DeviceMetricCalibrationState.UNSPECIFIED, code);
         throw new FHIRException("Unknown DeviceMetricCalibrationState code '"+codeString+"'");
         }
     public String toCode(DeviceMetricCalibrationState code) {
-      if (code == DeviceMetricCalibrationState.NOTCALIBRATED)
+       if (code == DeviceMetricCalibrationState.NULL)
+           return null;
+       if (code == DeviceMetricCalibrationState.NOTCALIBRATED)
         return "not-calibrated";
       if (code == DeviceMetricCalibrationState.CALIBRATIONREQUIRED)
         return "calibration-required";
@@ -171,7 +190,7 @@ public class DeviceMetric extends DomainResource {
       if (code == DeviceMetricCalibrationState.UNSPECIFIED)
         return "unspecified";
       return "?";
-      }
+   }
     public String toSystem(DeviceMetricCalibrationState code) {
       return code.getSystem();
       }
@@ -198,9 +217,9 @@ public class DeviceMetric extends DomainResource {
          * added to help the parsers with the generic types
          */
         NULL;
-        public static DeviceMetricCalibrationType fromCode(String codeString) throws FHIRException {
-            if (codeString == null || "".equals(codeString))
-                return null;
+      public static DeviceMetricCalibrationType fromCode(String codeString) throws FHIRException {
+        if (codeString == null || "".equals(codeString))
+          return null;
         if ("unspecified".equals(codeString))
           return UNSPECIFIED;
         if ("offset".equals(codeString))
@@ -213,13 +232,30 @@ public class DeviceMetric extends DomainResource {
           return null;
         else
           throw new FHIRException("Unknown DeviceMetricCalibrationType code '"+codeString+"'");
-        }
+      }
+      public static boolean isValidCode(String codeString) {
+        if (codeString == null || "".equals(codeString))
+          return false;
+        if ("unspecified".equals(codeString))
+          return true;
+        if ("offset".equals(codeString))
+          return true;
+        if ("gain".equals(codeString))
+          return true;
+        if ("two-point".equals(codeString))
+          return true;
+        if (Configuration.isAcceptInvalidEnums())
+          return false;
+        else
+          throw new FHIRException("Unknown DeviceMetricCalibrationType code '"+codeString+"'");
+      }
         public String toCode() {
           switch (this) {
             case UNSPECIFIED: return "unspecified";
             case OFFSET: return "offset";
             case GAIN: return "gain";
             case TWOPOINT: return "two-point";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -229,6 +265,7 @@ public class DeviceMetric extends DomainResource {
             case OFFSET: return "http://hl7.org/fhir/metric-calibration-type";
             case GAIN: return "http://hl7.org/fhir/metric-calibration-type";
             case TWOPOINT: return "http://hl7.org/fhir/metric-calibration-type";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -238,6 +275,7 @@ public class DeviceMetric extends DomainResource {
             case OFFSET: return "Offset metric calibration method.";
             case GAIN: return "Gain metric calibration method.";
             case TWOPOINT: return "Two-point metric calibration method.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -247,6 +285,7 @@ public class DeviceMetric extends DomainResource {
             case OFFSET: return "Offset";
             case GAIN: return "Gain";
             case TWOPOINT: return "Two Point";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -267,26 +306,28 @@ public class DeviceMetric extends DomainResource {
           return DeviceMetricCalibrationType.TWOPOINT;
         throw new IllegalArgumentException("Unknown DeviceMetricCalibrationType code '"+codeString+"'");
         }
-        public Enumeration<DeviceMetricCalibrationType> fromType(Base code) throws FHIRException {
+        public Enumeration<DeviceMetricCalibrationType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<DeviceMetricCalibrationType>(this);
+            return new Enumeration<DeviceMetricCalibrationType>(this, DeviceMetricCalibrationType.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<DeviceMetricCalibrationType>(this, DeviceMetricCalibrationType.NULL, code);
         if ("unspecified".equals(codeString))
-          return new Enumeration<DeviceMetricCalibrationType>(this, DeviceMetricCalibrationType.UNSPECIFIED);
+          return new Enumeration<DeviceMetricCalibrationType>(this, DeviceMetricCalibrationType.UNSPECIFIED, code);
         if ("offset".equals(codeString))
-          return new Enumeration<DeviceMetricCalibrationType>(this, DeviceMetricCalibrationType.OFFSET);
+          return new Enumeration<DeviceMetricCalibrationType>(this, DeviceMetricCalibrationType.OFFSET, code);
         if ("gain".equals(codeString))
-          return new Enumeration<DeviceMetricCalibrationType>(this, DeviceMetricCalibrationType.GAIN);
+          return new Enumeration<DeviceMetricCalibrationType>(this, DeviceMetricCalibrationType.GAIN, code);
         if ("two-point".equals(codeString))
-          return new Enumeration<DeviceMetricCalibrationType>(this, DeviceMetricCalibrationType.TWOPOINT);
+          return new Enumeration<DeviceMetricCalibrationType>(this, DeviceMetricCalibrationType.TWOPOINT, code);
         throw new FHIRException("Unknown DeviceMetricCalibrationType code '"+codeString+"'");
         }
     public String toCode(DeviceMetricCalibrationType code) {
-      if (code == DeviceMetricCalibrationType.UNSPECIFIED)
+       if (code == DeviceMetricCalibrationType.NULL)
+           return null;
+       if (code == DeviceMetricCalibrationType.UNSPECIFIED)
         return "unspecified";
       if (code == DeviceMetricCalibrationType.OFFSET)
         return "offset";
@@ -295,7 +336,7 @@ public class DeviceMetric extends DomainResource {
       if (code == DeviceMetricCalibrationType.TWOPOINT)
         return "two-point";
       return "?";
-      }
+   }
     public String toSystem(DeviceMetricCalibrationType code) {
       return code.getSystem();
       }
@@ -303,15 +344,15 @@ public class DeviceMetric extends DomainResource {
 
     public enum DeviceMetricCategory {
         /**
-         * DeviceObservations generated for this DeviceMetric are measured.
+         * Observations generated for this DeviceMetric are measured.
          */
         MEASUREMENT, 
         /**
-         * DeviceObservations generated for this DeviceMetric is a setting that will influence the behavior of the Device.
+         * Observations generated for this DeviceMetric is a setting that will influence the behavior of the Device.
          */
         SETTING, 
         /**
-         * DeviceObservations generated for this DeviceMetric are calculated.
+         * Observations generated for this DeviceMetric are calculated.
          */
         CALCULATION, 
         /**
@@ -322,9 +363,9 @@ public class DeviceMetric extends DomainResource {
          * added to help the parsers with the generic types
          */
         NULL;
-        public static DeviceMetricCategory fromCode(String codeString) throws FHIRException {
-            if (codeString == null || "".equals(codeString))
-                return null;
+      public static DeviceMetricCategory fromCode(String codeString) throws FHIRException {
+        if (codeString == null || "".equals(codeString))
+          return null;
         if ("measurement".equals(codeString))
           return MEASUREMENT;
         if ("setting".equals(codeString))
@@ -337,13 +378,30 @@ public class DeviceMetric extends DomainResource {
           return null;
         else
           throw new FHIRException("Unknown DeviceMetricCategory code '"+codeString+"'");
-        }
+      }
+      public static boolean isValidCode(String codeString)  {
+        if (codeString == null || "".equals(codeString))
+          return false;
+        if ("measurement".equals(codeString))
+          return true;
+        if ("setting".equals(codeString))
+          return true;
+        if ("calculation".equals(codeString))
+          return true;
+        if ("unspecified".equals(codeString))
+          return true;
+        if (Configuration.isAcceptInvalidEnums())
+          return false;
+        else
+          throw new FHIRException("Unknown DeviceMetricCategory code '"+codeString+"'");
+      }
         public String toCode() {
           switch (this) {
             case MEASUREMENT: return "measurement";
             case SETTING: return "setting";
             case CALCULATION: return "calculation";
             case UNSPECIFIED: return "unspecified";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -353,15 +411,17 @@ public class DeviceMetric extends DomainResource {
             case SETTING: return "http://hl7.org/fhir/metric-category";
             case CALCULATION: return "http://hl7.org/fhir/metric-category";
             case UNSPECIFIED: return "http://hl7.org/fhir/metric-category";
+            case NULL: return null;
             default: return "?";
           }
         }
         public String getDefinition() {
           switch (this) {
-            case MEASUREMENT: return "DeviceObservations generated for this DeviceMetric are measured.";
-            case SETTING: return "DeviceObservations generated for this DeviceMetric is a setting that will influence the behavior of the Device.";
-            case CALCULATION: return "DeviceObservations generated for this DeviceMetric are calculated.";
+            case MEASUREMENT: return "Observations generated for this DeviceMetric are measured.";
+            case SETTING: return "Observations generated for this DeviceMetric is a setting that will influence the behavior of the Device.";
+            case CALCULATION: return "Observations generated for this DeviceMetric are calculated.";
             case UNSPECIFIED: return "The category of this DeviceMetric is unspecified.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -371,6 +431,7 @@ public class DeviceMetric extends DomainResource {
             case SETTING: return "Setting";
             case CALCULATION: return "Calculation";
             case UNSPECIFIED: return "Unspecified";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -391,26 +452,28 @@ public class DeviceMetric extends DomainResource {
           return DeviceMetricCategory.UNSPECIFIED;
         throw new IllegalArgumentException("Unknown DeviceMetricCategory code '"+codeString+"'");
         }
-        public Enumeration<DeviceMetricCategory> fromType(Base code) throws FHIRException {
+        public Enumeration<DeviceMetricCategory> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<DeviceMetricCategory>(this);
+            return new Enumeration<DeviceMetricCategory>(this, DeviceMetricCategory.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<DeviceMetricCategory>(this, DeviceMetricCategory.NULL, code);
         if ("measurement".equals(codeString))
-          return new Enumeration<DeviceMetricCategory>(this, DeviceMetricCategory.MEASUREMENT);
+          return new Enumeration<DeviceMetricCategory>(this, DeviceMetricCategory.MEASUREMENT, code);
         if ("setting".equals(codeString))
-          return new Enumeration<DeviceMetricCategory>(this, DeviceMetricCategory.SETTING);
+          return new Enumeration<DeviceMetricCategory>(this, DeviceMetricCategory.SETTING, code);
         if ("calculation".equals(codeString))
-          return new Enumeration<DeviceMetricCategory>(this, DeviceMetricCategory.CALCULATION);
+          return new Enumeration<DeviceMetricCategory>(this, DeviceMetricCategory.CALCULATION, code);
         if ("unspecified".equals(codeString))
-          return new Enumeration<DeviceMetricCategory>(this, DeviceMetricCategory.UNSPECIFIED);
+          return new Enumeration<DeviceMetricCategory>(this, DeviceMetricCategory.UNSPECIFIED, code);
         throw new FHIRException("Unknown DeviceMetricCategory code '"+codeString+"'");
         }
     public String toCode(DeviceMetricCategory code) {
-      if (code == DeviceMetricCategory.MEASUREMENT)
+       if (code == DeviceMetricCategory.NULL)
+           return null;
+       if (code == DeviceMetricCategory.MEASUREMENT)
         return "measurement";
       if (code == DeviceMetricCategory.SETTING)
         return "setting";
@@ -419,203 +482,15 @@ public class DeviceMetric extends DomainResource {
       if (code == DeviceMetricCategory.UNSPECIFIED)
         return "unspecified";
       return "?";
-      }
+   }
     public String toSystem(DeviceMetricCategory code) {
-      return code.getSystem();
-      }
-    }
-
-    public enum DeviceMetricColor {
-        /**
-         * Color for representation - black.
-         */
-        BLACK, 
-        /**
-         * Color for representation - red.
-         */
-        RED, 
-        /**
-         * Color for representation - green.
-         */
-        GREEN, 
-        /**
-         * Color for representation - yellow.
-         */
-        YELLOW, 
-        /**
-         * Color for representation - blue.
-         */
-        BLUE, 
-        /**
-         * Color for representation - magenta.
-         */
-        MAGENTA, 
-        /**
-         * Color for representation - cyan.
-         */
-        CYAN, 
-        /**
-         * Color for representation - white.
-         */
-        WHITE, 
-        /**
-         * added to help the parsers with the generic types
-         */
-        NULL;
-        public static DeviceMetricColor fromCode(String codeString) throws FHIRException {
-            if (codeString == null || "".equals(codeString))
-                return null;
-        if ("black".equals(codeString))
-          return BLACK;
-        if ("red".equals(codeString))
-          return RED;
-        if ("green".equals(codeString))
-          return GREEN;
-        if ("yellow".equals(codeString))
-          return YELLOW;
-        if ("blue".equals(codeString))
-          return BLUE;
-        if ("magenta".equals(codeString))
-          return MAGENTA;
-        if ("cyan".equals(codeString))
-          return CYAN;
-        if ("white".equals(codeString))
-          return WHITE;
-        if (Configuration.isAcceptInvalidEnums())
-          return null;
-        else
-          throw new FHIRException("Unknown DeviceMetricColor code '"+codeString+"'");
-        }
-        public String toCode() {
-          switch (this) {
-            case BLACK: return "black";
-            case RED: return "red";
-            case GREEN: return "green";
-            case YELLOW: return "yellow";
-            case BLUE: return "blue";
-            case MAGENTA: return "magenta";
-            case CYAN: return "cyan";
-            case WHITE: return "white";
-            default: return "?";
-          }
-        }
-        public String getSystem() {
-          switch (this) {
-            case BLACK: return "http://hl7.org/fhir/metric-color";
-            case RED: return "http://hl7.org/fhir/metric-color";
-            case GREEN: return "http://hl7.org/fhir/metric-color";
-            case YELLOW: return "http://hl7.org/fhir/metric-color";
-            case BLUE: return "http://hl7.org/fhir/metric-color";
-            case MAGENTA: return "http://hl7.org/fhir/metric-color";
-            case CYAN: return "http://hl7.org/fhir/metric-color";
-            case WHITE: return "http://hl7.org/fhir/metric-color";
-            default: return "?";
-          }
-        }
-        public String getDefinition() {
-          switch (this) {
-            case BLACK: return "Color for representation - black.";
-            case RED: return "Color for representation - red.";
-            case GREEN: return "Color for representation - green.";
-            case YELLOW: return "Color for representation - yellow.";
-            case BLUE: return "Color for representation - blue.";
-            case MAGENTA: return "Color for representation - magenta.";
-            case CYAN: return "Color for representation - cyan.";
-            case WHITE: return "Color for representation - white.";
-            default: return "?";
-          }
-        }
-        public String getDisplay() {
-          switch (this) {
-            case BLACK: return "Color Black";
-            case RED: return "Color Red";
-            case GREEN: return "Color Green";
-            case YELLOW: return "Color Yellow";
-            case BLUE: return "Color Blue";
-            case MAGENTA: return "Color Magenta";
-            case CYAN: return "Color Cyan";
-            case WHITE: return "Color White";
-            default: return "?";
-          }
-        }
-    }
-
-  public static class DeviceMetricColorEnumFactory implements EnumFactory<DeviceMetricColor> {
-    public DeviceMetricColor fromCode(String codeString) throws IllegalArgumentException {
-      if (codeString == null || "".equals(codeString))
-            if (codeString == null || "".equals(codeString))
-                return null;
-        if ("black".equals(codeString))
-          return DeviceMetricColor.BLACK;
-        if ("red".equals(codeString))
-          return DeviceMetricColor.RED;
-        if ("green".equals(codeString))
-          return DeviceMetricColor.GREEN;
-        if ("yellow".equals(codeString))
-          return DeviceMetricColor.YELLOW;
-        if ("blue".equals(codeString))
-          return DeviceMetricColor.BLUE;
-        if ("magenta".equals(codeString))
-          return DeviceMetricColor.MAGENTA;
-        if ("cyan".equals(codeString))
-          return DeviceMetricColor.CYAN;
-        if ("white".equals(codeString))
-          return DeviceMetricColor.WHITE;
-        throw new IllegalArgumentException("Unknown DeviceMetricColor code '"+codeString+"'");
-        }
-        public Enumeration<DeviceMetricColor> fromType(Base code) throws FHIRException {
-          if (code == null)
-            return null;
-          if (code.isEmpty())
-            return new Enumeration<DeviceMetricColor>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
-          if (codeString == null || "".equals(codeString))
-            return null;
-        if ("black".equals(codeString))
-          return new Enumeration<DeviceMetricColor>(this, DeviceMetricColor.BLACK);
-        if ("red".equals(codeString))
-          return new Enumeration<DeviceMetricColor>(this, DeviceMetricColor.RED);
-        if ("green".equals(codeString))
-          return new Enumeration<DeviceMetricColor>(this, DeviceMetricColor.GREEN);
-        if ("yellow".equals(codeString))
-          return new Enumeration<DeviceMetricColor>(this, DeviceMetricColor.YELLOW);
-        if ("blue".equals(codeString))
-          return new Enumeration<DeviceMetricColor>(this, DeviceMetricColor.BLUE);
-        if ("magenta".equals(codeString))
-          return new Enumeration<DeviceMetricColor>(this, DeviceMetricColor.MAGENTA);
-        if ("cyan".equals(codeString))
-          return new Enumeration<DeviceMetricColor>(this, DeviceMetricColor.CYAN);
-        if ("white".equals(codeString))
-          return new Enumeration<DeviceMetricColor>(this, DeviceMetricColor.WHITE);
-        throw new FHIRException("Unknown DeviceMetricColor code '"+codeString+"'");
-        }
-    public String toCode(DeviceMetricColor code) {
-      if (code == DeviceMetricColor.BLACK)
-        return "black";
-      if (code == DeviceMetricColor.RED)
-        return "red";
-      if (code == DeviceMetricColor.GREEN)
-        return "green";
-      if (code == DeviceMetricColor.YELLOW)
-        return "yellow";
-      if (code == DeviceMetricColor.BLUE)
-        return "blue";
-      if (code == DeviceMetricColor.MAGENTA)
-        return "magenta";
-      if (code == DeviceMetricColor.CYAN)
-        return "cyan";
-      if (code == DeviceMetricColor.WHITE)
-        return "white";
-      return "?";
-      }
-    public String toSystem(DeviceMetricColor code) {
       return code.getSystem();
       }
     }
 
     public enum DeviceMetricOperationalStatus {
         /**
-         * The DeviceMetric is operating and will generate DeviceObservations.
+         * The DeviceMetric is operating and will generate Observations.
          */
         ON, 
         /**
@@ -623,7 +498,7 @@ public class DeviceMetric extends DomainResource {
          */
         OFF, 
         /**
-         * The DeviceMetric is operating, but will not generate any DeviceObservations.
+         * The DeviceMetric is operating, but will not generate any Observations.
          */
         STANDBY, 
         /**
@@ -656,6 +531,7 @@ public class DeviceMetric extends DomainResource {
             case OFF: return "off";
             case STANDBY: return "standby";
             case ENTEREDINERROR: return "entered-in-error";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -665,15 +541,17 @@ public class DeviceMetric extends DomainResource {
             case OFF: return "http://hl7.org/fhir/metric-operational-status";
             case STANDBY: return "http://hl7.org/fhir/metric-operational-status";
             case ENTEREDINERROR: return "http://hl7.org/fhir/metric-operational-status";
+            case NULL: return null;
             default: return "?";
           }
         }
         public String getDefinition() {
           switch (this) {
-            case ON: return "The DeviceMetric is operating and will generate DeviceObservations.";
+            case ON: return "The DeviceMetric is operating and will generate Observations.";
             case OFF: return "The DeviceMetric is not operating.";
-            case STANDBY: return "The DeviceMetric is operating, but will not generate any DeviceObservations.";
+            case STANDBY: return "The DeviceMetric is operating, but will not generate any Observations.";
             case ENTEREDINERROR: return "The DeviceMetric was entered in error.";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -683,6 +561,7 @@ public class DeviceMetric extends DomainResource {
             case OFF: return "Off";
             case STANDBY: return "Standby";
             case ENTEREDINERROR: return "Entered In Error";
+            case NULL: return null;
             default: return "?";
           }
         }
@@ -703,26 +582,28 @@ public class DeviceMetric extends DomainResource {
           return DeviceMetricOperationalStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown DeviceMetricOperationalStatus code '"+codeString+"'");
         }
-        public Enumeration<DeviceMetricOperationalStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<DeviceMetricOperationalStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
-            return new Enumeration<DeviceMetricOperationalStatus>(this);
+            return new Enumeration<DeviceMetricOperationalStatus>(this, DeviceMetricOperationalStatus.NULL, code);
           String codeString = ((PrimitiveType) code).asStringValue();
           if (codeString == null || "".equals(codeString))
-            return null;
+            return new Enumeration<DeviceMetricOperationalStatus>(this, DeviceMetricOperationalStatus.NULL, code);
         if ("on".equals(codeString))
-          return new Enumeration<DeviceMetricOperationalStatus>(this, DeviceMetricOperationalStatus.ON);
+          return new Enumeration<DeviceMetricOperationalStatus>(this, DeviceMetricOperationalStatus.ON, code);
         if ("off".equals(codeString))
-          return new Enumeration<DeviceMetricOperationalStatus>(this, DeviceMetricOperationalStatus.OFF);
+          return new Enumeration<DeviceMetricOperationalStatus>(this, DeviceMetricOperationalStatus.OFF, code);
         if ("standby".equals(codeString))
-          return new Enumeration<DeviceMetricOperationalStatus>(this, DeviceMetricOperationalStatus.STANDBY);
+          return new Enumeration<DeviceMetricOperationalStatus>(this, DeviceMetricOperationalStatus.STANDBY, code);
         if ("entered-in-error".equals(codeString))
-          return new Enumeration<DeviceMetricOperationalStatus>(this, DeviceMetricOperationalStatus.ENTEREDINERROR);
+          return new Enumeration<DeviceMetricOperationalStatus>(this, DeviceMetricOperationalStatus.ENTEREDINERROR, code);
         throw new FHIRException("Unknown DeviceMetricOperationalStatus code '"+codeString+"'");
         }
     public String toCode(DeviceMetricOperationalStatus code) {
-      if (code == DeviceMetricOperationalStatus.ON)
+       if (code == DeviceMetricOperationalStatus.NULL)
+           return null;
+       if (code == DeviceMetricOperationalStatus.ON)
         return "on";
       if (code == DeviceMetricOperationalStatus.OFF)
         return "off";
@@ -731,7 +612,7 @@ public class DeviceMetric extends DomainResource {
       if (code == DeviceMetricOperationalStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(DeviceMetricOperationalStatus code) {
       return code.getSystem();
       }
@@ -742,7 +623,7 @@ public class DeviceMetric extends DomainResource {
         /**
          * Describes the type of the calibration method.
          */
-        @Child(name = "type", type = {CodeType.class}, order=1, min=0, max=1, modifier=false, summary=true)
+        @Child(name = "type", type = {CodeType.class}, order=1, min=0, max=1, modifier=false, summary=false)
         @Description(shortDefinition="unspecified | offset | gain | two-point", formalDefinition="Describes the type of the calibration method." )
         @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/metric-calibration-type")
         protected Enumeration<DeviceMetricCalibrationType> type;
@@ -750,7 +631,7 @@ public class DeviceMetric extends DomainResource {
         /**
          * Describes the state of the calibration.
          */
-        @Child(name = "state", type = {CodeType.class}, order=2, min=0, max=1, modifier=false, summary=true)
+        @Child(name = "state", type = {CodeType.class}, order=2, min=0, max=1, modifier=false, summary=false)
         @Description(shortDefinition="not-calibrated | calibration-required | calibrated | unspecified", formalDefinition="Describes the state of the calibration." )
         @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/metric-calibration-state")
         protected Enumeration<DeviceMetricCalibrationState> state;
@@ -758,7 +639,7 @@ public class DeviceMetric extends DomainResource {
         /**
          * Describes the time last calibration has been performed.
          */
-        @Child(name = "time", type = {InstantType.class}, order=3, min=0, max=1, modifier=false, summary=true)
+        @Child(name = "time", type = {InstantType.class}, order=3, min=0, max=1, modifier=false, summary=false)
         @Description(shortDefinition="Describes the time last calibration has been performed", formalDefinition="Describes the time last calibration has been performed." )
         protected InstantType time;
 
@@ -981,6 +862,21 @@ public class DeviceMetric extends DomainResource {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("type")) {
+          value = new DeviceMetricCalibrationTypeEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.type = (Enumeration) value; // Enumeration<DeviceMetricCalibrationType>
+        } else if (name.equals("state")) {
+          value = new DeviceMetricCalibrationStateEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.state = (Enumeration) value; // Enumeration<DeviceMetricCalibrationState>
+        } else if (name.equals("time")) {
+          this.time = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -1006,13 +902,13 @@ public class DeviceMetric extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.calibration.type");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.calibration.type");
         }
         else if (name.equals("state")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.calibration.state");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.calibration.state");
         }
         else if (name.equals("time")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.calibration.time");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.calibration.time");
         }
         else
           return super.addChild(name);
@@ -1022,6 +918,10 @@ public class DeviceMetric extends DomainResource {
         DeviceMetricCalibrationComponent dst = new DeviceMetricCalibrationComponent();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((DeviceMetricCalibrationComponent) dst);
       }
 
       public void copyValues(DeviceMetricCalibrationComponent dst) {
@@ -1065,10 +965,10 @@ public class DeviceMetric extends DomainResource {
   }
 
     /**
-     * Unique instance identifiers assigned to a device by the device or gateway software, manufacturers, other organizations or owners. For example: handle ID.
+     * Instance identifiers assigned to a device, by the device or gateway software, manufacturers, other organizations or owners. For example, handle ID.
      */
     @Child(name = "identifier", type = {Identifier.class}, order=0, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
-    @Description(shortDefinition="Instance identifier", formalDefinition="Unique instance identifiers assigned to a device by the device or gateway software, manufacturers, other organizations or owners. For example: handle ID." )
+    @Description(shortDefinition="Instance identifier", formalDefinition="Instance identifiers assigned to a device, by the device or gateway software, manufacturers, other organizations or owners. For example, handle ID." )
     protected List<Identifier> identifier;
 
     /**
@@ -1084,62 +984,55 @@ public class DeviceMetric extends DomainResource {
      */
     @Child(name = "unit", type = {CodeableConcept.class}, order=2, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="Unit of Measure for the Metric", formalDefinition="Describes the unit that an observed value determined for this metric will have. For example: Percent, Seconds, etc." )
-    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/devicemetric-type")
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/ucum-units")
     protected CodeableConcept unit;
 
     /**
-     * Describes the link to the  Device that this DeviceMetric belongs to and that contains administrative device information such as manufacturer, serial number, etc.
+     * Describes the link to the Device.  This is also known as a channel device.
      */
-    @Child(name = "source", type = {Device.class}, order=3, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Describes the link to the source Device", formalDefinition="Describes the link to the  Device that this DeviceMetric belongs to and that contains administrative device information such as manufacturer, serial number, etc." )
-    protected Reference source;
-
-    /**
-     * Describes the link to the  Device that this DeviceMetric belongs to and that provide information about the location of this DeviceMetric in the containment structure of the parent Device. An example would be a Device that represents a Channel. This reference can be used by a client application to distinguish DeviceMetrics that have the same type, but should be interpreted based on their containment location.
-     */
-    @Child(name = "parent", type = {Device.class}, order=4, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Describes the link to the parent Device", formalDefinition="Describes the link to the  Device that this DeviceMetric belongs to and that provide information about the location of this DeviceMetric in the containment structure of the parent Device. An example would be a Device that represents a Channel. This reference can be used by a client application to distinguish DeviceMetrics that have the same type, but should be interpreted based on their containment location." )
-    protected Reference parent;
+    @Child(name = "device", type = {Device.class}, order=3, min=1, max=1, modifier=false, summary=true)
+    @Description(shortDefinition="Describes the link to the Device", formalDefinition="Describes the link to the Device.  This is also known as a channel device." )
+    protected Reference device;
 
     /**
      * Indicates current operational state of the device. For example: On, Off, Standby, etc.
      */
-    @Child(name = "operationalStatus", type = {CodeType.class}, order=5, min=0, max=1, modifier=false, summary=true)
+    @Child(name = "operationalStatus", type = {CodeType.class}, order=4, min=0, max=1, modifier=false, summary=true)
     @Description(shortDefinition="on | off | standby | entered-in-error", formalDefinition="Indicates current operational state of the device. For example: On, Off, Standby, etc." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/metric-operational-status")
     protected Enumeration<DeviceMetricOperationalStatus> operationalStatus;
 
     /**
-     * Describes the color representation for the metric. This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth for example; the parameters are displayed in different characteristic colors, such as HR-blue, BP-green, and PR and SpO2- magenta.
+     * The preferred color associated with the metric (e.g., display color). This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth; the metrics are displayed in different characteristic colors, such as HR in blue, BP in green, and PR and SpO2 in magenta.
      */
-    @Child(name = "color", type = {CodeType.class}, order=6, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="black | red | green | yellow | blue | magenta | cyan | white", formalDefinition="Describes the color representation for the metric. This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth for example; the parameters are displayed in different characteristic colors, such as HR-blue, BP-green, and PR and SpO2- magenta." )
-    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/metric-color")
-    protected Enumeration<DeviceMetricColor> color;
+    @Child(name = "color", type = {CodeType.class}, order=5, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="Color name (from CSS4) or #RRGGBB code", formalDefinition="The preferred color associated with the metric (e.g., display color). This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth; the metrics are displayed in different characteristic colors, such as HR in blue, BP in green, and PR and SpO2 in magenta." )
+    @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/color-codes")
+    protected CodeType color;
 
     /**
      * Indicates the category of the observation generation process. A DeviceMetric can be for example a setting, measurement, or calculation.
      */
-    @Child(name = "category", type = {CodeType.class}, order=7, min=1, max=1, modifier=false, summary=true)
+    @Child(name = "category", type = {CodeType.class}, order=6, min=1, max=1, modifier=false, summary=true)
     @Description(shortDefinition="measurement | setting | calculation | unspecified", formalDefinition="Indicates the category of the observation generation process. A DeviceMetric can be for example a setting, measurement, or calculation." )
     @ca.uhn.fhir.model.api.annotation.Binding(valueSet="http://hl7.org/fhir/ValueSet/metric-category")
     protected Enumeration<DeviceMetricCategory> category;
 
     /**
-     * Describes the measurement repetition time. This is not necessarily the same as the update period. The measurement repetition time can range from milliseconds up to hours. An example for a measurement repetition time in the range of milliseconds is the sampling rate of an ECG. An example for a measurement repetition time in the range of hours is a NIBP that is triggered automatically every hour. The update period may be different than the measurement repetition time, if the device does not update the published observed value with the same frequency as it was measured.
+     * The frequency at which the metric is taken or recorded. Devices measure metrics at a wide range of frequencies; for example, an ECG might sample measurements in the millisecond range, while an NIBP might trigger only once an hour. Less often, the measurementFrequency may be based on a unit other than time, such as distance (e.g. for a measuring wheel). The update period may be different than the measurement frequency, if the device does not update the published observed value with the same frequency as it was measured.
      */
-    @Child(name = "measurementPeriod", type = {Timing.class}, order=8, min=0, max=1, modifier=false, summary=true)
-    @Description(shortDefinition="Describes the measurement repetition time", formalDefinition="Describes the measurement repetition time. This is not necessarily the same as the update period. The measurement repetition time can range from milliseconds up to hours. An example for a measurement repetition time in the range of milliseconds is the sampling rate of an ECG. An example for a measurement repetition time in the range of hours is a NIBP that is triggered automatically every hour. The update period may be different than the measurement repetition time, if the device does not update the published observed value with the same frequency as it was measured." )
-    protected Timing measurementPeriod;
+    @Child(name = "measurementFrequency", type = {Quantity.class}, order=7, min=0, max=1, modifier=false, summary=false)
+    @Description(shortDefinition="Indicates how often the metric is taken or recorded", formalDefinition="The frequency at which the metric is taken or recorded. Devices measure metrics at a wide range of frequencies; for example, an ECG might sample measurements in the millisecond range, while an NIBP might trigger only once an hour. Less often, the measurementFrequency may be based on a unit other than time, such as distance (e.g. for a measuring wheel). The update period may be different than the measurement frequency, if the device does not update the published observed value with the same frequency as it was measured." )
+    protected Quantity measurementFrequency;
 
     /**
      * Describes the calibrations that have been performed or that are required to be performed.
      */
-    @Child(name = "calibration", type = {}, order=9, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=true)
+    @Child(name = "calibration", type = {}, order=8, min=0, max=Child.MAX_UNLIMITED, modifier=false, summary=false)
     @Description(shortDefinition="Describes the calibrations that have been performed or that are required to be performed", formalDefinition="Describes the calibrations that have been performed or that are required to be performed." )
     protected List<DeviceMetricCalibrationComponent> calibration;
 
-    private static final long serialVersionUID = 2132964036L;
+    private static final long serialVersionUID = 2109169775L;
 
   /**
    * Constructor
@@ -1151,14 +1044,15 @@ public class DeviceMetric extends DomainResource {
   /**
    * Constructor
    */
-    public DeviceMetric(CodeableConcept type, DeviceMetricCategory category) {
+    public DeviceMetric(CodeableConcept type, Reference device, DeviceMetricCategory category) {
       super();
       this.setType(type);
+      this.setDevice(device);
       this.setCategory(category);
     }
 
     /**
-     * @return {@link #identifier} (Unique instance identifiers assigned to a device by the device or gateway software, manufacturers, other organizations or owners. For example: handle ID.)
+     * @return {@link #identifier} (Instance identifiers assigned to a device, by the device or gateway software, manufacturers, other organizations or owners. For example, handle ID.)
      */
     public List<Identifier> getIdentifier() { 
       if (this.identifier == null)
@@ -1259,50 +1153,26 @@ public class DeviceMetric extends DomainResource {
     }
 
     /**
-     * @return {@link #source} (Describes the link to the  Device that this DeviceMetric belongs to and that contains administrative device information such as manufacturer, serial number, etc.)
+     * @return {@link #device} (Describes the link to the Device.  This is also known as a channel device.)
      */
-    public Reference getSource() { 
-      if (this.source == null)
+    public Reference getDevice() { 
+      if (this.device == null)
         if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create DeviceMetric.source");
+          throw new Error("Attempt to auto-create DeviceMetric.device");
         else if (Configuration.doAutoCreate())
-          this.source = new Reference(); // cc
-      return this.source;
+          this.device = new Reference(); // cc
+      return this.device;
     }
 
-    public boolean hasSource() { 
-      return this.source != null && !this.source.isEmpty();
-    }
-
-    /**
-     * @param value {@link #source} (Describes the link to the  Device that this DeviceMetric belongs to and that contains administrative device information such as manufacturer, serial number, etc.)
-     */
-    public DeviceMetric setSource(Reference value) { 
-      this.source = value;
-      return this;
+    public boolean hasDevice() { 
+      return this.device != null && !this.device.isEmpty();
     }
 
     /**
-     * @return {@link #parent} (Describes the link to the  Device that this DeviceMetric belongs to and that provide information about the location of this DeviceMetric in the containment structure of the parent Device. An example would be a Device that represents a Channel. This reference can be used by a client application to distinguish DeviceMetrics that have the same type, but should be interpreted based on their containment location.)
+     * @param value {@link #device} (Describes the link to the Device.  This is also known as a channel device.)
      */
-    public Reference getParent() { 
-      if (this.parent == null)
-        if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create DeviceMetric.parent");
-        else if (Configuration.doAutoCreate())
-          this.parent = new Reference(); // cc
-      return this.parent;
-    }
-
-    public boolean hasParent() { 
-      return this.parent != null && !this.parent.isEmpty();
-    }
-
-    /**
-     * @param value {@link #parent} (Describes the link to the  Device that this DeviceMetric belongs to and that provide information about the location of this DeviceMetric in the containment structure of the parent Device. An example would be a Device that represents a Channel. This reference can be used by a client application to distinguish DeviceMetrics that have the same type, but should be interpreted based on their containment location.)
-     */
-    public DeviceMetric setParent(Reference value) { 
-      this.parent = value;
+    public DeviceMetric setDevice(Reference value) { 
+      this.device = value;
       return this;
     }
 
@@ -1356,14 +1226,14 @@ public class DeviceMetric extends DomainResource {
     }
 
     /**
-     * @return {@link #color} (Describes the color representation for the metric. This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth for example; the parameters are displayed in different characteristic colors, such as HR-blue, BP-green, and PR and SpO2- magenta.). This is the underlying object with id, value and extensions. The accessor "getColor" gives direct access to the value
+     * @return {@link #color} (The preferred color associated with the metric (e.g., display color). This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth; the metrics are displayed in different characteristic colors, such as HR in blue, BP in green, and PR and SpO2 in magenta.). This is the underlying object with id, value and extensions. The accessor "getColor" gives direct access to the value
      */
-    public Enumeration<DeviceMetricColor> getColorElement() { 
+    public CodeType getColorElement() { 
       if (this.color == null)
         if (Configuration.errorOnAutoCreate())
           throw new Error("Attempt to auto-create DeviceMetric.color");
         else if (Configuration.doAutoCreate())
-          this.color = new Enumeration<DeviceMetricColor>(new DeviceMetricColorEnumFactory()); // bb
+          this.color = new CodeType(); // bb
       return this.color;
     }
 
@@ -1376,29 +1246,29 @@ public class DeviceMetric extends DomainResource {
     }
 
     /**
-     * @param value {@link #color} (Describes the color representation for the metric. This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth for example; the parameters are displayed in different characteristic colors, such as HR-blue, BP-green, and PR and SpO2- magenta.). This is the underlying object with id, value and extensions. The accessor "getColor" gives direct access to the value
+     * @param value {@link #color} (The preferred color associated with the metric (e.g., display color). This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth; the metrics are displayed in different characteristic colors, such as HR in blue, BP in green, and PR and SpO2 in magenta.). This is the underlying object with id, value and extensions. The accessor "getColor" gives direct access to the value
      */
-    public DeviceMetric setColorElement(Enumeration<DeviceMetricColor> value) { 
+    public DeviceMetric setColorElement(CodeType value) { 
       this.color = value;
       return this;
     }
 
     /**
-     * @return Describes the color representation for the metric. This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth for example; the parameters are displayed in different characteristic colors, such as HR-blue, BP-green, and PR and SpO2- magenta.
+     * @return The preferred color associated with the metric (e.g., display color). This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth; the metrics are displayed in different characteristic colors, such as HR in blue, BP in green, and PR and SpO2 in magenta.
      */
-    public DeviceMetricColor getColor() { 
+    public String getColor() { 
       return this.color == null ? null : this.color.getValue();
     }
 
     /**
-     * @param value Describes the color representation for the metric. This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth for example; the parameters are displayed in different characteristic colors, such as HR-blue, BP-green, and PR and SpO2- magenta.
+     * @param value The preferred color associated with the metric (e.g., display color). This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth; the metrics are displayed in different characteristic colors, such as HR in blue, BP in green, and PR and SpO2 in magenta.
      */
-    public DeviceMetric setColor(DeviceMetricColor value) { 
-      if (value == null)
+    public DeviceMetric setColor(String value) { 
+      if (Utilities.noString(value))
         this.color = null;
       else {
         if (this.color == null)
-          this.color = new Enumeration<DeviceMetricColor>(new DeviceMetricColorEnumFactory());
+          this.color = new CodeType();
         this.color.setValue(value);
       }
       return this;
@@ -1450,26 +1320,26 @@ public class DeviceMetric extends DomainResource {
     }
 
     /**
-     * @return {@link #measurementPeriod} (Describes the measurement repetition time. This is not necessarily the same as the update period. The measurement repetition time can range from milliseconds up to hours. An example for a measurement repetition time in the range of milliseconds is the sampling rate of an ECG. An example for a measurement repetition time in the range of hours is a NIBP that is triggered automatically every hour. The update period may be different than the measurement repetition time, if the device does not update the published observed value with the same frequency as it was measured.)
+     * @return {@link #measurementFrequency} (The frequency at which the metric is taken or recorded. Devices measure metrics at a wide range of frequencies; for example, an ECG might sample measurements in the millisecond range, while an NIBP might trigger only once an hour. Less often, the measurementFrequency may be based on a unit other than time, such as distance (e.g. for a measuring wheel). The update period may be different than the measurement frequency, if the device does not update the published observed value with the same frequency as it was measured.)
      */
-    public Timing getMeasurementPeriod() { 
-      if (this.measurementPeriod == null)
+    public Quantity getMeasurementFrequency() { 
+      if (this.measurementFrequency == null)
         if (Configuration.errorOnAutoCreate())
-          throw new Error("Attempt to auto-create DeviceMetric.measurementPeriod");
+          throw new Error("Attempt to auto-create DeviceMetric.measurementFrequency");
         else if (Configuration.doAutoCreate())
-          this.measurementPeriod = new Timing(); // cc
-      return this.measurementPeriod;
+          this.measurementFrequency = new Quantity(); // cc
+      return this.measurementFrequency;
     }
 
-    public boolean hasMeasurementPeriod() { 
-      return this.measurementPeriod != null && !this.measurementPeriod.isEmpty();
+    public boolean hasMeasurementFrequency() { 
+      return this.measurementFrequency != null && !this.measurementFrequency.isEmpty();
     }
 
     /**
-     * @param value {@link #measurementPeriod} (Describes the measurement repetition time. This is not necessarily the same as the update period. The measurement repetition time can range from milliseconds up to hours. An example for a measurement repetition time in the range of milliseconds is the sampling rate of an ECG. An example for a measurement repetition time in the range of hours is a NIBP that is triggered automatically every hour. The update period may be different than the measurement repetition time, if the device does not update the published observed value with the same frequency as it was measured.)
+     * @param value {@link #measurementFrequency} (The frequency at which the metric is taken or recorded. Devices measure metrics at a wide range of frequencies; for example, an ECG might sample measurements in the millisecond range, while an NIBP might trigger only once an hour. Less often, the measurementFrequency may be based on a unit other than time, such as distance (e.g. for a measuring wheel). The update period may be different than the measurement frequency, if the device does not update the published observed value with the same frequency as it was measured.)
      */
-    public DeviceMetric setMeasurementPeriod(Timing value) { 
-      this.measurementPeriod = value;
+    public DeviceMetric setMeasurementFrequency(Quantity value) { 
+      this.measurementFrequency = value;
       return this;
     }
 
@@ -1528,30 +1398,28 @@ public class DeviceMetric extends DomainResource {
 
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
-        children.add(new Property("identifier", "Identifier", "Unique instance identifiers assigned to a device by the device or gateway software, manufacturers, other organizations or owners. For example: handle ID.", 0, java.lang.Integer.MAX_VALUE, identifier));
+        children.add(new Property("identifier", "Identifier", "Instance identifiers assigned to a device, by the device or gateway software, manufacturers, other organizations or owners. For example, handle ID.", 0, java.lang.Integer.MAX_VALUE, identifier));
         children.add(new Property("type", "CodeableConcept", "Describes the type of the metric. For example: Heart Rate, PEEP Setting, etc.", 0, 1, type));
         children.add(new Property("unit", "CodeableConcept", "Describes the unit that an observed value determined for this metric will have. For example: Percent, Seconds, etc.", 0, 1, unit));
-        children.add(new Property("source", "Reference(Device)", "Describes the link to the  Device that this DeviceMetric belongs to and that contains administrative device information such as manufacturer, serial number, etc.", 0, 1, source));
-        children.add(new Property("parent", "Reference(Device)", "Describes the link to the  Device that this DeviceMetric belongs to and that provide information about the location of this DeviceMetric in the containment structure of the parent Device. An example would be a Device that represents a Channel. This reference can be used by a client application to distinguish DeviceMetrics that have the same type, but should be interpreted based on their containment location.", 0, 1, parent));
+        children.add(new Property("device", "Reference(Device)", "Describes the link to the Device.  This is also known as a channel device.", 0, 1, device));
         children.add(new Property("operationalStatus", "code", "Indicates current operational state of the device. For example: On, Off, Standby, etc.", 0, 1, operationalStatus));
-        children.add(new Property("color", "code", "Describes the color representation for the metric. This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth for example; the parameters are displayed in different characteristic colors, such as HR-blue, BP-green, and PR and SpO2- magenta.", 0, 1, color));
+        children.add(new Property("color", "code", "The preferred color associated with the metric (e.g., display color). This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth; the metrics are displayed in different characteristic colors, such as HR in blue, BP in green, and PR and SpO2 in magenta.", 0, 1, color));
         children.add(new Property("category", "code", "Indicates the category of the observation generation process. A DeviceMetric can be for example a setting, measurement, or calculation.", 0, 1, category));
-        children.add(new Property("measurementPeriod", "Timing", "Describes the measurement repetition time. This is not necessarily the same as the update period. The measurement repetition time can range from milliseconds up to hours. An example for a measurement repetition time in the range of milliseconds is the sampling rate of an ECG. An example for a measurement repetition time in the range of hours is a NIBP that is triggered automatically every hour. The update period may be different than the measurement repetition time, if the device does not update the published observed value with the same frequency as it was measured.", 0, 1, measurementPeriod));
+        children.add(new Property("measurementFrequency", "Quantity", "The frequency at which the metric is taken or recorded. Devices measure metrics at a wide range of frequencies; for example, an ECG might sample measurements in the millisecond range, while an NIBP might trigger only once an hour. Less often, the measurementFrequency may be based on a unit other than time, such as distance (e.g. for a measuring wheel). The update period may be different than the measurement frequency, if the device does not update the published observed value with the same frequency as it was measured.", 0, 1, measurementFrequency));
         children.add(new Property("calibration", "", "Describes the calibrations that have been performed or that are required to be performed.", 0, java.lang.Integer.MAX_VALUE, calibration));
       }
 
       @Override
       public Property getNamedProperty(int _hash, String _name, boolean _checkValid) throws FHIRException {
         switch (_hash) {
-        case -1618432855: /*identifier*/  return new Property("identifier", "Identifier", "Unique instance identifiers assigned to a device by the device or gateway software, manufacturers, other organizations or owners. For example: handle ID.", 0, java.lang.Integer.MAX_VALUE, identifier);
+        case -1618432855: /*identifier*/  return new Property("identifier", "Identifier", "Instance identifiers assigned to a device, by the device or gateway software, manufacturers, other organizations or owners. For example, handle ID.", 0, java.lang.Integer.MAX_VALUE, identifier);
         case 3575610: /*type*/  return new Property("type", "CodeableConcept", "Describes the type of the metric. For example: Heart Rate, PEEP Setting, etc.", 0, 1, type);
         case 3594628: /*unit*/  return new Property("unit", "CodeableConcept", "Describes the unit that an observed value determined for this metric will have. For example: Percent, Seconds, etc.", 0, 1, unit);
-        case -896505829: /*source*/  return new Property("source", "Reference(Device)", "Describes the link to the  Device that this DeviceMetric belongs to and that contains administrative device information such as manufacturer, serial number, etc.", 0, 1, source);
-        case -995424086: /*parent*/  return new Property("parent", "Reference(Device)", "Describes the link to the  Device that this DeviceMetric belongs to and that provide information about the location of this DeviceMetric in the containment structure of the parent Device. An example would be a Device that represents a Channel. This reference can be used by a client application to distinguish DeviceMetrics that have the same type, but should be interpreted based on their containment location.", 0, 1, parent);
+        case -1335157162: /*device*/  return new Property("device", "Reference(Device)", "Describes the link to the Device.  This is also known as a channel device.", 0, 1, device);
         case -2103166364: /*operationalStatus*/  return new Property("operationalStatus", "code", "Indicates current operational state of the device. For example: On, Off, Standby, etc.", 0, 1, operationalStatus);
-        case 94842723: /*color*/  return new Property("color", "code", "Describes the color representation for the metric. This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth for example; the parameters are displayed in different characteristic colors, such as HR-blue, BP-green, and PR and SpO2- magenta.", 0, 1, color);
+        case 94842723: /*color*/  return new Property("color", "code", "The preferred color associated with the metric (e.g., display color). This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and Pleth; the metrics are displayed in different characteristic colors, such as HR in blue, BP in green, and PR and SpO2 in magenta.", 0, 1, color);
         case 50511102: /*category*/  return new Property("category", "code", "Indicates the category of the observation generation process. A DeviceMetric can be for example a setting, measurement, or calculation.", 0, 1, category);
-        case -1300332387: /*measurementPeriod*/  return new Property("measurementPeriod", "Timing", "Describes the measurement repetition time. This is not necessarily the same as the update period. The measurement repetition time can range from milliseconds up to hours. An example for a measurement repetition time in the range of milliseconds is the sampling rate of an ECG. An example for a measurement repetition time in the range of hours is a NIBP that is triggered automatically every hour. The update period may be different than the measurement repetition time, if the device does not update the published observed value with the same frequency as it was measured.", 0, 1, measurementPeriod);
+        case 1766341888: /*measurementFrequency*/  return new Property("measurementFrequency", "Quantity", "The frequency at which the metric is taken or recorded. Devices measure metrics at a wide range of frequencies; for example, an ECG might sample measurements in the millisecond range, while an NIBP might trigger only once an hour. Less often, the measurementFrequency may be based on a unit other than time, such as distance (e.g. for a measuring wheel). The update period may be different than the measurement frequency, if the device does not update the published observed value with the same frequency as it was measured.", 0, 1, measurementFrequency);
         case 1421318634: /*calibration*/  return new Property("calibration", "", "Describes the calibrations that have been performed or that are required to be performed.", 0, java.lang.Integer.MAX_VALUE, calibration);
         default: return super.getNamedProperty(_hash, _name, _checkValid);
         }
@@ -1564,12 +1432,11 @@ public class DeviceMetric extends DomainResource {
         case -1618432855: /*identifier*/ return this.identifier == null ? new Base[0] : this.identifier.toArray(new Base[this.identifier.size()]); // Identifier
         case 3575610: /*type*/ return this.type == null ? new Base[0] : new Base[] {this.type}; // CodeableConcept
         case 3594628: /*unit*/ return this.unit == null ? new Base[0] : new Base[] {this.unit}; // CodeableConcept
-        case -896505829: /*source*/ return this.source == null ? new Base[0] : new Base[] {this.source}; // Reference
-        case -995424086: /*parent*/ return this.parent == null ? new Base[0] : new Base[] {this.parent}; // Reference
+        case -1335157162: /*device*/ return this.device == null ? new Base[0] : new Base[] {this.device}; // Reference
         case -2103166364: /*operationalStatus*/ return this.operationalStatus == null ? new Base[0] : new Base[] {this.operationalStatus}; // Enumeration<DeviceMetricOperationalStatus>
-        case 94842723: /*color*/ return this.color == null ? new Base[0] : new Base[] {this.color}; // Enumeration<DeviceMetricColor>
+        case 94842723: /*color*/ return this.color == null ? new Base[0] : new Base[] {this.color}; // CodeType
         case 50511102: /*category*/ return this.category == null ? new Base[0] : new Base[] {this.category}; // Enumeration<DeviceMetricCategory>
-        case -1300332387: /*measurementPeriod*/ return this.measurementPeriod == null ? new Base[0] : new Base[] {this.measurementPeriod}; // Timing
+        case 1766341888: /*measurementFrequency*/ return this.measurementFrequency == null ? new Base[0] : new Base[] {this.measurementFrequency}; // Quantity
         case 1421318634: /*calibration*/ return this.calibration == null ? new Base[0] : this.calibration.toArray(new Base[this.calibration.size()]); // DeviceMetricCalibrationComponent
         default: return super.getProperty(hash, name, checkValid);
         }
@@ -1588,26 +1455,22 @@ public class DeviceMetric extends DomainResource {
         case 3594628: // unit
           this.unit = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
           return value;
-        case -896505829: // source
-          this.source = TypeConvertor.castToReference(value); // Reference
-          return value;
-        case -995424086: // parent
-          this.parent = TypeConvertor.castToReference(value); // Reference
+        case -1335157162: // device
+          this.device = TypeConvertor.castToReference(value); // Reference
           return value;
         case -2103166364: // operationalStatus
           value = new DeviceMetricOperationalStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.operationalStatus = (Enumeration) value; // Enumeration<DeviceMetricOperationalStatus>
           return value;
         case 94842723: // color
-          value = new DeviceMetricColorEnumFactory().fromType(TypeConvertor.castToCode(value));
-          this.color = (Enumeration) value; // Enumeration<DeviceMetricColor>
+          this.color = TypeConvertor.castToCode(value); // CodeType
           return value;
         case 50511102: // category
           value = new DeviceMetricCategoryEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.category = (Enumeration) value; // Enumeration<DeviceMetricCategory>
           return value;
-        case -1300332387: // measurementPeriod
-          this.measurementPeriod = TypeConvertor.castToTiming(value); // Timing
+        case 1766341888: // measurementFrequency
+          this.measurementFrequency = TypeConvertor.castToQuantity(value); // Quantity
           return value;
         case 1421318634: // calibration
           this.getCalibration().add((DeviceMetricCalibrationComponent) value); // DeviceMetricCalibrationComponent
@@ -1625,26 +1488,50 @@ public class DeviceMetric extends DomainResource {
           this.type = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
         } else if (name.equals("unit")) {
           this.unit = TypeConvertor.castToCodeableConcept(value); // CodeableConcept
-        } else if (name.equals("source")) {
-          this.source = TypeConvertor.castToReference(value); // Reference
-        } else if (name.equals("parent")) {
-          this.parent = TypeConvertor.castToReference(value); // Reference
+        } else if (name.equals("device")) {
+          this.device = TypeConvertor.castToReference(value); // Reference
         } else if (name.equals("operationalStatus")) {
           value = new DeviceMetricOperationalStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.operationalStatus = (Enumeration) value; // Enumeration<DeviceMetricOperationalStatus>
         } else if (name.equals("color")) {
-          value = new DeviceMetricColorEnumFactory().fromType(TypeConvertor.castToCode(value));
-          this.color = (Enumeration) value; // Enumeration<DeviceMetricColor>
+          this.color = TypeConvertor.castToCode(value); // CodeType
         } else if (name.equals("category")) {
           value = new DeviceMetricCategoryEnumFactory().fromType(TypeConvertor.castToCode(value));
           this.category = (Enumeration) value; // Enumeration<DeviceMetricCategory>
-        } else if (name.equals("measurementPeriod")) {
-          this.measurementPeriod = TypeConvertor.castToTiming(value); // Timing
+        } else if (name.equals("measurementFrequency")) {
+          this.measurementFrequency = TypeConvertor.castToQuantity(value); // Quantity
         } else if (name.equals("calibration")) {
           this.getCalibration().add((DeviceMetricCalibrationComponent) value);
         } else
           return super.setProperty(name, value);
         return value;
+      }
+
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("identifier")) {
+          this.getIdentifier().remove(value);
+        } else if (name.equals("type")) {
+          this.type = null;
+        } else if (name.equals("unit")) {
+          this.unit = null;
+        } else if (name.equals("device")) {
+          this.device = null;
+        } else if (name.equals("operationalStatus")) {
+          value = new DeviceMetricOperationalStatusEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.operationalStatus = (Enumeration) value; // Enumeration<DeviceMetricOperationalStatus>
+        } else if (name.equals("color")) {
+          this.color = null;
+        } else if (name.equals("category")) {
+          value = new DeviceMetricCategoryEnumFactory().fromType(TypeConvertor.castToCode(value));
+          this.category = (Enumeration) value; // Enumeration<DeviceMetricCategory>
+        } else if (name.equals("measurementFrequency")) {
+          this.measurementFrequency = null;
+        } else if (name.equals("calibration")) {
+          this.getCalibration().remove((DeviceMetricCalibrationComponent) value);
+        } else
+          super.removeChild(name, value);
+        
       }
 
       @Override
@@ -1653,12 +1540,11 @@ public class DeviceMetric extends DomainResource {
         case -1618432855:  return addIdentifier(); 
         case 3575610:  return getType();
         case 3594628:  return getUnit();
-        case -896505829:  return getSource();
-        case -995424086:  return getParent();
+        case -1335157162:  return getDevice();
         case -2103166364:  return getOperationalStatusElement();
         case 94842723:  return getColorElement();
         case 50511102:  return getCategoryElement();
-        case -1300332387:  return getMeasurementPeriod();
+        case 1766341888:  return getMeasurementFrequency();
         case 1421318634:  return addCalibration(); 
         default: return super.makeProperty(hash, name);
         }
@@ -1671,12 +1557,11 @@ public class DeviceMetric extends DomainResource {
         case -1618432855: /*identifier*/ return new String[] {"Identifier"};
         case 3575610: /*type*/ return new String[] {"CodeableConcept"};
         case 3594628: /*unit*/ return new String[] {"CodeableConcept"};
-        case -896505829: /*source*/ return new String[] {"Reference"};
-        case -995424086: /*parent*/ return new String[] {"Reference"};
+        case -1335157162: /*device*/ return new String[] {"Reference"};
         case -2103166364: /*operationalStatus*/ return new String[] {"code"};
         case 94842723: /*color*/ return new String[] {"code"};
         case 50511102: /*category*/ return new String[] {"code"};
-        case -1300332387: /*measurementPeriod*/ return new String[] {"Timing"};
+        case 1766341888: /*measurementFrequency*/ return new String[] {"Quantity"};
         case 1421318634: /*calibration*/ return new String[] {};
         default: return super.getTypesForProperty(hash, name);
         }
@@ -1696,26 +1581,22 @@ public class DeviceMetric extends DomainResource {
           this.unit = new CodeableConcept();
           return this.unit;
         }
-        else if (name.equals("source")) {
-          this.source = new Reference();
-          return this.source;
-        }
-        else if (name.equals("parent")) {
-          this.parent = new Reference();
-          return this.parent;
+        else if (name.equals("device")) {
+          this.device = new Reference();
+          return this.device;
         }
         else if (name.equals("operationalStatus")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.operationalStatus");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.operationalStatus");
         }
         else if (name.equals("color")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.color");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.color");
         }
         else if (name.equals("category")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceMetric.category");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceMetric.category");
         }
-        else if (name.equals("measurementPeriod")) {
-          this.measurementPeriod = new Timing();
-          return this.measurementPeriod;
+        else if (name.equals("measurementFrequency")) {
+          this.measurementFrequency = new Quantity();
+          return this.measurementFrequency;
         }
         else if (name.equals("calibration")) {
           return addCalibration();
@@ -1735,6 +1616,10 @@ public class DeviceMetric extends DomainResource {
         return dst;
       }
 
+      public void assignValues(Base dst) {
+        copyValues((DeviceMetric) dst);
+      }
+
       public void copyValues(DeviceMetric dst) {
         super.copyValues(dst);
         if (identifier != null) {
@@ -1744,12 +1629,11 @@ public class DeviceMetric extends DomainResource {
         };
         dst.type = type == null ? null : type.copy();
         dst.unit = unit == null ? null : unit.copy();
-        dst.source = source == null ? null : source.copy();
-        dst.parent = parent == null ? null : parent.copy();
+        dst.device = device == null ? null : device.copy();
         dst.operationalStatus = operationalStatus == null ? null : operationalStatus.copy();
         dst.color = color == null ? null : color.copy();
         dst.category = category == null ? null : category.copy();
-        dst.measurementPeriod = measurementPeriod == null ? null : measurementPeriod.copy();
+        dst.measurementFrequency = measurementFrequency == null ? null : measurementFrequency.copy();
         if (calibration != null) {
           dst.calibration = new ArrayList<DeviceMetricCalibrationComponent>();
           for (DeviceMetricCalibrationComponent i : calibration)
@@ -1769,8 +1653,8 @@ public class DeviceMetric extends DomainResource {
           return false;
         DeviceMetric o = (DeviceMetric) other_;
         return compareDeep(identifier, o.identifier, true) && compareDeep(type, o.type, true) && compareDeep(unit, o.unit, true)
-           && compareDeep(source, o.source, true) && compareDeep(parent, o.parent, true) && compareDeep(operationalStatus, o.operationalStatus, true)
-           && compareDeep(color, o.color, true) && compareDeep(category, o.category, true) && compareDeep(measurementPeriod, o.measurementPeriod, true)
+           && compareDeep(device, o.device, true) && compareDeep(operationalStatus, o.operationalStatus, true)
+           && compareDeep(color, o.color, true) && compareDeep(category, o.category, true) && compareDeep(measurementFrequency, o.measurementFrequency, true)
            && compareDeep(calibration, o.calibration, true);
       }
 
@@ -1786,8 +1670,8 @@ public class DeviceMetric extends DomainResource {
       }
 
       public boolean isEmpty() {
-        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(identifier, type, unit, source
-          , parent, operationalStatus, color, category, measurementPeriod, calibration);
+        return super.isEmpty() && ca.uhn.fhir.util.ElementUtil.isEmpty(identifier, type, unit, device
+          , operationalStatus, color, category, measurementFrequency, calibration);
       }
 
   @Override
@@ -1816,6 +1700,32 @@ public class DeviceMetric extends DomainResource {
   public static final ca.uhn.fhir.rest.gclient.TokenClientParam CATEGORY = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_CATEGORY);
 
  /**
+   * Search parameter: <b>device</b>
+   * <p>
+   * Description: <b>The device resource</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>DeviceMetric.device</b><br>
+   * </p>
+   */
+  @SearchParamDefinition(name="device", path="DeviceMetric.device", description="The device resource", type="reference", target={Device.class } )
+  public static final String SP_DEVICE = "device";
+ /**
+   * <b>Fluent Client</b> search parameter constant for <b>device</b>
+   * <p>
+   * Description: <b>The device resource</b><br>
+   * Type: <b>reference</b><br>
+   * Path: <b>DeviceMetric.device</b><br>
+   * </p>
+   */
+  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam DEVICE = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_DEVICE);
+
+/**
+   * Constant for fluent queries to be used to add include statements. Specifies
+   * the path value of "<b>DeviceMetric:device</b>".
+   */
+  public static final ca.uhn.fhir.model.api.Include INCLUDE_DEVICE = new ca.uhn.fhir.model.api.Include("DeviceMetric:device").toLocked();
+
+ /**
    * Search parameter: <b>identifier</b>
    * <p>
    * Description: <b>The identifier of the metric</b><br>
@@ -1836,71 +1746,19 @@ public class DeviceMetric extends DomainResource {
   public static final ca.uhn.fhir.rest.gclient.TokenClientParam IDENTIFIER = new ca.uhn.fhir.rest.gclient.TokenClientParam(SP_IDENTIFIER);
 
  /**
-   * Search parameter: <b>parent</b>
-   * <p>
-   * Description: <b>The parent DeviceMetric resource</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>DeviceMetric.parent</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="parent", path="DeviceMetric.parent", description="The parent DeviceMetric resource", type="reference", target={Device.class } )
-  public static final String SP_PARENT = "parent";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>parent</b>
-   * <p>
-   * Description: <b>The parent DeviceMetric resource</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>DeviceMetric.parent</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam PARENT = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_PARENT);
-
-/**
-   * Constant for fluent queries to be used to add include statements. Specifies
-   * the path value of "<b>DeviceMetric:parent</b>".
-   */
-  public static final ca.uhn.fhir.model.api.Include INCLUDE_PARENT = new ca.uhn.fhir.model.api.Include("DeviceMetric:parent").toLocked();
-
- /**
-   * Search parameter: <b>source</b>
-   * <p>
-   * Description: <b>The device resource</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>DeviceMetric.source</b><br>
-   * </p>
-   */
-  @SearchParamDefinition(name="source", path="DeviceMetric.source", description="The device resource", type="reference", target={Device.class } )
-  public static final String SP_SOURCE = "source";
- /**
-   * <b>Fluent Client</b> search parameter constant for <b>source</b>
-   * <p>
-   * Description: <b>The device resource</b><br>
-   * Type: <b>reference</b><br>
-   * Path: <b>DeviceMetric.source</b><br>
-   * </p>
-   */
-  public static final ca.uhn.fhir.rest.gclient.ReferenceClientParam SOURCE = new ca.uhn.fhir.rest.gclient.ReferenceClientParam(SP_SOURCE);
-
-/**
-   * Constant for fluent queries to be used to add include statements. Specifies
-   * the path value of "<b>DeviceMetric:source</b>".
-   */
-  public static final ca.uhn.fhir.model.api.Include INCLUDE_SOURCE = new ca.uhn.fhir.model.api.Include("DeviceMetric:source").toLocked();
-
- /**
    * Search parameter: <b>type</b>
    * <p>
-   * Description: <b>The component type</b><br>
+   * Description: <b>The type of metric</b><br>
    * Type: <b>token</b><br>
    * Path: <b>DeviceMetric.type</b><br>
    * </p>
    */
-  @SearchParamDefinition(name="type", path="DeviceMetric.type", description="The component type", type="token" )
+  @SearchParamDefinition(name="type", path="DeviceMetric.type", description="The type of metric", type="token" )
   public static final String SP_TYPE = "type";
  /**
    * <b>Fluent Client</b> search parameter constant for <b>type</b>
    * <p>
-   * Description: <b>The component type</b><br>
+   * Description: <b>The type of metric</b><br>
    * Type: <b>token</b><br>
    * Path: <b>DeviceMetric.type</b><br>
    * </p>

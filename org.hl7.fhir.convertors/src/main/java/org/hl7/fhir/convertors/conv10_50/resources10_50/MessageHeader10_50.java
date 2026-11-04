@@ -5,9 +5,11 @@ import org.hl7.fhir.convertors.conv10_50.datatypes10_50.Reference10_50;
 import org.hl7.fhir.convertors.conv10_50.datatypes10_50.complextypes10_50.CodeableConcept10_50;
 import org.hl7.fhir.convertors.conv10_50.datatypes10_50.complextypes10_50.Coding10_50;
 import org.hl7.fhir.convertors.conv10_50.datatypes10_50.complextypes10_50.ContactPoint10_50;
-import org.hl7.fhir.convertors.conv10_50.datatypes10_50.primitivetypes10_50.Id10_50;
 import org.hl7.fhir.convertors.conv10_50.datatypes10_50.primitivetypes10_50.String10_50;
+import org.hl7.fhir.convertors.conv10_50.datatypes10_50.primitivetypes10_50.Uri10_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.model.Enumeration;
+import org.hl7.fhir.r5.model.MessageHeader;
 
 public class MessageHeader10_50 {
 
@@ -15,13 +17,13 @@ public class MessageHeader10_50 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.dstu2.model.MessageHeader.MessageDestinationComponent tgt = new org.hl7.fhir.dstu2.model.MessageHeader.MessageDestinationComponent();
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyBackboneElement(src,tgt);
     if (src.hasNameElement())
       tgt.setNameElement(String10_50.convertString(src.getNameElement()));
     if (src.hasTarget())
       tgt.setTarget(Reference10_50.convertReference(src.getTarget()));
-    if (src.hasEndpoint())
-      tgt.setEndpoint(src.getEndpoint());
+    if (src.hasEndpointUrlType())
+      tgt.setEndpointElement(Uri10_50.convertUri(src.getEndpointUrlType()));
     return tgt;
   }
 
@@ -29,13 +31,13 @@ public class MessageHeader10_50 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.r5.model.MessageHeader.MessageDestinationComponent tgt = new org.hl7.fhir.r5.model.MessageHeader.MessageDestinationComponent();
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyBackboneElement(src,tgt);
     if (src.hasNameElement())
       tgt.setNameElement(String10_50.convertString(src.getNameElement()));
     if (src.hasTarget())
       tgt.setTarget(Reference10_50.convertReference(src.getTarget()));
     if (src.hasEndpoint())
-      tgt.setEndpoint(src.getEndpoint());
+      tgt.setEndpoint(Uri10_50.convertUri(src.getEndpointElement()));
     return tgt;
   }
 
@@ -52,8 +54,8 @@ public class MessageHeader10_50 {
       tgt.setSource(convertMessageSourceComponent(src.getSource()));
     for (org.hl7.fhir.r5.model.MessageHeader.MessageDestinationComponent t : src.getDestination())
       tgt.addDestination(convertMessageDestinationComponent(t));
-    if (src.hasEnterer())
-      tgt.setEnterer(Reference10_50.convertReference(src.getEnterer()));
+//    if (src.hasEnterer())
+//      tgt.setEnterer(Reference10_50.convertReference(src.getEnterer()));
     if (src.hasAuthor())
       tgt.setAuthor(Reference10_50.convertReference(src.getAuthor()));
     if (src.hasResponsible())
@@ -77,8 +79,8 @@ public class MessageHeader10_50 {
       tgt.setSource(convertMessageSourceComponent(src.getSource()));
     for (org.hl7.fhir.dstu2.model.MessageHeader.MessageDestinationComponent t : src.getDestination())
       tgt.addDestination(convertMessageDestinationComponent(t));
-    if (src.hasEnterer())
-      tgt.setEnterer(Reference10_50.convertReference(src.getEnterer()));
+//    if (src.hasEnterer())
+//      tgt.setEnterer(Reference10_50.convertReference(src.getEnterer()));
     if (src.hasAuthor())
       tgt.setAuthor(Reference10_50.convertReference(src.getAuthor()));
     if (src.hasResponsible())
@@ -93,9 +95,9 @@ public class MessageHeader10_50 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.dstu2.model.MessageHeader.MessageHeaderResponseComponent tgt = new org.hl7.fhir.dstu2.model.MessageHeader.MessageHeaderResponseComponent();
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
-    if (src.hasIdentifierElement())
-      tgt.setIdentifierElement(Id10_50.convertId(src.getIdentifierElement()));
+    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyBackboneElement(src,tgt);
+    if (src.hasIdentifier())
+      tgt.setIdentifierElement(new org.hl7.fhir.dstu2.model.IdType(src.getIdentifier().getValue()));
     if (src.hasCode())
       tgt.setCodeElement(convertResponseType(src.getCodeElement()));
     if (src.hasDetails())
@@ -107,9 +109,9 @@ public class MessageHeader10_50 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.r5.model.MessageHeader.MessageHeaderResponseComponent tgt = new org.hl7.fhir.r5.model.MessageHeader.MessageHeaderResponseComponent();
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyBackboneElement(src,tgt);
     if (src.hasIdentifierElement())
-      tgt.setIdentifierElement(Id10_50.convertId(src.getIdentifierElement()));
+      tgt.setIdentifier(new org.hl7.fhir.r5.model.Identifier().setValue(src.getIdentifier()));
     if (src.hasCode())
       tgt.setCodeElement(convertResponseType(src.getCodeElement()));
     if (src.hasDetails())
@@ -121,7 +123,7 @@ public class MessageHeader10_50 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.dstu2.model.MessageHeader.MessageSourceComponent tgt = new org.hl7.fhir.dstu2.model.MessageHeader.MessageSourceComponent();
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyBackboneElement(src,tgt);
     if (src.hasNameElement())
       tgt.setNameElement(String10_50.convertString(src.getNameElement()));
     if (src.hasSoftwareElement())
@@ -130,8 +132,8 @@ public class MessageHeader10_50 {
       tgt.setVersionElement(String10_50.convertString(src.getVersionElement()));
     if (src.hasContact())
       tgt.setContact(ContactPoint10_50.convertContactPoint(src.getContact()));
-    if (src.hasEndpoint())
-      tgt.setEndpoint(src.getEndpoint());
+    if (src.hasEndpointUrlType())
+      tgt.setEndpointElement(Uri10_50.convertUri(src.getEndpointUrlType()));
     return tgt;
   }
 
@@ -139,7 +141,7 @@ public class MessageHeader10_50 {
     if (src == null || src.isEmpty())
       return null;
     org.hl7.fhir.r5.model.MessageHeader.MessageSourceComponent tgt = new org.hl7.fhir.r5.model.MessageHeader.MessageSourceComponent();
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyBackboneElement(src,tgt);
     if (src.hasNameElement())
       tgt.setNameElement(String10_50.convertString(src.getNameElement()));
     if (src.hasSoftwareElement())
@@ -149,51 +151,59 @@ public class MessageHeader10_50 {
     if (src.hasContact())
       tgt.setContact(ContactPoint10_50.convertContactPoint(src.getContact()));
     if (src.hasEndpoint())
-      tgt.setEndpoint(src.getEndpoint());
+      tgt.setEndpoint(Uri10_50.convertUri(src.getEndpointElement()));
     return tgt;
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MessageHeader.ResponseType> convertResponseType(org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.MessageHeader.ResponseType> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MessageHeader.ResponseType> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.MessageHeader.ResponseTypeEnumFactory());
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case OK:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageHeader.ResponseType.OK);
-        break;
-      case TRANSIENTERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageHeader.ResponseType.TRANSIENTERROR);
-        break;
-      case FATALERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageHeader.ResponseType.FATALERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.MessageHeader.ResponseType.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<MessageHeader.ResponseType> tgt = new Enumeration<>(new MessageHeader.ResponseTypeEnumFactory());
+      ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case OK:
+                  tgt.setValue(MessageHeader.ResponseType.OK);
+                  break;
+              case TRANSIENTERROR:
+                  tgt.setValue(MessageHeader.ResponseType.TRANSIENTERROR);
+                  break;
+              case FATALERROR:
+                  tgt.setValue(MessageHeader.ResponseType.FATALERROR);
+                  break;
+              default:
+                  tgt.setValue(MessageHeader.ResponseType.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.MessageHeader.ResponseType> convertResponseType(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.MessageHeader.ResponseType> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.MessageHeader.ResponseType> tgt = new org.hl7.fhir.dstu2.model.Enumeration<>(new org.hl7.fhir.dstu2.model.MessageHeader.ResponseTypeEnumFactory());
-    ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case OK:
-        tgt.setValue(org.hl7.fhir.dstu2.model.MessageHeader.ResponseType.OK);
-        break;
-      case TRANSIENTERROR:
-        tgt.setValue(org.hl7.fhir.dstu2.model.MessageHeader.ResponseType.TRANSIENTERROR);
-        break;
-      case FATALERROR:
-        tgt.setValue(org.hl7.fhir.dstu2.model.MessageHeader.ResponseType.FATALERROR);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.dstu2.model.MessageHeader.ResponseType.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.dstu2.model.Enumeration<org.hl7.fhir.dstu2.model.MessageHeader.ResponseType> tgt = new org.hl7.fhir.dstu2.model.Enumeration<>(new org.hl7.fhir.dstu2.model.MessageHeader.ResponseTypeEnumFactory());
+      ConversionContext10_50.INSTANCE.getVersionConvertor_10_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case OK:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.MessageHeader.ResponseType.OK);
+                  break;
+              case TRANSIENTERROR:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.MessageHeader.ResponseType.TRANSIENTERROR);
+                  break;
+              case FATALERROR:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.MessageHeader.ResponseType.FATALERROR);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.dstu2.model.MessageHeader.ResponseType.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 }

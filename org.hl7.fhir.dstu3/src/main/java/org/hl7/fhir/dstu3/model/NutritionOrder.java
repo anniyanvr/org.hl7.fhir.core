@@ -206,12 +206,12 @@ public class NutritionOrder extends DomainResource {
           return NutritionOrderStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown NutritionOrderStatus code '"+codeString+"'");
         }
-        public Enumeration<NutritionOrderStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<NutritionOrderStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<NutritionOrderStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("proposed".equals(codeString))
@@ -235,7 +235,9 @@ public class NutritionOrder extends DomainResource {
         throw new FHIRException("Unknown NutritionOrderStatus code '"+codeString+"'");
         }
     public String toCode(NutritionOrderStatus code) {
-      if (code == NutritionOrderStatus.PROPOSED)
+       if (code == NutritionOrderStatus.NULL)
+           return null;
+       if (code == NutritionOrderStatus.PROPOSED)
         return "proposed";
       if (code == NutritionOrderStatus.DRAFT)
         return "draft";
@@ -254,7 +256,7 @@ public class NutritionOrder extends DomainResource {
       if (code == NutritionOrderStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(NutritionOrderStatus code) {
       return code.getSystem();
       }
@@ -758,7 +760,7 @@ public class NutritionOrder extends DomainResource {
           return addFluidConsistencyType();
         }
         else if (name.equals("instruction")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NutritionOrder.instruction");
+          throw new FHIRException("Cannot call addChild on a singleton property NutritionOrder.instruction");
         }
         else
           return super.addChild(name);
@@ -1581,7 +1583,7 @@ public class NutritionOrder extends DomainResource {
           return this.type;
         }
         else if (name.equals("productName")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NutritionOrder.productName");
+          throw new FHIRException("Cannot call addChild on a singleton property NutritionOrder.productName");
         }
         else if (name.equals("schedule")) {
           return addSchedule();
@@ -1591,7 +1593,7 @@ public class NutritionOrder extends DomainResource {
           return this.quantity;
         }
         else if (name.equals("instruction")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NutritionOrder.instruction");
+          throw new FHIRException("Cannot call addChild on a singleton property NutritionOrder.instruction");
         }
         else
           return super.addChild(name);
@@ -2191,14 +2193,14 @@ public class NutritionOrder extends DomainResource {
           return this.baseFormulaType;
         }
         else if (name.equals("baseFormulaProductName")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NutritionOrder.baseFormulaProductName");
+          throw new FHIRException("Cannot call addChild on a singleton property NutritionOrder.baseFormulaProductName");
         }
         else if (name.equals("additiveType")) {
           this.additiveType = new CodeableConcept();
           return this.additiveType;
         }
         else if (name.equals("additiveProductName")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NutritionOrder.additiveProductName");
+          throw new FHIRException("Cannot call addChild on a singleton property NutritionOrder.additiveProductName");
         }
         else if (name.equals("caloricDensity")) {
           this.caloricDensity = new SimpleQuantity();
@@ -2216,7 +2218,7 @@ public class NutritionOrder extends DomainResource {
           return this.maxVolumeToDeliver;
         }
         else if (name.equals("administrationInstruction")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NutritionOrder.administrationInstruction");
+          throw new FHIRException("Cannot call addChild on a singleton property NutritionOrder.administrationInstruction");
         }
         else
           return super.addChild(name);
@@ -2377,8 +2379,8 @@ public class NutritionOrder extends DomainResource {
           return (SimpleQuantity) this.rate;
         }
 
-        public boolean hasRateSimpleQuantity() { 
-          return this != null && this.rate instanceof SimpleQuantity;
+        public boolean hasRateSimpleQuantity() {
+            return this.rate instanceof SimpleQuantity;
         }
 
         /**
@@ -2392,8 +2394,8 @@ public class NutritionOrder extends DomainResource {
           return (Ratio) this.rate;
         }
 
-        public boolean hasRateRatio() { 
-          return this != null && this.rate instanceof Ratio;
+        public boolean hasRateRatio() {
+            return this.rate instanceof Ratio;
         }
 
         public boolean hasRate() { 
@@ -3017,28 +3019,6 @@ public class NutritionOrder extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<AllergyIntolerance> getAllergyIntoleranceTarget() { 
-      if (this.allergyIntoleranceTarget == null)
-        this.allergyIntoleranceTarget = new ArrayList<AllergyIntolerance>();
-      return this.allergyIntoleranceTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public AllergyIntolerance addAllergyIntoleranceTarget() { 
-      AllergyIntolerance r = new AllergyIntolerance();
-      if (this.allergyIntoleranceTarget == null)
-        this.allergyIntoleranceTarget = new ArrayList<AllergyIntolerance>();
-      this.allergyIntoleranceTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #foodPreferenceModifier} (This modifier is used to convey order-specific modifiers about the type of food that should be given. These can be derived from patient allergies, intolerances, or preferences such as Halal, Vegan or Kosher. This modifier applies to the entire nutrition order inclusive of the oral diet, nutritional supplements and enteral formula feedings.)
      */
     public List<CodeableConcept> getFoodPreferenceModifier() { 
@@ -3424,7 +3404,7 @@ public class NutritionOrder extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NutritionOrder.status");
+          throw new FHIRException("Cannot call addChild on a singleton property NutritionOrder.status");
         }
         else if (name.equals("patient")) {
           this.patient = new Reference();
@@ -3435,7 +3415,7 @@ public class NutritionOrder extends DomainResource {
           return this.encounter;
         }
         else if (name.equals("dateTime")) {
-          throw new FHIRException("Cannot call addChild on a primitive type NutritionOrder.dateTime");
+          throw new FHIRException("Cannot call addChild on a singleton property NutritionOrder.dateTime");
         }
         else if (name.equals("orderer")) {
           this.orderer = new Reference();

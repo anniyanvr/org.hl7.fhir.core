@@ -159,12 +159,12 @@ public class QuestionnaireResponse extends DomainResource {
           return QuestionnaireResponseStatus.STOPPED;
         throw new IllegalArgumentException("Unknown QuestionnaireResponseStatus code '"+codeString+"'");
         }
-        public Enumeration<QuestionnaireResponseStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<QuestionnaireResponseStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<QuestionnaireResponseStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("in-progress".equals(codeString))
@@ -180,7 +180,9 @@ public class QuestionnaireResponse extends DomainResource {
         throw new FHIRException("Unknown QuestionnaireResponseStatus code '"+codeString+"'");
         }
     public String toCode(QuestionnaireResponseStatus code) {
-      if (code == QuestionnaireResponseStatus.INPROGRESS)
+       if (code == QuestionnaireResponseStatus.NULL)
+           return null;
+       if (code == QuestionnaireResponseStatus.INPROGRESS)
         return "in-progress";
       if (code == QuestionnaireResponseStatus.COMPLETED)
         return "completed";
@@ -191,7 +193,7 @@ public class QuestionnaireResponse extends DomainResource {
       if (code == QuestionnaireResponseStatus.STOPPED)
         return "stopped";
       return "?";
-      }
+   }
     public String toSystem(QuestionnaireResponseStatus code) {
       return code.getSystem();
       }
@@ -665,13 +667,13 @@ public class QuestionnaireResponse extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("linkId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type QuestionnaireResponse.linkId");
+          throw new FHIRException("Cannot call addChild on a singleton property QuestionnaireResponse.linkId");
         }
         else if (name.equals("definition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type QuestionnaireResponse.definition");
+          throw new FHIRException("Cannot call addChild on a singleton property QuestionnaireResponse.definition");
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type QuestionnaireResponse.text");
+          throw new FHIRException("Cannot call addChild on a singleton property QuestionnaireResponse.text");
         }
         else if (name.equals("subject")) {
           this.subject = new Reference();
@@ -786,8 +788,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (BooleanType) this.value;
         }
 
-        public boolean hasValueBooleanType() { 
-          return this != null && this.value instanceof BooleanType;
+        public boolean hasValueBooleanType() {
+            return this.value instanceof BooleanType;
         }
 
         /**
@@ -801,8 +803,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (DecimalType) this.value;
         }
 
-        public boolean hasValueDecimalType() { 
-          return this != null && this.value instanceof DecimalType;
+        public boolean hasValueDecimalType() {
+            return this.value instanceof DecimalType;
         }
 
         /**
@@ -816,8 +818,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (IntegerType) this.value;
         }
 
-        public boolean hasValueIntegerType() { 
-          return this != null && this.value instanceof IntegerType;
+        public boolean hasValueIntegerType() {
+            return this.value instanceof IntegerType;
         }
 
         /**
@@ -831,8 +833,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (DateType) this.value;
         }
 
-        public boolean hasValueDateType() { 
-          return this != null && this.value instanceof DateType;
+        public boolean hasValueDateType() {
+            return this.value instanceof DateType;
         }
 
         /**
@@ -846,8 +848,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (DateTimeType) this.value;
         }
 
-        public boolean hasValueDateTimeType() { 
-          return this != null && this.value instanceof DateTimeType;
+        public boolean hasValueDateTimeType() {
+            return this.value instanceof DateTimeType;
         }
 
         /**
@@ -861,8 +863,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (TimeType) this.value;
         }
 
-        public boolean hasValueTimeType() { 
-          return this != null && this.value instanceof TimeType;
+        public boolean hasValueTimeType() {
+            return this.value instanceof TimeType;
         }
 
         /**
@@ -876,8 +878,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (StringType) this.value;
         }
 
-        public boolean hasValueStringType() { 
-          return this != null && this.value instanceof StringType;
+        public boolean hasValueStringType() {
+            return this.value instanceof StringType;
         }
 
         /**
@@ -891,8 +893,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (UriType) this.value;
         }
 
-        public boolean hasValueUriType() { 
-          return this != null && this.value instanceof UriType;
+        public boolean hasValueUriType() {
+            return this.value instanceof UriType;
         }
 
         /**
@@ -906,8 +908,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (Attachment) this.value;
         }
 
-        public boolean hasValueAttachment() { 
-          return this != null && this.value instanceof Attachment;
+        public boolean hasValueAttachment() {
+            return this.value instanceof Attachment;
         }
 
         /**
@@ -921,8 +923,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (Coding) this.value;
         }
 
-        public boolean hasValueCoding() { 
-          return this != null && this.value instanceof Coding;
+        public boolean hasValueCoding() {
+            return this.value instanceof Coding;
         }
 
         /**
@@ -936,8 +938,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (Quantity) this.value;
         }
 
-        public boolean hasValueQuantity() { 
-          return this != null && this.value instanceof Quantity;
+        public boolean hasValueQuantity() {
+            return this.value instanceof Quantity;
         }
 
         /**
@@ -951,8 +953,8 @@ public class QuestionnaireResponse extends DomainResource {
           return (Reference) this.value;
         }
 
-        public boolean hasValueReference() { 
-          return this != null && this.value instanceof Reference;
+        public boolean hasValueReference() {
+            return this.value instanceof Reference;
         }
 
         public boolean hasValue() { 
@@ -1415,16 +1417,6 @@ public class QuestionnaireResponse extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getBasedOnTarget() { 
-      if (this.basedOnTarget == null)
-        this.basedOnTarget = new ArrayList<Resource>();
-      return this.basedOnTarget;
-    }
-
-    /**
      * @return {@link #parent} (A procedure or observation that this questionnaire was performed as part of the execution of.  For example, the surgery a checklist was executed as part of.)
      */
     public List<Reference> getParent() { 
@@ -1475,16 +1467,6 @@ public class QuestionnaireResponse extends DomainResource {
         addParent();
       }
       return getParent().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getParentTarget() { 
-      if (this.parentTarget == null)
-        this.parentTarget = new ArrayList<Resource>();
-      return this.parentTarget;
     }
 
     /**
@@ -2014,7 +1996,7 @@ public class QuestionnaireResponse extends DomainResource {
           return this.questionnaire;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type QuestionnaireResponse.status");
+          throw new FHIRException("Cannot call addChild on a singleton property QuestionnaireResponse.status");
         }
         else if (name.equals("subject")) {
           this.subject = new Reference();
@@ -2025,7 +2007,7 @@ public class QuestionnaireResponse extends DomainResource {
           return this.context;
         }
         else if (name.equals("authored")) {
-          throw new FHIRException("Cannot call addChild on a primitive type QuestionnaireResponse.authored");
+          throw new FHIRException("Cannot call addChild on a singleton property QuestionnaireResponse.authored");
         }
         else if (name.equals("author")) {
           this.author = new Reference();

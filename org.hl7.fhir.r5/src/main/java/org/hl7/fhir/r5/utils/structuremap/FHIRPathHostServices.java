@@ -1,0 +1,149 @@
+package org.hl7.fhir.r5.utils.structuremap;
+
+import org.apache.commons.lang3.NotImplementedException;
+import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.exceptions.PathEngineException;
+import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.elementmodel.Element;
+import org.hl7.fhir.r5.fhirpath.FHIRPathEngine;
+import org.hl7.fhir.r5.fhirpath.IHostApplicationServices;
+import org.hl7.fhir.r5.fhirpath.TypeDetails;
+import org.hl7.fhir.r5.fhirpath.FHIRPathUtilityClasses.FunctionDetails;
+import org.hl7.fhir.r5.model.Base;
+import org.hl7.fhir.r5.model.Identifier;
+import org.hl7.fhir.r5.model.Resource;
+import org.hl7.fhir.r5.model.ValueSet;
+import org.hl7.fhir.r5.utils.validation.IResourceValidator;
+
+import org.hl7.fhir.utilities.fhirpath.FHIRPathConstantEvaluationMode;
+import org.hl7.fhir.utilities.validation.ValidationMessage;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Host services for FHIRPath evaluation within the context of StructureMap processing.
+ * The `Object appContext` passed to the various functions is of type `Variables` and is provided by the
+ * StructureMap engine when it is calling the FHIRPath engine's evaluate methods.
+ * It contains the current variable bindings and the constant resolver for the current StructureMap.
+ * Note: The Transform engine registers this class with its internal FHIRPath engine instance,
+ * it is only used to provide host services for FHIRPath evaluation during StructureMap processing,
+ * and is not a general-purpose FHIRPath host services implementation.
+ */
+public class FHIRPathHostServices implements IHostApplicationServices {
+
+  private final StructureMapUtilities structureMapUtilities;
+
+  public FHIRPathHostServices(StructureMapUtilities structureMapUtilities) {
+    this.structureMapUtilities = structureMapUtilities;
+  }
+
+  public List<Base> resolveConstant(FHIRPathEngine engine, Object appContext, String name, FHIRPathConstantEvaluationMode mode) throws PathEngineException {
+    Variables vars = (Variables) appContext;
+    Base res = vars.getLocal(VariableMode.INPUT, name);
+    if (res == null)
+      res = vars.getLocal(VariableMode.OUTPUT, name);
+    List<Base> result = new ArrayList<Base>();
+    if (res != null) {
+      result.add(res);
+    } else if (vars.getConstants() != null) {
+      result.addAll(vars.getConstants().resolve(name));
+    }
+    return result;
+  }
+
+  @Override
+  public TypeDetails resolveConstantType(FHIRPathEngine engine, Object appContext, String name, FHIRPathConstantEvaluationMode mode) throws PathEngineException {
+    if (!(appContext instanceof VariablesForProfiling))
+      throw new Error("Internal Logic Error (wrong type '" + appContext.getClass().getName() + "' in resolveConstantType)");
+    VariablesForProfiling vars = (VariablesForProfiling) appContext;
+    VariableForProfiling v = vars.get(null, name);
+    if (v == null)
+      throw new PathEngineException("Unknown variable '" + name + "' from variables " + vars.summary());
+    return v.getProperty().getTypes();
+  }
+
+  @Override
+  public boolean log(String argument, List<Base> focus) {
+    return true;
+  }
+
+  @Override
+  public FunctionDetails resolveFunction(FHIRPathEngine engine, String functionName) {
+    return structureMapUtilities.getServices() == null ? null : structureMapUtilities.getServices().resolveFunction(engine, functionName);
+  }
+
+  @Override
+  public TypeDetails checkFunction(FHIRPathEngine engine, Object appContext, String functionName, TypeDetails focus, List<TypeDetails> parameters) throws PathEngineException {
+    if (structureMapUtilities.getServices() == null) {
+      throw new PathEngineException("Unknown function '" + functionName + "'");
+    }
+    return structureMapUtilities.getServices().checkFunction(engine, appContext, functionName, focus, parameters);
+  }
+
+  @Override
+  public List<Base> executeFunction(FHIRPathEngine engine, Object appContext, List<Base> focus, String functionName, List<List<Base>> parameters) {
+    if (structureMapUtilities.getServices() == null) {
+      throw new Error("Not Implemented Yet");
+    }
+    return structureMapUtilities.getServices().executeFunction(engine, appContext, focus, functionName, parameters);
+  }
+
+  @Override
+  public Base resolveReference(FHIRPathEngine engine, Object appContext, String url, Identifier identifier, Base refContext) throws FHIRException {
+    if (structureMapUtilities.getServices() == null)
+      return null;
+    return structureMapUtilities.getServices().resolveReference(appContext, url);
+  }
+
+  private boolean noErrorValidationMessages(List<ValidationMessage> valerrors) {
+    boolean ok = true;
+    for (ValidationMessage v : valerrors)
+      ok = ok && !v.getLevel().isError();
+    return ok;
+  }
+
+  @Override
+  public boolean conformsToProfile(FHIRPathEngine engine, Object appContext, Base item, String url) throws FHIRException {
+    IResourceValidator val = structureMapUtilities.getWorker().newValidator();
+    List<ValidationMessage> valerrors = new ArrayList<ValidationMessage>();
+    if (item instanceof Resource) {
+      val.validate(appContext, valerrors, (Resource) item, url);
+      return noErrorValidationMessages(valerrors);
+    }
+    if (item instanceof Element) {
+      val.validate(appContext, valerrors, null, (Element) item, url);
+      return noErrorValidationMessages(valerrors);
+    }
+    throw new NotImplementedException("Not done yet (FHIRPathHostServices.conformsToProfile), when item is not element or not resource");
+  }
+
+  @Override
+  public ValueSet resolveValueSet(FHIRPathEngine engine, Object appContext, String url) {
+	  return structureMapUtilities.getWorker().findTxResource(ValueSet.class, url, IWorkerContext.VersionResolutionRules.defaultRule());
+  }
+
+  @Override
+  public boolean paramIsType(String name, int index) {
+    return false;
+  }
+
+  @Override
+  public Base findContainingResource(Object appContext, Base item) {
+    if (item instanceof Element) {
+      Element element = (Element) item;
+      while (element != null && !(element.isResource() && element.getSpecial() != Element.SpecialElement.CONTAINED)) {
+        element = element.getParentForValidator();
+      }
+      if (element != null) {
+        return element;
+      }
+    }
+    if (item instanceof Resource) {
+      return item;
+    }
+    // now it gets hard
+    return null; // for now
+  }
+
+}

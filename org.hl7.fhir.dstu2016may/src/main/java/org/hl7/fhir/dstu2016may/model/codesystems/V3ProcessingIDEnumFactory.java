@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class V3ProcessingIDEnumFactory implements EnumFactory<V3ProcessingID> {
@@ -48,21 +44,23 @@ public class V3ProcessingIDEnumFactory implements EnumFactory<V3ProcessingID> {
       return V3ProcessingID.P;
     if ("T".equals(codeString))
       return V3ProcessingID.T;
-    throw new IllegalArgumentException("Unknown V3ProcessingID code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ProcessingID code '" + codeString + "'");
   }
 
   public String toCode(V3ProcessingID code) {
-    if (code == V3ProcessingID.D)
+       if (code == V3ProcessingID.NULL)
+           return null;
+       if (code == V3ProcessingID.D)
       return "D";
     if (code == V3ProcessingID.P)
       return "P";
     if (code == V3ProcessingID.T)
       return "T";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ProcessingID code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ProcessingID code) {
+    return code.getSystem();
+  }
 
 }

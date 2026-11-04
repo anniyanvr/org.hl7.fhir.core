@@ -1,10 +1,19 @@
 package org.hl7.fhir.convertors.conv40_50.resources40_50;
 
 import org.hl7.fhir.convertors.context.ConversionContext40_50;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.*;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.*;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Annotation40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.CodeableConcept40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Identifier40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Quantity40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Canonical40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.DateTime40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Uri40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.r5.model.ChargeItem;
+import org.hl7.fhir.r5.model.CodeableReference;
+import org.hl7.fhir.r5.model.Enumeration;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -55,7 +64,7 @@ public class ChargeItem40_50 {
     if (src.hasSubject())
       tgt.setSubject(Reference40_50.convertReference(src.getSubject()));
     if (src.hasContext())
-      tgt.setContext(Reference40_50.convertReference(src.getContext()));
+      tgt.setEncounter(Reference40_50.convertReference(src.getContext()));
     if (src.hasOccurrence())
       tgt.setOccurrence(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getOccurrence()));
     for (org.hl7.fhir.r4.model.ChargeItem.ChargeItemPerformerComponent t : src.getPerformer())
@@ -71,20 +80,22 @@ public class ChargeItem40_50 {
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getBodysite())
       tgt.addBodysite(CodeableConcept40_50.convertCodeableConcept(t));
     if (src.hasFactorOverride())
-      tgt.setFactorOverrideElement(Decimal40_50.convertDecimal(src.getFactorOverrideElement()));
-    if (src.hasPriceOverride())
-      tgt.setPriceOverride(Money40_50.convertMoney(src.getPriceOverride()));
-    if (src.hasOverrideReason())
-      tgt.setOverrideReasonElement(String40_50.convertString(src.getOverrideReasonElement()));
+//      tgt.setFactorOverrideElement(Decimal40_50.convertDecimal(src.getFactorOverrideElement()));
+//    if (src.hasPriceOverride())
+//      tgt.setPriceOverride(Money40_50.convertMoney(src.getPriceOverride()));
+//    if (src.hasOverrideReason())
+      tgt.getOverrideReason().setTextElement(String40_50.convertString(src.getOverrideReasonElement()));
     if (src.hasEnterer())
       tgt.setEnterer(Reference40_50.convertReference(src.getEnterer()));
     if (src.hasEnteredDate())
       tgt.setEnteredDateElement(DateTime40_50.convertDateTime(src.getEnteredDateElement()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getReason())
       tgt.addReason(CodeableConcept40_50.convertCodeableConcept(t));
-    for (org.hl7.fhir.r4.model.Reference t : src.getService()) tgt.addService(Reference40_50.convertReference(t));
-    if (src.hasProduct())
-      tgt.setProduct(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getProduct()));
+    for (org.hl7.fhir.r4.model.Reference t : src.getService()) tgt.addService(Reference40_50.convertReferenceToCodeableReference(t));
+    if (src.hasProductCodeableConcept())
+      tgt.addProduct().setConcept(CodeableConcept40_50.convertCodeableConcept(src.getProductCodeableConcept()));
+    else if (src.hasProductReference())
+      tgt.addProduct().setReference(Reference40_50.convertReference(src.getProductReference()));
     for (org.hl7.fhir.r4.model.Reference t : src.getAccount()) tgt.addAccount(Reference40_50.convertReference(t));
     for (org.hl7.fhir.r4.model.Annotation t : src.getNote()) tgt.addNote(Annotation40_50.convertAnnotation(t));
     for (org.hl7.fhir.r4.model.Reference t : src.getSupportingInformation())
@@ -109,8 +120,8 @@ public class ChargeItem40_50 {
       tgt.setCode(CodeableConcept40_50.convertCodeableConcept(src.getCode()));
     if (src.hasSubject())
       tgt.setSubject(Reference40_50.convertReference(src.getSubject()));
-    if (src.hasContext())
-      tgt.setContext(Reference40_50.convertReference(src.getContext()));
+    if (src.hasEncounter())
+      tgt.setContext(Reference40_50.convertReference(src.getEncounter()));
     if (src.hasOccurrence())
       tgt.setOccurrence(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getOccurrence()));
     for (org.hl7.fhir.r5.model.ChargeItem.ChargeItemPerformerComponent t : src.getPerformer())
@@ -125,21 +136,23 @@ public class ChargeItem40_50 {
       tgt.setQuantity(Quantity40_50.convertQuantity(src.getQuantity()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getBodysite())
       tgt.addBodysite(CodeableConcept40_50.convertCodeableConcept(t));
-    if (src.hasFactorOverride())
-      tgt.setFactorOverrideElement(Decimal40_50.convertDecimal(src.getFactorOverrideElement()));
-    if (src.hasPriceOverride())
-      tgt.setPriceOverride(Money40_50.convertMoney(src.getPriceOverride()));
+//    if (src.hasFactorOverride())
+//      tgt.setFactorOverrideElement(Decimal40_50.convertDecimal(src.getFactorOverrideElement()));
+//    if (src.hasPriceOverride())
+//      tgt.setPriceOverride(Money40_50.convertMoney(src.getPriceOverride()));
     if (src.hasOverrideReason())
-      tgt.setOverrideReasonElement(String40_50.convertString(src.getOverrideReasonElement()));
+      tgt.setOverrideReasonElement(String40_50.convertString(src.getOverrideReason().getTextElement()));
     if (src.hasEnterer())
       tgt.setEnterer(Reference40_50.convertReference(src.getEnterer()));
     if (src.hasEnteredDate())
       tgt.setEnteredDateElement(DateTime40_50.convertDateTime(src.getEnteredDateElement()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getReason())
       tgt.addReason(CodeableConcept40_50.convertCodeableConcept(t));
-    for (org.hl7.fhir.r5.model.Reference t : src.getService()) tgt.addService(Reference40_50.convertReference(t));
-    if (src.hasProduct())
-      tgt.setProduct(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getProduct()));
+    for (CodeableReference t : src.getService()) tgt.addService(Reference40_50.convertCodeableReferenceToReference(t));
+    if (src.getProductFirstRep().hasConcept())
+      tgt.setProduct(CodeableConcept40_50.convertCodeableConcept(src.getProductFirstRep().getConcept()));
+    if (src.getProductFirstRep().hasReference())
+      tgt.setProduct(Reference40_50.convertReference(src.getProductFirstRep().getReference()));
     for (org.hl7.fhir.r5.model.Reference t : src.getAccount()) tgt.addAccount(Reference40_50.convertReference(t));
     for (org.hl7.fhir.r5.model.Annotation t : src.getNote()) tgt.addNote(Annotation40_50.convertAnnotation(t));
     for (org.hl7.fhir.r5.model.Reference t : src.getSupportingInformation())
@@ -148,78 +161,86 @@ public class ChargeItem40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatus> convertChargeItemStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatus> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case PLANNED:
-        tgt.setValue(org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatus.PLANNED);
-        break;
-      case BILLABLE:
-        tgt.setValue(org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatus.BILLABLE);
-        break;
-      case NOTBILLABLE:
-        tgt.setValue(org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatus.NOTBILLABLE);
-        break;
-      case ABORTED:
-        tgt.setValue(org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatus.ABORTED);
-        break;
-      case BILLED:
-        tgt.setValue(org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatus.BILLED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatus.ENTEREDINERROR);
-        break;
-      case UNKNOWN:
-        tgt.setValue(org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatus.UNKNOWN);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<ChargeItem.ChargeItemStatus> tgt = new Enumeration<>(new ChargeItem.ChargeItemStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case PLANNED:
+                  tgt.setValue(ChargeItem.ChargeItemStatus.PLANNED);
+                  break;
+              case BILLABLE:
+                  tgt.setValue(ChargeItem.ChargeItemStatus.BILLABLE);
+                  break;
+              case NOTBILLABLE:
+                  tgt.setValue(ChargeItem.ChargeItemStatus.NOTBILLABLE);
+                  break;
+              case ABORTED:
+                  tgt.setValue(ChargeItem.ChargeItemStatus.ABORTED);
+                  break;
+              case BILLED:
+                  tgt.setValue(ChargeItem.ChargeItemStatus.BILLED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(ChargeItem.ChargeItemStatus.ENTEREDINERROR);
+                  break;
+              case UNKNOWN:
+                  tgt.setValue(ChargeItem.ChargeItemStatus.UNKNOWN);
+                  break;
+              default:
+                  tgt.setValue(ChargeItem.ChargeItemStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus> convertChargeItemStatus(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.ChargeItem.ChargeItemStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case PLANNED:
-        tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.PLANNED);
-        break;
-      case BILLABLE:
-        tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.BILLABLE);
-        break;
-      case NOTBILLABLE:
-        tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.NOTBILLABLE);
-        break;
-      case ABORTED:
-        tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.ABORTED);
-        break;
-      case BILLED:
-        tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.BILLED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.ENTEREDINERROR);
-        break;
-      case UNKNOWN:
-        tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.UNKNOWN);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case PLANNED:
+                  tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.PLANNED);
+                  break;
+              case BILLABLE:
+                  tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.BILLABLE);
+                  break;
+              case NOTBILLABLE:
+                  tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.NOTBILLABLE);
+                  break;
+              case ABORTED:
+                  tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.ABORTED);
+                  break;
+              case BILLED:
+                  tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.BILLED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.ENTEREDINERROR);
+                  break;
+              case UNKNOWN:
+                  tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.UNKNOWN);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.ChargeItem.ChargeItemStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r5.model.ChargeItem.ChargeItemPerformerComponent convertChargeItemPerformerComponent(org.hl7.fhir.r4.model.ChargeItem.ChargeItemPerformerComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.ChargeItem.ChargeItemPerformerComponent tgt = new org.hl7.fhir.r5.model.ChargeItem.ChargeItemPerformerComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasFunction())
       tgt.setFunction(CodeableConcept40_50.convertCodeableConcept(src.getFunction()));
     if (src.hasActor())
@@ -231,7 +252,7 @@ public class ChargeItem40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.ChargeItem.ChargeItemPerformerComponent tgt = new org.hl7.fhir.r4.model.ChargeItem.ChargeItemPerformerComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasFunction())
       tgt.setFunction(CodeableConcept40_50.convertCodeableConcept(src.getFunction()));
     if (src.hasActor())

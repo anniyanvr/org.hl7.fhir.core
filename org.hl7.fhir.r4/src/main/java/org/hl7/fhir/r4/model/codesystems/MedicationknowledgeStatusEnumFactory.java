@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class MedicationknowledgeStatusEnumFactory implements EnumFactory<MedicationknowledgeStatus> {
@@ -48,21 +44,23 @@ public class MedicationknowledgeStatusEnumFactory implements EnumFactory<Medicat
       return MedicationknowledgeStatus.INACTIVE;
     if ("entered-in-error".equals(codeString))
       return MedicationknowledgeStatus.ENTEREDINERROR;
-    throw new IllegalArgumentException("Unknown MedicationknowledgeStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MedicationknowledgeStatus code '" + codeString + "'");
   }
 
   public String toCode(MedicationknowledgeStatus code) {
-    if (code == MedicationknowledgeStatus.ACTIVE)
+       if (code == MedicationknowledgeStatus.NULL)
+           return null;
+       if (code == MedicationknowledgeStatus.ACTIVE)
       return "active";
     if (code == MedicationknowledgeStatus.INACTIVE)
       return "inactive";
     if (code == MedicationknowledgeStatus.ENTEREDINERROR)
       return "entered-in-error";
     return "?";
-  }
+   }
 
-    public String toSystem(MedicationknowledgeStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(MedicationknowledgeStatus code) {
+    return code.getSystem();
+  }
 
 }

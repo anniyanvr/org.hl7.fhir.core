@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +45,7 @@ import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.model.api.annotation.Block;
 
 /**
- * Base StructureDefinition for Ratio Type: A relationship of two Quantity values - expressed as a numerator and a denominator.
+ * Ratio Type: A relationship of two Quantity values - expressed as a numerator and a denominator.
  */
 @DatatypeDef(name="Ratio")
 public class Ratio extends DataType implements ICompositeType {
@@ -172,6 +172,17 @@ public class Ratio extends DataType implements ICompositeType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("numerator")) {
+          this.numerator = null;
+        } else if (name.equals("denominator")) {
+          this.denominator = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -215,6 +226,10 @@ public class Ratio extends DataType implements ICompositeType {
         Ratio dst = new Ratio();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Ratio) dst);
       }
 
       public void copyValues(Ratio dst) {

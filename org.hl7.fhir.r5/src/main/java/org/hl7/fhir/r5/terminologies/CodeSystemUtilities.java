@@ -32,88 +32,170 @@ package org.hl7.fhir.r5.terminologies;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
-import org.hl7.fhir.r5.model.BooleanType;
-import org.hl7.fhir.r5.model.CanonicalResource;
-import org.hl7.fhir.r5.model.CanonicalType;
-import org.hl7.fhir.r5.model.CodeSystem;
+import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.extensions.ExtensionDefinitions;
+import org.hl7.fhir.r5.extensions.ExtensionUtilities;
+import org.hl7.fhir.r5.model.*;
 import org.hl7.fhir.r5.model.CodeSystem.ConceptDefinitionComponent;
+import org.hl7.fhir.r5.model.CodeSystem.ConceptDefinitionDesignationComponent;
 import org.hl7.fhir.r5.model.CodeSystem.ConceptPropertyComponent;
 import org.hl7.fhir.r5.model.CodeSystem.PropertyComponent;
 import org.hl7.fhir.r5.model.CodeSystem.PropertyType;
-import org.hl7.fhir.r5.model.CodeType;
-import org.hl7.fhir.r5.model.DataType;
-import org.hl7.fhir.r5.model.DateTimeType;
 import org.hl7.fhir.r5.model.Enumerations.PublicationStatus;
-import org.hl7.fhir.r5.model.Identifier;
-import org.hl7.fhir.r5.model.Meta;
-import org.hl7.fhir.r5.model.UriType;
-import org.hl7.fhir.r5.utils.ToolingExtensions;
+import org.hl7.fhir.r5.terminologies.providers.SpecialCodeSystem;
+import org.hl7.fhir.r5.utils.CanonicalResourceUtilities;
+
+import org.hl7.fhir.utilities.UserDataNames;
+import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
+import org.hl7.fhir.utilities.MarkDownProcessor;
 import org.hl7.fhir.utilities.StandardsStatus;
 import org.hl7.fhir.utilities.Utilities;
+import org.hl7.fhir.utilities.VersionUtilities;
 
-public class CodeSystemUtilities {
+import javax.annotation.Nonnull;
+
+@Slf4j
+public class CodeSystemUtilities extends TerminologyUtilities {
+
+  public static class CodeSystemSorter implements Comparator<CodeSystem> {
+
+    @Override
+    public int compare(CodeSystem o1, CodeSystem o2) {
+      String url1 = o1.getUrl();
+      String url2 = o2.getUrl();
+      int c = compareString(url1, url2);
+      if (c == 0) {
+        String ver1 = o1.getVersion();
+        String ver2 = o2.getVersion();
+        c = VersionUtilities.compareVersions(ver1, ver2);
+        if (c == 0) {
+          String d1 = o1.getDateElement().asStringValue();
+          String d2 = o2.getDateElement().asStringValue();
+          c = compareString(url1, url2);
+        }
+      }
+      return c;
+    }
+
+    private int compareString(String s1, String s2) {
+      if (s1 == null) {
+        return s2 == null ? 0 : 1;
+      } else {
+        return s1.compareTo(s2);
+      }
+    }
+
+  }
+
+
+  
+  public static class SystemReference {
+    private String link;
+    private String text;
+    private boolean local;
+    
+    public SystemReference(String text, String link) {
+      super();
+      this.link = link;
+      this.text = text;
+    }
+    public SystemReference(String text, String link, boolean local) {
+      super();
+      this.link = link;
+      this.text = text;
+      this.local = local;
+    }
+    
+    public String getLink() {
+      return link;
+    }
+    public String getText() {
+      return text;
+    }
+    public boolean isLocal() {
+      return local;
+    }
+    
+  }
+
+  public static class ConceptDefinitionComponentSorter implements Comparator<ConceptDefinitionComponent> {
+
+    @Override
+    public int compare(ConceptDefinitionComponent o1, ConceptDefinitionComponent o2) {
+      return o1.hasCode() ? o1.getCode().compareToIgnoreCase(o2.getCode()) : 0;
+    }
+
+  }
 
   public static final String USER_DATA_CROSS_LINK = "cs.utils.cross.link";
 
+  /**
+   * Walks the concepts of a code system for rendering, re-arranging the top level concepts under the
+   * parents that properties say they have (see {@link CodeSystemHierarchy}).
+   * <p>
+   * The navigator keeps track of which concepts it has already returned, so it is for one rendering of
+   * the code system only. The analysis it works from doesn't change, and can be shared and cached.
+   */
   public static class CodeSystemNavigator {
 
-    private CodeSystem cs;
-    private boolean restructure;
-    private Set<String> processed = new HashSet<>();
+    private final CodeSystem cs;
+    private final CodeSystemHierarchy hierarchy;
+    private final Set<String> processed = new HashSet<>();
 
-    public CodeSystemNavigator(CodeSystem cs) {
+    public CodeSystemNavigator(@Nonnull CodeSystem cs) {
+      this(cs, new CodeSystemHierarchy(cs));
+    }
+
+    public CodeSystemNavigator(@Nonnull CodeSystem cs, @Nonnull CodeSystemHierarchy hierarchy) {
+      if (hierarchy.getCodeSystem() != cs) {
+        throw new IllegalArgumentException("The hierarchy was built for a different CodeSystem object");
+      }
       this.cs = cs;
-      restructure = hasExtraRelationships(cs.getConcept());
+      this.hierarchy = hierarchy;
+    }
+
+    public CodeSystemHierarchy getHierarchy() {
+      return hierarchy;
     }
 
     public boolean isRestructure() {
-      return restructure;
-    }
-
-    private boolean hasExtraRelationships(List<ConceptDefinitionComponent> concept) {
-      for (ConceptDefinitionComponent cd : concept) {
-        if (!getSubsumedBy(cd).isEmpty()) {
-          return true;
-        }
-        for (ConceptDefinitionComponent cdc : cd.getConcept()) {
-          if (hasExtraRelationships(cdc.getConcept())) {
-            return true;
-          }
-        }
-      }
-      return false;
+      return hierarchy.isRestructure();
     }
 
     public List<ConceptDefinitionComponent> getConcepts(ConceptDefinitionComponent context) {
       if (context == null) {
-        if (restructure) {
+        if (isRestructure()) {
           List<ConceptDefinitionComponent> res = new ArrayList<>();
-          for (ConceptDefinitionComponent cd : cs.getConcept()) {
-            if (getSubsumedBy(cd).isEmpty()) {
-              res.add(cd);
-              processed.add(cd.getCode());
-            }
+          for (ConceptDefinitionComponent cd : hierarchy.getRoots()) {
+            res.add(cd);
+            processed.add(cd.getCode());
           }
           return res;
         } else {
           return cs.getConcept();
         }
       } else {
-        if (restructure) {
+        if (isRestructure()) {
           List<ConceptDefinitionComponent> res = new ArrayList<>();
           for (ConceptDefinitionComponent cd : context.getConcept()) {
             res.add(cd);
             processed.add(cd.getCode());
           }
-          for (ConceptDefinitionComponent cd : cs.getConcept()) {
-            if (getSubsumedBy(cd).contains(context.getCode()) && !processed.contains(cd.getCode())) {
+          for (ConceptDefinitionComponent cd : hierarchy.getStatedChildren(context.getCode())) {
+            if (!processed.contains(cd.getCode())) {
               res.add(cd);
               processed.add(cd.getCode());
             }
@@ -125,20 +207,14 @@ public class CodeSystemUtilities {
       }
     }
 
-    private List<String> getSubsumedBy(ConceptDefinitionComponent cd) {
-      List<String> codes = new ArrayList<>();
-      for (ConceptPropertyComponent cp : cd.getProperty()) {
-        if ("subsumedBy".equals(cp.getCode())) {
-          codes.add(cp.getValue().primitiveValue());
-        }
-      }
-      return codes;
-    }
-
-    public List<ConceptDefinitionComponent> getOtherChildren(ConceptDefinitionComponent context) {
+    /**
+     * @return the concepts that are stated to be children of the context, but that have already been
+     * returned somewhere else (because they have more than one parent)
+     */
+    public List<ConceptDefinitionComponent> getOtherChildren(@Nonnull ConceptDefinitionComponent context) {
       List<ConceptDefinitionComponent> res = new ArrayList<>();
-      for (ConceptDefinitionComponent cd : cs.getConcept()) {
-        if (getSubsumedBy(cd).contains(context.getCode()) && processed.contains(cd.getCode())) {
+      for (ConceptDefinitionComponent cd : hierarchy.getStatedChildren(context.getCode())) {
+        if (processed.contains(cd.getCode())) {
           res.add(cd);
         }
       }
@@ -147,15 +223,51 @@ public class CodeSystemUtilities {
   }
 
 
-  public static boolean isNotSelectable(CodeSystem cs, ConceptDefinitionComponent def) {
+  private static final String NOT_SELECTABLE_URI = "http://hl7.org/fhir/concept-properties#notSelectable";
+
+  /** the codes that are recognised as the notSelectable property when the code system doesn't say otherwise */
+  private static final Set<String> NOT_SELECTABLE_CODES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("notSelectable", "abstract", "not-selectable")));
+
+  /**
+   * Whether the concept is not selectable (aka abstract): it has a boolean property with the value true
+   * that is the code system's notSelectable property.
+   *
+   * This is on the expansion hot path, so it only looks at the code system's property declarations for
+   * the concept's boolean properties (most concepts have none) rather than working out the property codes up front
+   */
+  public static boolean isNotSelectable(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent def) {
     for (ConceptPropertyComponent p : def.getProperty()) {
-      if ("notSelectable".equals(p.getCode()) && p.hasValue() && p.getValue() instanceof BooleanType) 
-        return ((BooleanType) p.getValue()).getValue();
+      if (p.hasValue() && p.getValue() instanceof BooleanType && ((BooleanType) p.getValue()).booleanValue() && isNotSelectableProperty(cs, p.getCode())) {
+        return true;
+      }
     }
     return false;
   }
 
-  public static void setNotSelectable(CodeSystem cs, ConceptDefinitionComponent concept) throws FHIRFormatError {
+  /**
+   * Whether a concept property code is the code system's code for the standard notSelectable property.
+   * A property declared with the standard uri counts whatever code it was given. A property declared
+   * with a different uri is a different property, and doesn't count, whatever its code. Otherwise
+   * (not declared, or declared with no uri) notSelectable, abstract and not-selectable are recognised
+   * by the code alone
+   */
+  private static boolean isNotSelectableProperty(@Nonnull CodeSystem cs, String code) {
+    if (code == null) {
+      return false;
+    }
+    PropertyComponent pc = cs.getProperty(code);
+    if (pc != null && pc.hasUri()) {
+      return NOT_SELECTABLE_URI.equals(pc.getUri());
+    }
+    return NOT_SELECTABLE_CODES.contains(code);
+  }
+
+  public static boolean isNotSelectable(@Nonnull CodeSystem cs, @Nonnull String code) {
+    ConceptDefinitionComponent cd = findCode(cs.getConcept(), code);
+    return cd == null ? false : isNotSelectable(cs, cd);
+  }
+
+  public static void setNotSelectable(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent concept) throws FHIRFormatError {
     defineNotSelectableProperty(cs);
     ConceptPropertyComponent p = getProperty(concept, "notSelectable");
     if (p != null)
@@ -164,7 +276,71 @@ public class CodeSystemUtilities {
       concept.addProperty().setCode("notSelectable").setValue(new BooleanType(true));    
   }
 
-  public static void defineNotSelectableProperty(CodeSystem cs) {
+  public static void setProperty(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent concept, @Nonnull String code, @Nonnull DataType value) throws FHIRFormatError {
+    defineProperty(cs, code, propertyTypeForValue(value));
+    ConceptPropertyComponent p = getProperty(concept,  code);
+    if (p != null)
+      p.setValue(value);
+    else
+      concept.addProperty().setCode(code).setValue(value);    
+  }
+  
+  public static void setProperty(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent concept, @Nonnull String url, @Nonnull String code, @Nonnull DataType value) throws FHIRFormatError {
+    defineProperty(cs, code, propertyTypeForValue(value), url);
+    ConceptPropertyComponent p = getProperty(concept,  code);
+    if (p != null)
+      p.setValue(value);
+    else
+      concept.addProperty().setCode(code).setValue(value);    
+  }
+  
+
+  private static PropertyType propertyTypeForValue(DataType value) {
+    if (value instanceof BooleanType) {
+      return PropertyType.BOOLEAN;
+    }
+    if (value instanceof CodeType) {
+      return PropertyType.CODE;
+    }
+    if (value instanceof Coding) {
+      return PropertyType.CODING;
+    }
+    if (value instanceof DateTimeType) {
+      return PropertyType.DATETIME;
+    }
+    if (value instanceof DecimalType) {
+      return PropertyType.DECIMAL;
+    }
+    if (value instanceof IntegerType) {
+      return PropertyType.INTEGER;
+    }
+    if (value instanceof StringType) {
+      return PropertyType.STRING;
+    }
+    throw new Error("Unknown property type "+value.getClass().getName());
+  }
+
+  private static String defineProperty(CodeSystem cs, String code, PropertyType pt) {
+    String url = "http://hl7.org/fhir/concept-properties#"+code;
+    return defineProperty(cs, code, pt, url);
+  }
+  private static String defineProperty(CodeSystem cs, String code, PropertyType pt, String url) {
+    for (PropertyComponent p : cs.getProperty()) {
+      if (p.hasCode() && p.getCode().equals(code)) {
+        if (!p.getUri().equals(url)) {
+          throw new Error("URI mismatch for code "+code+" url = "+p.getUri()+" vs "+url);
+        }
+        if (!p.getType().equals(pt)) {
+          throw new Error("Type mismatch for code "+code+" type = "+p.getType()+" vs "+pt);
+        }
+        return code;
+      }
+    }
+    cs.addProperty().setCode(code).setUri(url).setType(pt).setUri(url);
+    return code;
+  }
+
+  public static void defineNotSelectableProperty(@Nonnull CodeSystem cs) {
     defineCodeSystemProperty(cs, "notSelectable", "Indicates that the code is abstract - only intended to be used as a selector for other concepts", PropertyType.BOOLEAN);
   }
 
@@ -183,7 +359,7 @@ public class CodeSystemUtilities {
     }
   }
 
-  public static void setStatus(CodeSystem cs, ConceptDefinitionComponent concept, ConceptStatus status) throws FHIRFormatError {
+  public static void setStatus(@Nonnull CodeSystem cs, ConceptDefinitionComponent concept, ConceptStatus status) throws FHIRFormatError {
     defineStatusProperty(cs);
     ConceptPropertyComponent p = getProperty(concept, "status");
     if (p != null)
@@ -192,7 +368,7 @@ public class CodeSystemUtilities {
       concept.addProperty().setCode("status").setValue(new CodeType(status.toCode()));    
   }
 
-  public static void defineStatusProperty(CodeSystem cs) {
+  public static void defineStatusProperty(@Nonnull CodeSystem cs) {
     defineCodeSystemProperty(cs, "status", "A property that indicates the status of the concept. One of active, experimental, deprecated, retired", PropertyType.CODE);
   }
 
@@ -200,15 +376,15 @@ public class CodeSystemUtilities {
     defineCodeSystemProperty(cs, "deprecationDate", "The date at which a concept was deprecated. Concepts that are deprecated but not inactive can still be used, but their use is discouraged", PropertyType.DATETIME);
   }
 
-  public static void defineParentProperty(CodeSystem cs) {
+  public static void defineParentProperty(@Nonnull CodeSystem cs) {
     defineCodeSystemProperty(cs, "parent", "The concept identified in this property is a parent of the concept on which it is a property. The property type will be 'code'. The meaning of parent/child relationships is defined by the hierarchyMeaning attribute", PropertyType.CODE);
   }
 
-  public static void defineChildProperty(CodeSystem cs) {
+  public static void defineChildProperty(@Nonnull CodeSystem cs) {
     defineCodeSystemProperty(cs, "child", "The concept identified in this property is a child of the concept on which it is a property. The property type will be 'code'. The meaning of parent/child relationships is defined by the hierarchyMeaning attribute", PropertyType.CODE);
   }
 
-  public static boolean isDeprecated(CodeSystem cs, ConceptDefinitionComponent def, boolean ignoreStatus)  {
+  public static boolean isDeprecated(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent def, boolean ignoreStatus)  {
     try {
       for (ConceptPropertyComponent p : def.getProperty()) {
         if (!ignoreStatus) {
@@ -222,42 +398,84 @@ public class CodeSystemUtilities {
         if ("deprecated".equals(p.getCode()) && p.hasValue() && p.getValue() instanceof BooleanType) 
           return ((BooleanType) p.getValue()).getValue();
       }
+      StandardsStatus ss = ExtensionUtilities.getStandardsStatus(def);
+      if (ss == StandardsStatus.DEPRECATED) {
+        return true;
+      }
       return false;
     } catch (FHIRException e) {
       return false;
     }
   }
 
-  public static void setDeprecated(CodeSystem cs, ConceptDefinitionComponent concept, DateTimeType date) throws FHIRFormatError {
+  public static boolean isInactive(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent def, boolean ignoreStatus)  {
+    try {
+      for (ConceptPropertyComponent p : def.getProperty()) {
+        if (!ignoreStatus) {
+          if ("status".equals(p.getCode()) && p.hasValue() && p.hasValueCodeType() && "inactive".equals(p.getValueCodeType().getCode()))
+            return true;
+        }
+        // legacy  
+        if ("inactive".equals(p.getCode()) && p.hasValue() && p.getValue() instanceof BooleanType) 
+          return ((BooleanType) p.getValue()).getValue();
+      }
+      return false;
+    } catch (FHIRException e) {
+      return false;
+    }
+  }
+
+  public static void setDeprecated(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent concept, @Nonnull DateTimeType date) throws FHIRFormatError {
     setStatus(cs, concept, ConceptStatus.Deprecated);
     defineDeprecatedProperty(cs);
     concept.addProperty().setCode("deprecationDate").setValue(date);    
   }
+
+
+  public static void setDeprecated(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent concept) throws FHIRFormatError {
+    setStatus(cs, concept, ConceptStatus.Deprecated);
+  }
   
-  public static boolean isInactive(CodeSystem cs, ConceptDefinitionComponent def) throws FHIRException {
+  public static boolean isInactive(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent def) throws FHIRException {
+    StandardsStatus ss = ExtensionUtilities.getStandardsStatus(def);
+    if (ss == StandardsStatus.WITHDRAWN) {
+      return true;
+    }
     for (ConceptPropertyComponent p : def.getProperty()) {
-      if ("status".equals(p.getCode()) && p.hasValueStringType()) 
-        return "inactive".equals(p.getValueStringType());
+      if ("status".equals(p.getCode()) && p.hasValueStringType()) {
+        return Utilities.existsInList(p.getValueStringType().primitiveValue(), "inactive", "retired");
+      }
+      if ("inactive".equals(p.getCode()) && p.hasValueBooleanType()) {
+        return p.getValueBooleanType().getValue();
+      }
+      if ("inactive".equals(p.getCode()) && p.hasValueCodeType()) {
+        String code = p.getValueCodeType().primitiveValue();
+        return "true".equals(code);
+      }
     }
     return false;
   }
   
-  public static boolean isInactive(CodeSystem cs, String code) throws FHIRException {
+  public static boolean isInactive(@Nonnull CodeSystem cs, @Nonnull String code) throws FHIRException {
+    if (cs.hasUserData(UserDataNames.tx_cs_special)) {
+      SpecialCodeSystem scs = (SpecialCodeSystem) cs.getUserData(UserDataNames.tx_cs_special);
+      return scs.inactive(code);
+    }
     ConceptDefinitionComponent def = findCode(cs.getConcept(), code);
     if (def == null)
       return true;
     return isInactive(cs, def);
   }
 
-  public static void defineCodeSystemProperty(CodeSystem cs, String code, String description, PropertyType type) {
+  public static void defineCodeSystemProperty(@Nonnull CodeSystem cs, @Nonnull String code, @Nonnull String description, @Nonnull PropertyType type) {
     for (PropertyComponent p : cs.getProperty()) {
-      if (p.getCode().equals(code))
+      if (p.hasCode() && p.getCode().equals(code))
         return;
     }
     cs.addProperty().setCode(code).setDescription(description).setType(type).setUri("http://hl7.org/fhir/concept-properties#"+code);
   }
 
-  public static String getCodeDefinition(CodeSystem cs, String code) {
+  public static String getCodeDefinition(@Nonnull CodeSystem cs, @Nonnull String code) {
     return getCodeDefinition(cs.getConcept(), code);
   }
 
@@ -272,27 +490,25 @@ public class CodeSystemUtilities {
     return null;
   }
 
-  public static CodeSystem makeShareable(CodeSystem cs) {
-    if (!cs.hasMeta())
-      cs.setMeta(new Meta());
-    for (UriType t : cs.getMeta().getProfile()) 
-      if ("http://hl7.org/fhir/StructureDefinition/shareablecodesystem".equals(t.getValue()))
-        return cs;
-    cs.getMeta().getProfile().add(new CanonicalType("http://hl7.org/fhir/StructureDefinition/shareablecodesystem"));
-    return cs;
+  public static boolean makeShareable(@Nonnull CodeSystem cs, boolean extension) {
+    boolean changed = false;
+    if (!cs.hasExperimental()) {
+      cs.setExperimental(false);
+      changed = true;
+    }
+
+    if (extension) {
+      if (!cs.hasMeta())
+        cs.setMeta(new Meta());
+      for (UriType t : cs.getMeta().getProfile())
+        if ("http://hl7.org/fhir/StructureDefinition/shareablecodesystem".equals(t.getValue()))
+          return changed;
+      cs.getMeta().getProfile().add(new CanonicalType("http://hl7.org/fhir/StructureDefinition/shareablecodesystem"));
+    }
+    return changed;
   }
 
-  public static boolean makeCSShareable(CodeSystem cs) {
-    if (!cs.hasMeta())
-      cs.setMeta(new Meta());
-    for (UriType t : cs.getMeta().getProfile()) 
-      if ("http://hl7.org/fhir/StructureDefinition/shareablecodesystem".equals(t.getValue()))
-        return false;
-    cs.getMeta().getProfile().add(new CanonicalType("http://hl7.org/fhir/StructureDefinition/shareablecodesystem"));
-    return true;
-  }
-
-  public static void setOID(CodeSystem cs, String oid) {
+  public static void setOID(@Nonnull CodeSystem cs, @Nonnull String oid) {
     if (!oid.startsWith("urn:oid:"))
        oid = "urn:oid:" + oid;
     if (!cs.hasIdentifier())
@@ -304,19 +520,19 @@ public class CodeSystemUtilities {
     
   }
 
-  public static boolean hasOID(CanonicalResource cs) {
+  public static boolean hasOID(@Nonnull CanonicalResource cs) {
     return getOID(cs) != null;
   }
 
-  public static String getOID(CanonicalResource cs) {
-    if (cs.hasIdentifier() && "urn:ietf:rfc:3986".equals(cs.getIdentifierFirstRep().getSystem()) && cs.getIdentifierFirstRep().hasValue() && cs.getIdentifierFirstRep().getValue().startsWith("urn:oid:"))
+  public static String getOID(@Nonnull CanonicalResource cs) {
+    if (cs != null && cs.hasIdentifier() && "urn:ietf:rfc:3986".equals(cs.getIdentifierFirstRep().getSystem()) && cs.getIdentifierFirstRep().hasValue() && cs.getIdentifierFirstRep().getValue().startsWith("urn:oid:"))
         return cs.getIdentifierFirstRep().getValue().substring(8);
     return null;
   }
 
-  public static ConceptDefinitionComponent findCode(List<ConceptDefinitionComponent> list, String code) {
+  public static ConceptDefinitionComponent findCode(@Nonnull List<ConceptDefinitionComponent> list, @Nonnull String code) {
     for (ConceptDefinitionComponent c : list) {
-      if (c.getCode().equals(code))
+      if (c.hasCode() && c.getCode().equals(code))
         return c;
       ConceptDefinitionComponent s = findCode(c.getConcept(), code);
       if (s != null)
@@ -325,65 +541,106 @@ public class CodeSystemUtilities {
     return null;
   }
 
-  public static void markStatus(CodeSystem cs, String wg, StandardsStatus status, String pckage, String fmm, String normativeVersion) throws FHIRException {
+
+  public static List<ConceptDefinitionComponent> findCodeWithParents(@Nonnull List<ConceptDefinitionComponent> parents, @Nonnull List<ConceptDefinitionComponent> list, @Nonnull String code) {
+    for (ConceptDefinitionComponent c : list) {
+      if (c.hasCode() && c.getCode().equals(code)) {
+        return addToList(parents, c);
+      }
+      List<ConceptDefinitionComponent> s = findCodeWithParents(addToList(parents, c), c.getConcept(), code);
+      if (s != null)
+        return s;
+    }
+    return null;
+  }
+
+  private static List<ConceptDefinitionComponent> addToList(List<ConceptDefinitionComponent> parents, ConceptDefinitionComponent c) {
+    List<ConceptDefinitionComponent> res = new ArrayList<CodeSystem.ConceptDefinitionComponent>();
+    if (parents != null) {
+      res.addAll(parents);
+    }
+    res.add(c);
+    return res;
+  }
+
+  public static ConceptDefinitionComponent findCodeOrAltCode(@Nonnull List<ConceptDefinitionComponent> list, @Nonnull String code, @Nonnull String use) {
+    for (ConceptDefinitionComponent c : list) {
+      if (c.hasCode() && c.getCode().equals(code))
+        return c;
+      for (ConceptPropertyComponent p : c.getProperty()) {
+        if ("alternateCode".equals(p.getCode()) && (use == null || hasUse(p, use)) && p.hasValue() && p.getValue().isPrimitive() && code.equals(p.getValue().primitiveValue())) {
+          return c;
+        }
+      }
+      ConceptDefinitionComponent s = findCodeOrAltCode(c.getConcept(), code, use);
+      if (s != null)
+        return s;
+    }
+    return null;
+  }
+
+  private static boolean hasUse(ConceptPropertyComponent p, String use) {
+    for (Extension ext : p.getExtensionsByUrl(ExtensionDefinitions.EXT_CS_ALTERNATE_USE)) {
+      if (ext.hasValueCoding() && use.equals(ext.getValueCoding().getCode())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static void markStatus(@Nonnull CodeSystem cs, String wg, StandardsStatus status, String fmm, String normativeVersion, String thisVersion) throws FHIRException {
     if (wg != null) {
-      if (!ToolingExtensions.hasExtension(cs, ToolingExtensions.EXT_WORKGROUP) || 
-          (Utilities.existsInList(ToolingExtensions.readStringExtension(cs, ToolingExtensions.EXT_WORKGROUP), "fhir", "vocab") && !Utilities.existsInList(wg, "fhir", "vocab"))) {
-        ToolingExtensions.setCodeExtension(cs, ToolingExtensions.EXT_WORKGROUP, wg);
+      if (!ExtensionUtilities.hasExtension(cs, ExtensionDefinitions.EXT_WORKGROUP) || 
+          (Utilities.existsInList(ExtensionUtilities.readStringExtension(cs, ExtensionDefinitions.EXT_WORKGROUP), "fhir", "vocab") && !Utilities.existsInList(wg, "fhir", "vocab"))) {
+        CanonicalResourceUtilities.setHl7WG(cs, wg);
       }
     }
     if (status != null) {
-      StandardsStatus ss = ToolingExtensions.getStandardsStatus(cs);
+      StandardsStatus ss = ExtensionUtilities.getStandardsStatus(cs);
       if (ss == null || ss.isLowerThan(status)) 
-        ToolingExtensions.setStandardsStatus(cs, status, normativeVersion);
-      if (pckage != null) {
-        if (!cs.hasUserData("ballot.package"))
-          cs.setUserData("ballot.package", pckage);
-        else if (!pckage.equals(cs.getUserString("ballot.package")))
-          if (!"infrastructure".equals(cs.getUserString("ballot.package")))
-            System.out.println("Code System "+cs.getUrl()+": ownership clash "+pckage+" vs "+cs.getUserString("ballot.package"));
-      }
+        ExtensionUtilities.setStandardsStatus(cs, status, normativeVersion, thisVersion);
       if (status == StandardsStatus.NORMATIVE) {
-        cs.setExperimental(false);
         cs.setStatus(PublicationStatus.ACTIVE);
       }
     }
     if (fmm != null) {
-      String sfmm = ToolingExtensions.readStringExtension(cs, ToolingExtensions.EXT_FMM_LEVEL);
-      if (Utilities.noString(sfmm) || Integer.parseInt(sfmm) < Integer.parseInt(fmm)) 
-        ToolingExtensions.setIntegerExtension(cs, ToolingExtensions.EXT_FMM_LEVEL, Integer.parseInt(fmm));
+      String sfmm = ExtensionUtilities.readStringExtension(cs, ExtensionDefinitions.EXT_FMM_LEVEL);
+      if (Utilities.noString(sfmm) || Integer.parseInt(sfmm) < Integer.parseInt(fmm)) { 
+        ExtensionUtilities.setIntegerExtension(cs, ExtensionDefinitions.EXT_FMM_LEVEL, Integer.parseInt(fmm));
+      }
     }
   }
 
  
-  public static DataType readProperty(ConceptDefinitionComponent concept, String code) {
+  public static DataType readProperty(@Nonnull ConceptDefinitionComponent concept, @Nonnull String code) {
     for (ConceptPropertyComponent p : concept.getProperty())
-      if (p.getCode().equals(code))
+      if (p.hasCode() && p.getCode().equals(code))
         return p.getValue(); 
     return null;
   }
 
-  public static ConceptPropertyComponent getProperty(ConceptDefinitionComponent concept, String code) {
+  public static ConceptPropertyComponent getProperty(@Nonnull ConceptDefinitionComponent concept, @Nonnull String code) {
     for (ConceptPropertyComponent p : concept.getProperty())
-      if (p.getCode().equals(code))
+      if (p.hasCode() && p.getCode().equals(code))
         return p; 
     return null;
   }
   
-  public static List<ConceptPropertyComponent> getPropertyValues(ConceptDefinitionComponent concept, String code) {
+  public static List<ConceptPropertyComponent> getPropertyValues(@Nonnull ConceptDefinitionComponent concept, @Nonnull String code) {
     List<ConceptPropertyComponent> res = new ArrayList<>();
-    for (ConceptPropertyComponent p : concept.getProperty()) {
-      if (p.getCode().equals(code)) {
-        res.add(p); 
+    if (code != null) {
+      for (ConceptPropertyComponent p : concept.getProperty()) {
+        if (code.equals(p.getCode())) {
+          res.add(p); 
+        }
       }
     }
     return res;
   }
 
-
   // see http://hl7.org/fhir/R4/codesystem.html#hierachy
-  // returns additional parents not in the heirarchy
-  public static List<String> getOtherChildren(CodeSystem cs, ConceptDefinitionComponent c) {
+  // returns additional parents not in the hierarchy
+  public static List<String> getOtherChildren(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent c) {
     List<String> res = new ArrayList<String>();
     for (ConceptPropertyComponent p : c.getProperty()) {
       if ("parent".equals(p.getCode())) {
@@ -394,12 +651,12 @@ public class CodeSystemUtilities {
   }
 
   // see http://hl7.org/fhir/R4/codesystem.html#hierachy
-  public static void addOtherChild(CodeSystem cs, ConceptDefinitionComponent owner, String code) {
+  public static void addOtherChild(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent owner, @Nonnull String code) {
     defineChildProperty(cs);
     owner.addProperty().setCode("child").setValue(new CodeType(code));
   }
 
-  public static boolean hasProperty(ConceptDefinitionComponent c, String code) {
+  public static boolean hasProperty(@Nonnull ConceptDefinitionComponent c, @Nonnull String code) {
     for (ConceptPropertyComponent cp : c.getProperty()) {
       if (code.equals(cp.getCode())) {
         return true;
@@ -408,7 +665,38 @@ public class CodeSystemUtilities {
     return false;
   }
 
-  public static boolean hasCode(CodeSystem cs, String code) {
+  public static String getProperty(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent c, @Nonnull String uri, @Nonnull String code) {
+    for (ConceptPropertyComponent cp : c.getProperty()) {
+      if (code.equals(cp.getCode())) {
+        return cp.getValue().primitiveValue();
+      }
+    }
+    for (PropertyComponent p : cs.getProperty()) {
+      if (uri.equals(p.getUri())) {
+        var t = getProperty(c, p.getCode());
+        if (t != null) {
+          return t.primitiveValue();
+        }
+      }
+    }
+    return null;
+  }
+
+  public static boolean hasProperty(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent c, @Nonnull String uri, @Nonnull String code) {
+    for (ConceptPropertyComponent cp : c.getProperty()) {
+      if (code.equals(cp.getCode())) {
+        return true;
+      }
+    }
+    for (PropertyComponent p : cs.getProperty()) {
+      if (uri.equals(p.getUri())) {
+        return hasProperty(c, p.getCode());
+      }
+    }
+    return false;
+  }
+
+  public static boolean hasCode(@Nonnull CodeSystem cs, @Nonnull String code) {
     for (ConceptDefinitionComponent cc : cs.getConcept()) {
       if (hasCode(cc, code)) {
         return true;
@@ -417,7 +705,7 @@ public class CodeSystemUtilities {
     return false;
   }
 
-  private static boolean hasCode(ConceptDefinitionComponent cc, String code) {
+  private static boolean hasCode(@Nonnull ConceptDefinitionComponent cc, @Nonnull String code) {
     if (code.equals(cc.getCode())) {
       return true;
     }
@@ -429,10 +717,7 @@ public class CodeSystemUtilities {
     return false;
   }
 
-  public static ConceptDefinitionComponent getCode(CodeSystem cs, String code) {
-    if (code == null) {
-      return null;
-    }
+  public static ConceptDefinitionComponent getCode(@Nonnull CodeSystem cs, @Nonnull String code) {
     for (ConceptDefinitionComponent cc : cs.getConcept()) {
       ConceptDefinitionComponent cd = getCode(cc, code);
       if (cd != null) {
@@ -442,7 +727,7 @@ public class CodeSystemUtilities {
     return null;
   }
 
-  private static ConceptDefinitionComponent getCode(ConceptDefinitionComponent cc, String code) {
+  private static ConceptDefinitionComponent getCode(@Nonnull ConceptDefinitionComponent cc, @Nonnull String code) {
     if (code.equals(cc.getCode())) {
       return cc;
     }
@@ -455,14 +740,14 @@ public class CodeSystemUtilities {
     return null;
   }
 
-  public static void crossLinkCodeSystem(CodeSystem cs) {
+  public static void crossLinkCodeSystem(@Nonnull CodeSystem cs) {
     String parent = getPropertyByUrl(cs, "http://hl7.org/fhir/concept-properties#parent");
     if ((parent != null)) {
       crossLinkConcepts(cs.getConcept(), cs.getConcept(), parent);
     }
   }
 
-  private static String getPropertyByUrl(CodeSystem cs, String url) {
+  private static String getPropertyByUrl(@Nonnull CodeSystem cs, String url) {
     for (PropertyComponent pc : cs.getProperty()) {
       if (url.equals(pc.getUri())) {
         return pc.getCode();
@@ -491,7 +776,7 @@ public class CodeSystemUtilities {
     
   }
 
-  public static boolean hasHierarchy(CodeSystem cs) {
+  public static boolean hasHierarchy(@Nonnull CodeSystem cs) {
     for (ConceptDefinitionComponent c : cs.getConcept()) {
       if (c.hasConcept()) {
         return true;
@@ -499,5 +784,459 @@ public class CodeSystemUtilities {
     }
     return false;
   }
+
+  public static void sortAllCodes(@Nonnull CodeSystem cs) {
+    sortAllCodes(cs.getConcept());
+  }
+
+  private static void sortAllCodes(List<ConceptDefinitionComponent> list) {
+    Collections.sort(list, new ConceptDefinitionComponentSorter());
+    for (ConceptDefinitionComponent cd : list) {
+      if (cd.hasConcept()) {
+        sortAllCodes(cd.getConcept());
+      }
+    }    
+  }
+
+  public static Coding readCoding(String jurisdiction) {    
+    return jurisdiction == null || !jurisdiction.contains("#") ?  null : new Coding().setCode(jurisdiction.substring(jurisdiction.indexOf("#")+1)).setSystem(jurisdiction.substring(0, jurisdiction.indexOf("#")));
+  }
+
+  public static SystemReference getSystemReference(String system, IWorkerContext ctxt) {
+    if (system == null) {
+      return null;
+    } if ("http://snomed.info/sct".equals(system)) {
+      return new SystemReference("SNOMED CT", "https://browser.ihtsdotools.org/");      
+    } else if ("http://loinc.org".equals(system)) {
+      return new SystemReference("LOINC", "https://loinc.org/");            
+    } else if ("http://unitsofmeasure.org".equals(system)) {
+      return new SystemReference("UCUM", "http://ucum.org");            
+    } else if (system.equals("http://www.nlm.nih.gov/research/umls/rxnorm")) {
+      return new SystemReference("RxNorm", "http://www.nlm.nih.gov/research/umls/rxnorm");
+    } else if (ctxt != null) {
+      CodeSystem cs = ctxt.fetchCodeSystem(system, IWorkerContext.VersionResolutionRules.defaultRule());
+      if (cs != null && cs.hasWebPath()) {
+        return new SystemReference(cs.present(), cs.getWebPath(), Utilities.isAbsoluteUrl(cs.getWebPath()));
+      } else if (cs != null) {
+        return new SystemReference(cs.present(), null);
+      }
+    }
+    return null;
+  }
+
+  public static boolean isNotCurrent(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent c) {
+    return isInactive(cs, c) || isDeprecated(cs, c, false);
+  }
+
+  public static List<String> getDisplays(@Nonnull CodeSystem srcCS, @Nonnull ConceptDefinitionComponent cd) {
+    List<String> list = new ArrayList<>();
+    if (cd.hasDisplay()) {
+      list.add(cd.getDisplay());
+    }
+    for (ConceptDefinitionDesignationComponent d : cd.getDesignation()) {
+      if (!list.contains(d.getValue())) {
+        list.add(d.getValue());
+      }
+    }
+    return list;
+  }
+
+  public static boolean checkDisplay(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent cd, @Nonnull String display) {
+    List<String> displays = getDisplays(cs, cd);
+    for (String s : displays) {
+      if (s.equalsIgnoreCase(display)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static int countCodes(@Nonnull CodeSystem cs) {
+    return countCodes(cs.getConcept());
+  }
+
+  private static int countCodes(List<ConceptDefinitionComponent> concept) {
+    int t = concept.size();
+    for (ConceptDefinitionComponent cd : concept) {
+      t = t + (cd.hasConcept() ?  countCodes(cd.getConcept()) : 0);
+    }
+    return t;
+  }
+
+  /**
+   * @return true if the supplement applies to this code system: CodeSystem.supplements names either
+   * the code system's url (so it applies to every version) or its url|version - the same rule as
+   * CanonicalResourceManager.getSupplements(url, version)
+   */
+  public static boolean supplementApplies(CodeSystem supplement, CodeSystem cs) {
+    return supplement.hasSupplements() && Utilities.existsInList(supplement.getSupplements(), cs.getUrl(), cs.getVersionedUrl());
+  }
+
+  /**
+   * @return true if mergeSupplements has already merged this supplement into the code system
+   */
+  public static boolean isSupplementMerged(CodeSystem cs, CodeSystem supplement) {
+    String merged = cs.getUserString(UserDataNames.tx_known_supplements);
+    if (merged == null) {
+      return false;
+    }
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //single literal character split
+    String[] mergedList = merged.split(",");
+    return Utilities.existsInList(supplement.getVersionedUrl(), mergedList);
+  }
+
+  public static CodeSystem mergeSupplements(@Nonnull CodeSystem cs, @Nonnull List<CodeSystem> supplements) {
+    CodeSystem ret = cs.copy();
+    ret.setUserData(UserDataNames.CS_SUPPLEMENT_LIST, supplements);
+    // readers (ValueSetValidator.resolveCodeSystem, ValueSetExpander) split this on "," alone, so the
+    // separator must be a bare comma: the default ", " left every supplement after the first with a
+    // leading space, and so never matched the url it was required by (useSupplement)
+    CommaSeparatedStringBuilder b = new CommaSeparatedStringBuilder(",");
+    for (CodeSystem sup : supplements) {
+      b.append(sup.getVersionedUrl());      
+    }
+    ret.setUserData(UserDataNames.tx_known_supplements, b.toString());
+
+    // index each supplement by code, rather than searching it for every concept in the code system
+    List<Map<String, ConceptDefinitionComponent>> supplementIndexes = new ArrayList<>();
+    for (CodeSystem sup : supplements) {
+      Map<String, ConceptDefinitionComponent> index = new HashMap<>();
+      indexCodes(index, sup.getConcept());
+      supplementIndexes.add(index);
+    }
+    for (ConceptDefinitionComponent t : ret.getConcept()) {
+      mergeSupplements(ret, t, supplements, supplementIndexes);
+    }
+    return ret;
+  }
+
+  // the first concept with the code wins, in the same order that findCode() searches
+  private static void indexCodes(Map<String, ConceptDefinitionComponent> index, List<ConceptDefinitionComponent> list) {
+    for (ConceptDefinitionComponent c : list) {
+      if (c.hasCode()) {
+        index.putIfAbsent(c.getCode(), c);
+      }
+      indexCodes(index, c.getConcept());
+    }
+  }
+
+  private static void mergeSupplements(CodeSystem ret, ConceptDefinitionComponent fdef, List<CodeSystem> supplements, List<Map<String, ConceptDefinitionComponent>> supplementIndexes) {
+    for (int i = 0; i < supplements.size(); i++) {
+      CodeSystem cs = supplements.get(i);
+      ConceptDefinitionComponent def = supplementIndexes.get(i).get(fdef.getCode());
+      if (def != null) {
+        for (Extension ext : def.getExtension()) {
+          fdef.addExtension(ext.copy());
+        }
+        for (ConceptDefinitionDesignationComponent d : def.getDesignation()) {
+          fdef.addDesignation(d.copy());
+        }
+        for (ConceptPropertyComponent p : def.getProperty()) {
+          PropertyComponent pd = CodeSystemUtilities.getPropertyDefinition(cs, p);
+          String code;
+          if (pd != null) {
+            code = defineProperty(ret, pd, propertyTypeForType(p.getValue()));
+          } else {
+            code = defineProperty(ret, p.getCode(), propertyTypeForType(p.getValue()));
+          }
+          fdef.addProperty().setCode(code).setValue(p.getValue()).copyExtensions(p, "http://hl7.org/fhir/StructureDefinition/alternate-code-use", "http://hl7.org/fhir/StructureDefinition/alternate-code-status");
+        }
+      }
+      for (ConceptDefinitionComponent t : fdef.getConcept()) {
+        mergeSupplements(ret, t, supplements, supplementIndexes);
+      }      
+    }
+  }
+
+  private static PropertyType propertyTypeForType(DataType value) {
+    if (value == null) {
+      return PropertyType.NULL;
+    }
+    if (value instanceof CodeType) {
+      return PropertyType.CODE;
+    }
+    if (value instanceof Coding) {
+      return PropertyType.CODING;
+    }
+    if (value instanceof StringType) {
+      return PropertyType.STRING;
+    }
+    if (value instanceof IntegerType) {
+      return PropertyType.INTEGER;
+    }
+    if (value instanceof BooleanType) {
+      return PropertyType.BOOLEAN;
+    }
+    if (value instanceof DateTimeType) {
+      return PropertyType.DATETIME;
+    }
+    if (value instanceof DecimalType) {
+      return PropertyType.DECIMAL;
+    }
+    throw new FHIRException("Unsupported property value for a CodeSystem Property: "+value.fhirType());
+  }
+
+  private static String defineProperty(CodeSystem cs, PropertyComponent pd, PropertyType pt) {
+    for (PropertyComponent p : cs.getProperty()) {
+      if (p.hasCode() && p.getCode().equals(pd.getCode())) {
+        if (!p.getUri().equals(pd.getUri())) {
+          throw new Error("URI mismatch for code "+pd.getCode()+" url = "+p.getUri()+" vs "+pd.getUri());
+        }
+        if (!p.getType().equals(pt)) {
+          throw new Error("Type mismatch for code "+pd.getCode()+" type = "+p.getType().toCode()+" vs "+pt.toCode());
+        }
+        return pd.getCode();
+      }
+    }
+    cs.addProperty().setCode(pd.getCode()).setUri(pd.getUri()).setType(pt);
+    return pd.getCode();
+
+  }
+
+
+  private static PropertyComponent getPropertyDefinition(CodeSystem cs, ConceptPropertyComponent p) {
+    for (PropertyComponent t : cs.getProperty()) {
+      if (t.hasCode() && t.getCode().equals(p.getCode())) {
+        return t;
+      }
+    }
+    return null;
+  }
+
+  public static boolean hasProperties(@Nonnull CodeSystem cs) {
+    return hasProperties(cs.getConcept());
+  }
+
+  private static boolean hasProperties(List<ConceptDefinitionComponent> list) {
+    for (ConceptDefinitionComponent c : list) {
+      if (c.hasProperty() || hasProperties(c.getConcept())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static boolean hasDesignations(@Nonnull CodeSystem cs) {
+    return hasDesignations(cs.getConcept());
+  }
+
+  private static boolean hasDesignations(List<ConceptDefinitionComponent> list) {
+    for (ConceptDefinitionComponent c : list) {
+      if (c.hasDesignation() || hasDesignations(c.getConcept())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static boolean hasPropertyDef(@Nonnull CodeSystem cs, @Nonnull String property) {
+    
+    for (PropertyComponent pd : cs.getProperty()) {
+      if (pd.hasCode() && pd.getCode().equals(property)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static DataType getProperty(@Nonnull CodeSystem cs, @Nonnull String code, @Nonnull String property) {
+    ConceptDefinitionComponent def = getCode(cs, code);
+    return getProperty(cs, def, property);
+  }
   
+  public static DataType getProperty(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent def, @Nonnull String property) {
+    PropertyComponent defn = getPropertyDefinition(cs, property);
+    if (defn != null) {
+      property = defn.getCode();
+    }
+    ConceptPropertyComponent cp = getProperty(def, property);
+    return cp == null ? null : cp.getValue();
+  }
+
+  public static boolean hasMarkdownInDefinitions(@Nonnull CodeSystem cs, @Nonnull MarkDownProcessor md) {
+    return hasMarkdownInDefinitions(cs.getConcept(), md);
+  }
+
+  private static boolean hasMarkdownInDefinitions(List<ConceptDefinitionComponent> concepts, MarkDownProcessor md) {
+    for (ConceptDefinitionComponent c : concepts) {
+      if (c.hasDefinition() && md.isProbablyMarkdown(c.getDefinition(), true)) {
+        return true;
+      }
+      if (c.hasConcept() && hasMarkdownInDefinitions(c.getConcept(), md)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static String getStatus(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent cc) {
+    StandardsStatus ss = ExtensionUtilities.getStandardsStatus(cc);
+    if (ss == StandardsStatus.DEPRECATED || ss == StandardsStatus.WITHDRAWN) {
+      return ss.toCode();
+    }
+    DataType v = getProperty(cs, cc, "status");
+    if (v == null || !v.isPrimitive()) {
+      return null;
+    } else {
+      return v.primitiveValue();
+    }
+  }
+
+  /**
+   * A simple subsumption test that only looks at nested concepts - it does not consider the
+   * #parent / #child properties, hierarchyMeaning, or the content mode, and it cannot tell
+   * 'no' from 'don't know'. Use TerminologySubsumptionTester instead, which does all of that.
+   */
+  public static Boolean subsumes(@Nonnull CodeSystem cs, @Nonnull String pc, @Nonnull String cc) {
+    if (pc.equals(cc)) {
+      return true;
+    }
+    List<ConceptDefinitionComponent> child = findCodeWithParents(null, cs.getConcept(), cc);
+    if (child == null) { // cc isn't in the code system at all
+      return false;
+    }
+    for (ConceptDefinitionComponent item : child) {
+      if (pc.equals(item.getCode())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static Set<String> codes(@Nonnull CodeSystem cs) {
+    Set<String> res = new HashSet<>();
+    addCodes(res, cs.getConcept());
+    return res;
+  }
+
+  private static void addCodes(Set<String> res, List<ConceptDefinitionComponent> list) {
+    for (ConceptDefinitionComponent cd : list) {
+      if (cd.hasCode()) {
+        res.add(cd.getCode());
+      }
+      if (cd.hasConcept()) {
+        addCodes(res, cd.getConcept());
+      }
+    }    
+  }
+  
+  /**
+   * property in this case is the name of a property that appears in a ValueSet filter 
+   * 
+   * @param cs
+   * @param property
+   * @return
+   */
+  public static PropertyComponent getPropertyDefinition(@Nonnull CodeSystem cs, @Nonnull String property) {
+    String uri = getStandardPropertyUri(property);
+    if (uri != null) {
+      for (PropertyComponent cp : cs.getProperty()) {
+        if (uri.equals(cp.getUri())) {
+          return cp;
+        }
+      }
+    }
+    for (PropertyComponent cp : cs.getProperty()) {
+      if (cp.getCode().equals(property)) {
+        return cp;
+      }
+    }
+    return null;
+  }
+
+  public static boolean isDefinedProperty(@Nonnull CodeSystem cs, @Nonnull String property) {
+    String uri = getStandardPropertyUri(property);
+    if (uri != null) {
+      for (PropertyComponent cp : cs.getProperty()) {
+        if (uri.equals(cp.getUri())) {
+          return true;
+        }
+      }
+    }
+    for (PropertyComponent cp : cs.getProperty()) {
+      if (cp.getCode().equals(property) && (uri == null || !cp.hasUri())) { // if uri is right, will return from above
+        return true;
+      }
+    }
+    return false;
+  }
+  
+
+  private static String getStandardPropertyUri(String property) {
+    switch (property) {
+    case "status" : return "http://hl7.org/fhir/concept-properties#status";
+    case "inactive" : return "http://hl7.org/fhir/concept-properties#inactive";
+    case "effectiveDate" : return "http://hl7.org/fhir/concept-properties#effectiveDate";
+    case "deprecationDate" : return "http://hl7.org/fhir/concept-properties#deprecationDate";
+    case "retirementDate" : return "http://hl7.org/fhir/concept-properties#retirementDate";
+    case "notSelectable" : return "http://hl7.org/fhir/concept-properties#notSelectable";
+    case "parent" : return "http://hl7.org/fhir/concept-properties#parent";
+    case "child" : return "http://hl7.org/fhir/concept-properties#child";
+    case "partOf" : return "http://hl7.org/fhir/concept-properties#partOf";
+    case "synonym" : return "http://hl7.org/fhir/concept-properties#synonym";
+    case "comment" : return "http://hl7.org/fhir/concept-properties#comment";
+    case "itemWeight" : return "http://hl7.org/fhir/concept-properties#itemWeight";        
+    }
+    return null;
+  }
+
+  public static boolean isExemptFromMultipleVersionChecking(String url) {
+    return Utilities.existsInList(url, "http://snomed.info/sct", "http://loinc.org");
+  }
+
+  public static PropertyComponent getPropertyByUri(@Nonnull CodeSystem cs, @Nonnull String uri) {
+    for (PropertyComponent t : cs.getProperty()) {
+      if (uri.equals(t.getUri())) {
+        return t;
+      }
+    }
+    return null;
+  }
+
+  public static CodeSystem convertSD(@Nonnull StructureDefinition sd) {
+    CodeSystem cs = new CodeSystem();
+    cs.setId(sd.getId());
+    cs.setUrl(sd.getUrl());
+    cs.setVersion(sd.getVersion());
+    cs.setStatus(sd.getStatus());
+    cs.setContent(Enumerations.CodeSystemContentMode.COMPLETE);
+    for (ElementDefinition ed : sd.getSnapshot().getElement()) {
+      ConceptDefinitionComponent cd = cs.addConcept();
+      cd.setCode(ed.getId());
+      cd.setDisplay(ed.getId());
+      ed.setDefinition(ed.getDefinition());
+    }
+    return cs;
+  }
+
+  public static boolean hasCSComments(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent c) {
+    return hasProperty(cs, c, "http://hl7.org/fhir/concept-properties#comments", "comments");
+  }
+
+
+  public static String getCSComments(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent c) {
+    return getProperty(cs, c, "http://hl7.org/fhir/concept-properties#comments", "comments");
+  }
+
+  public static void addCSComments(@Nonnull CodeSystem cs, @Nonnull ConceptDefinitionComponent cc, @Nonnull String comments) {
+    String code = "comments";
+
+    for (PropertyComponent p : cs.getProperty()) {
+      if ("http://hl7.org/fhir/concept-properties#comments".equals(p.getUri())) {
+        code = p.getCode();
+      }
+    }
+    setProperty(cs, cc, code, new StringType(comments));
+  }
+
+  public static boolean isLangPack(CodeSystem c) {
+    Extension ext = ExtensionUtilities.getExtension(c,  ExtensionDefinitions.EXT_SUPPL_TYPE);
+    // a global language pack is used whether or not it is referenced. The code was 'lang-pack' until
+    // Oct 2026; it is still accepted, so that supplements marked the old way keep working
+    return ext != null && ext.getValue() instanceof StringType
+      && Utilities.existsInList(((StringType) ext.getValue()).getValue(), "global-lang-pack", "lang-pack");
+  }
+
 }
+

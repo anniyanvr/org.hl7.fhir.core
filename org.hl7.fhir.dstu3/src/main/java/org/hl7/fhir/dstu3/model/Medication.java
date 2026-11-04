@@ -134,12 +134,12 @@ public class Medication extends DomainResource {
           return MedicationStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown MedicationStatus code '"+codeString+"'");
         }
-        public Enumeration<MedicationStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<MedicationStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<MedicationStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -151,14 +151,16 @@ public class Medication extends DomainResource {
         throw new FHIRException("Unknown MedicationStatus code '"+codeString+"'");
         }
     public String toCode(MedicationStatus code) {
-      if (code == MedicationStatus.ACTIVE)
+       if (code == MedicationStatus.NULL)
+           return null;
+       if (code == MedicationStatus.ACTIVE)
         return "active";
       if (code == MedicationStatus.INACTIVE)
         return "inactive";
       if (code == MedicationStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(MedicationStatus code) {
       return code.getSystem();
       }
@@ -222,8 +224,8 @@ public class Medication extends DomainResource {
           return (CodeableConcept) this.item;
         }
 
-        public boolean hasItemCodeableConcept() { 
-          return this != null && this.item instanceof CodeableConcept;
+        public boolean hasItemCodeableConcept() {
+            return this.item instanceof CodeableConcept;
         }
 
         /**
@@ -237,8 +239,8 @@ public class Medication extends DomainResource {
           return (Reference) this.item;
         }
 
-        public boolean hasItemReference() { 
-          return this != null && this.item instanceof Reference;
+        public boolean hasItemReference() {
+            return this.item instanceof Reference;
         }
 
         public boolean hasItem() { 
@@ -420,7 +422,7 @@ public class Medication extends DomainResource {
           return this.item;
         }
         else if (name.equals("isActive")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Medication.isActive");
+          throw new FHIRException("Cannot call addChild on a singleton property Medication.isActive");
         }
         else if (name.equals("amount")) {
           this.amount = new Ratio();
@@ -832,8 +834,8 @@ public class Medication extends DomainResource {
           return (CodeableConcept) this.item;
         }
 
-        public boolean hasItemCodeableConcept() { 
-          return this != null && this.item instanceof CodeableConcept;
+        public boolean hasItemCodeableConcept() {
+            return this.item instanceof CodeableConcept;
         }
 
         /**
@@ -847,8 +849,8 @@ public class Medication extends DomainResource {
           return (Reference) this.item;
         }
 
-        public boolean hasItemReference() { 
-          return this != null && this.item instanceof Reference;
+        public boolean hasItemReference() {
+            return this.item instanceof Reference;
         }
 
         public boolean hasItem() { 
@@ -1218,10 +1220,10 @@ public class Medication extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("lotNumber")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Medication.lotNumber");
+          throw new FHIRException("Cannot call addChild on a singleton property Medication.lotNumber");
         }
         else if (name.equals("expirationDate")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Medication.expirationDate");
+          throw new FHIRException("Cannot call addChild on a singleton property Medication.expirationDate");
         }
         else
           return super.addChild(name);
@@ -1860,13 +1862,13 @@ public class Medication extends DomainResource {
           return this.code;
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Medication.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Medication.status");
         }
         else if (name.equals("isBrand")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Medication.isBrand");
+          throw new FHIRException("Cannot call addChild on a singleton property Medication.isBrand");
         }
         else if (name.equals("isOverTheCounter")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Medication.isOverTheCounter");
+          throw new FHIRException("Cannot call addChild on a singleton property Medication.isOverTheCounter");
         }
         else if (name.equals("manufacturer")) {
           this.manufacturer = new Reference();

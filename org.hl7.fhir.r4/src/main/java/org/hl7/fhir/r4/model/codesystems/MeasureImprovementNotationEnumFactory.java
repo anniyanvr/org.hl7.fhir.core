@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class MeasureImprovementNotationEnumFactory implements EnumFactory<MeasureImprovementNotation> {
@@ -46,19 +42,21 @@ public class MeasureImprovementNotationEnumFactory implements EnumFactory<Measur
       return MeasureImprovementNotation.INCREASE;
     if ("decrease".equals(codeString))
       return MeasureImprovementNotation.DECREASE;
-    throw new IllegalArgumentException("Unknown MeasureImprovementNotation code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MeasureImprovementNotation code '" + codeString + "'");
   }
 
   public String toCode(MeasureImprovementNotation code) {
-    if (code == MeasureImprovementNotation.INCREASE)
+       if (code == MeasureImprovementNotation.NULL)
+           return null;
+       if (code == MeasureImprovementNotation.INCREASE)
       return "increase";
     if (code == MeasureImprovementNotation.DECREASE)
       return "decrease";
     return "?";
-  }
+   }
 
-    public String toSystem(MeasureImprovementNotation code) {
-      return code.getSystem();
-      }
+  public String toSystem(MeasureImprovementNotation code) {
+    return code.getSystem();
+  }
 
 }

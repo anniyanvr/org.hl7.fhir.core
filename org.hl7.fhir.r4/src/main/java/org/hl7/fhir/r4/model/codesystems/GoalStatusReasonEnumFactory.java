@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class GoalStatusReasonEnumFactory implements EnumFactory<GoalStatusReason> {
@@ -60,11 +56,13 @@ public class GoalStatusReasonEnumFactory implements EnumFactory<GoalStatusReason
       return GoalStatusReason.LACKOFTRANSPORTATION;
     if ("lack-of-social-support".equals(codeString))
       return GoalStatusReason.LACKOFSOCIALSUPPORT;
-    throw new IllegalArgumentException("Unknown GoalStatusReason code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown GoalStatusReason code '" + codeString + "'");
   }
 
   public String toCode(GoalStatusReason code) {
-    if (code == GoalStatusReason.SURGERY)
+       if (code == GoalStatusReason.NULL)
+           return null;
+       if (code == GoalStatusReason.SURGERY)
       return "surgery";
     if (code == GoalStatusReason.LIFEEVENT)
       return "life-event";
@@ -83,10 +81,10 @@ public class GoalStatusReasonEnumFactory implements EnumFactory<GoalStatusReason
     if (code == GoalStatusReason.LACKOFSOCIALSUPPORT)
       return "lack-of-social-support";
     return "?";
-  }
+   }
 
-    public String toSystem(GoalStatusReason code) {
-      return code.getSystem();
-      }
+  public String toSystem(GoalStatusReason code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ImmunizationRecommendationStatusEnumFactory implements EnumFactory<ImmunizationRecommendationStatus> {
@@ -46,19 +42,21 @@ public class ImmunizationRecommendationStatusEnumFactory implements EnumFactory<
       return ImmunizationRecommendationStatus.DUE;
     if ("overdue".equals(codeString))
       return ImmunizationRecommendationStatus.OVERDUE;
-    throw new IllegalArgumentException("Unknown ImmunizationRecommendationStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ImmunizationRecommendationStatus code '" + codeString + "'");
   }
 
   public String toCode(ImmunizationRecommendationStatus code) {
-    if (code == ImmunizationRecommendationStatus.DUE)
+       if (code == ImmunizationRecommendationStatus.NULL)
+           return null;
+       if (code == ImmunizationRecommendationStatus.DUE)
       return "due";
     if (code == ImmunizationRecommendationStatus.OVERDUE)
       return "overdue";
     return "?";
-  }
+   }
 
-    public String toSystem(ImmunizationRecommendationStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(ImmunizationRecommendationStatus code) {
+    return code.getSystem();
+  }
 
 }

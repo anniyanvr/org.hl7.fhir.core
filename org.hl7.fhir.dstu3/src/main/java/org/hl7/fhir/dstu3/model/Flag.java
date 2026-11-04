@@ -129,12 +129,12 @@ public class Flag extends DomainResource {
           return FlagStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown FlagStatus code '"+codeString+"'");
         }
-        public Enumeration<FlagStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<FlagStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<FlagStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -146,14 +146,16 @@ public class Flag extends DomainResource {
         throw new FHIRException("Unknown FlagStatus code '"+codeString+"'");
         }
     public String toCode(FlagStatus code) {
-      if (code == FlagStatus.ACTIVE)
+       if (code == FlagStatus.NULL)
+           return null;
+       if (code == FlagStatus.ACTIVE)
         return "active";
       if (code == FlagStatus.INACTIVE)
         return "inactive";
       if (code == FlagStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(FlagStatus code) {
       return code.getSystem();
       }
@@ -683,7 +685,7 @@ public class Flag extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Flag.status");
+          throw new FHIRException("Cannot call addChild on a singleton property Flag.status");
         }
         else if (name.equals("category")) {
           this.category = new CodeableConcept();

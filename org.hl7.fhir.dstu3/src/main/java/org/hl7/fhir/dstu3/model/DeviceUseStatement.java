@@ -167,12 +167,12 @@ public class DeviceUseStatement extends DomainResource {
           return DeviceUseStatementStatus.ONHOLD;
         throw new IllegalArgumentException("Unknown DeviceUseStatementStatus code '"+codeString+"'");
         }
-        public Enumeration<DeviceUseStatementStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<DeviceUseStatementStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<DeviceUseStatementStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -190,7 +190,9 @@ public class DeviceUseStatement extends DomainResource {
         throw new FHIRException("Unknown DeviceUseStatementStatus code '"+codeString+"'");
         }
     public String toCode(DeviceUseStatementStatus code) {
-      if (code == DeviceUseStatementStatus.ACTIVE)
+       if (code == DeviceUseStatementStatus.NULL)
+           return null;
+       if (code == DeviceUseStatementStatus.ACTIVE)
         return "active";
       if (code == DeviceUseStatementStatus.COMPLETED)
         return "completed";
@@ -203,7 +205,7 @@ public class DeviceUseStatement extends DomainResource {
       if (code == DeviceUseStatementStatus.ONHOLD)
         return "on-hold";
       return "?";
-      }
+   }
     public String toSystem(DeviceUseStatementStatus code) {
       return code.getSystem();
       }
@@ -501,8 +503,8 @@ public class DeviceUseStatement extends DomainResource {
       return (Timing) this.timing;
     }
 
-    public boolean hasTimingTiming() { 
-      return this != null && this.timing instanceof Timing;
+    public boolean hasTimingTiming() {
+        return this.timing instanceof Timing;
     }
 
     /**
@@ -516,8 +518,8 @@ public class DeviceUseStatement extends DomainResource {
       return (Period) this.timing;
     }
 
-    public boolean hasTimingPeriod() { 
-      return this != null && this.timing instanceof Period;
+    public boolean hasTimingPeriod() {
+        return this.timing instanceof Period;
     }
 
     /**
@@ -531,8 +533,8 @@ public class DeviceUseStatement extends DomainResource {
       return (DateTimeType) this.timing;
     }
 
-    public boolean hasTimingDateTimeType() { 
-      return this != null && this.timing instanceof DateTimeType;
+    public boolean hasTimingDateTimeType() {
+        return this.timing instanceof DateTimeType;
     }
 
     public boolean hasTiming() { 
@@ -985,7 +987,7 @@ public class DeviceUseStatement extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceUseStatement.status");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceUseStatement.status");
         }
         else if (name.equals("subject")) {
           this.subject = new Reference();
@@ -1008,7 +1010,7 @@ public class DeviceUseStatement extends DomainResource {
           return this.timing;
         }
         else if (name.equals("recordedOn")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceUseStatement.recordedOn");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceUseStatement.recordedOn");
         }
         else if (name.equals("source")) {
           this.source = new Reference();

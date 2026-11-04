@@ -1,5 +1,8 @@
 package org.hl7.fhir.convertors.misc;
 
+import java.io.IOException;
+import org.hl7.fhir.model.ModelContext;
+
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.context.SimpleWorkerContext;
@@ -7,21 +10,17 @@ import org.hl7.fhir.r5.model.ValueSet;
 import org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent;
 import org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager;
 import org.hl7.fhir.utilities.npm.NpmPackage;
-import org.hl7.fhir.utilities.npm.ToolsVersion;
-
-import java.io.IOException;
 
 public class OIDBasedValueSetImporter {
 
   protected IWorkerContext context;
 
   protected void init() throws FHIRException, IOException {
-    FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
-    NpmPackage npm = pcm.loadPackage("hl7.fhir.r5.core", "current");
-    SimpleWorkerContext ctxt = SimpleWorkerContext.fromPackage(npm);
-    ctxt.setAllowLoadingDuplicates(true);
-    ctxt.loadFromPackage(pcm.loadPackage("hl7.terminology"), null);
-    context = ctxt;
+    FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager.Builder().build();
+    NpmPackage npm = pcm.loadPackage("hl7.fhir.r5.core", "5.0.0");
+    SimpleWorkerContext context = new SimpleWorkerContext.SimpleWorkerContextBuilder().withAllowLoadingDuplicates(true).fromPackage(npm);
+    context.loadFromPackage(pcm.loadPackage("hl7.terminology"), null);
+    this.context = context;
   }
 
   protected String fixVersionforSystem(String url, String csver) {

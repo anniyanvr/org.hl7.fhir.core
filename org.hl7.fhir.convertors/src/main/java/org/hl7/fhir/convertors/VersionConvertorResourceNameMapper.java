@@ -85,8 +85,8 @@ public class VersionConvertorResourceNameMapper {
         return org.hl7.fhir.r5.model.DeviceUsage.class.getSimpleName();
       case "DiagnosticReport":
         return org.hl7.fhir.r5.model.DiagnosticReport.class.getSimpleName();
-      case "DocumentManifest":
-        return org.hl7.fhir.r5.model.DocumentManifest.class.getSimpleName();
+//      case "DocumentManifest":
+//        return org.hl7.fhir.r5.model.DocumentManifest.class.getSimpleName();
       case "DocumentReference":
         return org.hl7.fhir.r5.model.DocumentReference.class.getSimpleName();
       case "Encounter":
@@ -150,7 +150,7 @@ public class VersionConvertorResourceNameMapper {
       case "MedicationRequest":
         return org.hl7.fhir.r5.model.MedicationRequest.class.getSimpleName();
       case "MedicationStatement":
-        return org.hl7.fhir.r5.model.MedicationUsage.class.getSimpleName();
+        return org.hl7.fhir.r5.model.MedicationStatement.class.getSimpleName();
       case "MessageDefinition":
         return org.hl7.fhir.r5.model.MessageDefinition.class.getSimpleName();
       case "MessageHeader":
@@ -202,7 +202,7 @@ public class VersionConvertorResourceNameMapper {
       case "RelatedPerson":
         return org.hl7.fhir.r5.model.RelatedPerson.class.getSimpleName();
       case "RequestGroup":
-        return org.hl7.fhir.r5.model.RequestGroup.class.getSimpleName();
+        return org.hl7.fhir.r5.model.RequestOrchestration.class.getSimpleName();
       case "ResearchStudy":
         return org.hl7.fhir.r5.model.ResearchStudy.class.getSimpleName();
       case "ResearchSubject":
@@ -403,7 +403,7 @@ public class VersionConvertorResourceNameMapper {
         return null;
       case "MedicationRequest":
         return org.hl7.fhir.dstu3.model.MedicationRequest.class.getSimpleName();
-      case "MedicationUsage":
+      case "MedicationStatement":
         return org.hl7.fhir.dstu3.model.MedicationStatement.class.getSimpleName();
       case "MessageDefinition":
         return org.hl7.fhir.dstu3.model.MessageDefinition.class.getSimpleName();

@@ -150,12 +150,12 @@ public class CodeSystem extends MetadataResource {
           return CodeSystemHierarchyMeaning.CLASSIFIEDWITH;
         throw new IllegalArgumentException("Unknown CodeSystemHierarchyMeaning code '"+codeString+"'");
         }
-        public Enumeration<CodeSystemHierarchyMeaning> fromType(Base code) throws FHIRException {
+        public Enumeration<CodeSystemHierarchyMeaning> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<CodeSystemHierarchyMeaning>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("grouped-by".equals(codeString))
@@ -169,7 +169,9 @@ public class CodeSystem extends MetadataResource {
         throw new FHIRException("Unknown CodeSystemHierarchyMeaning code '"+codeString+"'");
         }
     public String toCode(CodeSystemHierarchyMeaning code) {
-      if (code == CodeSystemHierarchyMeaning.GROUPEDBY)
+       if (code == CodeSystemHierarchyMeaning.NULL)
+           return null;
+       if (code == CodeSystemHierarchyMeaning.GROUPEDBY)
         return "grouped-by";
       if (code == CodeSystemHierarchyMeaning.ISA)
         return "is-a";
@@ -178,7 +180,7 @@ public class CodeSystem extends MetadataResource {
       if (code == CodeSystemHierarchyMeaning.CLASSIFIEDWITH)
         return "classified-with";
       return "?";
-      }
+   }
     public String toSystem(CodeSystemHierarchyMeaning code) {
       return code.getSystem();
       }
@@ -278,12 +280,12 @@ public class CodeSystem extends MetadataResource {
           return CodeSystemContentMode.COMPLETE;
         throw new IllegalArgumentException("Unknown CodeSystemContentMode code '"+codeString+"'");
         }
-        public Enumeration<CodeSystemContentMode> fromType(Base code) throws FHIRException {
+        public Enumeration<CodeSystemContentMode> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<CodeSystemContentMode>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("not-present".equals(codeString))
@@ -297,7 +299,9 @@ public class CodeSystem extends MetadataResource {
         throw new FHIRException("Unknown CodeSystemContentMode code '"+codeString+"'");
         }
     public String toCode(CodeSystemContentMode code) {
-      if (code == CodeSystemContentMode.NOTPRESENT)
+       if (code == CodeSystemContentMode.NULL)
+           return null;
+       if (code == CodeSystemContentMode.NOTPRESENT)
         return "not-present";
       if (code == CodeSystemContentMode.EXAMPLE)
         return "example";
@@ -306,7 +310,7 @@ public class CodeSystem extends MetadataResource {
       if (code == CodeSystemContentMode.COMPLETE)
         return "complete";
       return "?";
-      }
+   }
     public String toSystem(CodeSystemContentMode code) {
       return code.getSystem();
       }
@@ -466,12 +470,12 @@ public class CodeSystem extends MetadataResource {
           return FilterOperator.EXISTS;
         throw new IllegalArgumentException("Unknown FilterOperator code '"+codeString+"'");
         }
-        public Enumeration<FilterOperator> fromType(Base code) throws FHIRException {
+        public Enumeration<FilterOperator> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<FilterOperator>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("=".equals(codeString))
@@ -495,7 +499,9 @@ public class CodeSystem extends MetadataResource {
         throw new FHIRException("Unknown FilterOperator code '"+codeString+"'");
         }
     public String toCode(FilterOperator code) {
-      if (code == FilterOperator.EQUAL)
+       if (code == FilterOperator.NULL)
+           return null;
+       if (code == FilterOperator.EQUAL)
         return "=";
       if (code == FilterOperator.ISA)
         return "is-a";
@@ -514,7 +520,7 @@ public class CodeSystem extends MetadataResource {
       if (code == FilterOperator.EXISTS)
         return "exists";
       return "?";
-      }
+   }
     public String toSystem(FilterOperator code) {
       return code.getSystem();
       }
@@ -638,12 +644,12 @@ public class CodeSystem extends MetadataResource {
           return PropertyType.DATETIME;
         throw new IllegalArgumentException("Unknown PropertyType code '"+codeString+"'");
         }
-        public Enumeration<PropertyType> fromType(Base code) throws FHIRException {
+        public Enumeration<PropertyType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<PropertyType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("code".equals(codeString))
@@ -661,7 +667,9 @@ public class CodeSystem extends MetadataResource {
         throw new FHIRException("Unknown PropertyType code '"+codeString+"'");
         }
     public String toCode(PropertyType code) {
-      if (code == PropertyType.CODE)
+       if (code == PropertyType.NULL)
+           return null;
+       if (code == PropertyType.CODE)
         return "code";
       if (code == PropertyType.CODING)
         return "Coding";
@@ -674,7 +682,7 @@ public class CodeSystem extends MetadataResource {
       if (code == PropertyType.DATETIME)
         return "dateTime";
       return "?";
-      }
+   }
     public String toSystem(PropertyType code) {
       return code.getSystem();
       }
@@ -1025,16 +1033,16 @@ public class CodeSystem extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("code")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.code");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.code");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.description");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.description");
         }
         else if (name.equals("operator")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.operator");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.operator");
         }
         else if (name.equals("value")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.value");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.value");
         }
         else
           return super.addChild(name);
@@ -1421,16 +1429,16 @@ public class CodeSystem extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("code")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.code");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.code");
         }
         else if (name.equals("uri")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.uri");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.uri");
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.description");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.description");
         }
         else if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.type");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.type");
         }
         else
           return super.addChild(name);
@@ -1957,13 +1965,13 @@ public class CodeSystem extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("code")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.code");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.code");
         }
         else if (name.equals("display")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.display");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.display");
         }
         else if (name.equals("definition")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.definition");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.definition");
         }
         else if (name.equals("designation")) {
           return addDesignation();
@@ -2281,14 +2289,14 @@ public class CodeSystem extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("language")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.language");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.language");
         }
         else if (name.equals("use")) {
           this.use = new Coding();
           return this.use;
         }
         else if (name.equals("value")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.value");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.value");
         }
         else
           return super.addChild(name);
@@ -2432,8 +2440,8 @@ public class CodeSystem extends MetadataResource {
           return (CodeType) this.value;
         }
 
-        public boolean hasValueCodeType() { 
-          return this != null && this.value instanceof CodeType;
+        public boolean hasValueCodeType() {
+            return this.value instanceof CodeType;
         }
 
         /**
@@ -2447,8 +2455,8 @@ public class CodeSystem extends MetadataResource {
           return (Coding) this.value;
         }
 
-        public boolean hasValueCoding() { 
-          return this != null && this.value instanceof Coding;
+        public boolean hasValueCoding() {
+            return this.value instanceof Coding;
         }
 
         /**
@@ -2462,8 +2470,8 @@ public class CodeSystem extends MetadataResource {
           return (StringType) this.value;
         }
 
-        public boolean hasValueStringType() { 
-          return this != null && this.value instanceof StringType;
+        public boolean hasValueStringType() {
+            return this.value instanceof StringType;
         }
 
         /**
@@ -2477,8 +2485,8 @@ public class CodeSystem extends MetadataResource {
           return (IntegerType) this.value;
         }
 
-        public boolean hasValueIntegerType() { 
-          return this != null && this.value instanceof IntegerType;
+        public boolean hasValueIntegerType() {
+            return this.value instanceof IntegerType;
         }
 
         /**
@@ -2492,8 +2500,8 @@ public class CodeSystem extends MetadataResource {
           return (BooleanType) this.value;
         }
 
-        public boolean hasValueBooleanType() { 
-          return this != null && this.value instanceof BooleanType;
+        public boolean hasValueBooleanType() {
+            return this.value instanceof BooleanType;
         }
 
         /**
@@ -2507,8 +2515,8 @@ public class CodeSystem extends MetadataResource {
           return (DateTimeType) this.value;
         }
 
-        public boolean hasValueDateTimeType() { 
-          return this != null && this.value instanceof DateTimeType;
+        public boolean hasValueDateTimeType() {
+            return this.value instanceof DateTimeType;
         }
 
         public boolean hasValue() { 
@@ -2607,7 +2615,7 @@ public class CodeSystem extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("code")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.code");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.code");
         }
         else if (name.equals("valueCode")) {
           this.value = new CodeType();
@@ -4293,38 +4301,38 @@ public class CodeSystem extends MetadataResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.url");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.url");
         }
         else if (name.equals("identifier")) {
           this.identifier = new Identifier();
           return this.identifier;
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.version");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.version");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.name");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.name");
         }
         else if (name.equals("title")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.title");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.title");
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.status");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.status");
         }
         else if (name.equals("experimental")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.experimental");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.experimental");
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.date");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.date");
         }
         else if (name.equals("publisher")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.publisher");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.publisher");
         }
         else if (name.equals("contact")) {
           return addContact();
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.description");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.description");
         }
         else if (name.equals("useContext")) {
           return addUseContext();
@@ -4333,31 +4341,31 @@ public class CodeSystem extends MetadataResource {
           return addJurisdiction();
         }
         else if (name.equals("purpose")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.purpose");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.purpose");
         }
         else if (name.equals("copyright")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.copyright");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.copyright");
         }
         else if (name.equals("caseSensitive")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.caseSensitive");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.caseSensitive");
         }
         else if (name.equals("valueSet")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.valueSet");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.valueSet");
         }
         else if (name.equals("hierarchyMeaning")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.hierarchyMeaning");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.hierarchyMeaning");
         }
         else if (name.equals("compositional")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.compositional");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.compositional");
         }
         else if (name.equals("versionNeeded")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.versionNeeded");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.versionNeeded");
         }
         else if (name.equals("content")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.content");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.content");
         }
         else if (name.equals("count")) {
-          throw new FHIRException("Cannot call addChild on a primitive type CodeSystem.count");
+          throw new FHIRException("Cannot call addChild on a singleton property CodeSystem.count");
         }
         else if (name.equals("filter")) {
           return addFilter();

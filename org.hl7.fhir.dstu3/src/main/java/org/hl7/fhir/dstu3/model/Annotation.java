@@ -104,8 +104,8 @@ public class Annotation extends Type implements ICompositeType {
       return (Reference) this.author;
     }
 
-    public boolean hasAuthorReference() { 
-      return this != null && this.author instanceof Reference;
+    public boolean hasAuthorReference() {
+        return this.author instanceof Reference;
     }
 
     /**
@@ -119,8 +119,8 @@ public class Annotation extends Type implements ICompositeType {
       return (StringType) this.author;
     }
 
-    public boolean hasAuthorStringType() { 
-      return this != null && this.author instanceof StringType;
+    public boolean hasAuthorStringType() {
+        return this.author instanceof StringType;
     }
 
     public boolean hasAuthor() { 
@@ -327,10 +327,10 @@ public class Annotation extends Type implements ICompositeType {
           return this.author;
         }
         else if (name.equals("time")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Annotation.time");
+          throw new FHIRException("Cannot call addChild on a singleton property Annotation.time");
         }
         else if (name.equals("text")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Annotation.text");
+          throw new FHIRException("Cannot call addChild on a singleton property Annotation.text");
         }
         else
           return super.addChild(name);

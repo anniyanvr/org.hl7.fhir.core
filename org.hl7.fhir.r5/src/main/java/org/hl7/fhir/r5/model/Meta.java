@@ -29,7 +29,7 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +47,7 @@ import ca.uhn.fhir.model.api.annotation.Block;
 
 import org.hl7.fhir.instance.model.api.IBaseMetaType;
 /**
- * Base StructureDefinition for Meta Type: The metadata about a resource. This is content in the resource that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
+ * Meta Type: The metadata about a resource. This is content in the resource that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
  */
 @DatatypeDef(name="Meta")
 public class Meta extends DataType implements IBaseMetaType {
@@ -502,6 +502,25 @@ public class Meta extends DataType implements IBaseMetaType {
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("versionId")) {
+          this.versionId = null;
+        } else if (name.equals("lastUpdated")) {
+          this.lastUpdated = null;
+        } else if (name.equals("source")) {
+          this.source = null;
+        } else if (name.equals("profile")) {
+          this.getProfile().remove(value);
+        } else if (name.equals("security")) {
+          this.getSecurity().remove(value);
+        } else if (name.equals("tag")) {
+          this.getTag().remove(value);
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -533,16 +552,16 @@ public class Meta extends DataType implements IBaseMetaType {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("versionId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Meta.versionId");
+          throw new FHIRException("Cannot call addChild on a singleton property Meta.versionId");
         }
         else if (name.equals("lastUpdated")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Meta.lastUpdated");
+          throw new FHIRException("Cannot call addChild on a singleton property Meta.lastUpdated");
         }
         else if (name.equals("source")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Meta.source");
+          throw new FHIRException("Cannot call addChild on a singleton property Meta.source");
         }
         else if (name.equals("profile")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Meta.profile");
+          throw new FHIRException("Cannot call addChild on a singleton property Meta.profile");
         }
         else if (name.equals("security")) {
           return addSecurity();
@@ -563,6 +582,10 @@ public class Meta extends DataType implements IBaseMetaType {
         Meta dst = new Meta();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Meta) dst);
       }
 
       public void copyValues(Meta dst) {

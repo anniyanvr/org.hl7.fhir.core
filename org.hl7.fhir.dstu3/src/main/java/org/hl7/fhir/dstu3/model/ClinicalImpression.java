@@ -135,12 +135,12 @@ public class ClinicalImpression extends DomainResource {
           return ClinicalImpressionStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown ClinicalImpressionStatus code '"+codeString+"'");
         }
-        public Enumeration<ClinicalImpressionStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<ClinicalImpressionStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<ClinicalImpressionStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("draft".equals(codeString))
@@ -152,14 +152,16 @@ public class ClinicalImpression extends DomainResource {
         throw new FHIRException("Unknown ClinicalImpressionStatus code '"+codeString+"'");
         }
     public String toCode(ClinicalImpressionStatus code) {
-      if (code == ClinicalImpressionStatus.DRAFT)
+       if (code == ClinicalImpressionStatus.NULL)
+           return null;
+       if (code == ClinicalImpressionStatus.DRAFT)
         return "draft";
       if (code == ClinicalImpressionStatus.COMPLETED)
         return "completed";
       if (code == ClinicalImpressionStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(ClinicalImpressionStatus code) {
       return code.getSystem();
       }
@@ -279,16 +281,6 @@ public class ClinicalImpression extends DomainResource {
             addItem();
           }
           return getItem().get(0);
-        }
-
-        /**
-         * @deprecated Use Reference#setResource(IBaseResource) instead
-         */
-        @Deprecated
-        public List<Resource> getItemTarget() { 
-          if (this.itemTarget == null)
-            this.itemTarget = new ArrayList<Resource>();
-          return this.itemTarget;
         }
 
         protected void listChildren(List<Property> children) {
@@ -470,8 +462,8 @@ public class ClinicalImpression extends DomainResource {
           return (CodeableConcept) this.item;
         }
 
-        public boolean hasItemCodeableConcept() { 
-          return this != null && this.item instanceof CodeableConcept;
+        public boolean hasItemCodeableConcept() {
+            return this.item instanceof CodeableConcept;
         }
 
         /**
@@ -485,8 +477,8 @@ public class ClinicalImpression extends DomainResource {
           return (Reference) this.item;
         }
 
-        public boolean hasItemReference() { 
-          return this != null && this.item instanceof Reference;
+        public boolean hasItemReference() {
+            return this.item instanceof Reference;
         }
 
         public boolean hasItem() { 
@@ -638,7 +630,7 @@ public class ClinicalImpression extends DomainResource {
           return this.item;
         }
         else if (name.equals("basis")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ClinicalImpression.basis");
+          throw new FHIRException("Cannot call addChild on a singleton property ClinicalImpression.basis");
         }
         else
           return super.addChild(name);
@@ -1138,8 +1130,8 @@ public class ClinicalImpression extends DomainResource {
       return (DateTimeType) this.effective;
     }
 
-    public boolean hasEffectiveDateTimeType() { 
-      return this != null && this.effective instanceof DateTimeType;
+    public boolean hasEffectiveDateTimeType() {
+        return this.effective instanceof DateTimeType;
     }
 
     /**
@@ -1153,8 +1145,8 @@ public class ClinicalImpression extends DomainResource {
       return (Period) this.effective;
     }
 
-    public boolean hasEffectivePeriod() { 
-      return this != null && this.effective instanceof Period;
+    public boolean hasEffectivePeriod() {
+        return this.effective instanceof Period;
     }
 
     public boolean hasEffective() { 
@@ -1359,16 +1351,6 @@ public class ClinicalImpression extends DomainResource {
         addProblem();
       }
       return getProblem().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getProblemTarget() { 
-      if (this.problemTarget == null)
-        this.problemTarget = new ArrayList<Resource>();
-      return this.problemTarget;
     }
 
     /**
@@ -1694,28 +1676,6 @@ public class ClinicalImpression extends DomainResource {
     }
 
     /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<RiskAssessment> getPrognosisReferenceTarget() { 
-      if (this.prognosisReferenceTarget == null)
-        this.prognosisReferenceTarget = new ArrayList<RiskAssessment>();
-      return this.prognosisReferenceTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public RiskAssessment addPrognosisReferenceTarget() { 
-      RiskAssessment r = new RiskAssessment();
-      if (this.prognosisReferenceTarget == null)
-        this.prognosisReferenceTarget = new ArrayList<RiskAssessment>();
-      this.prognosisReferenceTarget.add(r);
-      return r;
-    }
-
-    /**
      * @return {@link #action} (Action taken as part of assessment procedure.)
      */
     public List<Reference> getAction() { 
@@ -1766,16 +1726,6 @@ public class ClinicalImpression extends DomainResource {
         addAction();
       }
       return getAction().get(0);
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Resource> getActionTarget() { 
-      if (this.actionTarget == null)
-        this.actionTarget = new ArrayList<Resource>();
-      return this.actionTarget;
     }
 
     /**
@@ -2084,14 +2034,14 @@ public class ClinicalImpression extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ClinicalImpression.status");
+          throw new FHIRException("Cannot call addChild on a singleton property ClinicalImpression.status");
         }
         else if (name.equals("code")) {
           this.code = new CodeableConcept();
           return this.code;
         }
         else if (name.equals("description")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ClinicalImpression.description");
+          throw new FHIRException("Cannot call addChild on a singleton property ClinicalImpression.description");
         }
         else if (name.equals("subject")) {
           this.subject = new Reference();
@@ -2110,7 +2060,7 @@ public class ClinicalImpression extends DomainResource {
           return this.effective;
         }
         else if (name.equals("date")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ClinicalImpression.date");
+          throw new FHIRException("Cannot call addChild on a singleton property ClinicalImpression.date");
         }
         else if (name.equals("assessor")) {
           this.assessor = new Reference();
@@ -2127,10 +2077,10 @@ public class ClinicalImpression extends DomainResource {
           return addInvestigation();
         }
         else if (name.equals("protocol")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ClinicalImpression.protocol");
+          throw new FHIRException("Cannot call addChild on a singleton property ClinicalImpression.protocol");
         }
         else if (name.equals("summary")) {
-          throw new FHIRException("Cannot call addChild on a primitive type ClinicalImpression.summary");
+          throw new FHIRException("Cannot call addChild on a singleton property ClinicalImpression.summary");
         }
         else if (name.equals("finding")) {
           return addFinding();

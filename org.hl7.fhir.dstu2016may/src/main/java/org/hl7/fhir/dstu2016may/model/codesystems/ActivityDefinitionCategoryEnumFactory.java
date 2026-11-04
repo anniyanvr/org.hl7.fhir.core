@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ActivityDefinitionCategoryEnumFactory implements EnumFactory<ActivityDefinitionCategory> {
@@ -56,11 +52,13 @@ public class ActivityDefinitionCategoryEnumFactory implements EnumFactory<Activi
       return ActivityDefinitionCategory.SUPPLY;
     if ("other".equals(codeString))
       return ActivityDefinitionCategory.OTHER;
-    throw new IllegalArgumentException("Unknown ActivityDefinitionCategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ActivityDefinitionCategory code '" + codeString + "'");
   }
 
   public String toCode(ActivityDefinitionCategory code) {
-    if (code == ActivityDefinitionCategory.DIET)
+       if (code == ActivityDefinitionCategory.NULL)
+           return null;
+       if (code == ActivityDefinitionCategory.DIET)
       return "diet";
     if (code == ActivityDefinitionCategory.DRUG)
       return "drug";
@@ -75,10 +73,10 @@ public class ActivityDefinitionCategoryEnumFactory implements EnumFactory<Activi
     if (code == ActivityDefinitionCategory.OTHER)
       return "other";
     return "?";
-  }
+   }
 
-    public String toSystem(ActivityDefinitionCategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(ActivityDefinitionCategory code) {
+    return code.getSystem();
+  }
 
 }

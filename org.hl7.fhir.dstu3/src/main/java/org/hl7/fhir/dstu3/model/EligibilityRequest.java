@@ -144,12 +144,12 @@ public class EligibilityRequest extends DomainResource {
           return EligibilityRequestStatus.ENTEREDINERROR;
         throw new IllegalArgumentException("Unknown EligibilityRequestStatus code '"+codeString+"'");
         }
-        public Enumeration<EligibilityRequestStatus> fromType(Base code) throws FHIRException {
+        public Enumeration<EligibilityRequestStatus> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<EligibilityRequestStatus>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("active".equals(codeString))
@@ -163,7 +163,9 @@ public class EligibilityRequest extends DomainResource {
         throw new FHIRException("Unknown EligibilityRequestStatus code '"+codeString+"'");
         }
     public String toCode(EligibilityRequestStatus code) {
-      if (code == EligibilityRequestStatus.ACTIVE)
+       if (code == EligibilityRequestStatus.NULL)
+           return null;
+       if (code == EligibilityRequestStatus.ACTIVE)
         return "active";
       if (code == EligibilityRequestStatus.CANCELLED)
         return "cancelled";
@@ -172,7 +174,7 @@ public class EligibilityRequest extends DomainResource {
       if (code == EligibilityRequestStatus.ENTEREDINERROR)
         return "entered-in-error";
       return "?";
-      }
+   }
     public String toSystem(EligibilityRequestStatus code) {
       return code.getSystem();
       }
@@ -519,8 +521,8 @@ public class EligibilityRequest extends DomainResource {
       return (DateType) this.serviced;
     }
 
-    public boolean hasServicedDateType() { 
-      return this != null && this.serviced instanceof DateType;
+    public boolean hasServicedDateType() {
+        return this.serviced instanceof DateType;
     }
 
     /**
@@ -534,8 +536,8 @@ public class EligibilityRequest extends DomainResource {
       return (Period) this.serviced;
     }
 
-    public boolean hasServicedPeriod() { 
-      return this != null && this.serviced instanceof Period;
+    public boolean hasServicedPeriod() {
+        return this.serviced instanceof Period;
     }
 
     public boolean hasServiced() { 
@@ -1175,7 +1177,7 @@ public class EligibilityRequest extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("status")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EligibilityRequest.status");
+          throw new FHIRException("Cannot call addChild on a singleton property EligibilityRequest.status");
         }
         else if (name.equals("priority")) {
           this.priority = new CodeableConcept();
@@ -1194,7 +1196,7 @@ public class EligibilityRequest extends DomainResource {
           return this.serviced;
         }
         else if (name.equals("created")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EligibilityRequest.created");
+          throw new FHIRException("Cannot call addChild on a singleton property EligibilityRequest.created");
         }
         else if (name.equals("enterer")) {
           this.enterer = new Reference();
@@ -1221,7 +1223,7 @@ public class EligibilityRequest extends DomainResource {
           return this.coverage;
         }
         else if (name.equals("businessArrangement")) {
-          throw new FHIRException("Cannot call addChild on a primitive type EligibilityRequest.businessArrangement");
+          throw new FHIRException("Cannot call addChild on a singleton property EligibilityRequest.businessArrangement");
         }
         else if (name.equals("benefitCategory")) {
           this.benefitCategory = new CodeableConcept();

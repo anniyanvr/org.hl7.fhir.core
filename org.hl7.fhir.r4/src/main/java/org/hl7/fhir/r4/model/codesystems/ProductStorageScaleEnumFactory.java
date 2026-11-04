@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class ProductStorageScaleEnumFactory implements EnumFactory<ProductStorageScale> {
@@ -48,21 +44,23 @@ public class ProductStorageScaleEnumFactory implements EnumFactory<ProductStorag
       return ProductStorageScale.CELSIUS;
     if ("kelvin".equals(codeString))
       return ProductStorageScale.KELVIN;
-    throw new IllegalArgumentException("Unknown ProductStorageScale code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ProductStorageScale code '" + codeString + "'");
   }
 
   public String toCode(ProductStorageScale code) {
-    if (code == ProductStorageScale.FARENHEIT)
+       if (code == ProductStorageScale.NULL)
+           return null;
+       if (code == ProductStorageScale.FARENHEIT)
       return "farenheit";
     if (code == ProductStorageScale.CELSIUS)
       return "celsius";
     if (code == ProductStorageScale.KELVIN)
       return "kelvin";
     return "?";
-  }
+   }
 
-    public String toSystem(ProductStorageScale code) {
-      return code.getSystem();
-      }
+  public String toSystem(ProductStorageScale code) {
+    return code.getSystem();
+  }
 
 }

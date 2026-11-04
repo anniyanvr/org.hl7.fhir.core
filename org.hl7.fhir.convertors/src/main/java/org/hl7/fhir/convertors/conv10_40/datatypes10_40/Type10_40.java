@@ -1,8 +1,44 @@
 package org.hl7.fhir.convertors.conv10_40.datatypes10_40;
 
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_10_40;
-import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.*;
-import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.*;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Address10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Age10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Annotation10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Attachment10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.CodeableConcept10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Coding10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.ContactPoint10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Count10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Distance10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Duration10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.HumanName10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Identifier10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Money10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Period10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Quantity10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Range10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Ratio10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.SampledData10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Signature10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.SimpleQuantity10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.complextypes10_40.Timing10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Base64Binary10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Boolean10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Code10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Date10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.DateTime10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Decimal10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Id10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Instant10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Integer10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.MarkDown10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Oid10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.PositiveInt10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.String10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Time10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.UnsignedInt10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Uri10_40;
+import org.hl7.fhir.convertors.conv10_40.datatypes10_40.primitivetypes10_40.Uuid10_40;
 import org.hl7.fhir.exceptions.FHIRException;
 
 public class Type10_40 {
@@ -44,10 +80,10 @@ public class Type10_40 {
       return UnsignedInt10_40.convertUnsignedInt((org.hl7.fhir.dstu2.model.UnsignedIntType) src);
     if (src instanceof org.hl7.fhir.dstu2.model.IntegerType)
       return Integer10_40.convertInteger((org.hl7.fhir.dstu2.model.IntegerType) src);
-    if (src instanceof org.hl7.fhir.dstu2.model.UriType)
-      return Uri10_40.convertUri((org.hl7.fhir.dstu2.model.UriType) src);
     if (src instanceof org.hl7.fhir.dstu2.model.UuidType)
       return Uuid10_40.convertUuid((org.hl7.fhir.dstu2.model.UuidType) src);
+    if (src instanceof org.hl7.fhir.dstu2.model.UriType)
+      return Uri10_40.convertUri((org.hl7.fhir.dstu2.model.UriType) src);
     if (src instanceof org.hl7.fhir.dstu2.model.Extension)
       return Extension10_40.convertExtension((org.hl7.fhir.dstu2.model.Extension) src);
     if (src instanceof org.hl7.fhir.dstu2.model.Narrative)
@@ -97,7 +133,7 @@ public class Type10_40 {
     if (src instanceof org.hl7.fhir.dstu2.model.SimpleQuantity)
       return SimpleQuantity10_40.convertSimpleQuantity((org.hl7.fhir.dstu2.model.SimpleQuantity) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown type " + src.fhirType());
+      throw new FHIRException("The type " + src.fhirType()+" cannot be converted from R2 to R4");
     } else {
       return null;
     }
@@ -133,9 +169,9 @@ public class Type10_40 {
       return UnsignedInt10_40.convertUnsignedInt((org.hl7.fhir.r4.model.UnsignedIntType) src);
     if (src instanceof org.hl7.fhir.r4.model.IntegerType)
       return Integer10_40.convertInteger((org.hl7.fhir.r4.model.IntegerType) src);
-    if (src instanceof org.hl7.fhir.r4.model.UriType) return Uri10_40.convertUri((org.hl7.fhir.r4.model.UriType) src);
     if (src instanceof org.hl7.fhir.r4.model.UuidType)
       return Uuid10_40.convertUuid((org.hl7.fhir.r4.model.UuidType) src);
+    if (src instanceof org.hl7.fhir.r4.model.UriType) return Uri10_40.convertUri((org.hl7.fhir.r4.model.UriType) src);
     if (src instanceof org.hl7.fhir.r4.model.Extension)
       return Extension10_40.convertExtension((org.hl7.fhir.r4.model.Extension) src);
     if (src instanceof org.hl7.fhir.r4.model.Narrative)
@@ -181,7 +217,7 @@ public class Type10_40 {
     if (src instanceof org.hl7.fhir.r4.model.SimpleQuantity)
       return SimpleQuantity10_40.convertSimpleQuantity((org.hl7.fhir.r4.model.SimpleQuantity) src);
     if (advisor.failFastOnNullOrUnknownEntry()) {
-      throw new FHIRException("Unknown type " + src.fhirType());
+      throw new FHIRException("The type " + src.fhirType()+" cannot be converted from R4 to R2");
     } else {
       return null;
     }

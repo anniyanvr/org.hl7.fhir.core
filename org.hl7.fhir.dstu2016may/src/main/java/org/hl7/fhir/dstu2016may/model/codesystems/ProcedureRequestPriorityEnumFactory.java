@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class ProcedureRequestPriorityEnumFactory implements EnumFactory<ProcedureRequestPriority> {
@@ -50,11 +46,13 @@ public class ProcedureRequestPriorityEnumFactory implements EnumFactory<Procedur
       return ProcedureRequestPriority.STAT;
     if ("asap".equals(codeString))
       return ProcedureRequestPriority.ASAP;
-    throw new IllegalArgumentException("Unknown ProcedureRequestPriority code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown ProcedureRequestPriority code '" + codeString + "'");
   }
 
   public String toCode(ProcedureRequestPriority code) {
-    if (code == ProcedureRequestPriority.ROUTINE)
+       if (code == ProcedureRequestPriority.NULL)
+           return null;
+       if (code == ProcedureRequestPriority.ROUTINE)
       return "routine";
     if (code == ProcedureRequestPriority.URGENT)
       return "urgent";
@@ -63,10 +61,10 @@ public class ProcedureRequestPriorityEnumFactory implements EnumFactory<Procedur
     if (code == ProcedureRequestPriority.ASAP)
       return "asap";
     return "?";
-  }
+   }
 
-    public String toSystem(ProcedureRequestPriority code) {
-      return code.getSystem();
-      }
+  public String toSystem(ProcedureRequestPriority code) {
+    return code.getSystem();
+  }
 
 }

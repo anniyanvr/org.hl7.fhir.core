@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class QualityTypeEnumFactory implements EnumFactory<QualityType> {
@@ -48,21 +44,23 @@ public class QualityTypeEnumFactory implements EnumFactory<QualityType> {
       return QualityType.SNP;
     if ("unknown".equals(codeString))
       return QualityType.UNKNOWN;
-    throw new IllegalArgumentException("Unknown QualityType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown QualityType code '" + codeString + "'");
   }
 
   public String toCode(QualityType code) {
-    if (code == QualityType.INDEL)
+       if (code == QualityType.NULL)
+           return null;
+       if (code == QualityType.INDEL)
       return "indel";
     if (code == QualityType.SNP)
       return "snp";
     if (code == QualityType.UNKNOWN)
       return "unknown";
     return "?";
-  }
+   }
 
-    public String toSystem(QualityType code) {
-      return code.getSystem();
-      }
+  public String toSystem(QualityType code) {
+    return code.getSystem();
+  }
 
 }

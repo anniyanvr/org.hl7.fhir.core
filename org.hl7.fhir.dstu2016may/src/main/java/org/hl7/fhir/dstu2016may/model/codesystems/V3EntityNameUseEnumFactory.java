@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -72,11 +68,13 @@ public class V3EntityNameUseEnumFactory implements EnumFactory<V3EntityNameUse> 
       return V3EntityNameUse.PHON;
     if ("SNDX".equals(codeString))
       return V3EntityNameUse.SNDX;
-    throw new IllegalArgumentException("Unknown V3EntityNameUse code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3EntityNameUse code '" + codeString + "'");
   }
 
   public String toCode(V3EntityNameUse code) {
-    if (code == V3EntityNameUse._NAMEREPRESENTATIONUSE)
+       if (code == V3EntityNameUse.NULL)
+           return null;
+       if (code == V3EntityNameUse._NAMEREPRESENTATIONUSE)
       return "_NameRepresentationUse";
     if (code == V3EntityNameUse.ABC)
       return "ABC";
@@ -107,10 +105,10 @@ public class V3EntityNameUseEnumFactory implements EnumFactory<V3EntityNameUse> 
     if (code == V3EntityNameUse.SNDX)
       return "SNDX";
     return "?";
-  }
+   }
 
-    public String toSystem(V3EntityNameUse code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3EntityNameUse code) {
+    return code.getSystem();
+  }
 
 }

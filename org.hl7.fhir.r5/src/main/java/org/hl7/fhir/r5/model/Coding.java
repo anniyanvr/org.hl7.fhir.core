@@ -29,13 +29,14 @@ package org.hl7.fhir.r5.model;
   POSSIBILITY OF SUCH DAMAGE.
   */
 
-// Generated on Tue, May 4, 2021 07:17+1000 for FHIR v4.6.0
+// Generated on Thu, Mar 23, 2023 19:59+1100 for FHIR v5.0.0
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.r5.model.Enumerations.*;
+import org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionContainsComponent;
 import org.hl7.fhir.instance.model.api.IBaseDatatypeElement;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.instance.model.api.ICompositeType;
@@ -47,7 +48,7 @@ import ca.uhn.fhir.model.api.annotation.Block;
 
 import org.hl7.fhir.instance.model.api.IBaseCoding;
 /**
- * Base StructureDefinition for Coding Type: A reference to a code defined by a terminology system.
+ * Coding Type: A reference to a code defined by a terminology system.
  */
 @DatatypeDef(name="Coding")
 public class Coding extends DataType implements IBaseCoding, ICompositeType, ICoding {
@@ -424,6 +425,23 @@ public class Coding extends DataType implements IBaseCoding, ICompositeType, ICo
         return value;
       }
 
+  @Override
+  public void removeChild(String name, Base value) throws FHIRException {
+        if (name.equals("system")) {
+          this.system = null;
+        } else if (name.equals("version")) {
+          this.version = null;
+        } else if (name.equals("code")) {
+          this.code = null;
+        } else if (name.equals("display")) {
+          this.display = null;
+        } else if (name.equals("userSelected")) {
+          this.userSelected = null;
+        } else
+          super.removeChild(name, value);
+        
+      }
+
       @Override
       public Base makeProperty(int hash, String name) throws FHIRException {
         switch (hash) {
@@ -453,19 +471,19 @@ public class Coding extends DataType implements IBaseCoding, ICompositeType, ICo
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("system")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Coding.system");
+          throw new FHIRException("Cannot call addChild on a singleton property Coding.system");
         }
         else if (name.equals("version")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Coding.version");
+          throw new FHIRException("Cannot call addChild on a singleton property Coding.version");
         }
         else if (name.equals("code")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Coding.code");
+          throw new FHIRException("Cannot call addChild on a singleton property Coding.code");
         }
         else if (name.equals("display")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Coding.display");
+          throw new FHIRException("Cannot call addChild on a singleton property Coding.display");
         }
         else if (name.equals("userSelected")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Coding.userSelected");
+          throw new FHIRException("Cannot call addChild on a singleton property Coding.userSelected");
         }
         else
           return super.addChild(name);
@@ -480,6 +498,10 @@ public class Coding extends DataType implements IBaseCoding, ICompositeType, ICo
         Coding dst = new Coding();
         copyValues(dst);
         return dst;
+      }
+
+      public void assignValues(Base dst) {
+        copyValues((Coding) dst);
       }
 
       public void copyValues(Coding dst) {
@@ -537,18 +559,44 @@ public class Coding extends DataType implements IBaseCoding, ICompositeType, ICo
       public boolean is(String system, String code) {
         return hasSystem() && hasCode() &&  this.getSystem().equals(system) && this.getCode().equals(code);
       }
-      
-      public String toString() {
-        String base = getSystem();
-        if (hasVersion())
-          base = base+"|"+getVersion();
-        base = base + "#"+getCode();
-        if (hasDisplay())
-          base = base+": "+getDisplay();
-        return base;
+
+  public String toString() {
+    String base = hasSystem() ? getSystem() : "";
+    if (hasVersion())
+      base = base+"|"+getVersion();
+    base = base + "#"+getCode();
+    if (hasDisplay())
+      base = base+" ('"+getDisplay()+"')";
+    return base;
+  }
+
+  public String toToken() {
+    String base = hasSystem() ? getSystem() : "";
+    if (hasVersion())
+      base = base+"|"+getVersion();
+    base = base + "#"+getCode();
+    return base;
+  }
+
+  public static Coding fromLiteral(String value) {
+        String sv = value.contains("#") ? value.substring(0, value.indexOf("#")) : value; 
+        String cp = value.contains("#") ? value.substring(value.indexOf("#")+1) : null;
         
-      } 
-      
+        String system = sv.contains("|") ? sv.substring(0, sv.indexOf("|")) : sv;
+        String version = sv.contains("|") ? sv.substring(sv.indexOf("|")+1) : null;
+        
+        String code = cp != null && cp.contains("'") ? cp.substring(0, cp.indexOf("'")) : cp;
+        String display = cp != null && cp.contains("'") ? cp.substring(cp.indexOf("'")+1) : null;
+        if (display != null) {
+          display = display.trim();
+          display = display.substring(0, display.length() -1);
+        }
+        if ((system == null || !Utilities.isAbsoluteUrl(system)) && code == null) {
+          return null;
+        } else {
+          return new Coding(system, version, code, display);
+        }
+      }
 
       public boolean matches(Coding other) {
         return other.hasCode() && this.hasCode() && other.hasSystem() && this.hasSystem() && this.getCode().equals(other.getCode()) && this.getSystem().equals(other.getSystem()) ;
@@ -610,8 +658,20 @@ public class Coding extends DataType implements IBaseCoding, ICompositeType, ICo
         setVersion(theVersion);
         setCode(theCode);
         setDisplay(theDisplay);
-      }
+      }      
 // end addition
+
+      public Coding(ValueSetExpansionContainsComponent cc) {
+        super();
+        setSystem(cc.getSystem());
+        setVersion(cc.getVersion());
+        setCode(cc.getCode());
+        setDisplay(cc.getDisplay());
+      }
+
+      public String getVersionedSystem() {
+        return hasVersion() ? getSystem()+"|"+getVersion() : getSystem();
+      }
 
 }
 

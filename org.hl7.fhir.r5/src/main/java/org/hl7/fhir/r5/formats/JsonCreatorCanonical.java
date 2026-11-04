@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
+
 public class JsonCreatorCanonical implements JsonCreator {
 
   public class JsonCanValue {
@@ -49,10 +50,10 @@ public class JsonCreatorCanonical implements JsonCreator {
   }
 
   private class JsonCanNumberValue extends JsonCanValue {
-    private BigDecimal value;
+    private String value;
     private JsonCanNumberValue(String name, BigDecimal value) {
       super(name);
-      this.value = value;  
+      this.value = canonicaliseDecimal(value.toPlainString());  
     }
   }
 
@@ -60,10 +61,15 @@ public class JsonCreatorCanonical implements JsonCreator {
     private String value;
     private JsonCanPresentedNumberValue(String name, String value) {
       super(name);
-      this.value = value;  
+      this.value = canonicaliseDecimal(value);  
     }
+    
   }
 
+  private String canonicaliseDecimal(String v) {
+    return JsonNumberCanonicalizer.toCanonicalJson(v);
+  }
+  
   private class JsonCanIntegerValue extends JsonCanValue {
     private Integer value;
     private JsonCanIntegerValue(String name, Integer value) {
@@ -116,7 +122,7 @@ public class JsonCreatorCanonical implements JsonCreator {
   
   public JsonCreatorCanonical(OutputStreamWriter osw) {
     stack = new Stack<JsonCreatorCanonical.JsonCanObject>();
-    jj = new JsonCreatorDirect(osw);
+    jj = new JsonCreatorDirect(osw, false, false);
     name = null;
   }
 
@@ -124,13 +130,6 @@ public class JsonCreatorCanonical implements JsonCreator {
     String res = name;
     name = null;
     return res;
-  }
-  
-  @Override
-  public void setIndent(String indent) {
-    if (!indent.equals(""))
-      throw new Error("do not use pretty when canonical is set");
-    jj.setIndent(indent);
   }
 
   @Override
@@ -200,6 +199,10 @@ public class JsonCreatorCanonical implements JsonCreator {
   @Override
   public void finish() throws IOException {
     writeObject(root);
+    // jj (the underlying JsonCreatorDirect) buffers internally, so it must be
+    // finished/flushed here - the canonical writer emits everything lazily in
+    // this call and never otherwise signals completion to jj.
+    jj.finish();
   }
 
   private void writeObject(JsonCanObject obj) throws IOException {
@@ -212,7 +215,7 @@ public class JsonCreatorCanonical implements JsonCreator {
       jj.name(n);
       JsonCanValue v = getPropForName(n, obj.children);
       if (v instanceof JsonCanNumberValue)
-        jj.value(((JsonCanNumberValue) v).value);
+        jj.valueNum(((JsonCanNumberValue) v).value);
       else if (v instanceof JsonCanPresentedNumberValue)
         jj.valueNum(((JsonCanPresentedNumberValue) v).value);
       else if (v instanceof JsonCanIntegerValue)
@@ -246,7 +249,9 @@ public class JsonCreatorCanonical implements JsonCreator {
     jj.beginArray();
     for (JsonCanValue v : arr.children) { 
       if (v instanceof JsonCanNumberValue)
-        jj.value(((JsonCanNumberValue) v).value);
+        jj.valueNum(((JsonCanNumberValue) v).value);
+      else if (v instanceof JsonCanPresentedNumberValue)
+        jj.valueNum(((JsonCanPresentedNumberValue) v).value);
       else if (v instanceof JsonCanIntegerValue)
           jj.value(((JsonCanIntegerValue) v).value);
       else if (v instanceof JsonCanBooleanValue)
@@ -268,6 +273,11 @@ public class JsonCreatorCanonical implements JsonCreator {
   }
 
   @Override
+  public void comment(String content) {
+    // canonical JSON ignores comments    
+  }
+
+  @Override
   public void link(String href) {
     // not used
   }
@@ -276,6 +286,23 @@ public class JsonCreatorCanonical implements JsonCreator {
   public void anchor(String name) {
     // not used
   }
-       
-    
+
+  @Override
+  public void externalLink(String string) {
+    // not used
+  }
+
+  @Override
+  public boolean canElide() { return false; }
+
+  @Override
+  public void elide() {
+    // not used
+  }
+
+  @Override
+  public boolean isCanonical() {
+    return true;
+  }
+
 }

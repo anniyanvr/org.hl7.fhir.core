@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -70,11 +66,13 @@ public class LocationPhysicalTypeEnumFactory implements EnumFactory<LocationPhys
       return LocationPhysicalType.AREA;
     if ("jdn".equals(codeString))
       return LocationPhysicalType.JDN;
-    throw new IllegalArgumentException("Unknown LocationPhysicalType code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown LocationPhysicalType code '" + codeString + "'");
   }
 
   public String toCode(LocationPhysicalType code) {
-    if (code == LocationPhysicalType.SI)
+       if (code == LocationPhysicalType.NULL)
+           return null;
+       if (code == LocationPhysicalType.SI)
       return "si";
     if (code == LocationPhysicalType.BU)
       return "bu";
@@ -103,10 +101,10 @@ public class LocationPhysicalTypeEnumFactory implements EnumFactory<LocationPhys
     if (code == LocationPhysicalType.JDN)
       return "jdn";
     return "?";
-  }
+   }
 
-    public String toSystem(LocationPhysicalType code) {
-      return code.getSystem();
-      }
+  public String toSystem(LocationPhysicalType code) {
+    return code.getSystem();
+  }
 
 }

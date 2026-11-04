@@ -36,22 +36,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.conformance.ProfileUtilities;
+import org.hl7.fhir.r5.conformance.profile.ProfileUtilities;
+import org.hl7.fhir.r5.conformance.profile.ProfileUtilities.SourcedChildDefinitions;
 import org.hl7.fhir.r5.context.IWorkerContext;
-import org.hl7.fhir.r5.elementmodel.ParserBase.NamedElement;
 import org.hl7.fhir.r5.formats.IParser.OutputStyle;
-import org.hl7.fhir.r5.model.Base;
-import org.hl7.fhir.r5.model.CodeableConcept;
-import org.hl7.fhir.r5.model.Coding;
-import org.hl7.fhir.r5.model.DataType;
-import org.hl7.fhir.r5.model.ElementDefinition;
-import org.hl7.fhir.r5.model.Factory;
-import org.hl7.fhir.r5.model.Identifier;
-import org.hl7.fhir.r5.model.PrimitiveType;
-import org.hl7.fhir.r5.model.Reference;
-import org.hl7.fhir.r5.model.Resource;
-import org.hl7.fhir.r5.model.StructureDefinition;
+import org.hl7.fhir.r5.model.*;
+import org.hl7.fhir.r5.model.Enumerations.QuantityComparator;
 import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
+
+
 
 
 public class ObjectConverter  {
@@ -64,6 +57,7 @@ public class ObjectConverter  {
     profileUtilities = new ProfileUtilities(context, null, null);
   }
 
+
   public Element convert(Resource ig) throws IOException, FHIRException {
     if (ig == null)
       return null;
@@ -71,9 +65,9 @@ public class ObjectConverter  {
     org.hl7.fhir.r5.formats.JsonParser jp = new org.hl7.fhir.r5.formats.JsonParser();
     jp.compose(bs, ig);
     ByteArrayInputStream bi = new ByteArrayInputStream(bs.toByteArray());
-    List<NamedElement> list = new JsonParser(context).parse(bi);
+    List<ValidatedFragment> list = new JsonParser(context).parse(bi);
     if (list.size() != 1) {
-      throw new FHIRException("Unable to convert because the source contains multieple resources");
+      throw new FHIRException("Unable to convert because the source contains multiple resources");
     }
     return list.get(0).getElement();
   }
@@ -86,15 +80,19 @@ public class ObjectConverter  {
     if (base == null)
       return null;
     String tn = base.fhirType();
-    StructureDefinition sd = context.fetchResource(StructureDefinition.class, ProfileUtilities.sdNs(tn, context.getOverrideVersionNs()));
+    StructureDefinition sd = context.fetchResource(StructureDefinition.class, ProfileUtilities.sdNs(tn, null), IWorkerContext.VersionResolutionRules.defaultRule());
     if (sd == null)
       throw new FHIRException("Unable to find definition for type "+tn);
-    Element res = new Element(property.getName(), property);
+    Element res;
+    if (property.isChoice())
+      res = new Element(property.getName().replace("[x]", org.hl7.fhir.utilities.Utilities.capitalize(tn)), property);
+    else
+      res = new Element(property.getName(), property);
     if (sd.getKind() == StructureDefinitionKind.PRIMITIVETYPE) 
       res.setValue(((PrimitiveType) base).asStringValue());
 
-    List<ElementDefinition> children = profileUtilities.getChildMap(sd, sd.getSnapshot().getElementFirstRep()); 
-    for (ElementDefinition child : children) {
+    SourcedChildDefinitions children = profileUtilities.getChildMap(sd, sd.getSnapshot().getElementFirstRep(), true); 
+    for (ElementDefinition child : children.getList()) {
       String n = tail(child.getPath());
       if (sd.getKind() != StructureDefinitionKind.PRIMITIVETYPE || !"value".equals(n)) {
         Base[] values = base.getProperty(n.hashCode(), n, false);
@@ -114,15 +112,55 @@ public class ObjectConverter  {
       return path;
   }
 
+  /**
+   * Convert an element model node to the equivalent object model data type. The type is created
+   * from the node's type, and then all the content is copied across: primitive values, ids,
+   * extensions, and children at any depth. Throws if there's content the object model has
+   * no place for.
+   */
   public DataType convertToType(Element element) throws FHIRException {
     DataType b = new Factory().create(element.fhirType());
-    if (b instanceof PrimitiveType) {
-      ((PrimitiveType) b).setValueAsString(element.primitiveValue());
-    } else {
-      for (Element child : element.getChildren()) {
-        b.setProperty(child.getName(), convertToType(child));
+    populate(element, b);
+    return b;
+  }
+
+  private void populate(Element src, Base tgt) throws FHIRException {
+    if ("xhtml".equals(tgt.fhirType())) {
+      tgt.setXhtml(src.getXhtml());
+    } else if (tgt.isPrimitive() && src.getValue() != null) {
+      ((PrimitiveType<?>) tgt).setValueAsString(src.getValue());
+    }
+    for (Element child : src.getChildren()) {
+      // the name in the definition, which is the [x] form for choice elements (the element's name is valueString etc)
+      String path = child.getProperty().getDefinition().getPath();
+      String name = path.substring(path.lastIndexOf('.') + 1);
+      if (isAnonymousType(child)) {
+        // an element defined inline (e.g. Timing.repeat) - the parent creates it, and we fill it in
+        Base value;
+        try {
+          value = tgt.makeProperty(name.hashCode(), name);
+        } catch (FHIRException e) {
+          throw new FHIRException("Unable to convert " + child.getPath() + ": " + e.getMessage(), e);
+        }
+        populate(child, value);
+      } else {
+        DataType value = convertToType(child);
+        try {
+          tgt.setProperty(name, value);
+        } catch (FHIRException e) {
+          throw new FHIRException("Unable to convert " + child.getPath() + ": " + e.getMessage(), e);
+        }
       }
     }
+  }
+
+  private boolean isAnonymousType(Element e) {
+    return "Element".equals(e.fhirType()) || "BackboneElement".equals(e.fhirType());
+  }
+
+  public DateTimeType readAsDateTime(Element e) {
+    DateTimeType b = (DateTimeType) new Factory().create("dateTime");
+    b.setValueAsString(e.primitiveValue());
     return b;
   }
 
@@ -130,7 +168,6 @@ public class ObjectConverter  {
     ByteArrayOutputStream bo = new ByteArrayOutputStream();
     try {
       new JsonParser(context).compose(element, bo, OutputStyle.NORMAL, null);
-//      TextFile.bytesToFile(bo.toByteArray(), "c:\\temp\\json.json");
       return new org.hl7.fhir.r5.formats.JsonParser().parse(bo.toByteArray());
     } catch (IOException e) {
       // won't happen
@@ -161,6 +198,34 @@ public class ObjectConverter  {
     return c;
   }
 
+  public static Quantity readAsQuantity(Element item) {
+    // Check the type of the item before trying to read it as a Quantity
+    if (item == null || !item.fhirType().equals("Quantity")) {
+      return null;
+    }
+    Quantity q = new Quantity();
+
+    var value = item.getNamedChildValue("value");
+    if (value != null) {
+      q.setValue(new java.math.BigDecimal(value));
+    }
+    var comparator = item.getNamedChildValue("comparator");
+    if (comparator != null) {
+      if (QuantityComparator.isValidCode(comparator))
+      {
+        q.setComparator(QuantityComparator.fromCode(comparator));
+      } else {
+        // should we throw an exception here?
+        // throw new FHIRException("Invalid comparator value: " + comparator);
+      }
+    }
+
+    q.setSystem(item.getNamedChildValue("system"));
+    q.setCode(item.getNamedChildValue("code"));
+    q.setUnit(item.getNamedChildValue("unit"));
+    return q;
+  }
+
   public static Identifier readAsIdentifier(Element item) {
     Identifier r = new Identifier();
     r.setSystem(item.getNamedChildValue("system"));
@@ -186,4 +251,9 @@ public class ObjectConverter  {
     return r;
   }
 
+  public TimeType readAsTime(Element e) {
+    TimeType b = (TimeType) new Factory().create("time");
+    ((PrimitiveType) b).setValueAsString(e.primitiveValue());
+    return b;
+  }
 }

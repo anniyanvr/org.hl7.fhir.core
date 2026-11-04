@@ -1,52 +1,38 @@
 package org.hl7.fhir.r5.renderers.spreadsheets;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.exceptions.DefinitionException;
 import org.hl7.fhir.r5.model.ElementDefinition;
 import org.hl7.fhir.r5.model.StructureDefinition;
+import org.hl7.fhir.r5.renderers.RendererFactory;
 import org.hl7.fhir.utilities.i18n.I18nConstants;
 
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ConditionalFormattingRule;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.FontFormatting;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.PatternFormatting;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hl7.fhir.r5.formats.IParser.OutputStyle;
 import org.hl7.fhir.r5.context.IWorkerContext;
-import org.hl7.fhir.r5.context.SimpleWorkerContext;
 import org.hl7.fhir.r5.formats.JsonParser;
 import org.hl7.fhir.r5.formats.XmlParser;
 import org.hl7.fhir.r5.model.CanonicalType;
 import org.hl7.fhir.r5.model.Coding;
 import org.hl7.fhir.r5.model.DataType;
-import org.hl7.fhir.r5.model.ElementDefinition;
 import org.hl7.fhir.r5.model.ElementDefinition.AggregationMode;
 import org.hl7.fhir.r5.model.ElementDefinition.ElementDefinitionConstraintComponent;
 import org.hl7.fhir.r5.model.ElementDefinition.ElementDefinitionMappingComponent;
@@ -54,12 +40,11 @@ import org.hl7.fhir.r5.model.ElementDefinition.ElementDefinitionSlicingDiscrimin
 import org.hl7.fhir.r5.model.ElementDefinition.TypeRefComponent;
 import org.hl7.fhir.r5.model.IdType;
 import org.hl7.fhir.r5.model.StringType;
-import org.hl7.fhir.r5.model.StructureDefinition;
 import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionContextComponent;
 import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionMappingComponent;
 import org.hl7.fhir.r5.model.UriType;
 import org.hl7.fhir.utilities.CommaSeparatedStringBuilder;
-import org.hl7.fhir.utilities.TextStreamWriter;
+
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTAutoFilter;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCustomFilter;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCustomFilters;
@@ -68,6 +53,8 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTFilters;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.STFilterOperator;
 
 
+
+@Slf4j
 public class StructureDefinitionSpreadsheetGenerator extends CanonicalSpreadsheetGenerator {
   private XmlParser xml = new XmlParser();
   private JsonParser json = new JsonParser();
@@ -76,49 +63,65 @@ public class StructureDefinitionSpreadsheetGenerator extends CanonicalSpreadshee
   private List<StructureDefinitionMappingComponent> mapKeys = new ArrayList<StructureDefinitionMappingComponent>();
 
   private static String[] titles = {
-      "Path", "Slice Name", "Alias(s)", "Label", "Min", "Max", "Must Support?", "Is Modifier?", "Is Summary?", "Type(s)", "Short", 
+      "ID", "Path", "Slice Name", "Alias(s)", "Label", "Min", "Max", "Must Support?", "Is Modifier?", "Is Summary?", "Type(s)", "Short", 
       "Definition", "Comments", "Requirements", "Default Value", "Meaning When Missing", "Fixed Value", "Pattern", "Example",
       "Minimum Value", "Maximum Value", "Maximum Length", "Binding Strength", "Binding Description", "Binding Value Set", "Code",
       "Slicing Discriminator", "Slicing Description", "Slicing Ordered", "Slicing Rules", "Base Path", "Base Min", "Base Max",
       "Condition(s)", "Constraint(s)"};
 
-  public StructureDefinitionSpreadsheetGenerator(IWorkerContext context, boolean valuesAsXml, boolean hideMustSupportFalse) {
-    super(context);
+  public StructureDefinitionSpreadsheetGenerator(IWorkerContext context, boolean valuesAsXml, boolean hideMustSupportFalse, RendererFactory renderer) {
+    super(context, renderer);
     this.asXml = valuesAsXml;
     this.hideMustSupportFalse = hideMustSupportFalse;
   }
 
-  public StructureDefinitionSpreadsheetGenerator renderStructureDefinition(StructureDefinition sd) throws Exception {
+  public StructureDefinitionSpreadsheetGenerator renderStructureDefinition(StructureDefinition sd, boolean forMultiple) throws Exception {
     if (sd == null) {
-      System.out.println("no structure!");
+      log.warn("no structure!");
     }
     if (!sd.hasSnapshot()) {
       throw new DefinitionException(context.formatMessage(I18nConstants.NEEDS_A_SNAPSHOT));
     }
-    addStructureDefinitionMetadata(renderCanonicalResource(sd), sd);
-    Sheet sheet = makeSheet("Elements");
+    addStructureDefinitionMetadata(renderCanonicalResource(sd, forMultiple), sd);
+    Sheet sheet = forMultiple && hasSheet("Elements") ? getSheet("Elements") : makeSheet("Elements");
 
-    Row headerRow = sheet.createRow(0);
-    for (int i = 0; i < titles.length; i++) {
-      addCell(headerRow, i, titles[i], styles.get("header"));
+    if (sheet.getPhysicalNumberOfRows() == 0) {
+      Row headerRow = sheet.createRow(0);
+      int coffset = forMultiple ? 1 : 0;
+      for (int i = 0; i < titles.length; i++) {
+        if (forMultiple) {
+          addCell(headerRow, 0, "Structure.ID", styles.get("header"));        
+        }
+        addCell(headerRow, i+coffset, titles[i], styles.get("header"));
+      }
+      if (!forMultiple) {
+        int i = titles.length - 1;
+        for (StructureDefinitionMappingComponent map : sd.getMapping()) {
+          i++;
+          addCell(headerRow, i+coffset, "Mapping: " + map.getName(), styles.get("header"));
+        }
+      }
     }
-    int i = titles.length - 1;
-    for (StructureDefinitionMappingComponent map : sd.getMapping()) {
-      i++;
-      addCell(headerRow, i, "Mapping: " + map.getName(), styles.get("header"));
-    }    
 
     for (ElementDefinition child : sd.getSnapshot().getElement()) {
-      processElement(sheet, sd, child);
+      processElement(sheet, sd, child, forMultiple);
     }
-    configureSheet(sheet, sd);
+    if (!forMultiple) {
+      configureSheet(sheet, sd);
+    }
+    return this;
+  }
+  
+  public StructureDefinitionSpreadsheetGenerator configure() throws Exception {
+    Sheet sheet = hasSheet("Elements") ? getSheet("Elements") : makeSheet("Elements");
+    configureSheet(sheet, null);
     return this;
   }
 
 
   private void addStructureDefinitionMetadata(Sheet sheet, StructureDefinition sd) {
     for (Coding k : sd.getKeyword()) {
-      addMetadataRow(sheet, "Keyword", dr.display(k));
+      addMetadataRow(sheet, "Keyword", dr.displayDataType(k));
     }
     addMetadataRow(sheet, "FHIR Version", sd.getFhirVersionElement().asStringValue());
     addMetadataRow(sheet, "Kind", sd.getKindElement().asStringValue());
@@ -136,10 +139,14 @@ public class StructureDefinitionSpreadsheetGenerator extends CanonicalSpreadshee
     
   }
 
-  public void processElement(Sheet sheet, StructureDefinition sd, ElementDefinition ed) throws Exception {
+  public void processElement(Sheet sheet, StructureDefinition sd, ElementDefinition ed, boolean forMultiple) throws Exception {
     Row row = sheet.createRow(sheet.getLastRowNum()+1);
     int i = 0;
-    addCell(row, i++, ed.getPath(), styles.get("body"));
+    if (forMultiple) {
+      addCell(row, i++, sd.getId(), styles.get("body"));
+    }
+    addCell(row, i++, ed.getId(), styles.get("body"));
+    addCell(row, i++, ed.getPath());
     addCell(row, i++, ed.getSliceName());
     addCell(row, i++, itemList(ed.getAlias()));
     addCell(row, i++, ed.getLabel());
@@ -196,13 +203,15 @@ public class StructureDefinitionSpreadsheetGenerator extends CanonicalSpreadshee
     }
     addCell(row, i++, itemList(ed.getCondition()));
     addCell(row, i++, itemList(ed.getConstraint()));
-    for (StructureDefinitionMappingComponent mapKey : sd.getMapping()) {
-      String mapString = "";
-      for (ElementDefinitionMappingComponent map : ed.getMapping()) {
-        if (map.getIdentity().equals(mapKey.getIdentity()))
-          mapString = map.getMap();        
+    if (!forMultiple) {
+      for (StructureDefinitionMappingComponent mapKey : sd.getMapping()) {
+        String mapString = "";
+        for (ElementDefinitionMappingComponent map : ed.getMapping()) {
+          if (map.getIdentity().equals(mapKey.getIdentity()))
+            mapString = map.getMap();        
+        }
+        addCell(row, i++, mapString);
       }
-      addCell(row, i++, mapString);
     }
   }
 
@@ -316,13 +325,15 @@ public class StructureDefinitionSpreadsheetGenerator extends CanonicalSpreadshee
     sheet.setColumnWidth(18, columnPixels(20));
     sheet.setColumnWidth(34, columnPixels(100));
 
-    int i = titles.length - 1;
-    for (StructureDefinitionMappingComponent map : sd.getMapping()) {
-      i++;
-      sheet.setColumnWidth(i, columnPixels(50));
-      sheet.autoSizeColumn(i);
-      //  sheet.setColumnHidden(i,  true);
-    }    
+    if (sd != null) {
+      int i = titles.length - 1;
+      for (StructureDefinitionMappingComponent map : sd.getMapping()) {
+        i++;
+        sheet.setColumnWidth(i, columnPixels(50));
+        sheet.autoSizeColumn(i);
+        //  sheet.setColumnHidden(i,  true);
+      }    
+    }
     sheet.createFreezePane(2,1);
 
     if (hideMustSupportFalse) {
@@ -344,33 +355,44 @@ public class StructureDefinitionSpreadsheetGenerator extends CanonicalSpreadshee
 
       sheetCF.addConditionalFormatting(regions, rule1, rule2);
 
-      sheet.setAutoFilter(new CellRangeAddress(0,sheet.getLastRowNum(), 0, titles.length+sd.getMapping().size() - 1));
+      sheet.setAutoFilter(new CellRangeAddress(0,sheet.getLastRowNum(), 0, titles.length+(sd == null ? 0 : sd.getMapping().size() - 1)));
 
 
       XSSFSheet xSheet = (XSSFSheet)sheet;
 
+      final int mustSupportCol = 7;
+      final int slicingCol = 27;
       CTAutoFilter sheetFilter = xSheet.getCTWorksheet().getAutoFilter();
       CTFilterColumn filterColumn1 = sheetFilter.addNewFilterColumn();
-      filterColumn1.setColId(6);
+      filterColumn1.setColId(mustSupportCol); // mustSupport
       CTCustomFilters filters = filterColumn1.addNewCustomFilters();
       CTCustomFilter filter1 = filters.addNewCustomFilter();
       filter1.setOperator(STFilterOperator.NOT_EQUAL);
       filter1.setVal(" ");
 
       CTFilterColumn filterColumn2 = sheetFilter.addNewFilterColumn();
-      filterColumn2.setColId(26);
+      filterColumn2.setColId(slicingCol); //slicing
       CTFilters filters2 = filterColumn2.addNewFilters();
       filters2.setBlank(true);
 
       // We have to apply the filter ourselves by hiding the rows: 
       for (Row row : sheet) {
-        if (row.getRowNum()>0 && (!row.getCell(6).getStringCellValue().equals("Y") || !row.getCell(26).getStringCellValue().isEmpty())) {
+        if (row.getRowNum()>0 && (!row.getCell(mustSupportCol).getStringCellValue().equals("Y") || !row.getCell(slicingCol).getStringCellValue().isEmpty())) {
           ((XSSFRow) row).getCTRow().setHidden(true);
         }
       }
     }
-    sheet.setActiveCell(new CellAddress(sheet.getRow(1).getCell(0)));
+    if (sheet.getLastRowNum() > 0) {
+      sheet.setActiveCell(new CellAddress(sheet.getRow(1).getCell(0)));
+    }
+  }
 
+  public void dump() {
+    super.dump();
+    xml = null;
+    json = null;
+    mapKeys = null;
+    
   }
 
 }

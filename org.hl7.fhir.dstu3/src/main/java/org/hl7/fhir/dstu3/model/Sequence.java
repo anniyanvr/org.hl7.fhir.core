@@ -2,8 +2,6 @@ package org.hl7.fhir.dstu3.model;
 
 import java.math.BigDecimal;
 
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -134,12 +132,12 @@ public class Sequence extends DomainResource {
           return SequenceType.RNA;
         throw new IllegalArgumentException("Unknown SequenceType code '"+codeString+"'");
         }
-        public Enumeration<SequenceType> fromType(Base code) throws FHIRException {
+        public Enumeration<SequenceType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<SequenceType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("aa".equals(codeString))
@@ -151,14 +149,16 @@ public class Sequence extends DomainResource {
         throw new FHIRException("Unknown SequenceType code '"+codeString+"'");
         }
     public String toCode(SequenceType code) {
-      if (code == SequenceType.AA)
+       if (code == SequenceType.NULL)
+           return null;
+       if (code == SequenceType.AA)
         return "aa";
       if (code == SequenceType.DNA)
         return "dna";
       if (code == SequenceType.RNA)
         return "rna";
       return "?";
-      }
+   }
     public String toSystem(SequenceType code) {
       return code.getSystem();
       }
@@ -246,12 +246,12 @@ public class Sequence extends DomainResource {
           return QualityType.UNKNOWN;
         throw new IllegalArgumentException("Unknown QualityType code '"+codeString+"'");
         }
-        public Enumeration<QualityType> fromType(Base code) throws FHIRException {
+        public Enumeration<QualityType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<QualityType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("indel".equals(codeString))
@@ -263,14 +263,16 @@ public class Sequence extends DomainResource {
         throw new FHIRException("Unknown QualityType code '"+codeString+"'");
         }
     public String toCode(QualityType code) {
-      if (code == QualityType.INDEL)
+       if (code == QualityType.NULL)
+           return null;
+       if (code == QualityType.INDEL)
         return "indel";
       if (code == QualityType.SNP)
         return "snp";
       if (code == QualityType.UNKNOWN)
         return "unknown";
       return "?";
-      }
+   }
     public String toSystem(QualityType code) {
       return code.getSystem();
       }
@@ -382,12 +384,12 @@ public class Sequence extends DomainResource {
           return RepositoryType.OTHER;
         throw new IllegalArgumentException("Unknown RepositoryType code '"+codeString+"'");
         }
-        public Enumeration<RepositoryType> fromType(Base code) throws FHIRException {
+        public Enumeration<RepositoryType> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<RepositoryType>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("directlink".equals(codeString))
@@ -403,7 +405,9 @@ public class Sequence extends DomainResource {
         throw new FHIRException("Unknown RepositoryType code '"+codeString+"'");
         }
     public String toCode(RepositoryType code) {
-      if (code == RepositoryType.DIRECTLINK)
+       if (code == RepositoryType.NULL)
+           return null;
+       if (code == RepositoryType.DIRECTLINK)
         return "directlink";
       if (code == RepositoryType.OPENAPI)
         return "openapi";
@@ -414,7 +418,7 @@ public class Sequence extends DomainResource {
       if (code == RepositoryType.OTHER)
         return "other";
       return "?";
-      }
+   }
     public String toSystem(RepositoryType code) {
       return code.getSystem();
       }
@@ -966,7 +970,7 @@ public class Sequence extends DomainResource {
           return this.chromosome;
         }
         else if (name.equals("genomeBuild")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.genomeBuild");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.genomeBuild");
         }
         else if (name.equals("referenceSeqId")) {
           this.referenceSeqId = new CodeableConcept();
@@ -977,16 +981,16 @@ public class Sequence extends DomainResource {
           return this.referenceSeqPointer;
         }
         else if (name.equals("referenceSeqString")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.referenceSeqString");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.referenceSeqString");
         }
         else if (name.equals("strand")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.strand");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.strand");
         }
         else if (name.equals("windowStart")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.windowStart");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.windowStart");
         }
         else if (name.equals("windowEnd")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.windowEnd");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.windowEnd");
         }
         else
           return super.addChild(name);
@@ -1496,19 +1500,19 @@ public class Sequence extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("start")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.start");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.start");
         }
         else if (name.equals("end")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.end");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.end");
         }
         else if (name.equals("observedAllele")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.observedAllele");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.observedAllele");
         }
         else if (name.equals("referenceAllele")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.referenceAllele");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.referenceAllele");
         }
         else if (name.equals("cigar")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.cigar");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.cigar");
         }
         else if (name.equals("variantPointer")) {
           this.variantPointer = new Reference();
@@ -2624,17 +2628,17 @@ public class Sequence extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.type");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.type");
         }
         else if (name.equals("standardSequence")) {
           this.standardSequence = new CodeableConcept();
           return this.standardSequence;
         }
         else if (name.equals("start")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.start");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.start");
         }
         else if (name.equals("end")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.end");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.end");
         }
         else if (name.equals("score")) {
           this.score = new Quantity();
@@ -2645,28 +2649,28 @@ public class Sequence extends DomainResource {
           return this.method;
         }
         else if (name.equals("truthTP")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.truthTP");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.truthTP");
         }
         else if (name.equals("queryTP")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.queryTP");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.queryTP");
         }
         else if (name.equals("truthFN")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.truthFN");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.truthFN");
         }
         else if (name.equals("queryFP")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.queryFP");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.queryFP");
         }
         else if (name.equals("gtFP")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.gtFP");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.gtFP");
         }
         else if (name.equals("precision")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.precision");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.precision");
         }
         else if (name.equals("recall")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.recall");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.recall");
         }
         else if (name.equals("fScore")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.fScore");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.fScore");
         }
         else
           return super.addChild(name);
@@ -3201,22 +3205,22 @@ public class Sequence extends DomainResource {
       @Override
       public Base addChild(String name) throws FHIRException {
         if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.type");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.type");
         }
         else if (name.equals("url")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.url");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.url");
         }
         else if (name.equals("name")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.name");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.name");
         }
         else if (name.equals("datasetId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.datasetId");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.datasetId");
         }
         else if (name.equals("variantsetId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.variantsetId");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.variantsetId");
         }
         else if (name.equals("readsetId")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.readsetId");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.readsetId");
         }
         else
           return super.addChild(name);
@@ -4095,28 +4099,6 @@ public class Sequence extends DomainResource {
       return getPointer().get(0);
     }
 
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public List<Sequence> getPointerTarget() { 
-      if (this.pointerTarget == null)
-        this.pointerTarget = new ArrayList<Sequence>();
-      return this.pointerTarget;
-    }
-
-    /**
-     * @deprecated Use Reference#setResource(IBaseResource) instead
-     */
-    @Deprecated
-    public Sequence addPointerTarget() { 
-      Sequence r = new Sequence();
-      if (this.pointerTarget == null)
-        this.pointerTarget = new ArrayList<Sequence>();
-      this.pointerTarget.add(r);
-      return r;
-    }
-
       protected void listChildren(List<Property> children) {
         super.listChildren(children);
         children.add(new Property("identifier", "Identifier", "A unique identifier for this particular sequence instance. This is a FHIR-defined id.", 0, java.lang.Integer.MAX_VALUE, identifier));
@@ -4326,10 +4308,10 @@ public class Sequence extends DomainResource {
           return addIdentifier();
         }
         else if (name.equals("type")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.type");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.type");
         }
         else if (name.equals("coordinateSystem")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.coordinateSystem");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.coordinateSystem");
         }
         else if (name.equals("patient")) {
           this.patient = new Reference();
@@ -4359,13 +4341,13 @@ public class Sequence extends DomainResource {
           return addVariant();
         }
         else if (name.equals("observedSeq")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.observedSeq");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.observedSeq");
         }
         else if (name.equals("quality")) {
           return addQuality();
         }
         else if (name.equals("readCoverage")) {
-          throw new FHIRException("Cannot call addChild on a primitive type Sequence.readCoverage");
+          throw new FHIRException("Cannot call addChild on a singleton property Sequence.readCoverage");
         }
         else if (name.equals("repository")) {
           return addRepository();

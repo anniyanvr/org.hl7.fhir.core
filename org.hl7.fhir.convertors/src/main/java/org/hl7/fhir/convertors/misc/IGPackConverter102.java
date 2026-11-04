@@ -1,5 +1,10 @@
 package org.hl7.fhir.convertors.misc;
 
+import java.io.IOException;
+import java.util.Date;
+
+import javax.annotation.Nonnull;
+
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -39,16 +44,11 @@ import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 import org.hl7.fhir.dstu3.model.CodeSystem;
 import org.hl7.fhir.dstu3.model.ValueSet;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.model.FhirPublication;
+import org.hl7.fhir.utilities.FhirPublication;
 import org.hl7.fhir.utilities.Utilities;
-import javax.annotation.Nonnull;
+import org.hl7.fhir.utilities.filesystem.ManagedFileAccess;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Date;
-
+@SuppressWarnings("checkstyle:systemout")
 public class IGPackConverter102 extends BaseAdvisor_10_30 {
 
   private final Bundle cslist = new Bundle();
@@ -59,21 +59,21 @@ public class IGPackConverter102 extends BaseAdvisor_10_30 {
 
   private void process() throws IOException, FHIRException {
     initCSList();
-    for (String s : new File("C:\\temp\\igpack2").list()) {
+    for (String s : ManagedFileAccess.file(Utilities.path("[tmp]", "igpack2")).list()) {
       if (s.endsWith(".xml") && !s.startsWith("z-") && !Utilities.existsInList(s, "expansions.xml", "v3-codesystems.xml", "v2-tables.xml")) {
         System.out.println("process " + s);
         org.hl7.fhir.dstu2.formats.XmlParser xp = new org.hl7.fhir.dstu2.formats.XmlParser();
-        org.hl7.fhir.dstu2.model.Resource r10 = xp.parse(new FileInputStream("C:\\temp\\igpack2\\" + s));
+        org.hl7.fhir.dstu2.model.Resource r10 = xp.parse(ManagedFileAccess.inStream(Utilities.path("[tmp]", "igpack2\\" + s)));
         org.hl7.fhir.dstu3.model.Resource r17 = VersionConvertorFactory_10_30.convertResource(r10, this);
         org.hl7.fhir.dstu3.formats.XmlParser xc = new org.hl7.fhir.dstu3.formats.XmlParser();
         xc.setOutputStyle(OutputStyle.PRETTY);
-        xc.compose(new FileOutputStream("C:\\temp\\igpack2\\" + s), r17);
+        xc.compose(ManagedFileAccess.outStream(Utilities.path("[tmp]", "igpack2\\" + s)), r17);
       }
     }
     System.out.println("save codesystems");
     org.hl7.fhir.dstu3.formats.XmlParser xc = new org.hl7.fhir.dstu3.formats.XmlParser();
     xc.setOutputStyle(OutputStyle.PRETTY);
-    xc.compose(new FileOutputStream("C:\\temp\\igpack2\\codesystems.xml"), cslist);
+    xc.compose(ManagedFileAccess.outStream(Utilities.path("[tmp]", "igpack2\\codesystems.xml")), cslist);
     System.out.println("done");
   }
 

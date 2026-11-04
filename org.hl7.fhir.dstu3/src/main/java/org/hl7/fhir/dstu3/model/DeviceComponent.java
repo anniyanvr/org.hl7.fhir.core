@@ -229,12 +229,12 @@ public class DeviceComponent extends DomainResource {
           return MeasmntPrinciple.MANUAL;
         throw new IllegalArgumentException("Unknown MeasmntPrinciple code '"+codeString+"'");
         }
-        public Enumeration<MeasmntPrinciple> fromType(Base code) throws FHIRException {
+        public Enumeration<MeasmntPrinciple> fromType(PrimitiveType<?> code) throws FHIRException {
           if (code == null)
             return null;
           if (code.isEmpty())
             return new Enumeration<MeasmntPrinciple>(this);
-          String codeString = ((PrimitiveType) code).asStringValue();
+          String codeString = code.asStringValue();
           if (codeString == null || "".equals(codeString))
             return null;
         if ("other".equals(codeString))
@@ -262,7 +262,9 @@ public class DeviceComponent extends DomainResource {
         throw new FHIRException("Unknown MeasmntPrinciple code '"+codeString+"'");
         }
     public String toCode(MeasmntPrinciple code) {
-      if (code == MeasmntPrinciple.OTHER)
+       if (code == MeasmntPrinciple.NULL)
+           return null;
+       if (code == MeasmntPrinciple.OTHER)
         return "other";
       if (code == MeasmntPrinciple.CHEMICAL)
         return "chemical";
@@ -285,7 +287,7 @@ public class DeviceComponent extends DomainResource {
       if (code == MeasmntPrinciple.MANUAL)
         return "manual";
       return "?";
-      }
+   }
     public String toSystem(MeasmntPrinciple code) {
       return code.getSystem();
       }
@@ -513,7 +515,7 @@ public class DeviceComponent extends DomainResource {
           return this.componentId;
         }
         else if (name.equals("productionSpec")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceComponent.productionSpec");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceComponent.productionSpec");
         }
         else
           return super.addChild(name);
@@ -1216,7 +1218,7 @@ public class DeviceComponent extends DomainResource {
           return this.type;
         }
         else if (name.equals("lastSystemChange")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceComponent.lastSystemChange");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceComponent.lastSystemChange");
         }
         else if (name.equals("source")) {
           this.source = new Reference();
@@ -1234,7 +1236,7 @@ public class DeviceComponent extends DomainResource {
           return this.parameterGroup;
         }
         else if (name.equals("measurementPrinciple")) {
-          throw new FHIRException("Cannot call addChild on a primitive type DeviceComponent.measurementPrinciple");
+          throw new FHIRException("Cannot call addChild on a singleton property DeviceComponent.measurementPrinciple");
         }
         else if (name.equals("productionSpecification")) {
           return addProductionSpecification();

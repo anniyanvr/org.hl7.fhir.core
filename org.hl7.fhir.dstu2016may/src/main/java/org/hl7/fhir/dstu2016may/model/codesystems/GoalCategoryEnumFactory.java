@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class GoalCategoryEnumFactory implements EnumFactory<GoalCategory> {
@@ -52,11 +48,13 @@ public class GoalCategoryEnumFactory implements EnumFactory<GoalCategory> {
       return GoalCategory.NURSING;
     if ("physiotherapy".equals(codeString))
       return GoalCategory.PHYSIOTHERAPY;
-    throw new IllegalArgumentException("Unknown GoalCategory code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown GoalCategory code '" + codeString + "'");
   }
 
   public String toCode(GoalCategory code) {
-    if (code == GoalCategory.DIETARY)
+       if (code == GoalCategory.NULL)
+           return null;
+       if (code == GoalCategory.DIETARY)
       return "dietary";
     if (code == GoalCategory.SAFETY)
       return "safety";
@@ -67,10 +65,10 @@ public class GoalCategoryEnumFactory implements EnumFactory<GoalCategory> {
     if (code == GoalCategory.PHYSIOTHERAPY)
       return "physiotherapy";
     return "?";
-  }
+   }
 
-    public String toSystem(GoalCategory code) {
-      return code.getSystem();
-      }
+  public String toSystem(GoalCategory code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 */
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
-
 
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
@@ -364,11 +360,13 @@ public class V3OrderableDrugFormEnumFactory implements EnumFactory<V3OrderableDr
       return V3OrderableDrugForm.MEDSWAB;
     if ("WAFER".equals(codeString))
       return V3OrderableDrugForm.WAFER;
-    throw new IllegalArgumentException("Unknown V3OrderableDrugForm code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3OrderableDrugForm code '" + codeString + "'");
   }
 
   public String toCode(V3OrderableDrugForm code) {
-    if (code == V3OrderableDrugForm._ADMINISTRABLEDRUGFORM)
+       if (code == V3OrderableDrugForm.NULL)
+           return null;
+       if (code == V3OrderableDrugForm._ADMINISTRABLEDRUGFORM)
       return "_AdministrableDrugForm";
     if (code == V3OrderableDrugForm.APPFUL)
       return "APPFUL";
@@ -691,10 +689,10 @@ public class V3OrderableDrugFormEnumFactory implements EnumFactory<V3OrderableDr
     if (code == V3OrderableDrugForm.WAFER)
       return "WAFER";
     return "?";
-  }
+   }
 
-    public String toSystem(V3OrderableDrugForm code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3OrderableDrugForm code) {
+    return code.getSystem();
+  }
 
 }

@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.r4.model.codesystems;
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
 
-
 import org.hl7.fhir.r4.model.EnumFactory;
 
 public class V3ManagedParticipationStatusEnumFactory implements EnumFactory<V3ManagedParticipationStatus> {
@@ -54,11 +50,13 @@ public class V3ManagedParticipationStatusEnumFactory implements EnumFactory<V3Ma
       return V3ManagedParticipationStatus.PENDING;
     if ("nullified".equals(codeString))
       return V3ManagedParticipationStatus.NULLIFIED;
-    throw new IllegalArgumentException("Unknown V3ManagedParticipationStatus code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown V3ManagedParticipationStatus code '" + codeString + "'");
   }
 
   public String toCode(V3ManagedParticipationStatus code) {
-    if (code == V3ManagedParticipationStatus.NORMAL)
+       if (code == V3ManagedParticipationStatus.NULL)
+           return null;
+       if (code == V3ManagedParticipationStatus.NORMAL)
       return "normal";
     if (code == V3ManagedParticipationStatus.ACTIVE)
       return "active";
@@ -71,10 +69,10 @@ public class V3ManagedParticipationStatusEnumFactory implements EnumFactory<V3Ma
     if (code == V3ManagedParticipationStatus.NULLIFIED)
       return "nullified";
     return "?";
-  }
+   }
 
-    public String toSystem(V3ManagedParticipationStatus code) {
-      return code.getSystem();
-      }
+  public String toSystem(V3ManagedParticipationStatus code) {
+    return code.getSystem();
+  }
 
 }

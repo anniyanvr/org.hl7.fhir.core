@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class PaymentAdjustmentReasonEnumFactory implements EnumFactory<PaymentAdjustmentReason> {
@@ -46,19 +42,21 @@ public class PaymentAdjustmentReasonEnumFactory implements EnumFactory<PaymentAd
       return PaymentAdjustmentReason.A001;
     if ("a002".equals(codeString))
       return PaymentAdjustmentReason.A002;
-    throw new IllegalArgumentException("Unknown PaymentAdjustmentReason code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown PaymentAdjustmentReason code '" + codeString + "'");
   }
 
   public String toCode(PaymentAdjustmentReason code) {
-    if (code == PaymentAdjustmentReason.A001)
+       if (code == PaymentAdjustmentReason.NULL)
+           return null;
+       if (code == PaymentAdjustmentReason.A001)
       return "a001";
     if (code == PaymentAdjustmentReason.A002)
       return "a002";
     return "?";
-  }
+   }
 
-    public String toSystem(PaymentAdjustmentReason code) {
-      return code.getSystem();
-      }
+  public String toSystem(PaymentAdjustmentReason code) {
+    return code.getSystem();
+  }
 
 }

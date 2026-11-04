@@ -1,15 +1,10 @@
 package org.hl7.fhir.convertors.advisors.impl;
 
+import javax.annotation.Nonnull;
+
 import org.hl7.fhir.convertors.advisors.interfaces.BaseAdvisor30;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class BaseAdvisor_10_30 extends BaseAdvisor30<org.hl7.fhir.dstu2.model.Extension> {
-
-  private final List<String> ignoredUrls = new ArrayList<>(Collections.singletonList("http://hl7.org/fhir/3.0/StructureDefinition/extension-CapabilityStatement.acceptUnknown"));
 
   public BaseAdvisor_10_30() {
   }
@@ -18,8 +13,8 @@ public class BaseAdvisor_10_30 extends BaseAdvisor30<org.hl7.fhir.dstu2.model.Ex
     this.failFast = failFast;
   }
 
-  public boolean ignoreExtension(@Nonnull String path,
-                                 @Nonnull String url) {
-    return this.ignoredUrls.contains(url);
+  public boolean ignoreExtension(@Nonnull String url) {
+    // no globally ignored extensions here.
+    return false;
   }
 }

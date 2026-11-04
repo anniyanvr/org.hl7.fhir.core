@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class VisionProductEnumFactory implements EnumFactory<VisionProduct> {
@@ -46,19 +42,21 @@ public class VisionProductEnumFactory implements EnumFactory<VisionProduct> {
       return VisionProduct.LENS;
     if ("contact".equals(codeString))
       return VisionProduct.CONTACT;
-    throw new IllegalArgumentException("Unknown VisionProduct code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown VisionProduct code '" + codeString + "'");
   }
 
   public String toCode(VisionProduct code) {
-    if (code == VisionProduct.LENS)
+       if (code == VisionProduct.NULL)
+           return null;
+       if (code == VisionProduct.LENS)
       return "lens";
     if (code == VisionProduct.CONTACT)
       return "contact";
     return "?";
-  }
+   }
 
-    public String toSystem(VisionProduct code) {
-      return code.getSystem();
-      }
+  public String toSystem(VisionProduct code) {
+    return code.getSystem();
+  }
 
 }

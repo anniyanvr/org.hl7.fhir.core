@@ -1,8 +1,5 @@
 package org.hl7.fhir.r4.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -33,7 +30,6 @@ package org.hl7.fhir.r4.model.codesystems;
 */
 
 // Generated on Wed, Jan 30, 2019 16:19-0500 for FHIR v4.0.0
-
 
 import org.hl7.fhir.r4.model.EnumFactory;
 
@@ -68,11 +64,13 @@ public class MedicationrequestStatusReasonEnumFactory implements EnumFactory<Med
       return MedicationrequestStatusReason.SURG;
     if ("washout".equals(codeString))
       return MedicationrequestStatusReason.WASHOUT;
-    throw new IllegalArgumentException("Unknown MedicationrequestStatusReason code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown MedicationrequestStatusReason code '" + codeString + "'");
   }
 
   public String toCode(MedicationrequestStatusReason code) {
-    if (code == MedicationrequestStatusReason.ALTCHOICE)
+       if (code == MedicationrequestStatusReason.NULL)
+           return null;
+       if (code == MedicationrequestStatusReason.ALTCHOICE)
       return "altchoice";
     if (code == MedicationrequestStatusReason.CLARIF)
       return "clarif";
@@ -99,10 +97,10 @@ public class MedicationrequestStatusReasonEnumFactory implements EnumFactory<Med
     if (code == MedicationrequestStatusReason.WASHOUT)
       return "washout";
     return "?";
-  }
+   }
 
-    public String toSystem(MedicationrequestStatusReason code) {
-      return code.getSystem();
-      }
+  public String toSystem(MedicationrequestStatusReason code) {
+    return code.getSystem();
+  }
 
 }

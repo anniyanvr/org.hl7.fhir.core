@@ -1,8 +1,5 @@
 package org.hl7.fhir.dstu2016may.model.codesystems;
 
-
-
-
 /*
   Copyright (c) 2011+, HL7, Inc.
   All rights reserved.
@@ -34,7 +31,6 @@ package org.hl7.fhir.dstu2016may.model.codesystems;
 
 // Generated on Sun, May 8, 2016 03:05+1000 for FHIR v1.4.0
 
-
 import org.hl7.fhir.dstu2016may.model.EnumFactory;
 
 public class NehtaServiceBookingStatusValuesEnumFactory implements EnumFactory<NehtaServiceBookingStatusValues> {
@@ -56,11 +52,13 @@ public class NehtaServiceBookingStatusValuesEnumFactory implements EnumFactory<N
       return NehtaServiceBookingStatusValues.PRP;
     if ("RQO".equals(codeString))
       return NehtaServiceBookingStatusValues.RQO;
-    throw new IllegalArgumentException("Unknown NehtaServiceBookingStatusValues code '"+codeString+"'");
+    throw new IllegalArgumentException("Unknown NehtaServiceBookingStatusValues code '" + codeString + "'");
   }
 
   public String toCode(NehtaServiceBookingStatusValues code) {
-    if (code == NehtaServiceBookingStatusValues.APT)
+       if (code == NehtaServiceBookingStatusValues.NULL)
+           return null;
+       if (code == NehtaServiceBookingStatusValues.APT)
       return "APT";
     if (code == NehtaServiceBookingStatusValues.ARQ)
       return "ARQ";
@@ -75,10 +73,10 @@ public class NehtaServiceBookingStatusValuesEnumFactory implements EnumFactory<N
     if (code == NehtaServiceBookingStatusValues.RQO)
       return "RQO";
     return "?";
-  }
+   }
 
-    public String toSystem(NehtaServiceBookingStatusValues code) {
-      return code.getSystem();
-      }
+  public String toSystem(NehtaServiceBookingStatusValues code) {
+    return code.getSystem();
+  }
 
 }

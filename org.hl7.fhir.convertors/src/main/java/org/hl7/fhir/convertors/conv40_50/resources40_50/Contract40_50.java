@@ -1,11 +1,26 @@
 package org.hl7.fhir.convertors.conv40_50.resources40_50;
 
 import org.hl7.fhir.convertors.context.ConversionContext40_50;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.*;
-import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.*;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Annotation40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.CodeableConcept40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Coding40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Identifier40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Money40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Period40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.Signature40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.general40_50.SimpleQuantity40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Boolean40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.DateTime40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Decimal40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.MarkDown40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.String40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.UnsignedInt40_50;
+import org.hl7.fhir.convertors.conv40_50.datatypes40_50.primitive40_50.Uri40_50;
 import org.hl7.fhir.convertors.conv40_50.datatypes40_50.special40_50.Reference40_50;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r5.model.CodeableReference;
+import org.hl7.fhir.r5.model.Contract;
+import org.hl7.fhir.r5.model.Enumeration;
 
 /*
   Copyright (c) 2011+, HL7, Inc.
@@ -175,126 +190,134 @@ public class Contract40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes> convertContractStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Contract.ContractStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodesEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case AMENDED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.AMENDED);
-        break;
-      case APPENDED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.APPENDED);
-        break;
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.CANCELLED);
-        break;
-      case DISPUTED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.DISPUTED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.ENTEREDINERROR);
-        break;
-      case EXECUTABLE:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.EXECUTABLE);
-        break;
-      case EXECUTED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.EXECUTED);
-        break;
-      case NEGOTIABLE:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.NEGOTIABLE);
-        break;
-      case OFFERED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.OFFERED);
-        break;
-      case POLICY:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.POLICY);
-        break;
-      case REJECTED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.REJECTED);
-        break;
-      case RENEWED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.RENEWED);
-        break;
-      case REVOKED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.REVOKED);
-        break;
-      case RESOLVED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.RESOLVED);
-        break;
-      case TERMINATED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.TERMINATED);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Contract.ContractResourceStatusCodes> tgt = new Enumeration<>(new Contract.ContractResourceStatusCodesEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case AMENDED:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.AMENDED);
+                  break;
+              case APPENDED:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.APPENDED);
+                  break;
+              case CANCELLED:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.CANCELLED);
+                  break;
+              case DISPUTED:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.DISPUTED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.ENTEREDINERROR);
+                  break;
+              case EXECUTABLE:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.EXECUTABLE);
+                  break;
+              case EXECUTED:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.EXECUTED);
+                  break;
+              case NEGOTIABLE:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.NEGOTIABLE);
+                  break;
+              case OFFERED:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.OFFERED);
+                  break;
+              case POLICY:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.POLICY);
+                  break;
+              case REJECTED:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.REJECTED);
+                  break;
+              case RENEWED:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.RENEWED);
+                  break;
+              case REVOKED:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.REVOKED);
+                  break;
+              case RESOLVED:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.RESOLVED);
+                  break;
+              case TERMINATED:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.TERMINATED);
+                  break;
+              default:
+                  tgt.setValue(Contract.ContractResourceStatusCodes.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Contract.ContractStatus> convertContractStatus(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Contract.ContractResourceStatusCodes> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Contract.ContractStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Contract.ContractStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case AMENDED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.AMENDED);
-        break;
-      case APPENDED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.APPENDED);
-        break;
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.CANCELLED);
-        break;
-      case DISPUTED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.DISPUTED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.ENTEREDINERROR);
-        break;
-      case EXECUTABLE:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.EXECUTABLE);
-        break;
-      case EXECUTED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.EXECUTED);
-        break;
-      case NEGOTIABLE:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.NEGOTIABLE);
-        break;
-      case OFFERED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.OFFERED);
-        break;
-      case POLICY:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.POLICY);
-        break;
-      case REJECTED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.REJECTED);
-        break;
-      case RENEWED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.RENEWED);
-        break;
-      case REVOKED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.REVOKED);
-        break;
-      case RESOLVED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.RESOLVED);
-        break;
-      case TERMINATED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.TERMINATED);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Contract.ContractStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Contract.ContractStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case AMENDED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.AMENDED);
+                  break;
+              case APPENDED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.APPENDED);
+                  break;
+              case CANCELLED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.CANCELLED);
+                  break;
+              case DISPUTED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.DISPUTED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.ENTEREDINERROR);
+                  break;
+              case EXECUTABLE:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.EXECUTABLE);
+                  break;
+              case EXECUTED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.EXECUTED);
+                  break;
+              case NEGOTIABLE:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.NEGOTIABLE);
+                  break;
+              case OFFERED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.OFFERED);
+                  break;
+              case POLICY:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.POLICY);
+                  break;
+              case REJECTED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.REJECTED);
+                  break;
+              case RENEWED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.RENEWED);
+                  break;
+              case REVOKED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.REVOKED);
+                  break;
+              case RESOLVED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.RESOLVED);
+                  break;
+              case TERMINATED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.TERMINATED);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r5.model.Contract.ContentDefinitionComponent convertContentDefinitionComponent(org.hl7.fhir.r4.model.Contract.ContentDefinitionComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.ContentDefinitionComponent tgt = new org.hl7.fhir.r5.model.Contract.ContentDefinitionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasSubType())
@@ -314,7 +337,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.ContentDefinitionComponent tgt = new org.hl7.fhir.r4.model.Contract.ContentDefinitionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(CodeableConcept40_50.convertCodeableConcept(src.getType()));
     if (src.hasSubType())
@@ -331,126 +354,134 @@ public class Contract40_50 {
   }
 
   static public org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes> convertContractPublicationStatus(org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Contract.ContractPublicationStatus> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes> tgt = new org.hl7.fhir.r5.model.Enumeration<>(new org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodesEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case AMENDED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.AMENDED);
-        break;
-      case APPENDED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.APPENDED);
-        break;
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.CANCELLED);
-        break;
-      case DISPUTED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.DISPUTED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.ENTEREDINERROR);
-        break;
-      case EXECUTABLE:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.EXECUTABLE);
-        break;
-      case EXECUTED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.EXECUTED);
-        break;
-      case NEGOTIABLE:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.NEGOTIABLE);
-        break;
-      case OFFERED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.OFFERED);
-        break;
-      case POLICY:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.POLICY);
-        break;
-      case REJECTED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.REJECTED);
-        break;
-      case RENEWED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.RENEWED);
-        break;
-      case REVOKED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.REVOKED);
-        break;
-      case RESOLVED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.RESOLVED);
-        break;
-      case TERMINATED:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.TERMINATED);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      Enumeration<Contract.ContractResourcePublicationStatusCodes> tgt = new Enumeration<>(new Contract.ContractResourcePublicationStatusCodesEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case AMENDED:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.AMENDED);
+                  break;
+              case APPENDED:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.APPENDED);
+                  break;
+              case CANCELLED:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.CANCELLED);
+                  break;
+              case DISPUTED:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.DISPUTED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.ENTEREDINERROR);
+                  break;
+              case EXECUTABLE:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.EXECUTABLE);
+                  break;
+              case EXECUTED:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.EXECUTED);
+                  break;
+              case NEGOTIABLE:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.NEGOTIABLE);
+                  break;
+              case OFFERED:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.OFFERED);
+                  break;
+              case POLICY:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.POLICY);
+                  break;
+              case REJECTED:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.REJECTED);
+                  break;
+              case RENEWED:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.RENEWED);
+                  break;
+              case REVOKED:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.REVOKED);
+                  break;
+              case RESOLVED:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.RESOLVED);
+                  break;
+              case TERMINATED:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.TERMINATED);
+                  break;
+              default:
+                  tgt.setValue(Contract.ContractResourcePublicationStatusCodes.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   static public org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Contract.ContractPublicationStatus> convertContractPublicationStatus(org.hl7.fhir.r5.model.Enumeration<org.hl7.fhir.r5.model.Contract.ContractResourcePublicationStatusCodes> src) throws FHIRException {
-    if (src == null || src.isEmpty())
-      return null;
-    org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Contract.ContractPublicationStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Contract.ContractPublicationStatusEnumFactory());
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
-    switch (src.getValue()) {
-      case AMENDED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.AMENDED);
-        break;
-      case APPENDED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.APPENDED);
-        break;
-      case CANCELLED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.CANCELLED);
-        break;
-      case DISPUTED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.DISPUTED);
-        break;
-      case ENTEREDINERROR:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.ENTEREDINERROR);
-        break;
-      case EXECUTABLE:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.EXECUTABLE);
-        break;
-      case EXECUTED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.EXECUTED);
-        break;
-      case NEGOTIABLE:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.NEGOTIABLE);
-        break;
-      case OFFERED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.OFFERED);
-        break;
-      case POLICY:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.POLICY);
-        break;
-      case REJECTED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.REJECTED);
-        break;
-      case RENEWED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.RENEWED);
-        break;
-      case REVOKED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.REVOKED);
-        break;
-      case RESOLVED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.RESOLVED);
-        break;
-      case TERMINATED:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.TERMINATED);
-        break;
-      default:
-        tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.NULL);
-        break;
-    }
-    return tgt;
+      if (src == null || src.isEmpty())
+          return null;
+      org.hl7.fhir.r4.model.Enumeration<org.hl7.fhir.r4.model.Contract.ContractPublicationStatus> tgt = new org.hl7.fhir.r4.model.Enumeration<>(new org.hl7.fhir.r4.model.Contract.ContractPublicationStatusEnumFactory());
+      ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+      if (src.getValue() == null) {
+          tgt.setValue(null);
+      } else {
+          switch (src.getValue()) {
+              case AMENDED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.AMENDED);
+                  break;
+              case APPENDED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.APPENDED);
+                  break;
+              case CANCELLED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.CANCELLED);
+                  break;
+              case DISPUTED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.DISPUTED);
+                  break;
+              case ENTEREDINERROR:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.ENTEREDINERROR);
+                  break;
+              case EXECUTABLE:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.EXECUTABLE);
+                  break;
+              case EXECUTED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.EXECUTED);
+                  break;
+              case NEGOTIABLE:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.NEGOTIABLE);
+                  break;
+              case OFFERED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.OFFERED);
+                  break;
+              case POLICY:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.POLICY);
+                  break;
+              case REJECTED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.REJECTED);
+                  break;
+              case RENEWED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.RENEWED);
+                  break;
+              case REVOKED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.REVOKED);
+                  break;
+              case RESOLVED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.RESOLVED);
+                  break;
+              case TERMINATED:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.TERMINATED);
+                  break;
+              default:
+                  tgt.setValue(org.hl7.fhir.r4.model.Contract.ContractPublicationStatus.NULL);
+                  break;
+          }
+      }
+      return tgt;
   }
 
   public static org.hl7.fhir.r5.model.Contract.TermComponent convertTermComponent(org.hl7.fhir.r4.model.Contract.TermComponent src) throws FHIRException {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.TermComponent tgt = new org.hl7.fhir.r5.model.Contract.TermComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasIdentifier())
       tgt.setIdentifier(Identifier40_50.convertIdentifier(src.getIdentifier()));
     if (src.hasIssued())
@@ -480,7 +511,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.TermComponent tgt = new org.hl7.fhir.r4.model.Contract.TermComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasIdentifier())
       tgt.setIdentifier(Identifier40_50.convertIdentifier(src.getIdentifier()));
     if (src.hasIssued())
@@ -510,7 +541,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.SecurityLabelComponent tgt = new org.hl7.fhir.r5.model.Contract.SecurityLabelComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     for (org.hl7.fhir.r4.model.UnsignedIntType t : src.getNumber())
       tgt.getNumber().add(UnsignedInt40_50.convertUnsignedInt(t));
     if (src.hasClassification())
@@ -524,7 +555,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.SecurityLabelComponent tgt = new org.hl7.fhir.r4.model.Contract.SecurityLabelComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     for (org.hl7.fhir.r5.model.UnsignedIntType t : src.getNumber())
       tgt.getNumber().add(UnsignedInt40_50.convertUnsignedInt(t));
     if (src.hasClassification())
@@ -538,7 +569,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.ContractOfferComponent tgt = new org.hl7.fhir.r5.model.Contract.ContractOfferComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     for (org.hl7.fhir.r4.model.Identifier t : src.getIdentifier())
       tgt.addIdentifier(Identifier40_50.convertIdentifier(t));
     for (org.hl7.fhir.r4.model.Contract.ContractPartyComponent t : src.getParty())
@@ -564,7 +595,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.ContractOfferComponent tgt = new org.hl7.fhir.r4.model.Contract.ContractOfferComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     for (org.hl7.fhir.r5.model.Identifier t : src.getIdentifier())
       tgt.addIdentifier(Identifier40_50.convertIdentifier(t));
     for (org.hl7.fhir.r5.model.Contract.ContractPartyComponent t : src.getParty())
@@ -590,7 +621,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.ContractPartyComponent tgt = new org.hl7.fhir.r5.model.Contract.ContractPartyComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     for (org.hl7.fhir.r4.model.Reference t : src.getReference()) tgt.addReference(Reference40_50.convertReference(t));
     if (src.hasRole())
       tgt.setRole(CodeableConcept40_50.convertCodeableConcept(src.getRole()));
@@ -601,7 +632,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.ContractPartyComponent tgt = new org.hl7.fhir.r4.model.Contract.ContractPartyComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     for (org.hl7.fhir.r5.model.Reference t : src.getReference()) tgt.addReference(Reference40_50.convertReference(t));
     if (src.hasRole())
       tgt.setRole(CodeableConcept40_50.convertCodeableConcept(src.getRole()));
@@ -612,7 +643,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.AnswerComponent tgt = new org.hl7.fhir.r5.model.Contract.AnswerComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasValue())
       tgt.setValue(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getValue()));
     return tgt;
@@ -622,7 +653,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.AnswerComponent tgt = new org.hl7.fhir.r4.model.Contract.AnswerComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasValue())
       tgt.setValue(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getValue()));
     return tgt;
@@ -632,7 +663,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.ContractAssetComponent tgt = new org.hl7.fhir.r5.model.Contract.ContractAssetComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasScope())
       tgt.setScope(CodeableConcept40_50.convertCodeableConcept(src.getScope()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getType())
@@ -666,7 +697,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.ContractAssetComponent tgt = new org.hl7.fhir.r4.model.Contract.ContractAssetComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasScope())
       tgt.setScope(CodeableConcept40_50.convertCodeableConcept(src.getScope()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getType())
@@ -700,7 +731,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.AssetContextComponent tgt = new org.hl7.fhir.r5.model.Contract.AssetContextComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasReference())
       tgt.setReference(Reference40_50.convertReference(src.getReference()));
     for (org.hl7.fhir.r4.model.CodeableConcept t : src.getCode())
@@ -714,7 +745,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.AssetContextComponent tgt = new org.hl7.fhir.r4.model.Contract.AssetContextComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasReference())
       tgt.setReference(Reference40_50.convertReference(src.getReference()));
     for (org.hl7.fhir.r5.model.CodeableConcept t : src.getCode())
@@ -728,7 +759,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.ValuedItemComponent tgt = new org.hl7.fhir.r5.model.Contract.ValuedItemComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasEntity())
       tgt.setEntity(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getEntity()));
     if (src.hasIdentifier())
@@ -763,7 +794,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.ValuedItemComponent tgt = new org.hl7.fhir.r4.model.Contract.ValuedItemComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasEntity())
       tgt.setEntity(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getEntity()));
     if (src.hasIdentifier())
@@ -798,7 +829,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.ActionComponent tgt = new org.hl7.fhir.r5.model.Contract.ActionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasDoNotPerform())
       tgt.setDoNotPerformElement(Boolean40_50.convertBoolean(src.getDoNotPerformElement()));
     if (src.hasType())
@@ -843,7 +874,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.ActionComponent tgt = new org.hl7.fhir.r4.model.Contract.ActionComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasDoNotPerform())
       tgt.setDoNotPerformElement(Boolean40_50.convertBoolean(src.getDoNotPerformElement()));
     if (src.hasType())
@@ -891,7 +922,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.ActionSubjectComponent tgt = new org.hl7.fhir.r5.model.Contract.ActionSubjectComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     for (org.hl7.fhir.r4.model.Reference t : src.getReference()) tgt.addReference(Reference40_50.convertReference(t));
     if (src.hasRole())
       tgt.setRole(CodeableConcept40_50.convertCodeableConcept(src.getRole()));
@@ -902,7 +933,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.ActionSubjectComponent tgt = new org.hl7.fhir.r4.model.Contract.ActionSubjectComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     for (org.hl7.fhir.r5.model.Reference t : src.getReference()) tgt.addReference(Reference40_50.convertReference(t));
     if (src.hasRole())
       tgt.setRole(CodeableConcept40_50.convertCodeableConcept(src.getRole()));
@@ -913,7 +944,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.SignatoryComponent tgt = new org.hl7.fhir.r5.model.Contract.SignatoryComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(Coding40_50.convertCoding(src.getType()));
     if (src.hasParty())
@@ -926,7 +957,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.SignatoryComponent tgt = new org.hl7.fhir.r4.model.Contract.SignatoryComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasType())
       tgt.setType(Coding40_50.convertCoding(src.getType()));
     if (src.hasParty())
@@ -939,7 +970,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.FriendlyLanguageComponent tgt = new org.hl7.fhir.r5.model.Contract.FriendlyLanguageComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasContent())
       tgt.setContent(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getContent()));
     return tgt;
@@ -949,7 +980,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.FriendlyLanguageComponent tgt = new org.hl7.fhir.r4.model.Contract.FriendlyLanguageComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasContent())
       tgt.setContent(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getContent()));
     return tgt;
@@ -959,7 +990,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.LegalLanguageComponent tgt = new org.hl7.fhir.r5.model.Contract.LegalLanguageComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasContent())
       tgt.setContent(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getContent()));
     return tgt;
@@ -969,7 +1000,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.LegalLanguageComponent tgt = new org.hl7.fhir.r4.model.Contract.LegalLanguageComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasContent())
       tgt.setContent(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getContent()));
     return tgt;
@@ -979,7 +1010,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r5.model.Contract.ComputableLanguageComponent tgt = new org.hl7.fhir.r5.model.Contract.ComputableLanguageComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasContent())
       tgt.setContent(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getContent()));
     return tgt;
@@ -989,7 +1020,7 @@ public class Contract40_50 {
     if (src == null)
       return null;
     org.hl7.fhir.r4.model.Contract.ComputableLanguageComponent tgt = new org.hl7.fhir.r4.model.Contract.ComputableLanguageComponent();
-    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyElement(src, tgt);
+    ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().copyBackboneElement(src, tgt);
     if (src.hasContent())
       tgt.setContent(ConversionContext40_50.INSTANCE.getVersionConvertor_40_50().convertType(src.getContent()));
     return tgt;
